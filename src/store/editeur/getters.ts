@@ -1,0 +1,1 @@
+//definir les getter afin de les utiliser dans la vue

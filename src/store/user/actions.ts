@@ -6,8 +6,8 @@ import { AxiosRequest } from "@/axios/AxiosRequest";
 export const actions: ActionTree<UserState, RootState> = {
 
     async doLogin({ commit }, user): Promise<void> {
-        await AxiosRequest.doLogin(user).then(res => {
-            if(res.status === 200) {
+        await AxiosRequest.doLogin(user).then(res => { //ici on fait requete vers le back
+            if(res.status === 200) { //et avec la réponse on envoit vers mutation (setter) qui va s'occuper de changer l'objet dto
                 const payload: User = res.data;
                 commit('setUserLoaded', payload)
             } else {

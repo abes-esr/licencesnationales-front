@@ -15,7 +15,7 @@ const state: EditeurState = {
 
 }
 
-export const user: Module<EditeurState, RootState> = {
+export const editeur: Module<EditeurState, RootState> = {
     namespaced,
     state,
     getters,

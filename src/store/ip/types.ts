@@ -7,4 +7,5 @@ export interface Ip {
     ip?: Ip;
     error: boolean;
     errorMessage: string;
+    ipDejaUtilisee: boolean;
 }

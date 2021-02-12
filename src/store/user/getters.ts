@@ -4,7 +4,7 @@ import { RootState } from "@/store/types";
 
 export const getters: GetterTree<UserState, RootState> = {
 
-    getUserName(state): string {
+    getUserName(state): string { //c'est la méthode qui sera utilisée dans la vue template
         const { user } = state;
         return (user && user.userName) || '';
     },
