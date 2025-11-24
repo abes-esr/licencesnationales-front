@@ -162,12 +162,12 @@ export default class Footer extends Vue {
   width: auto !important;
 }
 
-@import "~vuetify/src/styles/settings/_variables";
-@media #{map-get($display-breakpoints, 'md-and-up')} {
-  .left-container .v-btn {
-    width: 250px;
-  }
-}
+// @import "~vuetify/src/styles/settings/_variables";
+// @media #{map-get($display-breakpoints, 'md-and-up')} {
+//   .left-container .v-btn {
+//     width: 250px;
+//   }
+// }
 
 .left-container {
   min-height: 200px;
