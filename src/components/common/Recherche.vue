@@ -3,7 +3,7 @@
     <v-card flat>
       <h1>Rechercher dans toute la base</h1>
       <br />
-      <v-alert :value="message !== ''" dense type="error">
+      <v-alert :model-value="Boolean(message)" density="compact" type="error">
         {{ message }}
       </v-alert>
 
@@ -15,7 +15,7 @@
               <v-row class="d-flex justify-center align-center">
                 <v-col cols="2" class="pb-0">
                   <v-select
-                    outlined
+                    variant="outlined"
                     :items="listeDomaine"
                     v-model="domaine"
                     placeholder="Domaine de recherche"
@@ -23,103 +23,84 @@
                     persistent-placeholder
                     required
                     :rules="rulesForm.selectSearchRules"
-                  ></v-select>
+                  />
                 </v-col>
                 <v-col cols="9" class="pb-0">
                   <v-text-field
-                    outlined
+                    variant="outlined"
                     label="Mots clés"
                     placeholder="Mots clés"
                     hide-details="auto"
                     v-model="criteres"
                     required
                     :rules="rulesForm.searchRules"
-                    @keyup.enter="search()"
-                  ></v-text-field
-                ></v-col>
+                    @keyup.enter="search"
+                  />
+                </v-col>
                 <v-col class="pb-0">
-                  <v-btn @click="search()" :loading="buttonLoading"
-                    >Rechercher</v-btn
-                  ></v-col
-                >
+                  <v-btn @click="search" :loading="buttonLoading">Rechercher</v-btn>
+                </v-col>
               </v-row>
               <br />
-            </v-card-text> </v-col
-        ></v-row>
+            </v-card-text>
+          </v-col>
+        </v-row>
       </v-form>
       <v-row>
         <v-col cols="1" class="d-none d-md-flex"></v-col>
         <v-col cols="12" md="8" v-if="afficheResultat">
           <h3>Résultats pour "{{ criteres }}" dans {{ domaine }} :</h3>
           <br />
-          <div v-if="domaineValide == 'IPs'">
-            <v-list dense>
-              <v-list-item-group>
-                <div v-for="item in resultats" :key="item.id">
-                  <v-list-item @click="clickIP(item)">
-                    <v-list-item-content>
-                      <v-list-item-title>{{ item.ip }}</v-list-item-title>
-                      <v-list-item-subtitle>
-                        {{ item.idAbes }} - {{ item.siren }} -
-                        {{ item.nomEtab }}
-                      </v-list-item-subtitle>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider /></div
-              ></v-list-item-group>
+          <div v-if="domaineValide === 'IPs'">
+            <v-list density="compact">
+              <div v-for="item in resultats" :key="item.id">
+                <v-list-item @click="clickIP(item)">
+                  <v-list-item-title>{{ item.ip }}</v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ item.idAbes }} - {{ item.siren }} - {{ item.nomEtab }}
+                  </v-list-item-subtitle>
+                </v-list-item>
+                <v-divider />
+              </div>
             </v-list>
           </div>
-          <div v-if="domaineValide == 'Etablissements'">
-            <v-list dense>
-              <v-list-item-group>
-                <div v-for="item in resultats" :key="item.id">
-                  <v-list-item @click="clickEtab(item)">
-                    <v-list-item-content>
-                      <v-list-item-title
-                        >{{ item.idAbes }} - {{ item.siren }} -
-                        {{ item.nomEtab }} -
-                        {{ item.villeContact }}</v-list-item-title
-                      >
-                      <v-list-item-subtitle
-                        >{{ item.nomContact }} {{ item.prenomContact }} -
-                        {{ item.mailContact }}</v-list-item-subtitle
-                      >
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider /></div
-              ></v-list-item-group>
+          <div v-if="domaineValide === 'Etablissements'">
+            <v-list density="compact">
+              <div v-for="item in resultats" :key="item.id">
+                <v-list-item @click="clickEtab(item)">
+                  <v-list-item-title>
+                    {{ item.idAbes }} - {{ item.siren }} - {{ item.nomEtab }} - {{ item.villeContact }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ item.nomContact }} {{ item.prenomContact }} - {{ item.mailContact }}
+                  </v-list-item-subtitle>
+                </v-list-item>
+                <v-divider />
+              </div>
             </v-list>
           </div>
-          <div v-if="domaineValide == 'Editeurs'">
-            <v-list dense>
-              <v-list-item-group>
-                <div v-for="item in resultats" :key="item.id">
-                  <v-list-item @click="clickEditeur(item)">
-                    <v-list-item-content>
-                      <v-list-item-title
-                        >{{ item.idEditeur }} - {{ item.nom }} -
-                        {{ item.adresse }}</v-list-item-title
-                      >
-                      <v-list-item-subtitle
-                        v-for="contactCommerciaux in item.contactsCommerciaux"
-                        :key="contactCommerciaux.id"
-                      >
-                        {{ contactCommerciaux.nom }}
-                        {{ contactCommerciaux.prenom }} -
-                        {{ contactCommerciaux.mail }}
-                      </v-list-item-subtitle>
-                      <v-list-item-subtitle
-                        v-for="contactTechnique in item.contactsTechniques"
-                        :key="contactTechnique.id"
-                      >
-                        {{ contactTechnique.nom }}
-                        {{ contactTechnique.prenom }} -
-                        {{ contactTechnique.mail }}
-                      </v-list-item-subtitle>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-divider /></div
-              ></v-list-item-group>
+          <div v-if="domaineValide === 'Editeurs'">
+            <v-list density="compact">
+              <div v-for="item in resultats" :key="item.id">
+                <v-list-item @click="clickEditeur(item)">
+                  <v-list-item-title>
+                    {{ item.idEditeur }} - {{ item.nom }} - {{ item.adresse }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle
+                    v-for="contactCommerciaux in item.contactsCommerciaux"
+                    :key="contactCommerciaux.id"
+                  >
+                    {{ contactCommerciaux.nom }} {{ contactCommerciaux.prenom }} - {{ contactCommerciaux.mail }}
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle
+                    v-for="contactTechnique in item.contactsTechniques"
+                    :key="contactTechnique.id"
+                  >
+                    {{ contactTechnique.nom }} {{ contactTechnique.prenom }} - {{ contactTechnique.mail }}
+                  </v-list-item-subtitle>
+                </v-list-item>
+                <v-divider />
+              </div>
             </v-list>
           </div>
           <br />
@@ -129,105 +110,100 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { rulesForm } from "@/core/RulesForm";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 import { iPService } from "@/core/service/licencesnationales/IPService";
-import { rulesForm } from "@/core/RulesForm";
+import { useAuthStore } from "@/stores/authStore";
+import { useEtablissementStore } from "@/stores/etablissementStore";
+import { useEditeurStore } from "@/stores/editeurStore";
+import type { VForm } from "vuetify/components";
 
-@Component
-export default class Recherche extends Vue {
-  criteres: string = "";
-  domaine: string = "";
-  domaineValide: string = "";
-  listeDomaine: Array<string> = ["Etablissements", "IPs", "Editeurs"];
-  resultats: Array<string> = [];
-  message: string = "";
-  afficheResultat: boolean = false;
-  buttonLoading: boolean = false;
-  rulesForm: any = rulesForm;
+const router = useRouter();
+const authStore = useAuthStore();
+const etablissementStore = useEtablissementStore();
+const editeurStore = useEditeurStore();
 
-  search() {
-    if (
-      (this.$refs.searchForm as Vue & {
-        validate: () => boolean;
-      }).validate()
-    ) {
-      const listeCriteres: Array<string> = this.criteres.split(" ");
-      this.domaineValide = this.domaine;
-      let service;
-      switch (this.domaineValide) {
-        case "Etablissements":
-          service = etablissementService;
-          break;
-        case "IPs":
-          service = iPService;
-          break;
-        case "Editeurs":
-          service = editeurService;
-          break;
-        default:
-          this.message = "Le domaine de recherche est obligatoire";
-          return;
-      }
+const criteres = ref("");
+const domaine = ref("");
+const domaineValide = ref("");
+const listeDomaine = ["Etablissements", "IPs", "Editeurs"];
+const resultats = ref<any[]>([]);
+const message = ref("");
+const afficheResultat = ref(false);
+const buttonLoading = ref(false);
+const searchForm = ref<VForm | null>(null);
 
-      this.buttonLoading = true;
-      this.resultats = [];
-      service
-        .search(listeCriteres, this.$store.getters.getToken())
-        .then(res => {
-          this.afficheResultat = true;
-          res.data.forEach(element => {
-            this.resultats.push(element);
-          });
-        })
-        .catch(err => {
-          this.message = err.data.message;
-        })
-        .finally(() => {
-          this.buttonLoading = false;
-        });
-    }
+const search = async () => {
+  const validation = await searchForm.value?.validate();
+  if (validation && !validation.valid) {
+    return;
   }
 
-  clickEtab(item): void {
-    this.$store
-      .dispatch("setCurrentEtablissement", item)
-      .then(() => {
-        this.$router.push({ name: "AfficherEtablissement" });
-      })
-      .catch(err => {
-        this.message = err.data.message;
-        // On glisse sur le message d'erreur
-        window.scrollTo(0, 0);
-      });
+  const listeCriteres: Array<string> = criteres.value.split(" ");
+  domaineValide.value = domaine.value;
+
+  let service;
+  switch (domaineValide.value) {
+    case "Etablissements":
+      service = etablissementService;
+      break;
+    case "IPs":
+      service = iPService;
+      break;
+    case "Editeurs":
+      service = editeurService;
+      break;
+    default:
+      message.value = "Le domaine de recherche est obligatoire";
+      return;
   }
 
-  clickIP(item): void {
-    this.$store
-      .dispatch("setCurrentEtablissement", item)
-      .then(() => {
-        this.$router.push({ name: "ListeIP" });
-      })
-      .catch(err => {
-        this.message = err.data.message;
-        // On glisse sur le message d'erreur
-        window.scrollTo(0, 0);
-      });
-  }
+  buttonLoading.value = true;
+  resultats.value = [];
 
-  clickEditeur(item): void {
-    this.$store
-      .dispatch("setCurrentEditeur", item)
-      .then(() => {
-        this.$router.push({ name: "ModifierEditeur" });
-      })
-      .catch(err => {
-        this.message = err.data.message;
-        // On glisse sur le message d'erreur
-        window.scrollTo(0, 0);
-      });
+  try {
+    const res = await service.search(listeCriteres, authStore.getToken);
+    afficheResultat.value = true;
+    resultats.value = res.data;
+  } catch (err: any) {
+    message.value = err?.data?.message ?? "Erreur lors de la recherche";
+    window.scrollTo(0, 0);
+  } finally {
+    buttonLoading.value = false;
   }
-}
+};
+
+const clickEtab = async (item: any) => {
+  try {
+    await etablissementStore.setCurrentEtablissement(item);
+    router.push({ name: "AfficherEtablissement" });
+  } catch (err: any) {
+    message.value = err?.data?.message ?? "Erreur lors de la navigation";
+    window.scrollTo(0, 0);
+  }
+};
+
+const clickIP = async (item: any) => {
+  try {
+    await etablissementStore.setCurrentEtablissement(item);
+    router.push({ name: "ListeIP" });
+  } catch (err: any) {
+    message.value = err?.data?.message ?? "Erreur lors de la navigation";
+    window.scrollTo(0, 0);
+  }
+};
+
+const clickEditeur = async (item: any) => {
+  try {
+    await editeurStore.setCurrentEditeur(item);
+    router.push({ name: "ModifierEditeur" });
+  } catch (err: any) {
+    message.value = err?.data?.message ?? "Erreur lors de la navigation";
+    window.scrollTo(0, 0);
+  }
+};
 </script>

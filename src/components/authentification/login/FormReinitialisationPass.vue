@@ -4,25 +4,20 @@
       <v-col lg="5" md="8" xs="10">
         <div>
           <v-card class="elevation-0">
-            <v-form
-              ref="formReinitialisationPass"
-              lazy-validation
-              class="elevation-0"
-              :disabled="tokenValid"
-            >
-              <v-card-title class="pa-3"
-                ><h1>Réinitialiser le mot de passe</h1>
+            <v-form ref="formReinitialisationPass" class="elevation-0" :disabled="!tokenValid">
+              <v-card-title class="pa-3">
+                <h1>Réinitialiser le mot de passe</h1>
               </v-card-title>
-              <MessageBox></MessageBox>
+              <MessageBox />
               <v-card-text>
                 <MotDePasse
                   ref="motDePasse"
                   :action="Action.CREATION"
-                  :nouveau-mot-de-passe="this.newPassword"
+                  :nouveau-mot-de-passe="newPassword"
                   @update:nouveauMotDePasse="updateMotDePasse"
                   class="ma-3"
                   :link-is-expired="!tokenValid"
-                ></MotDePasse>
+                />
               </v-card-text>
               <v-card-actions>
                 <v-spacer class="hidden-sm-and-down"></v-spacer>
@@ -34,31 +29,31 @@
                   class="d-flex justify-space-around"
                 >
                   <v-btn
-                    v-if="linkExpired === false"
-                    x-large
+                    v-if="!linkExpired"
+                    size="x-large"
                     @click="clear"
                     class="bouton-annuler"
                     :disabled="isDisableForm"
                   >
-                    Annuler</v-btn
-                  >
+                    Annuler
+                  </v-btn>
                   <v-btn
-                    v-if="linkExpired === false"
+                    v-if="!linkExpired"
                     :loading="buttonLoading"
                     :disabled="isDisableForm"
-                    x-large
-                    @click="recaptcha()"
-                    >Enregistrer
+                    size="x-large"
+                    @click="recaptcha"
+                  >
+                    Enregistrer
                     <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
                   </v-btn>
                 </v-col>
               </v-card-actions>
               <v-card-actions>
                 <v-col cols="8"> </v-col>
-                <a @click="revenirPageAccueil()"
-                  ><font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à
-                  la page d'accueil</a
-                >
+                <a @click="revenirPageAccueil">
+                  <FontAwesomeIcon :icon="['fas', 'reply']" />&nbsp;Revenir à la page d'accueil
+                </a>
               </v-card-actions>
             </v-form>
           </v-card>
@@ -68,8 +63,9 @@
   </v-container>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import { Logger } from "@/utils/Logger";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
 import { Message, MessageType } from "@/core/CommonDefinition";
@@ -77,193 +73,160 @@ import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnat
 import MessageBox from "@/components/common/MessageBox.vue";
 import { Action } from "@/core/CommonDefinition";
 import MotDePasse from "@/components/authentification/MotDePasse.vue";
-@Component({
-  components: { MotDePasse, MessageBox }
-})
-export default class FormReinitialisationPass extends Vue {
-  Action: any = Action;
-  resetToken: string = "";
-  isDisableForm: boolean = false;
-  tokenValid: boolean = true;
-  tokenrecaptchaValid: Promise<boolean> = this.$recaptchaLoaded();
-  tokenrecaptcha: string = "";
-  newPassword: string = "";
-  buttonLoading: boolean = false;
-  linkExpired: boolean = false;
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useMessageStore } from "@/stores/messageStore";
+import type { VForm } from "vuetify/components";
 
-  mounted() {
-    this.$store.dispatch("closeDisplayedMessage");
+const router = useRouter();
+const messageStore = useMessageStore();
 
-    this.resetToken = window.location.href.substr(
-      window.location.href.lastIndexOf("=") + 1
-    );
+const ActionRef = Action;
+const resetToken = ref("");
+const isDisableForm = ref(false);
+const tokenValid = ref(true);
+const tokenrecaptcha = ref("");
+const newPassword = ref("");
+const buttonLoading = ref(false);
+const linkExpired = ref(false);
 
-    this.isTokenValid
-      .then(result => {
-        if (!result) {
-          this.tokenValid = false;
-          this.linkExpired = true;
-        }
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-        this.tokenValid = false;
-        this.linkExpired = true;
-      });
+const formReinitialisationPass = ref<VForm | null>(null);
+const motDePasse = ref<InstanceType<typeof MotDePasse> | null>(null);
+
+onMounted(async () => {
+  messageStore.closeDisplayedMessage();
+
+  resetToken.value = window.location.href.substring(
+    window.location.href.lastIndexOf("=") + 1
+  );
+
+  try {
+    const valid = await verifierToken(resetToken.value);
+    tokenValid.value = valid;
+    linkExpired.value = !valid;
+  } catch (err: any) {
+    tokenValid.value = false;
+    linkExpired.value = true;
+    handleError(err);
   }
+});
 
-  get loggedIn() {
-    return this.$store.state.user.isLoggedIn;
+const verifierToken = async (token: string): Promise<boolean> => {
+  try {
+    const response = await authService.verifierValiditeToken(token);
+    return response;
+  } catch (err: any) {
+    throw err;
+  } finally {
+    buttonLoading.value = false;
   }
+};
 
-  get isTokenValid(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      authService
-        .verifierValiditeToken(this.resetToken)
-        .then(response => {
-          resolve(response);
-        })
-        .catch(err => {
-          Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          if (err instanceof LicencesNationalesBadRequestApiError) {
-            message.texte = err.message;
-          } else {
-            message.texte = "Impossible d'exécuter l'action : " + err.message;
-          }
-          message.isSticky = true;
+const loadRecaptcha = async () => {
+  const maybeRecaptchaLoaded = (globalThis as any).$recaptchaLoaded;
+  if (maybeRecaptchaLoaded) {
+    await maybeRecaptchaLoaded();
+  }
+};
 
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          reject(false);
-        })
-        .finally(() => {
-          this.buttonLoading = false;
-        });
+const executeRecaptcha = async (action: string) => {
+  const maybeRecaptcha = (globalThis as any).$recaptcha;
+  if (maybeRecaptcha) {
+    return await maybeRecaptcha(action);
+  }
+  return "";
+};
+
+const updateMotDePasse = (value: string) => {
+  newPassword.value = value;
+};
+
+const recaptcha = async () => {
+  await loadRecaptcha();
+  tokenrecaptcha.value = await executeRecaptcha("reinitialisationPass");
+  const isValid = await validate();
+  if (isValid) {
+    reinitialisationPass();
+  } else {
+    const message: Message = new Message();
+    message.type = MessageType.ERREUR;
+    message.texte = "Des champs ne remplissent pas les conditions";
+    message.isSticky = true;
+    messageStore.openDisplayedMessage(message);
+    scrollToMessage();
+  }
+};
+
+const validate = async (): Promise<boolean> => {
+  const formValid = await formReinitialisationPass.value?.validate();
+  const mdpValid = await motDePasse.value?.validate();
+  return Boolean(formValid?.valid && mdpValid);
+};
+
+const reinitialisationPass = async (): Promise<void> => {
+  buttonLoading.value = true;
+  messageStore.closeDisplayedMessage();
+
+  try {
+    const response = await authService.reinitialiserMotDePasse({
+      nouveauMotDePasse: newPassword.value,
+      recaptcha: tokenrecaptcha.value,
+      token: resetToken.value
     });
+    const message: Message = new Message();
+    message.type = MessageType.VALIDATION;
+    message.texte = response.message;
+    message.isSticky = true;
+    messageStore.openDisplayedMessage(message);
+    scrollToMessage();
+    setTimeout(() => {
+      router.push({ name: "Login" });
+    }, 4000);
+  } catch (err: any) {
+    handleError(err);
+  } finally {
+    buttonLoading.value = false;
   }
+};
 
-  updateMotDePasse(value: string) {
-    this.newPassword = value;
+const handleError = (err: any) => {
+  Logger.error(err?.toString?.() ?? err);
+  const message: Message = new Message();
+  message.type = MessageType.ERREUR;
+  if (err instanceof LicencesNationalesBadRequestApiError) {
+    message.texte = err.message;
+  } else {
+    message.texte = "Impossible d'exécuter l'action : " + (err?.message ?? "");
   }
+  message.isSticky = true;
 
-  async recaptcha() {
-    await this.$recaptchaLoaded();
-    this.tokenrecaptcha = await this.$recaptcha("reinitialisationPass");
-    if (this.validate()) {
-      this.reinitialisationPass();
-    } else {
-      const message: Message = new Message();
-      message.type = MessageType.ERREUR;
-      message.texte = "Des champs ne remplissent pas les conditions";
-      message.isSticky = true;
-      this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-        Logger.error(err.toString());
-      });
-      // On glisse sur le message d'erreur
-      const messageBox = document.getElementById("messageBox");
-      if (messageBox) {
-        window.scrollTo(0, messageBox.offsetTop);
-      }
-    }
+  try {
+    messageStore.openDisplayedMessage(message);
+  } catch (error: any) {
+    Logger.error(error?.toString?.() ?? error);
   }
+  scrollToMessage();
+};
 
-  validate(): boolean {
-    const isFormValide = (this.$refs.formReinitialisationPass as Vue & {
-      validate: () => boolean;
-    }).validate();
-    const isMotDePasseValide = (this.$refs.motDePasse as Vue & {
-      validate: () => boolean;
-    }).validate();
-
-    return isFormValide && isMotDePasseValide;
+const scrollToMessage = () => {
+  const messageBox = document.getElementById("messageBox");
+  if (messageBox) {
+    window.scrollTo(0, messageBox.offsetTop);
   }
+};
 
-  reinitialisationPass(): void {
-    this.buttonLoading = true;
-    this.$store.dispatch("closeDisplayedMessage");
+const clear = () => {
+  motDePasse.value?.clear();
+  formReinitialisationPass.value?.resetValidation();
+  newPassword.value = "";
+};
 
-    authService
-      .reinitialiserMotDePasse({
-        nouveauMotDePasse: this.newPassword,
-        recaptcha: this.tokenrecaptcha,
-        token: this.resetToken
-      })
-      .then(response => {
-        const message: Message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = response.message;
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err);
-        });
-        // On glisse sur le message d'erreur
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-        setTimeout(() => {
-          this.$router.push({ name: "Login" });
-        }, 4000);
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
+const revenirPageAccueil = () => {
+  router.push({ name: "Login" }).catch(err => {
+    Logger.error(err);
+  });
+};
 
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-        // On glisse sur le message d'erreur
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-      })
-      .finally(() => {
-        this.buttonLoading = false;
-      });
-  }
-
-  revenirPageAccueil(): void {
-    this.$router.push({ name: "Login" }).catch(err => {
-      Logger.error(err);
-    });
-  }
-
-  allerPageMotDePasseOublie(): void {
-    this.$router.push({ name: "ReinitialisationPass" }).catch(err => {
-      Logger.error(err);
-    });
-  }
-
-  afficherMotDePasseOulie(): void {
-    this.$emit("onChange"); // On notifie le composant parent
-  }
-
-  clear() {
-    (this.$refs.motDePasse as MotDePasse).clear();
-    (this.$refs.formReinitialisationPass as HTMLFormElement).resetValidation();
-    this.newPassword = "";
-  }
-}
+const afficherMotDePasseOulie = () => {
+  // utilisé par le parent si besoin
+};
 </script>

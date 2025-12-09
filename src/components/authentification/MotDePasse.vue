@@ -1,7 +1,7 @@
 <template>
-  <v-form ref="form" lazy-validation :disabled="isDisableForm">
-    <v-alert outlined class="pa-3 fondBlanc" v-if="linkIsExpired === false">
-      <font-awesome-icon
+  <v-form ref="form" :disabled="isDisableForm">
+    <v-alert variant="outlined" class="pa-3 fondBlanc" v-if="linkIsExpired === false">
+      <FontAwesomeIcon
         :icon="['fas', 'info-circle']"
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
       />
@@ -9,33 +9,31 @@
       chiffre, une lettre majuscule, une lettre minuscule et un des caractères
       spéciaux suivants : @ $ ! % * ? &
     </v-alert>
-    <v-alert outlined class="pa-3" v-if="linkIsExpired === true">
-      <font-awesome-icon
+    <v-alert variant="outlined" class="pa-3" v-if="linkIsExpired === true">
+      <FontAwesomeIcon
         :icon="['fas', 'info-circle']"
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
       />
       Ce lien n'est plus valide (expiration après 24 heures). Pour réinitialiser
-      votre mot de passe : <a @click="allerPasswordReset()">cliquez ici.</a>
+      votre mot de passe : <a @click="allerPasswordReset">cliquez ici.</a>
     </v-alert>
     <v-text-field
       v-if="action === Action.MODIFICATION && linkIsExpired === false"
-      outlined
-      filled
+      variant="outlined"
       label="Ancien mot de passe"
       placeholder="Ancien mot de passe"
       :type="show ? 'text' : 'password'"
-      :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-      v-model="AncienMotDePasse"
+      :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+      v-model="ancienMotDePasseModel"
       :rules="regleFormulaire.motDePasse.concat(regleConfirmationMotDePasse)"
       required
-      @click:append="show = !show"
+      @click:append-inner="show = !show"
       autocomplete="new-password"
-      @keyup.enter="validate()"
-    ></v-text-field>
+      @keyup.enter="validate"
+    />
     <v-text-field
       v-if="linkIsExpired === false"
-      outlined
-      filled
+      variant="outlined"
       :label="
         action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
       "
@@ -43,18 +41,17 @@
         action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
       "
       :type="show ? 'text' : 'password'"
-      :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-      v-model="NouveauMotDePasse"
+      :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+      v-model="nouveauMotDePasseModel"
       :rules="regleFormulaire.motDePasse.concat(regleMotDePasse)"
       required
-      @click:append="show = !show"
+      @click:append-inner="show = !show"
       autocomplete="new-password"
-      @keyup.enter="validate()"
-    ></v-text-field>
+      @keyup.enter="validate"
+    />
     <v-text-field
       v-if="linkIsExpired === false"
-      outlined
-      filled
+      variant="outlined"
       :label="
         action === Action.CREATION
           ? 'Confirmation du mot de passe'
@@ -66,80 +63,88 @@
           : 'Confirmation du nouveau mot de passe'
       "
       :type="show ? 'text' : 'password'"
-      :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+      :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
       v-model="confirmationNouveauMotDePasse"
       :rules="regleFormulaire.motDePasse.concat(regleConfirmationMotDePasse)"
       required
-      @click:append="show = !show"
+      @click:append-inner="show = !show"
       autocomplete="new-password"
-      @keyup.enter="validate()"
-    ></v-text-field>
+      @keyup.enter="validate"
+    />
   </v-form>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import type { VForm } from "vuetify/components";
 
-@Component
-export default class MotDePasse extends Vue {
-  @Prop() action!: Action;
-  Action: any = Action;
-  regleFormulaire: any = rulesForms;
-  @Prop() ancienMotDePasse!: string;
-  @Prop() nouveauMotDePasse!: string;
-  confirmationNouveauMotDePasse: string = "";
-  show: boolean = false;
-  @Prop() isDisableForm!: boolean;
-  @Prop() linkIsExpired: boolean | undefined;
+const props = defineProps<{
+  action: Action;
+  ancienMotDePasse: string;
+  nouveauMotDePasse: string;
+  isDisableForm: boolean;
+  linkIsExpired?: boolean;
+}>();
 
-  get AncienMotDePasse() {
-    return this.ancienMotDePasse;
-  }
-  set AncienMotDePasse(value: string) {
-    this.$emit("update:ancienMotDePasse", value);
-  }
+const emit = defineEmits<{
+  (e: "update:ancienMotDePasse", value: string): void;
+  (e: "update:nouveauMotDePasse", value: string): void;
+}>();
 
-  get NouveauMotDePasse() {
-    return this.nouveauMotDePasse;
-  }
-  set NouveauMotDePasse(value: string) {
-    this.$emit("update:nouveauMotDePasse", value);
-  }
+const router = useRouter();
+const ActionRef = Action;
+const regleFormulaire: any = rulesForms;
 
-  get regleMotDePasse() {
-    return () =>
-      this.confirmationNouveauMotDePasse === "" ||
-      this.nouveauMotDePasse === this.confirmationNouveauMotDePasse ||
-      "La confirmation du mot de passe ne correspond pas au mot de passe saisi";
-  }
+const confirmationNouveauMotDePasse = ref("");
+const show = ref(false);
+const form = ref<VForm | null>(null);
 
-  get regleConfirmationMotDePasse() {
-    return () =>
-      this.nouveauMotDePasse === this.confirmationNouveauMotDePasse ||
-      this.confirmationNouveauMotDePasse === "" ||
-      "La confirmation du mot de passe ne correspond pas au mot de passe saisi";
-  }
+const ancienMotDePasseModel = computed({
+  get: () => props.ancienMotDePasse,
+  set: value => emit("update:ancienMotDePasse", value)
+});
 
-  @Watch("nouveauMotDePasse")
-  motDepasse(): void {
-    if (this.confirmationNouveauMotDePasse != "") {
-      (this.$refs.form as Vue & { validate: () => boolean }).validate();
+const nouveauMotDePasseModel = computed({
+  get: () => props.nouveauMotDePasse,
+  set: value => emit("update:nouveauMotDePasse", value)
+});
+
+const regleMotDePasse = () => () =>
+  confirmationNouveauMotDePasse.value === "" ||
+  nouveauMotDePasseModel.value === confirmationNouveauMotDePasse.value ||
+  "La confirmation du mot de passe ne correspond pas au mot de passe saisi";
+
+const regleConfirmationMotDePasse = () => () =>
+  nouveauMotDePasseModel.value === confirmationNouveauMotDePasse.value ||
+  confirmationNouveauMotDePasse.value === "" ||
+  "La confirmation du mot de passe ne correspond pas au mot de passe saisi";
+
+watch(
+  () => nouveauMotDePasseModel.value,
+  async () => {
+    if (confirmationNouveauMotDePasse.value !== "") {
+      await form.value?.validate();
     }
   }
+);
 
-  validate(): boolean {
-    return (this.$refs.form as Vue & { validate: () => boolean }).validate();
-  }
+const validate = async (): Promise<boolean> => {
+  const validation = await form.value?.validate();
+  return validation?.valid ?? false;
+};
 
-  clear(): void {
-    (this.$refs.form as HTMLFormElement).resetValidation();
-    this.confirmationNouveauMotDePasse = "";
-  }
+const clear = async (): Promise<void> => {
+  await form.value?.resetValidation();
+  confirmationNouveauMotDePasse.value = "";
+};
 
-  allerPasswordReset(): void {
-    this.$router.push({ name: "Login" });
-  }
-}
+const allerPasswordReset = () => {
+  router.push({ name: "Login" });
+};
+
+defineExpose({ validate, clear, Action: ActionRef });
 </script>

@@ -5,13 +5,13 @@
     </h1>
     <MessageBox></MessageBox>
     <ConfirmPopup ref="confirm"></ConfirmPopup>
-    <v-container class="pt-0 elevation-0" :class="[$vuetify.breakpoint.lgAndDown ? 'large-container' : '']">
+    <v-container class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
       <v-card-text class="fondGris pa-0 px-6 pb-6">
         <v-card-title class="px-0 pb-0">Information du compte
-          <v-tooltip top max-width="20vw" open-delay="100">
-            <template v-slot:activator="{ on }">
-              <v-btn icon class="bouton-simple" @click="downloadEtablissement()" v-on="on" :loading="isExportLoading">
-                <font-awesome-icon :icon="['fas', 'download']" class="mx-2 fa-lg" />
+          <v-tooltip location="top" max-width="20vw" open-delay="100">
+            <template v-slot:activator="{ props }">
+              <v-btn icon="icon" class="bouton-simple" @click="downloadEtablissement()" v-bind="props" :loading="isExportLoading">
+                <FontAwesomeIcon :icon="['fas', 'download']" class="mx-2 fa-lg" />
               </v-btn>
             </template>
             <span>Exporter les infos du compte</span>
@@ -22,12 +22,12 @@
         <v-row class="d-flex justify-space-between flex-wrap pt-3">
           <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
             <div style="height: 100%; position:relative;" class="borderCol fondBlanc"
-              :class="[$vuetify.breakpoint.mdAndDown ? 'compact-form' : '']">
+              :class="[display.mdAndDown.value ? 'compact-form' : '']">
               <div class="d-flex">
                 <h2 class="my-3 pl-4 mb-0">Etablissement</h2>
-                <v-tooltip top max-width="20vw" open-delay="100" v-if="!isAdmin">
-                  <template v-slot:activator="{ on }">
-                    <font-awesome-icon v-on="on" :icon="['fas', 'lock']" class="fa-2x mx-2"
+                <v-tooltip location="top" max-width="20vw" open-delay="100" v-if="!isAdmin">
+                  <template v-slot:activator="{ props }">
+                    <FontAwesomeIcon v-bind="props" :icon="['fas', 'lock']" class="fa-2x mx-2"
                       style="margin-top: 10px; position: absolute; right: 0;" />
                   </template>
                   <span>Non modifiable par l'utilisateur</span>
@@ -54,7 +54,7 @@
                 </div>
               </v-card-text>
               <v-alert outlined class="ma-2 pt-1 pb-0" style="position: absolute; bottom: 0; font-size: 14px;">
-                <font-awesome-icon :icon="['fas', 'info-circle']" class="fa-2x mr-5 mb-1 icone-information" />
+                <FontAwesomeIcon :icon="['fas', 'info-circle']" class="fa-2x mr-5 mb-1 icone-information" />
                 <p class="mb-0 pl-12">
                   Pour toute demande de modification des infos de
                   l'établissement, nous contacter via le guichet d'assistance
@@ -124,7 +124,7 @@
           <v-col cols="12" md="6" lg="6" xl="6">
             <div style="height: 100%" class="borderCol fondBlanc">
               <v-card-title class="d-block titre-block" style="margin-bottom:-4px;">
-                <font-awesome-icon :icon="['fas', 'bell']" class="fa-lg mx-2 icone-standard" />
+                <FontAwesomeIcon :icon="['fas', 'bell']" class="fa-lg mx-2 icone-standard" />
                 <span v-if="isAdmin">Dernières actions des utilisateurs</span>
                 <span v-else>Actions à faire</span>
               </v-card-title>
@@ -134,14 +134,14 @@
                     <v-progress-circular indeterminate color="primary"></v-progress-circular>
                   </div>
                   <ul>
-                    <li style="margin-bottom: 1em" v-for="item in this.notificationsAdmin" :key="item.index">
+                    <li style="margin-bottom: 1em" v-for="item in notificationsAdmin" :key="item.index">
                       Siren: {{ item.siren }}<br />Nom établissement:
                       <a @click="allerPageEtablissement(item.siren)">{{
                       item.nomEtab
                       }}</a><br />Evenement: {{ item.typeNotif }}<br />Date:
                       {{ dateFormatted(item.dateEvent) }}
                     </li>
-                    <li style="margin-bottom: 1em" v-for="item in this.notificationsUser" :key="item.index">
+                    <li style="margin-bottom: 1em" v-for="item in notificationsUser" :key="item.index">
                       <span class="notifUserMsg" v-html="item.message"></span>
                       <br />
                       <span class="notifUserDesc" v-html="item.description"></span>
@@ -154,7 +154,7 @@
           <v-col cols="12" md="6" lg="6" xl="6" v-if="isAdmin">
             <div class="borderCol fondBlanc" style="height: 100%; position: relative;">
               <v-card-title class="d-block titre-block" style="margin-bottom:-4px;">
-                <font-awesome-icon :icon="['fas', 'paper-plane']" class="fa-lg mx-2" />
+                <FontAwesomeIcon :icon="['fas', 'paper-plane']" class="fa-lg mx-2" />
                 Envoi aux éditeurs
               </v-card-title>
               <v-card-text class="no-border">
@@ -163,7 +163,7 @@
                     <v-progress-circular indeterminate color="primary"></v-progress-circular>
                   </div>
                   <ul>
-                    <li style="margin-bottom: 0.5em" v-for="item in this.datesEnvoi" :key="item.index">
+                    <li style="margin-bottom: 0.5em" v-for="item in datesEnvoi" :key="item">
                       <span v-html="item"></span>
                     </li>
                   </ul>
@@ -178,228 +178,161 @@
   </v-card>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useDisplay } from "vuetify";
+import moment from "moment/moment";
+
 import MessageBox from "@/components/common/MessageBox.vue";
+import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
 import Etablissement from "@/core/Etablissement";
 import { Action, Message, MessageType } from "@/core/CommonDefinition";
-import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import { Logger } from "@/utils/Logger";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { Notification } from "@/core/Notification";
+import NotificationUser from "@/core/service/NotificationUser";
+
+import { useAuthStore } from "@/stores/authStore";
+import { useEtablissementStore } from "@/stores/etablissementStore";
+import { useMessageStore } from "@/stores/messageStore";
+
+import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
+import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
-import moment from "moment/moment";
-import NotificationUser from "@/core/service/NotificationUser";
-import { editeurService } from "@/core/service/licencesnationales/EditeurService";
+import { Logger } from "@/utils/Logger";
 
-@Component({
-  components: { MessageBox, ConfirmPopup }
-})
-export default class Home extends Vue {
-  etablissement: Etablissement;
-  Action: any = Action;
-  isAdmin: boolean = this.$store.getters.isAdmin();
-  isExportLoading: boolean = false;
-  notificationsAdmin: Array<Notification> = [];
-  notificationsUser: Array<NotificationUser> = [];
-  datesEnvoi: Array<string> = [];
-  buttonLoading: boolean = false;
-  notifsLoading: boolean = true;
-  datesLoading: boolean = true;
+// Composables
+const router = useRouter();
+const display = useDisplay();
+const authStore = useAuthStore();
+const etablissementStore = useEtablissementStore();
+const messageStore = useMessageStore();
 
-  public metaInfo(): any {
-    return {
-      meta: [
-        {
-          name: "description",
-          content:
-            "Tableau de bord utilisateur de l'application des Licences Nationales"
-        },
-        { name: "keywords", content: "tableau de bord licences nationales" }
-      ],
-      title: "Tableau de bord - Licences Nationales"
-    };
-  }
+const etablissement = ref<Etablissement>(etablissementStore.getCurrentEtablissement);
+const isAdmin = computed(() => authStore.isAdmin);
+const isExportLoading = ref(false);
+const notificationsAdmin = ref<Array<Notification>>([]);
+const notificationsUser = ref<Array<NotificationUser>>([]);
+const datesEnvoi = ref<Array<string>>([]);
+const buttonLoading = ref(false);
+const notifsLoading = ref(true);
+const datesLoading = ref(true);
 
-  constructor() {
-    super();
-    moment.locale("fr");
-    this.etablissement = this.getEtablissement;
-    this.$store.dispatch("setCurrentEtablissement", this.etablissement);
-    this.collecterNotifs();
-    this.collecterDates();
-  }
+const metaInfo = () => ({
+  meta: [
+    {
+      name: "description",
+      content:
+        "Tableau de bord utilisateur de l'application des Licences Nationales",
+        
+    },
+    { name: "keywords", content: "tableau de bord licences nationales" }
+  ],
+  title: "Tableau de bord - Licences Nationales"
+});
 
-  mounted() {
-    this.$store.dispatch("closeDisplayedMessage");
-  }
+onMounted(() => {
+  messageStore.closeDisplayedMessage();
+});
 
-  get getEtablissement(): Etablissement {
-    return this.$store.getters.getEtablissementConnecte();
-  }
+const dateFormatted = (d: Date): string => {
+  return moment(d).format("DD/MM/YYYY");
+};
 
-  dateFormatted(d: Date): string {
-    return moment(d).format("DD/MM/YYYY");
-  }
+const allerAMonProfil = (): void => {
+  router.push({ name: "Profil" });
+};
 
-  allerAMonProfil(): void {
-    this.$router.push({ name: "Profil" });
-  }
+const allerAModifierMotDePasse = (): void => {
+  router.push({ name: "Password" }).catch(err => {
+    Logger.error(err);
+  });
+};
 
-  allerAModifierMotDePasse(): void {
-    this.$router.push({ name: "Password" }).catch(err => {
-      Logger.error(err);
+const downloadEtablissement = (): void => {
+  isExportLoading.value = true;
+  messageStore.closeDisplayedMessage();
+  const siren = new Array<string>();
+  siren.push(authStore.user.siren);
+  etablissementService
+    .downloadEtablissements(siren, authStore.user.token)
+    .then(response => {
+      const fileURL = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/csv" })
+      );
+      const fileLink = document.createElement("a");
+
+      fileLink.href = fileURL;
+      fileLink.setAttribute("download", "export.csv");
+      document.body.appendChild(fileLink);
+
+      fileLink.click();
+      isExportLoading.value = false;
+    })
+    .catch(err => {
+      Logger.error(err.toString());
+      const message: Message = new Message();
+      message.type = MessageType.ERREUR;
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
+      message.isSticky = true;
+      messageStore.openDisplayedMessage(message).catch(err => {
+        Logger.error(err.toString());
+      });
+      isExportLoading.value = false;
     });
-  }
+};
 
-  downloadEtablissement(): void {
-    this.isExportLoading = true;
-    this.$store.dispatch("closeDisplayedMessage");
-    const siren = new Array<string>();
-    siren.push(this.$store.state.user.siren);
-    etablissementService
-      .downloadEtablissements(siren, this.$store.state.user.token)
-      .then(response => {
-        const fileURL = window.URL.createObjectURL(
-          new Blob([response.data], { type: "application/csv" })
-        );
-        const fileLink = document.createElement("a");
+const allerPageEtablissement = (siren: string): void => {
+  const etablissementCible = new Etablissement();
+  etablissementCible.siren = siren;
+  etablissementCible.id = 0;
+  allerAAfficherEtab(etablissementCible);
+};
 
-        fileLink.href = fileURL;
-        fileLink.setAttribute("download", "export.csv");
-        document.body.appendChild(fileLink);
-
-        fileLink.click();
-        this.isExportLoading = false;
+const collecterDates = (): void => {
+  if (authStore.isAdmin) {
+    editeurService
+      .getDatesEnvoiEditeurs(authStore.getToken)
+      .then(result => {
+        result.data.forEach(element => {
+          datesEnvoi.value.push(
+            "<strong>Envoyé le " +
+            moment(element).format("DD/MM/YYYY HH:MM") +
+            "</strong> - " +
+            moment(element).fromNow()
+          );
+        });
       })
       .catch(err => {
         Logger.error(err.toString());
         const message: Message = new Message();
         message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
+        message.texte =
+          "Impossible d'exécuter l'action : " + err.response.data.message;
+
         message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+        messageStore.openDisplayedMessage(message).catch(err => {
           Logger.error(err.toString());
         });
-        this.isExportLoading = false;
+      })
+      .finally(() => {
+        datesLoading.value = false;
       });
   }
+};
 
-  allerPageEtablissement(siren: string): void {
-    const etablissementCible = new Etablissement();
-    etablissementCible.siren = siren;
-    etablissementCible.id = 0;
-    this.allerAAfficherEtab(etablissementCible);
-  }
-
-  collecterDates(): void {
-    if (this.$store.getters.isAdmin()) {
-      editeurService
-        .getDatesEnvoiEditeurs(this.$store.getters.getToken())
-        .then(result => {
-          result.data.forEach(element => {
-            this.datesEnvoi.push(
-              "<strong>Envoyé le " +
-              moment(element).format("DD/MM/YYYY HH:MM") +
-              "</strong> - " +
-              moment(element).fromNow()
-            );
-          });
-        })
-        .catch(err => {
-          Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          message.texte =
-            "Impossible d'exécuter l'action : " + err.response.data.message;
-
-          message.isSticky = true;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-        })
-        .finally(() => {
-          this.datesLoading = false;
-        });
-    }
-  }
-
-  collecterNotifs(): void {
-    if (this.$store.getters.isAdmin()) {
-      etablissementService
-        .getNotificationsAdmin(this.$store.getters.getToken())
-        .then(response => {
-          this.notificationsAdmin = response;
-        })
-        .catch(err => {
-          Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          if (err instanceof LicencesNationalesBadRequestApiError) {
-            message.texte = err.message;
-          } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
-            message.texte =
-              "Vous n'êtes pas autorisé à effectuer cette opération";
-            setTimeout(() => {
-              this.$router.push({ name: "Home" });
-            });
-          } else {
-            message.texte = "Impossible d'exécuter l'action : " + err.message;
-          }
-          message.isSticky = true;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-        })
-        .finally(() => {
-          this.notifsLoading = false;
-        });
-    } else {
-      etablissementService
-        .getNotificationsEtab(
-          this.$store.getters.userSiren(),
-          this.$store.getters.getToken()
-        )
-        .then(response => {
-          this.notificationsUser = response;
-        })
-        .catch(err => {
-          Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          if (err instanceof LicencesNationalesBadRequestApiError) {
-            message.texte = err.message;
-          } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
-            message.texte =
-              "Vous n'êtes pas autorisé à effectuer cette opération";
-            setTimeout(() => {
-              this.$router.push({ name: "Home" });
-            });
-          } else {
-            message.texte = "Impossible d'exécuter l'action : " + err.message;
-          }
-          message.isSticky = true;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-        })
-        .finally(() => {
-          this.notifsLoading = false;
-        });
-    }
-  }
-
-  allerAAfficherEtab(item: Etablissement): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$store
-      .dispatch("setCurrentEtablissement", item)
-      .then(() => {
-        this.$router.push({ name: "AfficherEtablissement" });
+const collecterNotifs = (): void => {
+  if (authStore.isAdmin) {
+    etablissementService
+      .getNotificationsAdmin(authStore.getToken)
+      .then(response => {
+        notificationsAdmin.value = response;
       })
       .catch(err => {
         Logger.error(err.toString());
@@ -407,71 +340,138 @@ export default class Home extends Vue {
         message.type = MessageType.ERREUR;
         if (err instanceof LicencesNationalesBadRequestApiError) {
           message.texte = err.message;
+        } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
+          message.texte =
+            "Vous n'êtes pas autorisé à effectuer cette opération";
+          setTimeout(() => {
+            router.push({ name: "Home" });
+          });
         } else {
           message.texte = "Impossible d'exécuter l'action : " + err.message;
         }
         message.isSticky = true;
-
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
+        messageStore.openDisplayedMessage(message).catch(err => {
           Logger.error(err.toString());
         });
-        // On glisse sur le message d'erreur
+      })
+      .finally(() => {
+        notifsLoading.value = false;
+      });
+  } else {
+    etablissementService
+      .getNotificationsEtab(
+        authStore.userSiren,
+        authStore.getToken
+      )
+      .then(response => {
+        notificationsUser.value = response;
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
+          message.texte =
+            "Vous n'êtes pas autorisé à effectuer cette opération";
+          setTimeout(() => {
+            router.push({ name: "Home" });
+          });
+        } else {
+          message.texte = "Impossible d'exécuter l'action : " + err.message;
+        }
+        message.isSticky = true;
+        messageStore.openDisplayedMessage(message).catch(err => {
+          Logger.error(err.toString());
+        });
+      })
+      .finally(() => {
+        notifsLoading.value = false;
+      });
+  }
+};
+
+const allerAAfficherEtab = (item: Etablissement): void => {
+  messageStore.closeDisplayedMessage();
+  etablissementStore
+    .setCurrentEtablissement(item)
+    .then(() => {
+      router.push({ name: "AfficherEtablissement" });
+    })
+    .catch(err => {
+      Logger.error(err.toString());
+      const message: Message = new Message();
+      message.type = MessageType.ERREUR;
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
+      message.isSticky = true;
+
+      messageStore.openDisplayedMessage(message).catch(err => {
+        Logger.error(err.toString());
+      });
+      // On glisse sur le message d'erreur
+      const messageBox = document.getElementById("messageBox");
+      if (messageBox) {
+        window.scrollTo(0, messageBox.offsetTop);
+      }
+    });
+};
+
+const envoiEditeurs = async () => {
+  const confirmed = await (messageStore as any).$refs.confirm.open(
+    `Vous êtes sur le point de lancer le traitement d'envoi aux éditeurs.
+
+                Etes-vous sûr de vouloir continuer ?`
+  );
+  if (confirmed) {
+    buttonLoading.value = true;
+    editeurService
+      .envoiEditeurs(authStore.getToken)
+      .then(response => {
+        const message: Message = new Message();
+        message.type = MessageType.VALIDATION;
+        message.texte = response.data.message;
+
+        message.isSticky = true;
+        messageStore.openDisplayedMessage(message).catch(err => {
+          Logger.error(err.toString());
+        });
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
         }
+      })
+      .catch(err => {
+        Logger.error(err.toString());
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        if (err instanceof LicencesNationalesBadRequestApiError) {
+          message.texte = err.message;
+        } else {
+          message.texte =
+            "Impossible d'exécuter l'action : " + err.response.data.message;
+        }
+        message.isSticky = true;
+        messageStore.openDisplayedMessage(message).catch(err => {
+          Logger.error(err.toString());
+        });
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      })
+      .finally(() => {
+        buttonLoading.value = false;
       });
   }
+};
 
-  async envoiEditeurs() {
-    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
-      `Vous êtes sur le point de lancer le traitement d'envoi aux éditeurs.
-
-                Etes-vous sûr de vouloir continuer ?`
-    );
-    if (confirmed) {
-      this.buttonLoading = true;
-      editeurService
-        .envoiEditeurs(this.$store.getters.getToken())
-        .then(response => {
-          const message: Message = new Message();
-          message.type = MessageType.VALIDATION;
-          message.texte = response.data.message;
-
-          message.isSticky = true;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          const messageBox = document.getElementById("messageBox");
-          if (messageBox) {
-            window.scrollTo(0, messageBox.offsetTop);
-          }
-        })
-        .catch(err => {
-          Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          if (err instanceof LicencesNationalesBadRequestApiError) {
-            message.texte = err.message;
-          } else {
-            message.texte =
-              "Impossible d'exécuter l'action : " + err.response.data.message;
-          }
-          message.isSticky = true;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          const messageBox = document.getElementById("messageBox");
-          if (messageBox) {
-            window.scrollTo(0, messageBox.offsetTop);
-          }
-        })
-        .finally(() => {
-          this.buttonLoading = false;
-        });
-    }
-  }
-}
+collecterNotifs();
+collecterDates();
 </script>
 <style scoped lang="scss">
 .container {

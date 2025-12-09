@@ -7,7 +7,7 @@ import { LicencesNationalesInternalErrorApiError } from "@/core/service/licences
 
 export class LicencesNationalesApiService {
   // Client HTTP
-  client: AxiosClient = new AxiosClient(process.env.VUE_APP_ROOT_API);
+  client: AxiosClient = new AxiosClient(import.meta.env.VITE_APP_ROOT_API);
 
   buildException(err: any): LicencesNationalesApiError {
     if (err.response) {

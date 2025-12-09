@@ -15,15 +15,15 @@
     "core-js": "^3.6.5",
     "moment": "^2.29.1",
     "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
     "vite": "^7.2.4",
     "vue": "^3.5.25",
     "vue-meta": "^2.4.0",
     "vue-recaptcha-v3": "^2.0.1",
-    "vue-router": "^3.2.0",
+    "vue-router": "^4.6.3",
     "vuetify": "^3.10.11"
   },
   "devDependencies": {
-    "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.2",
     "sass": "^1.32.0",
     "typescript": "^5.9.3"

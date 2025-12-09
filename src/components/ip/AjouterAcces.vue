@@ -14,7 +14,7 @@
           <v-row>
             <v-col>
               <a @click="$router.push({ path: '/listeAcces' })">
-                <font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à la
+                <FontAwesomeIcon :icon="['fas', 'reply']" />&nbsp;Revenir à la
                 liste complète des IP
               </a>
             </v-col>
@@ -28,7 +28,7 @@
             </v-col>
             <v-col cols="12" md="4" class="pa-3">
               <v-card-text class="fondGris">
-                <font-awesome-icon
+                <FontAwesomeIcon
                   :icon="['fas', 'info-circle']"
                   size="2x"
                   style="color: #478dcb;"
@@ -114,7 +114,7 @@
                             title="Supprimer"
                             @click="supprimerIP(item.id, index)"
                           >
-                            <font-awesome-icon
+                            <FontAwesomeIcon
                               :icon="['fas', 'times']"
                               class="fa-orange"
                             />
@@ -142,6 +142,7 @@ import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { Logger } from "@/utils/Logger";
 import MessageBox from "@/components/common/MessageBox.vue";
 import { Message, MessageType } from "@/core/CommonDefinition";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 @Component({
   components: { ModuleSegmentsIpPlage, ConfirmPopup, MessageBox }

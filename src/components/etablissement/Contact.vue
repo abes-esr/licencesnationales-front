@@ -102,7 +102,7 @@
               class="pa-3 fondBlanc"
               v-if="action === Action.CREATION"
             >
-              <font-awesome-icon
+              <FontAwesomeIcon
                 :icon="['fas', 'info-circle']"
                 class="fa-2x mr-5 mb-1 mt-2 icone-information"
               />
@@ -183,93 +183,98 @@
   </v-form>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script lang="ts" setup>
+import { ref, computed, watch, onMounted } from "vue";
 import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
 import ContactEtablissement from "@/core/ContactEtablissement";
 import MotDePasse from "@/components/authentification/MotDePasse.vue";
+import { useRouter } from "vue-router";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-@Component({
-  components: { MotDePasse }
-})
-export default class Contact extends Vue {
-  @Prop() contact!: ContactEtablissement;
-  @Prop() action!: Action;
-  @Prop() isDisableForm!: boolean;
-  Action: any = Action;
-  rulesForms: any = rulesForms;
-  emailConfirmation: string = "";
-  ancienMail: string = "";
+// ---------- Props ----------
+interface Props {
+  contact: ContactEtablissement;
+  action: Action;
+  isDisableForm: boolean;
+}
 
-  constructor() {
-    super();
-    this.ancienMail = this.contact.mail;
-  }
+const props = defineProps<Props>();
+const router = useRouter();
 
-  get rulesMailConfirmation() {
-    return () =>
-      this.emailConfirmation === this.contact.mail ||
-      this.emailConfirmation === "" ||
-      "Le mail de confirmation n'est pas valide";
-  }
+// ---------- Refs ----------
+const emailConfirmation = ref("");
+const ancienMail = ref("");
 
-  gotoDonneesPersonnellesInNewPage(): void {
-    const route = this.$router.resolve({ path: "/donneespersonnelles" });
-    window.open(route.href);
-  }
+// Refs des formulaires (équivalent this.$refs)
+const formRef = ref();
+const mailRef = ref();
+const motdepasseRef = ref();
 
-  checkConfirmationMail(): void {
-    if (this.emailConfirmation != "") {
-      (this.$refs.mail as Vue & { validate: () => boolean }).validate();
-    }
-  }
+// ---------- Mounted ----------
+onMounted(() => {
+  ancienMail.value = props.contact.mail;
+});
 
-  validate(): boolean {
-    const isFormValide = (this.$refs.form as Vue & {
-      validate: () => boolean;
-    }).validate();
+// ---------- Computed ----------
+const rulesMailConfirmation = computed(() => {
+  return () =>
+    emailConfirmation.value === props.contact.mail ||
+    emailConfirmation.value === "" ||
+    "Le mail de confirmation n'est pas valide";
+});
 
-    let isMotDePasseValide = true;
-    if (this.$refs.motdepasse) {
-      isMotDePasseValide = (this.$refs.motdepasse as Vue & {
-        validate: () => boolean;
-      }).validate();
-    }
+// ---------- Methods ----------
+function gotoDonneesPersonnellesInNewPage() {
+  const route = router.resolve({ path: "/donneespersonnelles" });
+  window.open(route.href);
+}
 
-    let isMailValide = true;
-    if (
-      this.action == Action.CREATION ||
-      this.ancienMail != this.contact.mail
-    ) {
-      isMailValide = (this.$refs.mail as Vue & {
-        validate: () => boolean;
-      }).validate();
-    }
-
-    return isFormValide && isMotDePasseValide && isMailValide;
-  }
-
-  clear(): void {
-    if (this.$refs.motdepasse) {
-      (this.$refs.motdepasse as MotDePasse).clear();
-    }
-    (this.$refs.form as HTMLFormElement).resetValidation();
-    (this.$refs.mail as HTMLFormElement).resetValidation();
-    this.contact.reset();
-  }
-
-  updateMotDePasse(value: string) {
-    this.contact.motDePasse = value;
-  }
-
-  pastePhone(evt) {
-    this.contact.telephone = evt.clipboardData
-      .getData("text")
-      .replaceAll(" ", "")
-      .replaceAll(".", "");
+function checkConfirmationMail() {
+  if (emailConfirmation.value !== "") {
+    mailRef.value?.validate();
   }
 }
+
+function validate(): boolean {
+  const isFormValide = formRef.value?.validate() ?? true;
+
+  let isMotDePasseValide = true;
+  if (motdepasseRef.value) {
+    isMotDePasseValide = motdepasseRef.value.validate();
+  }
+
+  let isMailValide = true;
+  if (props.action === Action.CREATION || ancienMail.value !== props.contact.mail) {
+    isMailValide = mailRef.value?.validate() ?? true;
+  }
+
+  return isFormValide && isMotDePasseValide && isMailValide;
+}
+
+function clear() {
+  motdepasseRef.value?.clear();
+  formRef.value?.resetValidation();
+  mailRef.value?.resetValidation();
+  props.contact.reset();
+}
+
+function updateMotDePasse(value: string) {
+  props.contact.motDePasse = value;
+}
+
+function pastePhone(evt: ClipboardEvent) {
+  props.contact.telephone = evt.clipboardData
+    ?.getData("text")
+    .replaceAll(" ", "")
+    .replaceAll(".", "") ?? "";
+}
+
+// ---------- Expose to Parent ----------
+defineExpose({
+  validate,
+  clear,
+});
 </script>
 
 <style scoped>

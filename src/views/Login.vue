@@ -19,10 +19,10 @@
             </span>
             <v-btn class="btn-2" href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
               target="_blank">Vérifier l'éligibilité
-              <font-awesome-icon :icon="['fas', 'question-circle']" class="mx-2" style="font-size: 1.1rem" />
+              <FontAwesomeIcon :icon="faQuestionCircle" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
             <v-btn class="btn-2" @click="creerCompte">Créer un compte
-              <font-awesome-icon :icon="['fas', 'plus-circle']" class="mx-2" style="font-size: 1.1rem" />
+              <FontAwesomeIcon :icon="faPlusCircle" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
           </div>
         </v-col>
@@ -30,46 +30,59 @@
     </v-container>
   </div>
 </template>
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import FormLogin from "../components/authentification/login/FormLogin.vue";
-import { Logger } from "@/utils/Logger";
+<script setup lang="ts">
+import { ref } from "vue";
+ import { Logger } from "@/utils/Logger";
 import Etablissement from "@/core/Etablissement";
+import FormLogin from "@/components/authentification/login/FormLogin.vue";
+import { useAuthStore } from "@/stores/authStore";
+import { useMessageStore } from "@/stores/messageStore";
+import { useEtablissementStore } from "@/stores/etablissementStore";
+import { useRouter } from "vue-router";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faPlusCircle, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 
-@Component({
-  components: { FormLogin }
-})
-export default class App extends Vue {
-  public metaInfo(): any {
-    return {
-      meta: [
-        {
-          name: "description",
-          content: "Page de connexion de l'application des Licences Nationales"
-        }
-      ],
-      title: "Connexion - Licences Nationales"
-    };
+// Store & Router
+const authStore = useAuthStore();
+const etablissementStore = useEtablissementStore();
+const messageStore = useMessageStore();
+const router = useRouter();
+
+// États locaux
+const forgotPasswordVisible = ref(false);
+
+// Méta (si tu utilises vue-meta ou vite-plugin-vue-meta)
+const metaInfo = {
+  title: "Connexion - Licences Nationales",
+  meta: [
+    {
+      name: "description",
+      content: "Page de connexion de l'application des Licences Nationales"
+    }
+  ]
+};
+
+// Fonctions
+async function creerCompte() {
+  try {
+    await etablissementStore.setCurrentEtablissement(new Etablissement());
+    router.push({ name: "CreationEtablissement" });
+  } catch (err) {
+    Logger.error(err);
   }
+}
 
-  forgotPasswordVisible: boolean = false;
-  creerCompte(): void {
-    this.$store
-      .dispatch("setCurrentEtablissement", new Etablissement())
-      .then(() => {
-        this.$router.push({ name: "CreationEtablissement" });
-      })
-      .catch(err => {
-        Logger.error(err);
-      });
-  }
-
-  afficherMotDePasseOublie(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$router.push({ name: "ForgotPassword" });
+async function afficherMotDePasseOublie() {
+  try {
+    await messageStore.closeDisplayedMessage();
+    router.push({ name: "ForgotPassword" });
+  } catch (err) {
+    Logger.error(err);
   }
 }
 </script>
+
+
 <style scoped lang="scss">
 h4 {
   display: inline;

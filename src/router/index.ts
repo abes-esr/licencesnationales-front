@@ -1,35 +1,25 @@
-import Vue from "vue";
-import store from "../store/index";
-import VueRouter, { RouteConfig } from "vue-router";
-import Login from "../views/Login.vue";
-import { Action, Message, MessageType } from "@/core/CommonDefinition";
+import { useAuthStore } from "@/stores/authStore";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import { Logger } from "@/utils/Logger";
+import { Message, MessageType } from "@/core/CommonDefinition";
 
-Vue.use(VueRouter);
+import Login from "../views/Login.vue";
+import { createRouter, createWebHistory } from "vue-router";
 
-const routes: Array<RouteConfig> = [
+const routes = [
   {
     path: "/",
     name: "Home",
     component: () => import("../views/TableauDeBord.vue"),
-    meta: {
-      requiresAuth: true
-    }
+    meta: { requiresAuth: true }
   },
-  //Authentication
-  {
-    path: "/login",
-    name: "Login",
-    component: Login
-  },
+
+  // Authentication
+  { path: "/login", name: "Login", component: () => import("../views/Login.vue") },
   {
     path: "/password",
     name: "Password",
     component: () => import("../views/Password.vue"),
-    meta: {
-      requiresAuth: true
-    }
+    meta: { requiresAuth: true }
   },
   {
     path: "/motdepasseoublie",
@@ -40,150 +30,115 @@ const routes: Array<RouteConfig> = [
     path: "/reinitialisationPass",
     name: "ReinitialisationPass",
     component: () =>
-      import(
-        "../components/authentification/login/FormReinitialisationPass.vue"
-      )
+      import("../components/authentification/login/FormReinitialisationPass.vue")
   },
-  //Etablissement
+
+  // Etablissement
   {
     path: "/creationEtablissement",
     name: "CreationEtablissement",
     component: () =>
       import("../components/etablissement/FormEtablissement.vue"),
-    props: { action: Action.CREATION }
+    props: { action: "CREATION" }
   },
   {
     path: "/profil",
     name: "Profil",
     component: () =>
       import("../components/etablissement/FormEtablissement.vue"),
-    props: {
-      action: Action.MODIFICATION
-    },
-    meta: {
-      requiresAuth: true
-    }
+    props: { action: "MODIFICATION" },
+    meta: { requiresAuth: true }
   },
   {
     path: "/afficherEtablissement",
     name: "AfficherEtablissement",
-    component: () => import("../components/etablissement/CardEtablissement.vue")
+    component: () =>
+      import("../components/etablissement/CardEtablissement.vue")
   },
   {
     path: "/ModifierEtablissement",
     name: "ModifierEtablissement",
     component: () =>
       import("../components/etablissement/FormEtablissement.vue"),
-    props: {
-      action: Action.MODIFICATION
-    },
-    meta: {
-      requiresAuth: true
-    }
+    props: { action: "MODIFICATION" },
+    meta: { requiresAuth: true }
   },
   {
     path: "/listeEtab",
     name: "ListeEtab",
     component: () => import("../components/etablissement/ListeEtab.vue")
   },
+
   {
     path: "/fusionEtablissement",
-    name: "fusionEtablissement",
+    name: "FusionEtablissement",
     component: () =>
       import("../components/etablissement/FormFusionEtablissement.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/scissionEtablissement",
-    name: "scissionEtablissement",
+    name: "ScissionEtablissement",
     component: () =>
       import("../components/etablissement/FormScissionEtablissement.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    meta: { requiresAuth: true, isAdmin: true }
   },
+
   {
     path: "/listeAcces",
     name: "ListeIP",
     component: () => import("../components/ip/ListeAcces.vue"),
-    meta: {
-      requiresAuth: true
-    }
+    meta: { requiresAuth: true }
   },
-  //TODO faire un composant générique pour la route /ajouterAccess
   {
     path: "/ajouterAcces",
     name: "ajouterAcces",
     component: () => import("../components/ip/AjouterAcces.vue"),
-    meta: {
-      requiresAuth: true
-    }
+    meta: { requiresAuth: true }
   },
+
+  // Editeurs
   {
     path: "/listeEditeurs",
     name: "ListeEditeurs",
     component: () => import("../components/editeur/ListeEditeurs.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/nouvelEditeur",
     name: "NouvelEditeur",
     component: () => import("../components/editeur/FormEditeur.vue"),
-    props: { action: Action.CREATION },
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    props: { action: "CREATION" },
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/modifierEditeur",
     name: "ModifierEditeur",
     component: () => import("../components/editeur/FormEditeur.vue"),
-    props: { action: Action.MODIFICATION },
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    props: { action: "MODIFICATION" },
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/recherche",
     name: "Recherche",
     component: () => import("../components/common/Recherche.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/historique",
     name: "Historique",
     component: () => import("../components/etablissement/Historique.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/stats",
     name: "Statistiques",
     component: () => import("../components/etablissement/Statistiques.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    meta: { requiresAuth: true, isAdmin: true }
   },
-  {
-    path: "/CGU",
-    name: "CGU",
-    component: () => import("../views/footer-static/CGU.vue")
-  },
+
+  // Static pages
+  { path: "/CGU", name: "CGU", component: () => import("../views/footer-static/CGU.vue") },
   {
     path: "/donneespersonnelles",
     name: "DonneesPersonnelles",
@@ -199,83 +154,71 @@ const routes: Array<RouteConfig> = [
     name: "Accessibilite",
     component: () => import("../views/footer-static/Accessibilite.vue")
   },
-  {
-    path: "*",
-    /* component: NotFoundComponent, */
-    redirect: "/"
-  }
+
+  // Fallback
+  { path: "/:pathMatch(.*)*", redirect: "/" }
 ];
 
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(),
   routes
 });
 
 const DEFAULT_TITLE = "Licences Nationales";
-router.afterEach(to => {
-  Vue.nextTick(() => {
-    document.title = to.meta.title || DEFAULT_TITLE;
-  });
+
+// ---- After Navigation ----
+router.afterEach((to) => {
+  document.title = (to.meta.title as string) || DEFAULT_TITLE;
 });
 
-router.beforeEach((to, from, next) => {
-  if (
-    to.matched.some(record => record.meta.requiresAuth) &&
-    !store.getters.isLoggedIn()
-  ) {
-    next({
-      path: "/login"
-    });
-  } else if (
-    to.matched.some(record => record.name === "Login") &&
-    store.getters.isLoggedIn()
-  ) {
-    next({
-      path: "/home"
-    });
-  } else if (
-    to.matched.some(record => record.name === "ReinitialisationPass") &&
-    store.getters.isLoggedIn()
-  ) {
-    next({
-      path: "/home"
-    });
-  } else if (to.matched.some(record => record.meta.requiresAuth)) {
-    authService
-      .verifierValiditeToken(store.getters.getToken())
-      .then(response => {
-        if (!response) {
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          message.texte = "Votre session a expiré";
-          message.isSticky = true;
-          store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          store.dispatch("logout").catch(err => {
-            Logger.error(err.toString());
-          });
-        } else {
-          next();
-        }
-      })
-      .catch(err => {
-        // On déconnecte l'utilisateur au cas où...;
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err.message + ". Vous avez été déconnecté";
-        message.isSticky = true;
-        store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-        store.dispatch("logout").catch(err => {
-          Logger.error(err.toString());
-        });
-      });
-  } else {
-    next();
+// ---- Guards ----
+router.beforeEach(async (to, from, next) => {
+  const auth = useAuthStore();
+
+  if (to.meta.requiresAuth && !auth.isLoggedIn) {
+    return next("/login");
   }
+
+  if (to.name === "Login" && auth.isLoggedIn) {
+    return next("/");
+  }
+
+  if (to.name === "ReinitialisationPass" && auth.isLoggedIn) {
+    return next("/");
+  }
+
+  if (to.meta.requiresAuth) {
+    try {
+      const isValid = await authService.verifierValiditeToken(auth.getToken);
+
+      if (!isValid) {
+        const message = new Message();
+        message.type = MessageType.ERREUR;
+        message.texte = "Votre session a expiré";
+        message.isSticky = true;
+
+        auth.openDisplayedMessage(message);
+        auth.logout();
+
+        return;
+      }
+
+      return next();
+
+    } catch (err: any) {
+      const message = new Message();
+      message.type = MessageType.ERREUR;
+      message.texte = err.message + ". Vous avez été déconnecté";
+      message.isSticky = true;
+
+      auth.openDisplayedMessage(message);
+      auth.logout();
+
+      return;
+    }
+  }
+
+  return next();
 });
 
 export default router;

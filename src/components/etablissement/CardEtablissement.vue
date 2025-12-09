@@ -21,7 +21,7 @@
                 v-on="on"
                 :loading="isExportLoading"
               >
-                <font-awesome-icon
+                <FontAwesomeIcon
                   :icon="['fas', 'download']"
                   class="mx-2 fa-lg"
                 />
@@ -93,7 +93,7 @@
               <h2 class="mb-3">Etablissement</h2>
               <v-tooltip top max-width="20vw" open-delay="100" v-if="!isAdmin">
                 <template v-slot:activator="{ on }">
-                  <font-awesome-icon
+                  <FontAwesomeIcon
                     v-on="on"
                     :icon="['fas', 'lock']"
                     class="fa-2x mx-2"
@@ -259,6 +259,7 @@ import { etablissementService } from "@/core/service/licencesnationales/Etabliss
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 @Component({
   components: { ConfirmPopup, MessageBox }

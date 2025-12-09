@@ -5,7 +5,7 @@ import { DataGouvApiError } from "@/core/service/data.gouv/exception/DataGouvApi
 
 export class DataGouvApiService {
   // Client HTTP
-  client: AxiosClient = new AxiosClient(process.env.VUE_APP_ROOT_API);
+  client: AxiosClient = new AxiosClient(import.meta.env.VITE_APP_ROOT_API);
 
   /**
    * Appel API pour se logger et obtenir un getToken d'identification

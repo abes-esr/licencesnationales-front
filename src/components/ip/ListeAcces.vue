@@ -12,14 +12,14 @@
               <v-row>
                 <v-col cols="4" sm="4">
                   <a v-if="isAdmin" @click="revenirInfosEtab()">
-                    <font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir
+                    <FontAwesomeIcon :icon="['fas', 'reply']" />&nbsp;Revenir
                     aux informations de l'établissement
                   </a>
                 </v-col>
                 <v-col cols="8">
                   <v-btn id="addIpButton" @click="$router.push({ path: '/ajouterAcces/' })"><span class="btnText">Ajouter
                       une IP ou une plage IP</span>
-                    <font-awesome-icon :icon="['fas', 'plus-circle']" style="font-size:1.1rem" />
+                    <FontAwesomeIcon :icon="['fas', 'plus-circle']" style="font-size:1.1rem" />
                   </v-btn>
                 </v-col>
               </v-row>
@@ -88,7 +88,7 @@
                                     <v-btn text @click="downloadIPs()" class="bouton-simple pl-0" v-on="on"
                                       :loading="isExportLoading">
                                       <h2>Télécharger la liste des IP</h2>
-                                      <font-awesome-icon :icon="['fas', 'download']" class="mx-2" size="2x" />
+                                      <FontAwesomeIcon :icon="['fas', 'download']" class="mx-2" size="2x" />
                                     </v-btn>
                                   </template>
                                   <span>Le téléchargement correspond à la vue
@@ -120,7 +120,7 @@
                             <v-tooltip bottom>
                               <template v-slot:activator="{ on, attrs }">
                                 <span v-bind="attrs" v-on="on">
-                                  <font-awesome-icon :icon="['fas', 'info-circle']" />
+                                  <FontAwesomeIcon :icon="['fas', 'info-circle']" />
                                 </span>
                               </template>
                               <span v-if="item.statut.includes('Validé')">{{
@@ -137,11 +137,11 @@
                               $store.getters.getCurrentEtablissement()
                                 .statut == 'Validé'
                               " class="ma-0 pa-0 bouton-simple " icon title="Examiner" @click.stop="openDialog(item)">
-                              <font-awesome-icon :icon="['fas', 'search']" />
+                              <FontAwesomeIcon :icon="['fas', 'search']" />
                             </v-btn>
                             <v-btn v-if="!isAdmin" class="ma-0 pa-0 bouton-simple " icon :loading="buttlonLoading"
                               title="Supprimer" @click="supprimerIP(item.id, item.ip)">
-                              <font-awesome-icon :icon="['fas', 'times']" class="fa-orange" />
+                              <FontAwesomeIcon :icon="['fas', 'times']" class="fa-orange" />
                             </v-btn>
                           </template>
                         </v-data-table>
@@ -155,7 +155,7 @@
                           </v-btn>
                           <v-btn @click="dispatchAllAction" :loading="buttlonLoading"><span class="btnText">Enregistrer
                               mes actions</span>
-                            <font-awesome-icon :icon="['fas', 'arrow-circle-right']" />
+                            <FontAwesomeIcon :icon="faArrowCircleRight" />
                           </v-btn>
                         </div>
                       </v-col>
@@ -193,11 +193,11 @@
                 <span v-if="checkIfWhoIsRenater(whoIs)">L'adresse <span v-if="whoIs2 !== ''">de début </span>fait
                   partie du réseau RENATER
                   <span style="padding: 5px;" />
-                  <font-awesome-icon :icon="['fas', 'check']" />
+                  <FontAwesomeIcon :icon="['fas', 'check']" />
                 </span>
                 <span v-else>L'adresse <span v-if="whoIs2 !== ''">de début </span> ne fait
                   pas partie du réseau RENATER<span style="padding: 5px;" />
-                  <font-awesome-icon :icon="['fas', 'times']" />
+                  <FontAwesomeIcon :icon="['fas', 'times']" />
                 </span>
                 Afficher/Cacher WhoIS
               </v-expansion-panel-header>
@@ -209,10 +209,10 @@
               <v-expansion-panel-header>
                 <span v-if="checkIfWhoIsRenater(whoIs2)">L'adresse de fin fait partie du réseau RENATER
                   <span style="padding: 5px;" />
-                  <font-awesome-icon :icon="['fas', 'check']" />
+                  <FontAwesomeIcon :icon="['fas', 'check']" />
                 </span>
                 <span v-else>L'adresse de fin ne fait pas partie du réseau RENATER<span style="padding: 5px;" />
-                  <font-awesome-icon :icon="['fas', 'times']" />
+                  <FontAwesomeIcon :icon="['fas', 'times']" />
                 </span>
                 Afficher/Cacher WhoIS
               </v-expansion-panel-header>
@@ -265,6 +265,8 @@ import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnat
 import { AxiosResponse } from "axios";
 import { rulesForms } from "@/core/RulesForm";
 import InfosIPs from "@/components/ip/InfosIPs.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faArrowCircleRight } from "@fortawesome/free-solid-svg-icons";
 
 const ListeAccesProps = Vue.extend({
   props: {

@@ -60,11 +60,9 @@
                           {{ iconEtab }}
                         </v-icon>
                       </v-list-item-action>
-                      <v-list-item-content>
                         <v-list-item-title>
                           Tout sélectionner
                         </v-list-item-title>
-                      </v-list-item-content>
                     </v-list-item>
                     <v-divider class="mt-2"></v-divider>
                   </template>
@@ -112,7 +110,7 @@
 
           <v-card-actions class="v-card__actions">
             <v-btn class="ma-2 btn-2" @click="addContact()">
-              <font-awesome-icon :icon="['fas', 'plus']" class="mx-2" />
+              <FontAwesomeIcon :icon="['fas', 'plus']" class="mx-2" />
               Ajouter un contact
             </v-btn>
           </v-card-actions>
@@ -167,6 +165,7 @@ import MessageBox from "@/components/common/MessageBox.vue";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 import { rulesForms } from "@/core/RulesForm";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 @Component({
   components: { MessageBox, Contact }

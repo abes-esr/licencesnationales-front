@@ -1,9 +1,14 @@
+<script setup lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+</script>
+
 <template>
   <v-card>
     <v-card-text class="fondGris pa-0">
       <v-row>
         <v-col cols="1">
-          <font-awesome-icon
+          <FontAwesomeIcon
             class="ma-4"
             :icon="['fas', 'info-circle']"
             size="3x"
@@ -11,7 +16,6 @@
         /></v-col>
         <v-col cols="6">
           <v-list-item>
-            <v-list-item-content>
               <v-list-item-title class="pb-2"
                 ><span class="dot"></span>
                 <a
@@ -28,11 +32,9 @@
                   >Les différents statuts des IP</a
                 ></v-list-item-title
               >
-            </v-list-item-content>
           </v-list-item> </v-col
         ><v-col cols="5">
           <v-list-item>
-            <v-list-item-content>
               <v-list-item-title class="pb-2"
                 ><span class="dot"></span>
                 <a
@@ -49,7 +51,6 @@
                   >Télécharger un modèle d'attestation</a
                 ></v-list-item-title
               >
-            </v-list-item-content>
           </v-list-item>
         </v-col>
       </v-row>
@@ -57,10 +58,6 @@
   </v-card>
 </template>
 
-<script>
-import { Component, Vue } from "vue-property-decorator";
-@Component
-export default class InfosIPs extends Vue {}
-</script>
+
 
 <style scoped></style>

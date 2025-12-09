@@ -213,7 +213,7 @@
               <v-row>
                 <a @click="clear(false)"
                   >Vider les champs
-                  <font-awesome-icon :icon="['fas', 'backspace']"/></a></v-row
+                  <FontAwesomeIcon :icon="['fas', 'backspace']"/></a></v-row
             ></v-col>
           </v-row>
 
@@ -262,6 +262,7 @@ import { SegmentPlage } from "@/core/CommonDefinition";
 import { iPService } from "@/core/service/licencesnationales/IPService";
 import { rulesForms } from "@/core/RulesForm";
 import { Logger } from "@/utils/Logger";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 @Component
 export default class ModuleSegmentsIpPlage extends Vue {

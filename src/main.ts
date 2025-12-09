@@ -17,16 +17,20 @@ import router from '@/router'
 import vuetify from './plugins/vuetify'
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import piniaPersist from 'pinia-plugin-persistedstate'
+
 // Handle all Vue errors
 /*Vue.config.errorHandler = error =>
   Logger.error(error.message, error.constructor.name);*/
 
+declare module "*.vue";
 
 // Création de l'app
 const app = createApp(App)
-
+const pinia = createPinia()
+pinia.use(piniaPersist)
 // Création du store
-app.use(createPinia())
+app.use(pinia)
 
 // Router & plugins
 app.use(router)
@@ -34,19 +38,19 @@ app.use(vuetify)
 
 // Vue.config.productionTip = false;
 
-// if (process.env.VUE_APP_RECAPTCHA_KEY_SITE == "") {
+// if (import.meta.env.VITE_APP_RECAPTCHA_KEY_SITE == "") {
 //   Logger.error("La clé ReCaptcha est vide");
 // }
 
 // Vue.use(VueReCaptcha, {
-//   siteKey: process.env.VUE_APP_RECAPTCHA_KEY_SITE,
+//   siteKey: import.meta.env.VITE_APP_RECAPTCHA_KEY_SITE,
 //   loaderOptions: {
 //     autoHideBadge: true
 //   }
 // }).use(VueMeta);
 
 // library.add(fas); // Import de toutes les icones
-// Vue.component("font-awesome-icon", FontAwesomeIcon);
+// Vue.component("FontAwesomeIcon", FontAwesomeIcon);
 
 // new Vue({
 //   router,

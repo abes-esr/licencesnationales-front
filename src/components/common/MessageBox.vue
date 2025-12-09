@@ -6,22 +6,22 @@
     :class="getSnackbarMultiline ? 'multi-line elevation-0' : 'elevation-0'"
     id="messageBox"
   >
-    <font-awesome-icon
+    <FontAwesomeIcon
       v-if="getSnackbarType == MessageType.ERREUR"
       :icon="['fas', 'ban']"
       class="fa-lg mr-5 mb-1 mt-2 icone-erreur"
     />
-    <font-awesome-icon
+    <FontAwesomeIcon
       v-if="getSnackbarType == MessageType.VALIDATION"
       :icon="['fas', 'check-circle']"
       class="fa-lg mr-5 mb-1 mt-2 icone-validation"
     />
-    <font-awesome-icon
+    <FontAwesomeIcon
       v-if="getSnackbarType == MessageType.AVERTISSEMENT"
       :icon="['fas', 'ban']"
       class="fa-lg mr-5 mb-1 mt-2 icone-avertissement"
     />
-    <font-awesome-icon
+    <FontAwesomeIcon
       v-if="getSnackbarType == MessageType.INFORMATION"
       :icon="['fas', 'ban']"
       class="fa-lg mr-5 mb-1 mt-2 icone-information"
@@ -35,7 +35,7 @@
         v-bind="attrs"
         @click="closeSnackBar()"
       >
-        <font-awesome-icon
+        <FontAwesomeIcon
           :icon="['fas', 'times']"
           class="fa-lg mx-2 icone-fermer"
         />
@@ -44,60 +44,71 @@
   </v-alert>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed } from "vue";
+import { useMessageStore } from "@/stores/messageStore"; // à adapter si ton store a un autre nom
 import { MessageType } from "@/core/CommonDefinition";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-@Component
-export default class Message extends Vue {
-  MessageType: any = MessageType;
+// Store Pinia
+const messageStore = useMessageStore();
 
-  constructor() {
-    super();
-  }
+// Accès centralisé au message affiché
+const displayedMessage = computed(() => messageStore.getDisplayedMessage);
 
-  get getSnackbarColor(): string {
-    const type: MessageType = this.$store.getters.getDisplayedMessage().type;
-    if (type == MessageType.ERREUR) {
+// Type local pour le template
+const MessageTypeLocal = MessageType;
+
+// Couleur du snackbar
+const getSnackbarColor = computed(() => {
+  const type = displayedMessage.value.type;
+
+  switch (type) {
+    case MessageType.ERREUR:
       return "erreur";
-    } else if (type == MessageType.AVERTISSEMENT) {
+    case MessageType.AVERTISSEMENT:
       return "avertissement";
-    } else if (type == MessageType.INFORMATION) {
+    case MessageType.INFORMATION:
       return "information";
-    } else if (type == MessageType.VALIDATION) {
+    case MessageType.VALIDATION:
       return "validation";
-    } else {
+    default:
       return "information";
-    }
   }
+});
 
-  get snackbarDisplayValue(): boolean {
-    if (!this.$store.getters.getDisplayedMessage().isSticky) {
-      setTimeout(() => {
-        this.closeSnackBar();
-      }, 6000); //TODO controler ici le delai du message
-    }
-    return this.$store.getters.getDisplayedMessage().isDisplayed;
+// Affichage + fermeture auto si non sticky
+const snackbarDisplayValue = computed(() => {
+  if (!displayedMessage.value.isSticky) {
+    setTimeout(() => {
+      closeSnackBar();
+    }, 6000);
   }
+  return displayedMessage.value.isDisplayed;
+});
 
-  get getSnackbarMultiline(): boolean {
-    return this.$store.getters.getDisplayedMessage().isMultiline;
-  }
+// Multi-ligne ?
+const getSnackbarMultiline = computed(() => {
+  return displayedMessage.value.isMultiline;
+});
 
-  get getSnackbarText(): Array<string> {
-    return this.$store.getters.getDisplayedMessage().texte.split("\n");
-  }
+// Texte (split par retour à la ligne)
+const getSnackbarText = computed(() => {
+  return displayedMessage.value.texte.split("\n");
+});
 
-  get getSnackbarType(): MessageType {
-    return this.$store.getters.getDisplayedMessage().type;
-  }
+// Retourne le type
+const getSnackbarType = computed(() => {
+  return displayedMessage.value.type;
+});
 
-  /******************** Events ***************************/
-  closeSnackBar(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-  }
+// Fermeture
+function closeSnackBar() {
+  messageStore.closeDisplayedMessage();
 }
 </script>
+
+
 <style scoped>
 .multi-line span {
   min-height: 1rem;

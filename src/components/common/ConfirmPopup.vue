@@ -7,7 +7,7 @@
   >
     <v-card flat class="confirmPopup">
       <v-card-text class="pa-3 popup-texte">
-        <font-awesome-icon
+        <FontAwesomeIcon
           :icon="['fas', 'exclamation-triangle']"
           class="mx-2 fa-2x icone-attention"
         />
@@ -15,50 +15,61 @@
       </v-card-text>
       <v-card-actions class="pt-0 ma-3">
         <v-spacer></v-spacer>
-        <v-btn text class="bouton-annuler" @click="cancel">Annuler</v-btn>
-        <v-btn depressed class="bouton-valider" @click="agree">Valider</v-btn>
+        <v-btn variant="text" class="bouton-annuler" @click="cancel">
+          Annuler
+        </v-btn>
+        <v-btn
+          variant="flat"
+          class="bouton-valider"
+          :color="options.color"
+          @click="agree"
+        >
+          Valider
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { reactive, ref } from "vue";
 import { ConfirmPopupOptions } from "@/core/CommonDefinition";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-@Component
-export default class ConfirmPopup extends Vue {
-  icon: string = "";
-  message: string = "";
+type Resolver = (value: boolean) => void;
 
-  dialog: boolean = false;
-  resolve: any = null;
-  reject: any = null;
-  options: ConfirmPopupOptions = {
-    color: "error",
-    width: "30vw"
-  };
+const dialog = ref(false);
+const message = ref("");
+const options = reactive<ConfirmPopupOptions>({
+  color: "error",
+  width: "30vw"
+});
 
-  open(message, options?) {
-    this.dialog = true;
-    this.message = message;
-    this.options = Object.assign(this.options, options);
-    return new Promise((resolve, reject) => {
-      this.resolve = resolve;
-      this.reject = reject;
-    });
-  }
+const resolver = ref<Resolver | null>(null);
+const rejecter = ref<Resolver | null>(null);
 
-  agree() {
-    this.resolve(true);
-    this.dialog = false;
-  }
+const open = (newMessage: string, newOptions?: Partial<ConfirmPopupOptions>) => {
+  dialog.value = true;
+  message.value = newMessage;
+  Object.assign(options, { color: "error", width: "30vw" }, newOptions);
 
-  cancel() {
-    this.resolve(false);
-    this.dialog = false;
-  }
-}
+  return new Promise<boolean>((resolve, reject) => {
+    resolver.value = resolve;
+    rejecter.value = reject;
+  });
+};
+
+const agree = () => {
+  resolver.value?.(true);
+  dialog.value = false;
+};
+
+const cancel = () => {
+  resolver.value?.(false);
+  dialog.value = false;
+};
+
+defineExpose({ open });
 </script>
 <style scoped lang="scss">
 .icone-attention {

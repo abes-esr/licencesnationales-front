@@ -6,15 +6,15 @@
       <v-row class="d-flex flex-row-reverse ma-0">
         <v-btn @click="allerAScionnerEtab()" class="btn-1 ml-2"
           >Scission
-          <font-awesome-icon :icon="['fas', 'object-ungroup']" class="mx-2" />
+          <FontAwesomeIcon :icon="['fas', 'object-ungroup']" class="mx-2" />
         </v-btn>
         <v-btn @click="allerAFusionnerEtab" class="btn-1 mx-2"
           >Fusion
-          <font-awesome-icon :icon="['fas', 'object-group']" class="mx-2" />
+          <FontAwesomeIcon :icon="['fas', 'object-group']" class="mx-2" />
         </v-btn>
         <v-btn @click="ajouterEtablissement()" class="btn-1 mx-2"
           >Créer un établissement
-          <font-awesome-icon :icon="['fas', 'plus']" class="mx-2" />
+          <FontAwesomeIcon :icon="['fas', 'plus']" class="mx-2" />
         </v-btn>
       </v-row>
     </v-card-title>
@@ -46,7 +46,7 @@
                     :loading="isExportLoading"
                   >
                     <h2>Télécharger la liste des établissements</h2>
-                    <font-awesome-icon
+                    <FontAwesomeIcon
                       :icon="['fas', 'download']"
                       size="2x"
                       class="mx-2"
@@ -161,6 +161,7 @@ import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesn
 import MessageBox from "@/components/common/MessageBox.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 import moment from "moment";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 @Component({
   components: { MessageBox }

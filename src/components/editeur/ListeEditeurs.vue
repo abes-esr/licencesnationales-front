@@ -9,7 +9,7 @@
       <v-row class="d-flex flex-row-reverse">
         <v-btn @click="ajouterEditeur()" class="btn-1 mx-2 mr-0"
           >Créer un éditeur
-          <font-awesome-icon :icon="['fas', 'plus']" class="mx-2"
+          <FontAwesomeIcon :icon="['fas', 'plus']" class="mx-2"
         /></v-btn>
       </v-row>
     </v-card-title>
@@ -41,7 +41,7 @@
                     ><h2>
                       Télécharger la liste des éditeurs
                     </h2>
-                    <font-awesome-icon
+                    <FontAwesomeIcon
                       :icon="['fas', 'download']"
                       class="mx-2"
                       size="2x"
@@ -71,14 +71,14 @@
             icon
             @click="modifierEditeur(item)"
           >
-            <font-awesome-icon :icon="['fas', 'edit']" />
+            <FontAwesomeIcon :icon="['fas', 'edit']" />
           </v-btn>
           <v-btn
             class="ma-0 pa-0 bouton-simple "
             icon
             @click="supprimerEditeur(item)"
           >
-            <font-awesome-icon :icon="['fas', 'times']" class="fa-orange" />
+            <FontAwesomeIcon :icon="['fas', 'times']" class="fa-orange" />
           </v-btn>
         </template>
       </v-data-table>
@@ -95,6 +95,7 @@ import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import MessageBox from "@/components/common/MessageBox.vue";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 @Component({
   components: { MessageBox, ConfirmPopup }

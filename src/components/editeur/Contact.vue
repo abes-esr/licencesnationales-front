@@ -41,7 +41,7 @@
       </v-card-text>
       <v-card-actions class="pa-0">
         <v-btn class="ma-0 pa-0 bouton-simple" icon x-large @click="remove()">
-          <font-awesome-icon :icon="['fas', 'times']" class="fa-orange" />
+          <FontAwesomeIcon :icon="['fas', 'times']" class="fa-orange" />
         </v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>
@@ -49,45 +49,64 @@
   </v-card>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
 import { ContactType } from "@/core/CommonDefinition";
 import ContactEditeur from "@/core/ContactEditeur";
 import { rulesForms } from "@/core/RulesForm";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-@Component
-export default class Contact extends Vue {
-  @Prop() contact!: ContactEditeur;
-  rulesForms: any = rulesForms;
+// Props
+const props = defineProps<{
+  contact: ContactEditeur;
+}>();
 
-  typeContactCandidates: Array<ContactType> = [
-    ContactType.COMMERCIAL,
-    ContactType.TECHNIQUE
-  ];
-  typeContactCandidatesLabel: Array<string> = [];
+// Emits
+const emit = defineEmits<{
+  (e: "onChange"): void;
+}>();
 
-  constructor() {
-    super();
-    for (const type in this.typeContactCandidates) {
-      this.typeContactCandidatesLabel.push(ContactType[type].toLowerCase());
-    }
+// rulesForms
+const rules = rulesForms;
+
+// Candidates
+const typeContactCandidates = [
+  ContactType.COMMERCIAL,
+  ContactType.TECHNIQUE
+];
+
+// Equivalent de ton constructeur → générer les labels
+const typeContactCandidatesLabel = ref<string[]>([]);
+
+onMounted(() => {
+  typeContactCandidatesLabel.value = typeContactCandidates.map(
+    (t) => ContactType[t].toLowerCase()
+  );
+});
+
+// Refs (ancien $refs.form)
+const formRef = ref<any>(null);
+
+// Methods
+
+function remove() {
+  emit("onChange");
+}
+
+function validate(): boolean {
+  if (formRef.value?.validate) {
+    return formRef.value.validate();
   }
+  return false;
+}
 
-  remove(): void {
-    this.$emit("onChange"); // On notifie le composant parent
-  }
-
-  validate(): boolean {
-    return (this.$refs.form as Vue & {
-      validate: () => boolean;
-    }).validate();
-  }
-
-  clear(): void {
-    (this.$refs.form as HTMLFormElement).resetValidation();
+function clear(): void {
+  if (formRef.value?.resetValidation) {
+    formRef.value.resetValidation();
   }
 }
 </script>
+
 <style scoped lang="scss">
 .v-card__text {
   border: 0;
