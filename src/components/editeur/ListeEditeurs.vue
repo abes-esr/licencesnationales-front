@@ -1,92 +1,98 @@
 <template>
-  <v-card flat :disabled="disableForm">
+  <v-card variant="flat" :disabled="disableForm">
     <h1>Gestion des éditeurs</h1>
     <v-col cols="12" md="6" lg="6" xl="6">
-      <MessageBox></MessageBox>
-      <ConfirmPopup ref="confirm"></ConfirmPopup>
+      <MessageBox />
+      <ConfirmPopup ref="confirmRef" />
     </v-col>
+
     <v-card-title>
       <v-row class="d-flex flex-row-reverse">
-        <v-btn @click="ajouterEditeur()" class="btn-1 mx-2 mr-0"
-          >Créer un éditeur
-          <FontAwesomeIcon :icon="['fas', 'plus']" class="mx-2"
-        /></v-btn>
+        <v-btn @click="ajouterEditeur" class="btn-1 mx-2 mr-0">
+          Créer un éditeur
+          <FontAwesomeIcon :icon="faCirclePlus" class="mx-2" />
+        </v-btn>
       </v-row>
     </v-card-title>
+
     <v-card-text class="mt-3 fondGris">
-      <v-data-table
-        dense
+      <VDataTable
         :headers="headers"
         :items="editeurs"
         :items-per-page="25"
-        :footer-props="{ 'items-per-page-options': [25, 50, 100, -1] }"
+        :items-per-page-options="[25, 50, 100, { value: -1, title: 'Tous' }]"
         class="elevation-0 ma-3"
         :search="rechercher"
+        density="compact"
+        :loading="dataLoading"
         id="mytable"
       >
-        <template v-slot:header.statut="{ header }">
-          {{ header.texte }}
-        </template>
-        <template v-slot:top>
+        <template #top>
           <v-row class="ma-0">
-            <v-col cols="12" sm="6" class="px-0"
-              ><v-tooltip top max-width="20vw" open-delay="100">
-                <template v-slot:activator="{ on }">
+            <v-col cols="12" sm="6" class="px-0">
+              <v-tooltip top max-width="20vw" open-delay="100">
+                <template #activator="{ props }">
                   <v-btn
-                    text
-                    @click="downloadEditeurs()"
+                    variant="text"
+                    @click="downloadEditeurs"
                     class="bouton-simple pl-0"
-                    v-on="on"
+                    v-bind="props"
                     :loading="isExportLoading"
-                    ><h2>
-                      Télécharger la liste des éditeurs
-                    </h2>
+                  >
+                    <h2>Télécharger la liste des éditeurs</h2>
                     <FontAwesomeIcon
-                      :icon="['fas', 'download']"
+                      :icon="download"
                       class="mx-2"
                       size="2x"
-                  /></v-btn>
+                    />
+                  </v-btn>
                 </template>
                 <span>Le téléchargement correspond à la vue filtrée</span>
-              </v-tooltip></v-col
-            >
+              </v-tooltip>
+            </v-col>
             <v-col cols="0" sm="3" class="px-0"></v-col>
             <v-col cols="12" sm="3" class="px-0">
               <v-text-field
                 v-model="rechercher"
                 label="Chercher dans les colonnes"
                 prepend-inner-icon="mdi-magnify"
-                outlined
-                filled
-                dense
-              ></v-text-field></v-col
-          ></v-row>
+                variant="outlined"
+                density="compact"
+                clearable
+              />
+            </v-col>
+          </v-row>
         </template>
-        <template v-slot:item.dateCreation="{ item }">
+
+        <template #item.dateCreation="{ item }">
           <span>{{ item.dateCreation.toLocaleDateString() }}</span>
         </template>
-        <template v-slot:[`item.action`]="{ item }">
+
+        <template #item.action="{ item }">
           <v-btn
             class="ma-0 pa-0 bouton-simple"
             icon
             @click="modifierEditeur(item)"
           >
-            <FontAwesomeIcon :icon="['fas', 'edit']" />
+            <FontAwesomeIcon :icon="faPenToSquare" />
           </v-btn>
           <v-btn
-            class="ma-0 pa-0 bouton-simple "
+            class="ma-0 pa-0 bouton-simple"
             icon
             @click="supprimerEditeur(item)"
           >
-            <FontAwesomeIcon :icon="['fas', 'times']" class="fa-orange" />
+            <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
           </v-btn>
         </template>
-      </v-data-table>
+      </VDataTable>
     </v-card-text>
   </v-card>
 </template>
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { VDataTable } from "vuetify/components";
 import { Logger } from "@/utils/Logger";
 import Editeur from "@/core/Editeur";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
@@ -96,213 +102,201 @@ import MessageBox from "@/components/common/MessageBox.vue";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import {
+  faCirclePlus,
+  faPenToSquare,
+  faXmark
+} from "@fortawesome/free-solid-svg-icons";
+import { useAuthStore } from "@/stores/authStore";
+import { useMessageStore } from "@/stores/messageStore";
+import { useEditeurStore } from "@/stores/editeurStore";
 
-@Component({
-  components: { MessageBox, ConfirmPopup }
-})
-export default class ListeEditeurs extends Vue {
-  disableForm: boolean = false;
-  isExportLoading: boolean = false;
-  rechercher: string = "";
-  editeurs: Array<Editeur> = [];
-  headers: Array<any> = [
-    {
-      text: "Date de création du compte éditeur",
-      align: "start",
-      value: "dateCreation",
-      sortable: true
-    },
-    { text: "Nom de l'éditeur", value: "nom", sortable: true },
-    { text: "Action", value: "action", sortable: false }
-  ];
-  confirmDeleteDialog: any = {};
-  isAdmin: boolean = this.$store.getters.isAdmin();
-  dataLoading: boolean = true;
+const authStore = useAuthStore();
+const messageStore = useMessageStore();
+const editeurStore = useEditeurStore();
+const router = useRouter();
 
-  constructor() {
-    super();
-    if (!this.isAdmin) {
-      const message: Message = new Message();
+const disableForm = ref(false);
+const isExportLoading = ref(false);
+const rechercher = ref("");
+const editeurs = ref<Array<Editeur>>([]);
+const dataLoading = ref(true);
+const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
+
+const headers = [
+  {
+    title: "Date de création du compte éditeur",
+    align: "start",
+    key: "dateCreation",
+    sortable: true
+  },
+  { title: "Nom de l'éditeur", key: "nom", sortable: true },
+  { title: "Action", key: "action", sortable: false }
+];
+
+const isAdmin = computed(() => authStore.isAdmin);
+
+onMounted(() => {
+  if (!isAdmin.value) {
+    const message = new Message();
+    message.type = MessageType.ERREUR;
+    message.texte =
+      "Vous n'êtes pas autorisé à exécuter l'action ListeEditeur";
+    message.isSticky = true;
+    messageStore.openDisplayedMessage(message);
+    router.push({ name: "Home" }).catch(err => Logger.error(err.toString()));
+    return;
+  }
+  fetchEditeurs();
+});
+
+function fetchEditeurs() {
+  editeurService
+    .getEditeurs(authStore.getToken)
+    .then(res => {
+      editeurs.value = res;
+    })
+    .catch(err => {
+      Logger.error(err.toString());
+      const message = new Message();
       message.type = MessageType.ERREUR;
-      message.texte =
-        "Vous n'êtes pas autorisé à exécuter l'action ListeEditeur";
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
+        disableForm.value = true;
+        message.texte =
+          "Vous n'êtes pas autorisé à effectuer cette opération";
+        setTimeout(() => {
+          router.push({ name: "Home" }).catch(r => Logger.error(r.toString()));
+        });
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
       message.isSticky = true;
-      this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-        Logger.error(err.toString());
-      });
-      this.$router.push({ name: "Home" }).catch(err => {
-        Logger.error(err);
-      });
-    }
-    this.fetchEditeurs();
-  }
-
-  fetchEditeurs(): void {
-    editeurService
-      .getEditeurs(this.$store.getters.getToken())
-      .then(res => {
-        this.editeurs = res;
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
-          this.disableForm = true;
-          message.texte =
-            "Vous n'êtes pas autorisé à effectuer cette opération";
-          setTimeout(() => {
-            this.$router.push({ name: "Home" });
-          });
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-      })
-      .finally(() => {
-        this.dataLoading = false;
-      });
-  }
-
-  ajouterEditeur(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$store
-      .dispatch("setCurrentEditeur", new Editeur())
-      .then(() => {
-        this.$router.push({ name: "NouvelEditeur" });
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-      });
-  }
-
-  modifierEditeur(item: Editeur): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$store
-      .dispatch("setCurrentEditeur", item)
-      .then(() => {
-        this.$router.push({ name: "ModifierEditeur" });
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-      });
-  }
-
-  downloadEditeurs(): void {
-    this.isExportLoading = true;
-    this.$store.dispatch("closeDisplayedMessage");
-    const ids = new Array<number>();
-    this.editeurs.forEach(element => {
-      ids.push(element.id);
+      messageStore.openDisplayedMessage(message);
+    })
+    .finally(() => {
+      dataLoading.value = false;
     });
-    editeurService
-      .downloadEditeurs(ids, this.$store.state.user.token)
-      .then(response => {
-        const fileURL = window.URL.createObjectURL(
-          new Blob([response.data], { type: "application/csv" })
-        );
-        const fileLink = document.createElement("a");
+}
 
-        fileLink.href = fileURL;
-        fileLink.setAttribute("download", "export.csv");
-        document.body.appendChild(fileLink);
-
-        fileLink.click();
-        this.isExportLoading = false;
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-
-        this.isExportLoading = false;
-      });
-  }
-
-  async supprimerEditeur(item: Editeur) {
-    this.$store.dispatch("closeDisplayedMessage");
-
-    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
-      `Vous êtes sur le point de supprimer le compte de l'éditeur ${item.nom}
-
-                Etes-vous sûr de vouloir continuer ?`
-    );
-    if (confirmed) {
-      editeurService
-        .deleteEditeur(item.id, this.$store.getters.getToken())
-        .then(() => {
-          const message: Message = new Message();
-          message.type = MessageType.VALIDATION;
-          message.texte = `L'éditeur ${item.nom} a bien été supprimé`;
-          message.isSticky = false;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          // On glisse jusqu'au message
-          const messageBox = document.getElementById("messageBox");
-          if (messageBox) {
-            window.scrollTo(0, messageBox.offsetTop);
-          }
-          this.fetchEditeurs();
-        })
-        .catch(err => {
-          Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          if (err instanceof LicencesNationalesBadRequestApiError) {
-            message.texte = err.message;
-          } else {
-            message.texte = "Impossible d'exécuter l'action : " + err.message;
-          }
-          message.isSticky = true;
-
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-        });
-    }
+async function ajouterEditeur() {
+  messageStore.closeDisplayedMessage();
+  try {
+    await editeurStore.setCurrentEditeur(new Editeur());
+    router.push({ name: "NouvelEditeur" });
+  } catch (err: any) {
+    Logger.error(err.toString());
+    const message = new Message();
+    message.type = MessageType.ERREUR;
+    message.texte = buildErrorMessage(err);
+    message.isSticky = true;
+    messageStore.openDisplayedMessage(message);
   }
 }
+
+async function modifierEditeur(item: Editeur) {
+  messageStore.closeDisplayedMessage();
+  try {
+    await editeurStore.setCurrentEditeur(item);
+    router.push({ name: "ModifierEditeur" });
+  } catch (err: any) {
+    Logger.error(err.toString());
+    const message = new Message();
+    message.type = MessageType.ERREUR;
+    message.texte = buildErrorMessage(err);
+    message.isSticky = true;
+    messageStore.openDisplayedMessage(message);
+  }
+}
+
+function downloadEditeurs(): void {
+  isExportLoading.value = true;
+  messageStore.closeDisplayedMessage();
+  const ids = editeurs.value.map(element => element.id);
+
+  editeurService
+    .downloadEditeurs(ids, authStore.user.token)
+    .then(response => {
+      const fileURL = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/csv" })
+      );
+      const fileLink = document.createElement("a");
+
+      fileLink.href = fileURL;
+      fileLink.setAttribute("download", "export.csv");
+      document.body.appendChild(fileLink);
+
+      fileLink.click();
+      isExportLoading.value = false;
+    })
+    .catch(err => {
+      Logger.error(err.toString());
+      const message = new Message();
+      message.type = MessageType.ERREUR;
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
+      message.isSticky = true;
+
+      messageStore.openDisplayedMessage(message);
+      isExportLoading.value = false;
+    });
+}
+
+async function supprimerEditeur(item: Editeur) {
+  messageStore.closeDisplayedMessage();
+
+  const confirmed = await confirmRef.value?.open(
+    `Vous êtes sur le point de supprimer le compte de l'éditeur ${item.nom}
+
+                Etes-vous sûr de vouloir continuer ?`
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  editeurService
+    .deleteEditeur(item.id, authStore.getToken)
+    .then(() => {
+      const message = new Message();
+      message.type = MessageType.VALIDATION;
+      message.texte = `L'éditeur ${item.nom} a bien été supprimé`;
+      message.isSticky = false;
+      messageStore.openDisplayedMessage(message);
+
+      const messageBox = document.getElementById("messageBox");
+      if (messageBox) {
+        window.scrollTo(0, messageBox.offsetTop);
+      }
+      fetchEditeurs();
+    })
+    .catch(err => {
+      Logger.error(err.toString());
+      const message = new Message();
+      message.type = MessageType.ERREUR;
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
+      message.isSticky = true;
+
+      messageStore.openDisplayedMessage(message);
+    });
+}
+
+function buildErrorMessage(err: any) {
+  if (err instanceof LicencesNationalesBadRequestApiError) {
+    return err.message;
+  }
+  return "Impossible d'exécuter l'action : " + err.message;
+}
 </script>
+
 <style>
 .v-data-table {
   background-color: transparent !important;

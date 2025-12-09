@@ -2,7 +2,7 @@
   <v-form ref="form" :disabled="isDisableForm">
     <v-alert variant="outlined" class="pa-3 fondBlanc" v-if="linkIsExpired === false">
       <FontAwesomeIcon
-        :icon="['fas', 'info-circle']"
+        :icon="faCircleInfo"
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
       />
       Le mot de passe doit contenir au moins 8 caractères, dont au moins un
@@ -11,7 +11,7 @@
     </v-alert>
     <v-alert variant="outlined" class="pa-3" v-if="linkIsExpired === true">
       <FontAwesomeIcon
-        :icon="['fas', 'info-circle']"
+        :icon="faCircleInfo"
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
       />
       Ce lien n'est plus valide (expiration après 24 heures). Pour réinitialiser
@@ -81,6 +81,7 @@ import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import type { VForm } from "vuetify/components";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
 const props = defineProps<{
   action: Action;

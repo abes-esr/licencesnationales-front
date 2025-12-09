@@ -8,7 +8,7 @@
     <v-card flat class="confirmPopup">
       <v-card-text class="pa-3 popup-texte">
         <FontAwesomeIcon
-          :icon="['fas', 'exclamation-triangle']"
+          :icon="faTriangleExclamation"
           class="mx-2 fa-2x icone-attention"
         />
         <div v-if="message" class="popup-message" v-html="message"></div>
@@ -35,6 +35,7 @@
 import { reactive, ref } from "vue";
 import { ConfirmPopupOptions } from "@/core/CommonDefinition";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 type Resolver = (value: boolean) => void;
 

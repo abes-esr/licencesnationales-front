@@ -1,129 +1,126 @@
 <template>
   <div>
-    <ConfirmPopup ref="confirm"></ConfirmPopup>
-    <v-form ref="formAjouterAcces" lazy-validation>
+    <ConfirmPopup ref="confirm" />
+    <v-form ref="formAjouterAcces">
       <v-row align="center" justify="center">
         <v-col lg="11" md="12" xs="12">
           <v-row>
             <v-card-title>
               <h1>
-                Déclarer de nouvelles adresses ou plages IP
+                DÇ¸clarer de nouvelles adresses ou plages IP
               </h1>
             </v-card-title>
           </v-row>
           <v-row>
             <v-col>
-              <a @click="$router.push({ path: '/listeAcces' })">
-                <FontAwesomeIcon :icon="['fas', 'reply']" />&nbsp;Revenir à la
-                liste complète des IP
+              <a @click="allerListeAcces">
+                <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir Çÿ la
+                liste complÇùte des IP
               </a>
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12" md="8" class="pa-0">
-              <MessageBox class="mr-2"></MessageBox>
+              <MessageBox class="mr-2" />
               <v-card-title class="pb-0">
-                Choisir le type d'IP à déclarer
+                Choisir le type d'IP Çÿ dÇ¸clarer
               </v-card-title>
             </v-col>
             <v-col cols="12" md="4" class="pa-3">
               <v-card-text class="fondGris">
                 <FontAwesomeIcon
-                  :icon="['fas', 'info-circle']"
+                  :icon="faCircleInfo"
                   size="2x"
                   style="color: #478dcb;"
-                /><a
+                />
+                <a
                   href="https://documentation.abes.fr/aidelicencesnationales/index.html#TutoDeDeclarationDesIP"
                   target="_blank"
                   class="pl-3 pb-6 text-body-1 font-weight-bold"
-                  >Consulter l'aide pour la déclaration des IP</a
+                  >Consulter l'aide pour la dÇ¸claration des IP</a
                 >
               </v-card-text>
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="8" class="pb-0">
-              <v-divider></v-divider>
+              <v-divider />
               <div id="radioIP">
                 <v-radio-group
                   v-model="typeIp"
+                  inline
                   @change="
                     clearChild(true);
                     clearChild(false);
                   "
-                  mandatory
-                  row
                 >
                   <v-radio
                     v-for="n in 2"
                     :key="n"
                     :label="typesIp[n - 1]"
                     :value="typesIp[n - 1]"
-                  ></v-radio>
+                  />
                 </v-radio-group>
               </div>
             </v-col>
           </v-row>
           <v-row class="mt-0">
             <v-col cols="8">
-              <module-segments-ip-plage
+              <ModuleSegmentsIpPlage
                 :typeIp="typeIp"
                 typeAcces="ip"
                 ref="ip"
-                v-on:FormModuleSegmentsIpPlageEvent="validate"
-                v-on:alertSuccess="alertSuccess"
-                v-on:alertError="alertError"
-                v-on:focus="clearChild(false)"
-              >
-              </module-segments-ip-plage>
+                @FormModuleSegmentsIpPlageEvent="validate"
+                @alertSuccess="alertSuccess"
+                @alertError="alertError"
+                @focus="clearChild(false)"
+              />
               <br />
-              <module-segments-ip-plage
+              <ModuleSegmentsIpPlage
                 :typeIp="typeIp"
                 typeAcces="plage"
                 ref="plage"
-                v-on:FormModuleSegmentsIpPlageEvent="validate"
-                v-on:alertSuccess="alertSuccess"
-                v-on:alertError="alertError"
-                v-on:focus="clearChild(true)"
-              >
-              </module-segments-ip-plage>
+                @FormModuleSegmentsIpPlageEvent="validate"
+                @alertSuccess="alertSuccess"
+                @alertError="alertError"
+                @focus="clearChild(true)"
+              />
             </v-col>
             <v-col cols="4">
-              <v-card-text flat class="overflow-auto fondGris">
-                <h2 class="pb-4">Nouvelles IP ou plages IP ajoutées</h2>
-                <v-simple-table dense>
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th style="width: 20%">Type</th>
-                        <th>Adresse</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(item, index) in arrayAjouterIp"
-                        :key="item.ip"
-                      >
-                        <td>{{ item.typeIp }}</td>
-                        <td>{{ item.ip }}</td>
-                        <td>
-                          <v-btn
-                            class="ma-0 pa-0 bouton-simple "
-                            icon
-                            title="Supprimer"
-                            @click="supprimerIP(item.id, index)"
-                          >
-                            <FontAwesomeIcon
-                              :icon="['fas', 'times']"
-                              class="fa-orange"
-                            />
-                          </v-btn>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
+              <v-card-text class="overflow-auto fondGris">
+                <h2 class="pb-4">Nouvelles IP ou plages IP ajoutÇ¸es</h2>
+                <v-table density="compact">
+                  <thead>
+                    <tr>
+                      <th style="width: 20%">Type</th>
+                      <th>Adresse</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="(item, index) in arrayAjouterIp"
+                      :key="item.id ?? index"
+                    >
+                      <td>{{ item.typeIp }}</td>
+                      <td>{{ item.ip }}</td>
+                      <td>
+                        <v-btn
+                          class="ma-0 pa-0 bouton-simple"
+                          variant="text"
+                          icon
+                          title="Supprimer"
+                          @click="supprimerIP(item.id, index)"
+                        >
+                          <FontAwesomeIcon
+                            :icon="faXmark"
+                            class="fa-orange"
+                          />
+                        </v-btn>
+                      </td>
+                    </tr>
+                  </tbody>
+                </v-table>
               </v-card-text>
             </v-col>
           </v-row>
@@ -134,8 +131,8 @@
   </div>
 </template>
 <style src="./style.css"></style>
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { ref } from "vue";
 import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
 import { iPService } from "@/core/service/licencesnationales/IPService";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
@@ -143,129 +140,119 @@ import { Logger } from "@/utils/Logger";
 import MessageBox from "@/components/common/MessageBox.vue";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useAuthStore } from "@/stores/authStore";
+import { useMessageStore } from "@/stores/messageStore";
+import { useRouter } from "vue-router";
+import type { VForm } from "vuetify/components";
+import { faReply, faXmark } from "@fortawesome/free-solid-svg-icons";
 
-@Component({
-  components: { ModuleSegmentsIpPlage, ConfirmPopup, MessageBox }
-})
-export default class AjouterAcces extends Vue {
-  public metaInfo(): any {
-    return {
-      meta: [
-        {
-          name: "description",
-          content:
-            "Page de déclaration d'IP de l'application des Licences Nationales"
-        }
-      ],
-      title: "Ajout d'IP - Licences Nationales"
-    };
-  }
+const router = useRouter();
+const authStore = useAuthStore();
+const messageStore = useMessageStore();
 
-  id: string = "";
-  ip: string = "";
-  typeAcces: string = "";
-  typesIp: Array<string> = ["IPV4", "IPV6"];
-  typeIp: string = "IPV4";
-  arrayAjouterIp: Array<string> = [];
+const typeIp = ref<string>("IPV4");
+const typesIp = ["IPV4", "IPV6"];
+const arrayAjouterIp = ref<Array<any>>([]);
 
-  validate(payloadFromModuleSegmentsIpPlage): void {
-    this.arrayAjouterIp.push(payloadFromModuleSegmentsIpPlage);
-  }
-  clear() {
-    this.arrayAjouterIp = [];
-  }
-  async supprimerIP(idIP: string, index: number) {
-    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
-      `Vous êtes sur le point de supprimer définitivement une adresse IP ou une plage d'adresses IP.
+const formAjouterAcces = ref<VForm | null>(null);
+const confirm = ref<InstanceType<typeof ConfirmPopup> | null>(null);
+const ip = ref<InstanceType<typeof ModuleSegmentsIpPlage> | null>(null);
+const plage = ref<InstanceType<typeof ModuleSegmentsIpPlage> | null>(null);
 
-                Etes-vous sûr de vouloir effectuer cette action ?`
-    );
-    if (confirmed) {
-      iPService
-        .deleteIP(this.$store.getters.getToken(), idIP)
-        .then(response => {
-          const message: Message = new Message();
-          message.type = MessageType.VALIDATION;
-          message.texte = response.data.message;
-          message.isSticky = true;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          // On glisse sur le message d'erreur
-          const messageBox = document.getElementById("messageBox");
-          if (messageBox) {
-            window.scrollTo(0, messageBox.offsetTop);
-          }
-
-          setTimeout(() => {
-            this.$store.dispatch("closeDisplayedMessage");
-          }, 5000);
-          this.arrayAjouterIp.splice(index, 1);
-        })
-        .catch(err => {
-          Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          message.texte = err.response.data.message;
-          message.isSticky = true;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          // On glisse sur le message d'erreur
-          const messageBox = document.getElementById("messageBox");
-          if (messageBox) {
-            window.scrollTo(0, messageBox.offsetTop);
-          }
-        });
+const metaInfo = {
+  meta: [
+    {
+      name: "description",
+      content:
+        "Page de dÇ¸claration d'IP de l'application des Licences Nationales"
     }
-  }
+  ],
+  title: "Ajout d'IP - Licences Nationales"
+};
 
-  alertSuccess(evt) {
-    const message: Message = new Message();
-    message.type = MessageType.VALIDATION;
-    message.texte = evt;
-    message.isSticky = true;
-    this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-      Logger.error(err.toString());
-    });
-    // On glisse sur le message d'erreur
-    const messageBox = document.getElementById("messageBox");
-    if (messageBox) {
-      window.scrollTo(0, messageBox.offsetTop);
-    }
+const validate = (payloadFromModuleSegmentsIpPlage: any): void => {
+  arrayAjouterIp.value.push(payloadFromModuleSegmentsIpPlage);
+};
 
-    setTimeout(() => {
-      this.$store.dispatch("closeDisplayedMessage");
-    }, 5000);
-  }
+const clear = () => {
+  arrayAjouterIp.value = [];
+  formAjouterAcces.value?.resetValidation();
+};
 
-  alertError(evt) {
-    const message: Message = new Message();
-    message.type = MessageType.ERREUR;
-    message.texte = evt;
-    message.isSticky = true;
-    this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-      Logger.error(err.toString());
-    });
-    // On glisse sur le message d'erreur
-    const messageBox = document.getElementById("messageBox");
-    if (messageBox) {
-      window.scrollTo(0, messageBox.offsetTop);
-    }
-  }
+const supprimerIP = async (idIP: string, index: number) => {
+  const confirmed = await confirm.value?.open(
+    `Vous Ç¦tes sur le point de supprimer dÇ¸finitivement une adresse IP ou une plage d'adresses IP.
 
-  clearChild(isPlage: boolean) {
-    if (isPlage) {
-      const child = this.$refs.ip as any;
-      child.clear(false);
-      child.$refs.formModuleSegmentsIpPlage.resetValidation();
-    } else {
-      const child = this.$refs.plage as any;
-      child.clear(false);
-      child.$refs.formModuleSegmentsIpPlage.resetValidation();
-    }
+                Etes-vous sÇ¯r de vouloir effectuer cette action ?`
+  );
+  if (confirmed) {
+    iPService
+      .deleteIP(authStore.getToken, idIP)
+      .then(response => {
+        const message: Message = new Message();
+        message.type = MessageType.VALIDATION;
+        message.texte = response.data.message;
+        message.isSticky = true;
+        messageStore.openDisplayedMessage(message);
+        scrollToMessage();
+
+        setTimeout(() => {
+          messageStore.closeDisplayedMessage();
+        }, 5000);
+        arrayAjouterIp.value.splice(index, 1);
+      })
+      .catch(err => {
+        Logger.error(err?.toString?.() ?? err);
+        const message: Message = new Message();
+        message.type = MessageType.ERREUR;
+        message.texte = err?.response?.data?.message ?? "";
+        message.isSticky = true;
+        messageStore.openDisplayedMessage(message);
+        scrollToMessage();
+      });
   }
-}
+};
+
+const alertSuccess = (evt: string) => {
+  const message: Message = new Message();
+  message.type = MessageType.VALIDATION;
+  message.texte = evt;
+  message.isSticky = true;
+  messageStore.openDisplayedMessage(message);
+  scrollToMessage();
+
+  setTimeout(() => {
+    messageStore.closeDisplayedMessage();
+  }, 5000);
+};
+
+const alertError = (evt: string) => {
+  const message: Message = new Message();
+  message.type = MessageType.ERREUR;
+  message.texte = evt;
+  message.isSticky = true;
+  messageStore.openDisplayedMessage(message);
+  scrollToMessage();
+};
+
+const clearChild = (isPlage: boolean) => {
+  if (isPlage) {
+    ip.value?.clear(false);
+  } else {
+    plage.value?.clear(false);
+  }
+};
+
+const scrollToMessage = () => {
+  const messageBox = document.getElementById("messageBox");
+  if (messageBox) {
+    window.scrollTo(0, messageBox.offsetTop);
+  }
+};
+
+const allerListeAcces = () => {
+  router.push({ path: "/listeAcces" });
+};
 </script>
 <style scoped>
 h1 {

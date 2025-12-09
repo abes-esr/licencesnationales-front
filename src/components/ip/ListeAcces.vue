@@ -1,7 +1,7 @@
 <template>
   <div>
-    <ConfirmPopup ref="confirm"></ConfirmPopup>
-    <v-card flat>
+    <ConfirmPopup ref="confirmRef" />
+    <v-card variant="flat">
       <v-row>
         <v-col lg="12" md="12" xs="12">
           <v-row>
@@ -11,40 +11,57 @@
               </v-row>
               <v-row>
                 <v-col cols="4" sm="4">
-                  <a v-if="isAdmin" @click="revenirInfosEtab()">
-                    <FontAwesomeIcon :icon="['fas', 'reply']" />&nbsp;Revenir
+                  <a v-if="isAdmin" @click="revenirInfosEtab">
+                    <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir
                     aux informations de l'établissement
                   </a>
                 </v-col>
                 <v-col cols="8">
-                  <v-btn id="addIpButton" @click="$router.push({ path: '/ajouterAcces/' })"><span class="btnText">Ajouter
-                      une IP ou une plage IP</span>
-                    <FontAwesomeIcon :icon="['fas', 'plus-circle']" style="font-size:1.1rem" />
+                  <v-btn
+                    id="addIpButton"
+                    @click="router.push({ path: '/ajouterAcces/' })"
+                  >
+                    <span class="btnText">Ajouter une IP ou une plage IP</span>
+                    <FontAwesomeIcon
+                      :icon="faCirclePlus"
+                      style="font-size:1.1rem"
+                    />
                   </v-btn>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <v-alert dense :value="error !== ''" type="error" v-html="error">
-                  </v-alert>
-                  <v-alert dense :value="notification !== ''" type="success">
+                  <v-alert dense v-if="error" type="error" v-html="error" />
+                  <v-alert dense v-if="notification" type="success">
                     {{ notification }}
                   </v-alert>
                   <v-card-text class="fondGris">
                     <v-row>
                       <v-col>
-                        <v-data-table id="mytable" :key="refreshKey" :headers="headers" :items="filteredAccesByStatut"
-                          :items-per-page="10" :footer-props="{
-                            showFirstLastPage: true,
-                            'items-per-page-options': [10, 25, 50, 75, -1]
-                          }" :item-class="RowClasses" :search="rechercher" :loading="dataLoading"
-                          noDataText="Aucune IP déclarée pour l’instant. Déclarez une adresse ou une plage IP."
-                          class="row-height-50" flat>
-                          <template v-slot:header.statut="{ header }">
-                            {{ header.texte }}
+                        <VDataTable
+                          id="mytable"
+                          :key="refreshKey"
+                          :headers="headers"
+                          :items="filteredAccesByStatut"
+                          :items-per-page="10"
+                          :items-per-page-options="[10, 25, 50, 75, { value: -1, title: 'Tous' }]"
+                          :item-class="RowClasses"
+                          :search="rechercher"
+                          :loading="dataLoading"
+                          no-data-text="Aucune IP déclarée pour l’instant. Déclarez une adresse ou une plage IP."
+                          class="row-height-50"
+                          density="comfortable"
+                        >
+                          <template #header.statut="{ column }">
+                            {{ column.title }}
                             <v-menu offset-y :close-on-content-click="false">
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-btn text class="bouton-simple" style="text-decoration: none;" v-bind="attrs" v-on="on">
+                              <template #activator="{ props }">
+                                <v-btn
+                                  variant="text"
+                                  class="bouton-simple"
+                                  style="text-decoration: none;"
+                                  v-bind="props"
+                                >
                                   <v-icon small :color="statut ? 'primary' : ''">
                                     mdi-filter
                                   </v-icon>
@@ -53,18 +70,24 @@
                               </template>
                               <div style="background-color: white" class="pl-4 pr-8">
                                 <ul>
-                                  <li v-for="item in selectStatut" :key="item.id" @click="eventStatutChoice(item)">
+                                  <li v-for="item in selectStatut" :key="item" @click="eventStatutChoice(item)">
                                     <a>{{ item }}</a>
                                   </li>
                                 </ul>
                               </div>
                             </v-menu>
                           </template>
-                          <template v-slot:header.typeIp="{ header }">
-                            {{ header.texte }}
+
+                          <template #header.typeIp="{ column }">
+                            {{ column.title }}
                             <v-menu offset-y :close-on-content-click="false">
-                              <template v-slot:activator="{ on, attrs }">
-                                <v-btn text class="bouton-simple" style="text-decoration: none;" v-bind="attrs" v-on="on">
+                              <template #activator="{ props }">
+                                <v-btn
+                                  variant="text"
+                                  class="bouton-simple"
+                                  style="text-decoration: none;"
+                                  v-bind="props"
+                                >
                                   <v-icon small :color="statut ? 'primary' : ''">
                                     mdi-filter
                                   </v-icon>
@@ -73,89 +96,107 @@
                               </template>
                               <div style="background-color: white;" class="pl-4 pr-8">
                                 <ul>
-                                  <li v-for="item in selectType" :key="item.id" @click="eventTypeChoice(item)">
+                                  <li v-for="item in selectType" :key="item" @click="eventTypeChoice(item)">
                                     <a>{{ item }}</a>
                                   </li>
                                 </ul>
                               </div>
                             </v-menu>
                           </template>
-                          <template v-slot:top>
+
+                          <template #top>
                             <v-row>
                               <v-col cols="12" sm="6" class="px-0">
                                 <v-tooltip top max-width="20vw" open-delay="100">
-                                  <template v-slot:activator="{ on }">
-                                    <v-btn text @click="downloadIPs()" class="bouton-simple pl-0" v-on="on"
-                                      :loading="isExportLoading">
+                                  <template #activator="{ props }">
+                                    <v-btn
+                                      variant="text"
+                                      @click="downloadIPs"
+                                      class="bouton-simple pl-0"
+                                      v-bind="props"
+                                      :loading="isExportLoading"
+                                    >
                                       <h2>Télécharger la liste des IP</h2>
-                                      <FontAwesomeIcon :icon="['fas', 'download']" class="mx-2" size="2x" />
+                                      <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
                                     </v-btn>
                                   </template>
-                                  <span>Le téléchargement correspond à la vue
-                                    filtrée</span>
+                                  <span>Le téléchargement correspond à la vue filtrée</span>
                                 </v-tooltip>
                               </v-col>
                               <v-col cols="0" sm="3"></v-col>
                               <v-col cols="12" sm="3" class="px-0">
-                                <v-text-field v-model="rechercher" label="Chercher dans les colonnes"
-                                  prepend-inner-icon="mdi-magnify" outlined filled clearable></v-text-field>
+                                <v-text-field
+                                  v-model="rechercher"
+                                  label="Chercher dans les colonnes"
+                                  prepend-inner-icon="mdi-magnify"
+                                  variant="outlined"
+                                  clearable
+                                />
                               </v-col>
                             </v-row>
                           </template>
-                          <template v-slot:[`item.commentaires`]="{ item }">
+
+                          <template #item.commentaires="{ item }">
                             <td class="truncate">
-                              <v-tooltip bottom>
-                                <template v-slot:activator="{ on, attrs }">
-                                  <span v-bind="attrs" v-on="on">{{
-                                    item.commentaires
-                                  }}</span>
+                              <v-tooltip location="bottom">
+                                <template #activator="{ props }">
+                                  <span v-bind="props">
+                                    {{ item.commentaires }}
+                                  </span>
                                 </template>
                                 <span>{{ item.commentaires }}</span>
                               </v-tooltip>
                             </td>
                           </template>
-                          <template v-slot:[`item.statut`]="{ item }">
-                            <span class="pr-2">{{ item.statut }}</span>
 
-                            <v-tooltip bottom>
-                              <template v-slot:activator="{ on, attrs }">
-                                <span v-bind="attrs" v-on="on">
-                                  <FontAwesomeIcon :icon="['fas', 'info-circle']" />
+                          <template #item.statut="{ item }">
+                            <span class="pr-2">{{ item.statut }}</span>
+                            <v-tooltip location="bottom">
+                              <template #activator="{ props }">
+                                <span v-bind="props">
+                                  <FontAwesomeIcon :icon="faCircleInfo" />
                                 </span>
                               </template>
-                              <span v-if="item.statut.includes('Validé')">{{
-                                infobulleValid
-                              }}</span>
+                              <span v-if="item.statut.includes('Validé')">{{ infobulleValid }}</span>
                               <span v-if="item.statut.includes('Attestation')">{{ infobulleAttestation }}</span>
-                              <span v-if="item.statut.includes('attente')">{{
-                                infobulleAttente
-                              }}</span>
+                              <span v-if="item.statut.includes('attente')">{{ infobulleAttente }}</span>
                             </v-tooltip>
                           </template>
-                          <template v-slot:[`item.action`]="{ item }">
-                            <v-btn v-if="isAdmin &&
-                              $store.getters.getCurrentEtablissement()
-                                .statut == 'Validé'
-                              " class="ma-0 pa-0 bouton-simple " icon title="Examiner" @click.stop="openDialog(item)">
-                              <FontAwesomeIcon :icon="['fas', 'search']" />
+
+                          <template #item.action="{ item }">
+                            <v-btn
+                              v-if="isAdmin && getCurrentEtab.statut == 'Validé'"
+                              class="ma-0 pa-0 bouton-simple "
+                              icon
+                              title="Examiner"
+                              @click.stop="openDialog(item)"
+                            >
+                              <FontAwesomeIcon :icon="faMagnifyingGlass" />
                             </v-btn>
-                            <v-btn v-if="!isAdmin" class="ma-0 pa-0 bouton-simple " icon :loading="buttlonLoading"
-                              title="Supprimer" @click="supprimerIP(item.id, item.ip)">
-                              <FontAwesomeIcon :icon="['fas', 'times']" class="fa-orange" />
+                            <v-btn
+                              v-if="!isAdmin"
+                              class="ma-0 pa-0 bouton-simple "
+                              icon
+                              :loading="buttlonLoading"
+                              title="Supprimer"
+                              @click="supprimerIP(item.id, item.ip)"
+                            >
+                              <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
                             </v-btn>
                           </template>
-                        </v-data-table>
+                        </VDataTable>
                       </v-col>
                     </v-row>
 
                     <v-row>
                       <v-col>
                         <div style="float: right;" class="actions" v-if="isAdmin">
-                          <v-btn @click="clearActions" class="btn-6"><span class="btnText">Annuler</span>
+                          <v-btn @click="clearActions" class="btn-6">
+                            <span class="btnText">Annuler</span>
                           </v-btn>
-                          <v-btn @click="dispatchAllAction" :loading="buttlonLoading"><span class="btnText">Enregistrer
-                              mes actions</span>
-                            <FontAwesomeIcon :icon="faArrowCircleRight" />
+                          <v-btn @click="dispatchAllAction" :loading="buttlonLoading">
+                            <span class="btnText">Enregistrer mes actions</span>
+                            <FontAwesomeIcon :icon="faCircleArrowRight" />
                           </v-btn>
                         </div>
                       </v-col>
@@ -168,14 +209,16 @@
         </v-col>
       </v-row>
     </v-card>
+
     <v-col cols="12" style="padding: 24px;" v-if="!isAdmin">
       <v-row>
         <v-col cols="1" xs="0" />
         <v-col cols="10" xs="12">
-          <infos-i-ps v-if="!isAdmin" :class="[$vuetify.breakpoint.mdAndDown ? 'compact-form' : '']"></infos-i-ps>
+          <infos-i-ps :class="[breakpointMdAndDown ? 'compact-form' : '']"></infos-i-ps>
         </v-col>
       </v-row>
     </v-col>
+
     <v-dialog v-model="dialog" max-width="800px">
       <v-card>
         <v-card-title>
@@ -189,52 +232,63 @@
           <h3>Whois</h3>
           <v-expansion-panels focusable accordion>
             <v-expansion-panel>
-              <v-expansion-panel-header>
+              <v-expansion-panel-title>
                 <span v-if="checkIfWhoIsRenater(whoIs)">L'adresse <span v-if="whoIs2 !== ''">de début </span>fait
                   partie du réseau RENATER
                   <span style="padding: 5px;" />
-                  <FontAwesomeIcon :icon="['fas', 'check']" />
+                  <FontAwesomeIcon :icon="faCheck" />
                 </span>
                 <span v-else>L'adresse <span v-if="whoIs2 !== ''">de début </span> ne fait
                   pas partie du réseau RENATER<span style="padding: 5px;" />
-                  <FontAwesomeIcon :icon="['fas', 'times']" />
+                  <FontAwesomeIcon :icon="faXmark" />
                 </span>
                 Afficher/Cacher WhoIS
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
+              </v-expansion-panel-title>
+              <v-expansion-panel-text>
                 <p><span v-html="highlightRenater(whoIs)"></span></p>
-              </v-expansion-panel-content>
+              </v-expansion-panel-text>
             </v-expansion-panel>
             <v-expansion-panel v-if="whoIs2 !== ''">
-              <v-expansion-panel-header>
+              <v-expansion-panel-title>
                 <span v-if="checkIfWhoIsRenater(whoIs2)">L'adresse de fin fait partie du réseau RENATER
                   <span style="padding: 5px;" />
-                  <FontAwesomeIcon :icon="['fas', 'check']" />
+                  <FontAwesomeIcon :icon="faCheck" />
                 </span>
                 <span v-else>L'adresse de fin ne fait pas partie du réseau RENATER<span style="padding: 5px;" />
-                  <FontAwesomeIcon :icon="['fas', 'times']" />
+                  <FontAwesomeIcon :icon="faXmark" />
                 </span>
                 Afficher/Cacher WhoIS
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
+              </v-expansion-panel-title>
+              <v-expansion-panel-text>
                 <p><span v-html="highlightRenater(whoIs2)"></span></p>
-              </v-expansion-panel-content>
+              </v-expansion-panel-text>
             </v-expansion-panel>
           </v-expansion-panels>
           <br />
           <h3>Commentaire admin</h3>
-          <v-textarea outlined auto-grow counter="4000" :rules="rulesForm.commentaireAdmin" rows="2"
-            label="Raisons de la suppression" v-model="commentaires" clearable></v-textarea>
+          <v-textarea
+            variant="outlined"
+            auto-grow
+            counter="4000"
+            :rules="rulesForm.commentaireAdmin"
+            rows="2"
+            label="Raisons de la suppression"
+            v-model="commentaires"
+            clearable
+          />
         </v-card-text>
         <v-card-actions>
           <v-row>
             <v-col>
               <div style="float: right" class="actions">
-                <v-btn @click="
-                  dialog = false;
-                currentIPid = '';
-                commentaires = '';
-                " class="btn-6">
+                <v-btn
+                  @click="
+                    dialog = false;
+                    currentIPid = '';
+                    commentaires = '';
+                  "
+                  class="btn-6"
+                >
                   Annuler
                 </v-btn>
                 <v-btn @click="addActionToBuffer('SUPPRIMER')" class="btn-5">
@@ -254,8 +308,10 @@
     </v-dialog>
   </div>
 </template>
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import moment from "moment";
 import { Logger } from "@/utils/Logger";
 import { iPService } from "@/core/service/licencesnationales/IPService";
@@ -266,557 +322,465 @@ import { AxiosResponse } from "axios";
 import { rulesForms } from "@/core/RulesForm";
 import InfosIPs from "@/components/ip/InfosIPs.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faArrowCircleRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faCircleArrowRight,
+  faCircleInfo,
+  faCirclePlus,
+  faDownload,
+  faMagnifyingGlass,
+  faReply,
+  faXmark
+} from "@fortawesome/free-solid-svg-icons";
+import { useAuthStore } from "@/stores/authStore";
+import { useMessageStore } from "@/stores/messageStore";
+import { useEtablissementStore } from "@/stores/etablissementStore";
+import { VDataTable } from "vuetify/components";
+import { useDisplay } from "vuetify";
 
-const ListeAccesProps = Vue.extend({
-  props: {
-    sirenEtabSiAdmin: {
-      type: String,
-      default: ""
-    }
+const props = defineProps<{
+  sirenEtabSiAdmin?: string;
+}>();
+
+const authStore = useAuthStore();
+const messageStore = useMessageStore();
+const etablissementStore = useEtablissementStore();
+const router = useRouter();
+const { mdAndDown } = useDisplay();
+
+const rulesForm = rulesForms;
+const refreshKey = ref(0);
+const statut = ref("");
+const type = ref("");
+const selectStatut = ref<Array<string>>([
+  "En attente d'attestation",
+  "IP Validée par l'Abes",
+  "En attente d'examen par l'Abes",
+  "Tous"
+]);
+const selectType = ref<Array<string>>([
+  "IPV4",
+  "IPV6",
+  "Plage IPV4",
+  "Plage IPV6",
+  "Tous"
+]);
+const rechercher = ref("");
+const acces = ref<Array<any>>([]);
+const whoIs = ref("");
+const whoIs2 = ref("");
+const currentIP = ref<any>({});
+const bufferActions = ref<Array<any>>([]);
+const error = ref("");
+const dialog = ref(false);
+const isExportLoading = ref(false);
+const buttlonLoading = ref(false);
+const notification = ref("");
+const commentaires = ref("");
+const headers = ref<any[]>([]);
+const dataLoading = ref(true);
+const currentIPid = ref("");
+const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
+
+const infobulleAttente =
+  "IP transmise aux éditeurs et à l'Inist si validée par l'Abes";
+const infobulleAttestation =
+  "IP transmise aux éditeurs et à l'Inist après réception de l'attestation";
+const infobulleValid =
+  "IP transmise aux éditeurs et à l’Inist à chaque fin de mois";
+
+const currentEtabNom = computed(
+  () => etablissementStore.getCurrentEtablissement.nom
+);
+const isAdmin = computed(() => authStore.isAdmin);
+const breakpointMdAndDown = computed(() => mdAndDown.value);
+const getCurrentEtab = computed(() => etablissementStore.getCurrentEtablissement);
+
+const filteredAccesByType = computed(() => {
+  const conditions: Array<(value: any) => boolean> = [];
+  if (type.value) {
+    conditions.push(filterType);
   }
+  if (conditions.length > 0) {
+    return acces.value.filter(accesItem =>
+      conditions.every(condition => condition(accesItem))
+    );
+  }
+  return acces.value;
 });
 
-@Component({
-  components: { InfosIPs, ConfirmPopup }
-})
-export default class ListeAcces extends ListeAccesProps {
-  public metaInfo(): any {
-    return {
-      meta: [
-        {
-          name: "description",
-          content: "Liste des IPs de l'application des Licences Nationales"
-        }
-      ],
-      title: "Mes IPs - Licences Nationales"
-    };
+const filteredAccesByStatut = computed(() => {
+  const conditions: Array<(value: any) => boolean> = [];
+  if (statut.value) {
+    conditions.push(filterStatut);
   }
-
-  rulesForm: any = rulesForms;
-  refreshKey: number = 0;
-  statut: string = "";
-  type: string = "";
-  selectStatut: Array<string> = [
-    "En attente d'attestation",
-    "IP Validée par l'Abes",
-    "En attente d'examen par l'Abes",
-    "Tous"
-  ];
-  selectType: Array<string> = [
-    "IPV4",
-    "IPV6",
-    "Plage IPV4",
-    "Plage IPV6",
-    "Tous"
-  ];
-  rechercher: string = "";
-  acces: Array<any> = [];
-  title: string = "";
-  id: string = "";
-  whoIs: string = "";
-  whoIs2: string = "";
-  currentIP: any = "";
-  bufferActions: Array<any> = [];
-  error: string = "";
-  dialog: boolean = false;
-  isExportLoading: boolean = false;
-  buttlonLoading: boolean = false;
-  notification: string = "";
-  commentaires: string = "";
-  headers = [{}];
-  dataLoading: boolean = true;
-
-  infobulleAttente: string =
-    "IP transmise aux éditeurs et à l'Inist si validée par l'Abes";
-  infobulleAttestation: string =
-    "IP transmise aux éditeurs et à l'Inist après réception de l'attestation";
-  infobulleValid: string =
-    "IP transmise aux éditeurs et à l’Inist à chaque fin de mois";
-
-  get getUserSiren() {
-    return this.$store.state.user.siren;
+  if (conditions.length > 0) {
+    return filteredAccesByType.value.filter(accesItem =>
+      conditions.every(condition => condition(accesItem))
+    );
   }
+  return filteredAccesByType.value;
+});
 
-  get currentEtabNom() {
-    return this.$store.getters.getCurrentEtablissement().nom;
+onMounted(() => {
+  moment.locale("fr");
+  collecterAcces();
+  setHeaders();
+});
+
+function setHeaders() {
+  if (isAdmin.value) {
+    headers.value = [
+      {
+        title: "Date de saisie",
+        align: "start",
+        key: "dateCreation",
+        sortable: true,
+        width: "9%"
+      },
+      {
+        title: "Type d'IP",
+        key: "typeIp",
+        sortable: true,
+        width: "9%"
+      },
+      { title: "Valeur", key: "ip", sortable: true, width: "20%" },
+      { title: "Statut", key: "statut", sortable: true, width: "13%" },
+      { title: "Action", key: "buffer", sortable: false, width: "13%" },
+      {
+        title: "Dernière action de l’Abes",
+        key: "dateModification",
+        sortable: true,
+        width: "10%"
+      },
+      {
+        title: "Précision sur l’IP",
+        key: "commentaires",
+        sortable: true,
+        width: "17%"
+      },
+      { title: "Examiner", key: "action", sortable: false, width: "9%" }
+    ];
+  } else {
+    headers.value = [
+      {
+        title: "Date de saisie",
+        align: "start",
+        key: "dateCreation",
+        sortable: true,
+        width: "9%"
+      },
+      {
+        title: "Type d'IP",
+        key: "typeIp",
+        sortable: true,
+        width: "20%"
+      },
+      { title: "Valeur", key: "ip", sortable: true, width: "15%" },
+      { title: "Statut", key: "statut", sortable: true, width: "15%" },
+      {
+        title: "Dernière action de l’Abes",
+        key: "dateModification",
+        sortable: true,
+        width: "15%"
+      },
+      {
+        title: "Précision sur l’IP",
+        key: "commentaires",
+        sortable: true,
+        width: "17%"
+      },
+      { title: "Supprimer", key: "action", sortable: false, width: "10%" }
+    ];
   }
+}
 
-  get isAdmin() {
-    return this.$store.getters.isAdmin();
+function filterStatut(statutRecherche: any) {
+  return statutRecherche.statut.toString().includes(statut.value);
+}
+
+function filterType(typeRecherche: any) {
+  return typeRecherche.typeIp.toString() === type.value;
+}
+
+function getAll() {
+  if (isAdmin.value) {
+    return iPService.getListIPEtab(
+      authStore.getToken,
+      etablissementStore.getCurrentEtablissement.siren
+    );
   }
+  return iPService.getListIP(authStore.getToken, authStore.user.siren);
+}
 
-  get filteredAccesByStatut(): string[] {
-    const conditions = [] as any;
-    if (this.statut) {
-      conditions.push(this.filterStatut);
-    }
-    if (conditions.length > 0) {
-      return this.filteredAccesByType.filter(acces => {
-        return conditions.every(condition => {
-          return condition(acces);
-        });
+function collecterAcces(): void {
+  getAll()
+    .then(response => {
+      acces.value = response.data.map(affichageAcces);
+    })
+    .catch(err => {
+      Logger.error(err);
+      error.value = err.response?.data?.message ?? err.message;
+    })
+    .finally(() => {
+      dataLoading.value = false;
+    });
+}
+
+function affichageAcces(accesItem: any) {
+  let typeAcces = "";
+  if (accesItem.typeAcces === "range") typeAcces = "Plage ";
+  return {
+    id: accesItem.id,
+    dateCreation: moment(accesItem.dateCreation).format("L"),
+    dateModification: getDateModification(accesItem),
+    typeIp: typeAcces + accesItem.typeIp,
+    typeAcces: accesItem.typeAcces,
+    ip: accesItem.ip,
+    statut: accesItem.statut,
+    commentaires: accesItem.commentaires
+  };
+}
+
+function getDateModification(accesItem: any) {
+  if (accesItem.dateModification === null) return accesItem.dateModification;
+  return moment(accesItem.dateModification).format("L");
+}
+
+function openDialog(item: any): void {
+  clearAlerts();
+  fetchwhoIs(item);
+  dialog.value = true;
+  currentIP.value = item;
+}
+
+function fetchwhoIs(item: any): void {
+  whoIs.value = "";
+  whoIs2.value = "";
+
+  if (item.typeAcces === "ip") {
+    iPService
+      .getWhoIs(authStore.getToken, item.ip)
+      .then(res => {
+        whoIs.value = res.data;
+      })
+      .catch(() => {
+        Logger.error("Impossible d'exécuter le WhoIS");
       });
-    }
-    return this.filteredAccesByType;
-  }
-
-  get filteredAccesByType(): string[] {
-    const conditions = [] as any;
-    if (this.type) {
-      conditions.push(this.filterType);
-    }
-    if (conditions.length > 0) {
-      return this.acces.filter(acces => {
-        return conditions.every(condition => {
-          return condition(acces);
-        });
+  } else {
+    const ips = splitRangeIntoIPs(item.typeIp, item.ip);
+    iPService
+      .getWhoIs(authStore.getToken, ips[0])
+      .then(res => {
+        whoIs.value = res.data;
+      })
+      .catch(() => {
+        Logger.error("Impossible d'exécuter le WhoIS");
       });
+    iPService
+      .getWhoIs(authStore.getToken, ips[1])
+      .then(res => {
+        whoIs2.value = res.data;
+      })
+      .catch(() => {
+        Logger.error("Impossible d'exécuter le WhoIS");
+      });
+  }
+}
+
+function splitRangeIntoIPs(typeIP: string, range: string): string[] {
+  let ip1 = "";
+  let ip2 = "";
+
+  if (typeIP === "Plage IPV4") {
+    range.split(".").forEach(element => {
+      if (element.includes("-")) {
+        const tabSplit = element.split("-");
+        ip1 += "." + tabSplit[0];
+        ip2 += "." + tabSplit[1];
+      } else {
+        ip1 += "." + element;
+        ip2 += "." + element;
+      }
+    });
+  } else {
+    range.split(":").forEach(element => {
+      if (element.includes("-")) {
+        const tabSplit = element.split("-");
+        ip1 += ":" + tabSplit[0];
+        ip2 += ":" + tabSplit[1];
+      } else {
+        ip1 += ":" + element;
+        ip2 += ":" + element;
+      }
+    });
+  }
+
+  ip1 = ip1.substring(1);
+  ip2 = ip2.substring(1);
+  return [ip1, ip2];
+}
+
+function checkIfWhoIsRenater(whoIsValue: string): boolean {
+  return whoIsValue.toLowerCase().includes("renater");
+}
+
+function highlightRenater(whoIsValue: string) {
+  return whoIsValue
+    .replaceAll("renater", "<mark>renater</mark>")
+    .replaceAll("RENATER", "<mark>RENATER</mark>");
+}
+
+function dispatchAllAction(): void {
+  updateIP()
+    .then(() => {
+      notification.value = "Actions effectuées";
+    })
+    .catch(err => {
+      Logger.debug(err);
+      error.value = err.response?.data?.message ?? err.message;
+    })
+    .finally(() => {
+      collecterAcces();
+      clearActions();
+      buttlonLoading.value = false;
+    });
+}
+
+function updateIP(): Promise<AxiosResponse> {
+  buttlonLoading.value = true;
+  return iPService.updateIP(
+    authStore.getToken,
+    etablissementStore.getCurrentEtablissement.siren,
+    bufferActions.value
+  );
+}
+
+function addActionToBuffer(action: string): void {
+  bufferActions.value.push({
+    idIp: currentIP.value.id,
+    action: action,
+    ip: currentIP.value.ip,
+    commentaire: commentaires.value
+  });
+  addActionToDatatable(action, currentIP.value.id);
+  commentaires.value = "";
+  dialog.value = false;
+  refreshKey.value++;
+}
+
+function addActionToDatatable(action: string, id: number) {
+  acces.value.forEach(element => {
+    if (element.id === id) {
+      element.buffer = action;
     }
-    return this.acces;
-  }
+  });
+}
 
-  mounted() {
-    moment.locale("fr");
-    this.collecterAcces();
-    this.id = this.getIdAcces(this.acces);
-    this.setHeaders();
-  }
+async function supprimerIP(IDip: string, ip: string) {
+  const confirmed = await confirmRef.value?.open(
+    `Vous êtes sur le point de supprimer définitivement l'adresse IP ou plage d'adresses IP ${ip}
 
-  setHeaders() {
-    if (this.isAdmin) {
-      this.headers = [
-        {
-          text: "Date de saisie",
-          align: "start",
-          value: "dateCreation",
-          sortable: true,
-          width: "9%"
-        },
-        {
-          text: "Type d'IP",
-          value: "typeIp",
-          sortable: true,
-          width: "9%"
-        },
-        { text: "Valeur", value: "ip", sortable: true, width: "20%" },
-        { text: "Statut", value: "statut", sortable: true, width: "13%" },
-        { text: "Action", value: "buffer", sortable: false, width: "13%" },
-        {
-          text: "Dernière action de l’Abes",
-          value: "dateModification",
-          sortable: true,
-          width: "10%"
-        },
-        {
-          text: "Précision sur l’IP",
-          value: "commentaires",
-          sortable: true,
-          width: "17%"
-        },
-        { text: "Examiner", value: "action", sortable: false, width: "9%" }
-      ];
-    } else {
-      this.headers = [
-        {
-          text: "Date de saisie",
-          align: "start",
-          value: "dateCreation",
-          sortable: true,
-          width: "9%"
-        },
-        {
-          text: "Type d'IP",
-          value: "typeIp",
-          sortable: true,
-          width: "20%"
-        },
-        { text: "Valeur", value: "ip", sortable: true, width: "15%" },
-        { text: "Statut", value: "statut", sortable: true, width: "15%" },
-        {
-          text: "Dernière action de l’Abes",
-          value: "dateModification",
-          sortable: true,
-          width: "15%"
-        },
-        {
-          text: "Précision sur l’IP",
-          value: "commentaires",
-          sortable: true,
-          width: "17%"
-        },
-        { text: "Supprimer", value: "action", sortable: false, width: "10%" }
-      ];
-    }
-  }
+                Etes-vous sûr de vouloir effectuer cette action ?`
+  );
+  if (confirmed) {
+    buttlonLoading.value = true;
+    clearAlerts();
 
-  getIdAcces(acces): any {
-    return {
-      id: acces.id
-    };
-  }
-
-  filterStatut(statutRecherche) {
-    return statutRecherche.statut.toString().includes(this.statut);
-  }
-
-  filterType(typeRecherche) {
-    return typeRecherche.typeIp.toString() === this.type;
-  }
-
-  getAll() {
-    if (this.isAdmin)
-      return iPService.getListIPEtab(
-        this.$store.getters.getToken(),
-        this.$store.getters.getCurrentEtablissement().siren
-      );
-    else
-      return iPService.getListIP(
-        this.$store.getters.getToken(),
-        this.getUserSiren
-      );
-  }
-
-  collecterAcces(): void {
-    this.getAll()
-      .then(response => {
-        this.acces = response.data.map(this.affichageAcces);
+    iPService
+      .deleteIP(authStore.getToken, IDip)
+      .then(() => {
+        notification.value = "IP supprimée.";
       })
       .catch(err => {
         Logger.error(err);
-        this.error = err.response.data.message;
+        error.value = err.message;
       })
       .finally(() => {
-        this.dataLoading = false;
+        buttlonLoading.value = false;
+        collecterAcces();
       });
   }
+}
 
-  affichageAcces(acces) {
-    let typeAcces = "";
-    if (acces.typeAcces === "range") typeAcces = "Plage ";
-    return {
-      id: acces.id,
-      dateCreation: moment(acces.dateCreation).format("L"),
-      dateModification: this.getDateModification(acces),
-      typeIp: typeAcces + acces.typeIp,
-      typeAcces: acces.typeAcces,
-      ip: acces.ip,
-      statut: acces.statut,
-      commentaires: acces.commentaires
-    };
-  }
-
-  getDateModification(acces) {
-    if (acces.dateModification === null) return acces.dateModification;
-    else return moment(acces.dateModification).format("L");
-  }
-
-  openDialog(item): void {
-    this.clearAlerts();
-    this.fetchwhoIs(item);
-    this.dialog = true;
-    this.currentIP = item;
-  }
-
-  fetchwhoIs(item): void {
-    this.whoIs = "";
-    this.whoIs2 = "";
-
-    if (item.typeAcces === "ip") {
-      iPService
-        .getWhoIs(this.$store.getters.getToken(), item.ip)
-        .then(res => {
-          this.whoIs = res.data;
-        })
-        .catch(() => {
-          Logger.error("Impossible d'exécuter le WhoIS");
-        });
-    } else {
-      const ips = this.splitRangeIntoIPs(item.typeIp, item.ip);
-      iPService
-        .getWhoIs(this.$store.getters.getToken(), ips[0])
-        .then(res => {
-          this.whoIs = res.data;
-        })
-        .catch(() => {
-          Logger.error("Impossible d'exécuter le WhoIS");
-        });
-      iPService
-        .getWhoIs(this.$store.getters.getToken(), ips[1])
-        .then(res => {
-          this.whoIs2 = res.data;
-        })
-        .catch(() => {
-          Logger.error("Impossible d'exécuter le WhoIS");
-        });
+function RowClasses(item: any) {
+  let action = "";
+  bufferActions.value.forEach(element => {
+    if (element.ip === item.ip) {
+      action = element.action;
     }
-  }
+  });
+  return action;
+}
 
-  splitRangeIntoIPs(typeIP: string, range: string): string[] {
-    let ip1 = "";
-    let ip2 = "";
-
-    if (typeIP === "Plage IPV4") {
-      range.split(".").forEach(element => {
-        if (element.includes("-")) {
-          const tabSplit = element.split("-");
-          ip1 += "." + tabSplit[0];
-          ip2 += "." + tabSplit[1];
-        } else {
-          ip1 += "." + element;
-          ip2 += "." + element;
-        }
-      });
-    } else {
-      range.split(":").forEach(element => {
-        if (element.includes("-")) {
-          const tabSplit = element.split("-");
-          ip1 += ":" + tabSplit[0];
-          ip2 += ":" + tabSplit[1];
-        } else {
-          ip1 += ":" + element;
-          ip2 += ":" + element;
-        }
-      });
+function clearActions() {
+  bufferActions.value = [];
+  refreshKey.value++;
+  acces.value.forEach(element => {
+    if (element.buffer !== undefined) {
+      delete element.buffer;
     }
+  });
+}
 
-    ip1 = ip1.substring(1);
-    ip2 = ip2.substring(1);
-    return [ip1, ip2];
+function clearAlerts() {
+  notification.value = "";
+  error.value = "";
+}
+
+function getSirenEtabSujet() {
+  if (isAdmin.value && props.sirenEtabSiAdmin) {
+    return etablissementStore.getCurrentEtablissement.siren;
   }
+  return authStore.user.siren;
+}
 
-  checkIfWhoIsRenater(whoIs: string): boolean {
-    if (whoIs.toLowerCase().includes("renater")) {
-      return true;
-    }
-    return false;
-  }
+function eventStatutChoice(element: string): void {
+  statut.value = element === "Tous" ? "" : element;
+}
 
-  highlightRenater(whoIs: string) {
-    return whoIs
-      .replaceAll("renater", "<mark>renater</mark>")
-      .replaceAll("RENATER", "<mark>RENATER</mark>");
-  }
+function eventTypeChoice(element: string): void {
+  type.value = element === "Tous" ? "" : element;
+}
 
-  dispatchAllAction(): void {
-    this.updateIP()
-      .then(() => {
-        this.notification = "Actions effectuées";
-      })
-      .catch(err => {
-        Logger.debug(err);
-        this.error = err.response.data.message;
-      })
-      .finally(() => {
-        this.collecterAcces();
-        this.clearActions();
-        this.buttlonLoading = false;
-      });
-  }
+function downloadIPs(): void {
+  isExportLoading.value = true;
+  const ids = acces.value.map(element => element.id);
+  iPService
+    .downloadIps(ids, authStore.user.token)
+    .then(response => {
+      const fileURL = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/csv" })
+      );
+      const fileLink = document.createElement("a");
 
-  updateIP(): Promise<AxiosResponse> {
-    this.buttlonLoading = true;
-    return iPService.updateIP(
-      this.$store.getters.getToken(),
-      this.$store.getters.getCurrentEtablissement().siren,
-      this.bufferActions
-    );
-  }
+      fileLink.href = fileURL;
+      fileLink.setAttribute("download", "export.csv");
+      document.body.appendChild(fileLink);
 
-  addActionToBuffer(action: string): void {
-    this.bufferActions.push({
-      idIp: this.currentIP.id,
-      action: action,
-      ip: this.currentIP.ip,
-      commentaire: this.commentaires
-    });
-    this.addActionToDatatable(action, this.currentIP.id);
-    this.commentaires = "";
-    this.dialog = false;
-    this.refreshKey++;
-  }
+      fileLink.click();
 
-  addActionToDatatable(action: string, id: number) {
-    this.acces.forEach(element => {
-      if (element.id === id) {
-        element.buffer = action;
+      isExportLoading.value = false;
+    })
+    .catch(err => {
+      Logger.error(err.toString());
+      const message = new Message();
+      message.type = MessageType.ERREUR;
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
       }
+      message.isSticky = true;
+
+      messageStore.openDisplayedMessage(message);
+      isExportLoading.value = false;
     });
-  }
+}
 
-  // Suppression par un USER
-  async supprimerIP(IDip: string, ip: string) {
-    const confirmed = await (this.$refs.confirm as ConfirmPopup).open(
-      `Vous êtes sur le point de supprimer définitivement l'adresse IP ou plage d'adresses IP ${ip}
-
-                Etes-vous sûr de vouloir effectuer cette action ?`
-    );
-    if (confirmed) {
-      this.buttlonLoading = true;
-      this.clearAlerts();
-
-      iPService
-        .deleteIP(this.$store.getters.getToken(), IDip)
-        .then(() => {
-          this.notification = "IP supprimée.";
-        })
-        .catch(err => {
-          Logger.error = err;
-          this.error = err.message;
-        })
-        .finally(() => {
-          this.buttlonLoading = false;
-          this.collecterAcces();
-        });
-    }
-  }
-
-  RowClasses(item) {
-    let action = "";
-    this.bufferActions.forEach(element => {
-      if (element.ip === item.ip) {
-        action = element.action;
-      }
-    });
-    return action;
-  }
-
-  clearActions() {
-    this.bufferActions = [];
-    this.refreshKey++;
-    this.acces.forEach(element => {
-      if (element.buffer !== undefined) {
-        delete element.buffer;
-      }
-    });
-  }
-
-  clearAlerts() {
-    this.notification = "";
-    this.error = "";
-  }
-
-  getSirenEtabSujet() {
-    if (this.isAdmin)
-      return this.$store.getters.getCurrentEtablissement().siren;
-    else return this.getUserSiren;
-  }
-
-  downloadIPs(): void {
-    this.isExportLoading = true;
-    this.$store.dispatch("closeDisplayedMessage");
-    iPService
-      .downloadIPs(this.getSirenEtabSujet(), this.$store.state.user.token)
-      .then(response => {
-        const fileURL = window.URL.createObjectURL(
-          new Blob([response.data], { type: "application/csv" })
-        );
-        const fileLink = document.createElement("a");
-
-        fileLink.href = fileURL;
-        fileLink.setAttribute("download", "export.csv");
-        document.body.appendChild(fileLink);
-
-        fileLink.click();
-        this.isExportLoading = false;
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-        this.isExportLoading = false;
-      });
-  }
-
-  revenirInfosEtab(): void {
-    this.$router.push({ name: "AfficherEtablissement" }).catch(err => {
-      Logger.error(err);
-    });
-  }
-
-  eventStatutChoice(element: string): void {
-    if (element === "Tous") {
-      this.statut = "";
-    } else {
-      this.statut = element;
-    }
-    this.filteredAccesByStatut;
-  }
-
-  eventTypeChoice(element: string): void {
-    if (element === "Tous") {
-      this.type = "";
-    } else {
-      this.type = element;
-    }
-    this.filteredAccesByType;
-  }
+function revenirInfosEtab(): void {
+  router.push({ name: "AfficherEtablissement" });
 }
 </script>
 
 <style src="./style.css"></style>
-<style>
-h3 {
-  padding-top: 10px;
-}
-
-.row {
-  margin: 0 !important;
-}
-
-.truncate {
-  max-width: 1px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.v-data-table.row-height-50 td {
-  max-height: 48px !important;
-}
-
-.v-data-table {
-  background-color: transparent !important;
-}
-
-.theme--light .v-data-footer__icons-before .v-btn,
-.theme--light .v-data-footer__icons-after .v-btn,
-.theme--dark .v-data-footer__icons-after .v-btn,
-.theme--dark .v-data-footer__icons-before .v-btn {
-  background-color: transparent !important;
-}
-
-.btnText {
-  padding-right: 5px;
-}
-
-.actions .v-btn {
-  margin: 5px;
-}
-
-#addIpButton {
-  float: right;
-}
-
-.VALIDER {
-  background-color: #1cd74b60 !important;
-}
-
-.SUPPRIMER {
-  background-color: #ee492e4d !important;
-}
-
-.REJETER {
-  background-color: #155fab47 !important;
-}
-</style>

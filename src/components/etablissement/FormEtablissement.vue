@@ -28,7 +28,7 @@
           <v-alert variant="outlined">
             <div>
               <a @click="allerPageAccueil()">
-                <FontAwesomeIcon :icon="['fas', 'reply']" /> Revenir Çÿ la page
+                <FontAwesomeIcon :icon="faReply" /> Revenir Çÿ la page
                 d'accueil
               </a>
             </div>
@@ -38,7 +38,7 @@
           <v-col cols="12" md="6" lg="6" xl="6">
             <v-alert variant="outlined" density="compact">
               <FontAwesomeIcon
-                :icon="['fas', 'exclamation-triangle']"
+                :icon="faTriangleExclamation"
                 class="mx-2 icone-attention"
               />
               <h4 class="mb-1">
@@ -155,7 +155,7 @@
                     style="width: 100%"
                   >
                     <FontAwesomeIcon
-                      :icon="['fas', 'info-circle']"
+                      :icon="faCircleInfo"
                       class="fa-2x mr-5 mb-1 icone-information"
                     />
                     <a
@@ -244,6 +244,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useMessageStore } from "@/stores/messageStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import type { VForm } from "vuetify/components";
+import { faReply, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   action: ActionEnum;

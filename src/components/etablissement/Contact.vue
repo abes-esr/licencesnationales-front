@@ -103,7 +103,7 @@
               v-if="action === Action.CREATION"
             >
               <FontAwesomeIcon
-                :icon="['fas', 'info-circle']"
+                :icon="faCircleInfo"
                 class="fa-2x mr-5 mb-1 mt-2 icone-information"
               />
               Choisir de préférence un alias pérenne pour continuer de recevoir
@@ -191,6 +191,7 @@ import ContactEtablissement from "@/core/ContactEtablissement";
 import MotDePasse from "@/components/authentification/MotDePasse.vue";
 import { useRouter } from "vue-router";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
 // ---------- Props ----------
 interface Props {

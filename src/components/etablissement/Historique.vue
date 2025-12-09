@@ -1,187 +1,190 @@
 <template>
   <div>
-    <MessageBox></MessageBox>
-    <v-card flat>
+    <MessageBox />
+    <v-card variant="flat">
       <h1>Historique par établissement</h1>
-      <br />
-      <v-alert :value="message !== ''" dense type="error">
+
+      <v-alert
+        v-if="message"
+        type="error"
+        density="compact"
+        class="mt-4"
+      >
         {{ message }}
       </v-alert>
 
-      <v-form ref="searchForm">
+      <v-form ref="searchFormRef" class="mt-4">
         <v-row>
           <v-col cols="1" class="d-none d-md-flex"></v-col>
           <v-col cols="12" md="10">
             <v-card-text class="fondGris">
               <v-autocomplete
-                v-model="select"
+                v-model="selectedSiren"
                 :items="etabs"
-                item-text="nom"
+                item-title="nom"
                 item-value="siren"
                 label="Etablissement"
-                placeholder="Séléctionner un établissement"
+                placeholder="Sélectionner un établissement"
                 persistent-placeholder
-                outlined
-                filled
-                @change="getHistorique(select)"
-              ></v-autocomplete
-            ></v-card-text> </v-col
-        ></v-row>
+                variant="outlined"
+                density="comfortable"
+                @update:model-value="getHistorique"
+              />
+            </v-card-text>
+          </v-col>
+        </v-row>
       </v-form>
+
       <v-row>
         <v-col cols="1" class="d-none d-md-flex"></v-col>
         <v-col cols="12" md="10">
-          <v-tabs>
-            <v-tab>Etablissements</v-tab>
-            <v-tab>IPs</v-tab>
-            <v-tab-item
-              ><v-simple-table>
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th class="text-left">
-                        Date
-                      </th>
-                      <th class="text-left">
-                        Action
-                      </th>
-                      <th class="text-left">
-                        Informations
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="item in etabHisto" :key="item.date">
-                      <td>{{ item.date }}</td>
-                      <td>{{ item.event }}</td>
-                      <td>
-                        <span v-for="(value, name) in item" :key="name">
-                          <span
-                            v-if="
-                              value !== null &&
-                                name != 'event' &&
-                                name != 'date' &&
-                                name != 'siren'
-                            "
-                          >
-                            {{ name }} : {{ value }},&nbsp;
-                          </span>
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table></v-tab-item
-            >
-            <v-tab-item
-              ><v-simple-table>
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th class="text-left">
-                        Date
-                      </th>
-                      <th class="text-left">
-                        Action
-                      </th>
-                      <th class="text-left">
-                        Informations
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="item in ipHisto" :key="item.date">
-                      <td>{{ item.date }}</td>
-                      <td>{{ item.event }}</td>
-                      <td>
-                        <span v-for="(value, name) in item" :key="name">
-                          <span
-                            v-if="
-                              value !== null &&
-                                name != 'event' &&
-                                name != 'date'
-                            "
-                          >
-                            {{ name }} : {{ value }},&nbsp;
-                          </span>
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table></v-tab-item
-            >
+          <v-tabs v-model="tab" color="primary">
+            <v-tab value="etabs">Etablissements</v-tab>
+            <v-tab value="ips">IPs</v-tab>
           </v-tabs>
+
+          <v-window v-model="tab" class="mt-4">
+            <v-window-item value="etabs">
+              <v-table density="comfortable">
+                <thead>
+                  <tr>
+                    <th class="text-left">Date</th>
+                    <th class="text-left">Action</th>
+                    <th class="text-left">Informations</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in etabHisto" :key="item.date">
+                    <td>{{ item.date }}</td>
+                    <td>{{ item.event }}</td>
+                    <td>
+                      <span v-for="(value, name) in item" :key="name">
+                        <span
+                          v-if="
+                            value !== null &&
+                            name != 'event' &&
+                            name != 'date' &&
+                            name != 'siren'
+                          "
+                        >
+                          {{ name }} : {{ value }},&nbsp;
+                        </span>
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-window-item>
+
+            <v-window-item value="ips">
+              <v-table density="comfortable">
+                <thead>
+                  <tr>
+                    <th class="text-left">Date</th>
+                    <th class="text-left">Action</th>
+                    <th class="text-left">Informations</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in ipHisto" :key="item.date">
+                    <td>{{ item.date }}</td>
+                    <td>{{ item.event }}</td>
+                    <td>
+                      <span v-for="(value, name) in item" :key="name">
+                        <span
+                          v-if="
+                            value !== null &&
+                            name != 'event' &&
+                            name != 'date'
+                          "
+                        >
+                          {{ name }} : {{ value }},&nbsp;
+                        </span>
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-window-item>
+          </v-window>
         </v-col>
       </v-row>
     </v-card>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+import MessageBox from "@/components/common/MessageBox.vue";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { iPService } from "@/core/service/licencesnationales/IPService";
-import MessageBox from "@/components/common/MessageBox.vue";
-import Etablissement from "@/core/Etablissement";
 import { Message, MessageType } from "@/core/CommonDefinition";
+import { useAuthStore } from "@/stores/authStore";
+import { useMessageStore } from "@/stores/messageStore";
+import Etablissement from "@/core/Etablissement";
 
-@Component({
-  components: { MessageBox }
-})
-export default class Historique extends Vue {
-  etabs: Array<Etablissement> = [];
-  message: string = "";
-  select: string = "";
-  etabHisto: Array<any> = [];
-  ipHisto: Array<any> = [];
+const authStore = useAuthStore();
+const messageStore = useMessageStore();
 
-  mounted() {
-    this.collecterEtab();
+const etabs = ref<Array<Etablissement>>([]);
+const message = ref("");
+const selectedSiren = ref<string>("");
+const etabHisto = ref<Array<any>>([]);
+const ipHisto = ref<Array<any>>([]);
+const tab = ref<"etabs" | "ips">("etabs");
+const searchFormRef = ref();
+
+onMounted(() => {
+  collecterEtab();
+});
+
+function collecterEtab() {
+  messageStore.closeDisplayedMessage();
+  etablissementService
+    .getEtablissements(authStore.getToken)
+    .then(response => {
+      etabs.value = response;
+    })
+    .catch(err => {
+      const newMessage = new Message();
+      newMessage.type = MessageType.ERREUR;
+      newMessage.texte = "Impossible d'exécuter l'action : " + err.message;
+      newMessage.isSticky = true;
+      messageStore.openDisplayedMessage(newMessage);
+    });
+}
+
+function getHistorique(siren: string) {
+  if (!siren) {
+    etabHisto.value = [];
+    ipHisto.value = [];
+    return;
   }
 
-  collecterEtab(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    etablissementService
-      .getEtablissements(this.$store.getters.getToken())
-      .then(response => {
-        this.etabs = response;
-      })
-      .catch(err => {
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = "Impossible d'exécuter l'action : " + err.message;
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message);
-      });
-  }
+  etablissementService
+    .getHisto(siren, authStore.getToken)
+    .then(response => {
+      etabHisto.value = response.data;
+    })
+    .catch(err => {
+      const newMessage = new Message();
+      newMessage.type = MessageType.ERREUR;
+      newMessage.texte = err.message;
+      newMessage.isSticky = true;
+      messageStore.openDisplayedMessage(newMessage);
+    });
 
-  getHistorique(siren: string): void {
-    etablissementService
-      .getHisto(siren, this.$store.getters.getToken())
-      .then(response => {
-        this.etabHisto = response.data;
-      })
-      .catch(err => {
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err.message;
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message);
-      });
-
-    iPService
-      .getHisto(siren, this.$store.getters.getToken())
-      .then(response => {
-        this.ipHisto = response.data;
-      })
-      .catch(err => {
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err.message;
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message);
-      });
-  }
+  iPService
+    .getHisto(siren, authStore.getToken)
+    .then(response => {
+      ipHisto.value = response.data;
+    })
+    .catch(err => {
+      const newMessage = new Message();
+      newMessage.type = MessageType.ERREUR;
+      newMessage.texte = err.message;
+      newMessage.isSticky = true;
+      messageStore.openDisplayedMessage(newMessage);
+    });
 }
 </script>

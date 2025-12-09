@@ -18,7 +18,7 @@
           v-on:click="allerATableauDeBord()"
         >
           <v-list-item-action class="ma-0 pa-1">
-            <FontAwesomeIcon :icon="['fas', 'tachometer-alt']" size="2x" />
+            <FontAwesomeIcon :icon="faGaugeHigh" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Tableau de bord</v-list-item-title>
         </v-list-item>
@@ -30,7 +30,7 @@
           v-on:click="allerAListeEtabs()"
         >
           <v-list-item-action class="ma-0 pa-1">
-            <FontAwesomeIcon :icon="['fas', 'university']" size="2x" />
+            <FontAwesomeIcon :icon="faBuildingColumns" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Liste des établissements</v-list-item-title>
         </v-list-item>
@@ -42,7 +42,7 @@
           v-on:click="allerAListeEditeurs()"
         >
           <v-list-item-action class="ma-0 pa-1">
-            <FontAwesomeIcon :icon="['fas', 'list']" size="2x" />
+            <FontAwesomeIcon :icon="faList" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Liste des éditeurs</v-list-item-title>
         </v-list-item>
@@ -54,7 +54,7 @@
           v-on:click="allerAStatitique()"
         >
           <v-list-item-action class="ma-0 pa-1">
-            <FontAwesomeIcon :icon="['fas', 'chart-bar']" size="2x" />
+            <FontAwesomeIcon :icon="faChartBar" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Statistique de l'application</v-list-item-title>
         </v-list-item>
@@ -66,7 +66,7 @@
           v-on:click="allerAHistorique()"
         >
           <v-list-item-action class="ma-0 pa-1">
-            <FontAwesomeIcon :icon="['fas', 'history']" size="2x" />
+            <FontAwesomeIcon :icon="faClockRotateLeft" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Historique des actions</v-list-item-title>
         </v-list-item>
@@ -78,7 +78,7 @@
           v-on:click="allerRecherche()"
         >
           <v-list-item-action class="ma-0 pa-1">
-            <FontAwesomeIcon :icon="['fas', 'search']" size="2x" />
+            <FontAwesomeIcon :icon="faMagnifyingGlass" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Recherche</v-list-item-title>
         </v-list-item>
@@ -103,6 +103,14 @@
 import { useRouter } from "vue-router";
 import { Logger } from "@/utils/Logger";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import {
+  faBuildingColumns,
+  faChartBar,
+  faClockRotateLeft,
+  faGaugeHigh,
+  faList,
+  faMagnifyingGlass
+} from "@fortawesome/free-solid-svg-icons";
 
 // Props
 defineProps<{

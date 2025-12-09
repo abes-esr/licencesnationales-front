@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 </script>
@@ -10,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
         <v-col cols="1">
           <FontAwesomeIcon
             class="ma-4"
-            :icon="['fas', 'info-circle']"
+            :icon="faCircleInfo"
             size="3x"
             :style="{ color: '#478dcb' }"
         /></v-col>

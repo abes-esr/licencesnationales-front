@@ -41,7 +41,7 @@
       </v-card-text>
       <v-card-actions class="pa-0">
         <v-btn class="ma-0 pa-0 bouton-simple" icon x-large @click="remove()">
-          <FontAwesomeIcon :icon="['fas', 'times']" class="fa-orange" />
+        <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
         </v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>
@@ -55,6 +55,7 @@ import { ContactType } from "@/core/CommonDefinition";
 import ContactEditeur from "@/core/ContactEditeur";
 import { rulesForms } from "@/core/RulesForm";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 // Props
 const props = defineProps<{
@@ -105,6 +106,8 @@ function clear(): void {
     formRef.value.resetValidation();
   }
 }
+
+defineExpose({ validate, clear });
 </script>
 
 <style scoped lang="scss">

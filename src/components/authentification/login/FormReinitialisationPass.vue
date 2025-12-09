@@ -52,7 +52,7 @@
               <v-card-actions>
                 <v-col cols="8"> </v-col>
                 <a @click="revenirPageAccueil">
-                  <FontAwesomeIcon :icon="['fas', 'reply']" />&nbsp;Revenir à la page d'accueil
+                  <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir à la page d'accueil
                 </a>
               </v-card-actions>
             </v-form>
@@ -76,6 +76,7 @@ import MotDePasse from "@/components/authentification/MotDePasse.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useMessageStore } from "@/stores/messageStore";
 import type { VForm } from "vuetify/components";
+import { faReply } from "@fortawesome/free-solid-svg-icons";
 
 const router = useRouter();
 const messageStore = useMessageStore();

@@ -19,10 +19,10 @@
             </span>
             <v-btn class="btn-2" href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
               target="_blank">Vérifier l'éligibilité
-              <FontAwesomeIcon :icon="faQuestionCircle" class="mx-2" style="font-size: 1.1rem" />
+              <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
             <v-btn class="btn-2" @click="creerCompte">Créer un compte
-              <FontAwesomeIcon :icon="faPlusCircle" class="mx-2" style="font-size: 1.1rem" />
+              <FontAwesomeIcon :icon="faCirclePlus" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
           </div>
         </v-col>
@@ -40,7 +40,7 @@ import { useMessageStore } from "@/stores/messageStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { useRouter } from "vue-router";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faPlusCircle, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlus, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 
 // Store & Router
 const authStore = useAuthStore();

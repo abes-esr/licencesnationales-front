@@ -8,22 +8,22 @@
   >
     <FontAwesomeIcon
       v-if="getSnackbarType == MessageType.ERREUR"
-      :icon="['fas', 'ban']"
+      :icon="faBan"
       class="fa-lg mr-5 mb-1 mt-2 icone-erreur"
     />
     <FontAwesomeIcon
       v-if="getSnackbarType == MessageType.VALIDATION"
-      :icon="['fas', 'check-circle']"
+      :icon="faCircleCheck"
       class="fa-lg mr-5 mb-1 mt-2 icone-validation"
     />
     <FontAwesomeIcon
       v-if="getSnackbarType == MessageType.AVERTISSEMENT"
-      :icon="['fas', 'ban']"
+      :icon="faTriangleExclamation"
       class="fa-lg mr-5 mb-1 mt-2 icone-avertissement"
     />
     <FontAwesomeIcon
       v-if="getSnackbarType == MessageType.INFORMATION"
-      :icon="['fas', 'ban']"
+      :icon="faCircleInfo"
       class="fa-lg mr-5 mb-1 mt-2 icone-information"
     />
     <span v-for="m in getSnackbarText" v-bind:key="m" v-html="m"></span>
@@ -36,7 +36,7 @@
         @click="closeSnackBar()"
       >
         <FontAwesomeIcon
-          :icon="['fas', 'times']"
+          :icon="faXmark"
           class="fa-lg mx-2 icone-fermer"
         />
       </v-btn>
@@ -49,6 +49,13 @@ import { computed } from "vue";
 import { useMessageStore } from "@/stores/messageStore"; // à adapter si ton store a un autre nom
 import { MessageType } from "@/core/CommonDefinition";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import {
+  faBan,
+  faCircleCheck,
+  faCircleInfo,
+  faTriangleExclamation,
+  faXmark
+} from "@fortawesome/free-solid-svg-icons";
 
 // Store Pinia
 const messageStore = useMessageStore();

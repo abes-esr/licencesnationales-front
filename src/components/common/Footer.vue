@@ -18,13 +18,13 @@
 
             <v-btn href="https://www.licencesnationales.fr/" target="_blank" class="footer-btn mx-2 text-center">
               <span class="texte">Site Licences nationales</span>
-              <FontAwesomeIcon :icon="faArrowCircleRight" class="mx-2" />
+              <FontAwesomeIcon :icon="faCircleArrowRight" class="mx-2" />
             </v-btn>
 
             <v-btn href="https://documentation.abes.fr/aidelicencesnationales/index.html" target="_blank"
               class="footer-btn mx-2 text-center">
               <span class="texte">Documentation</span>
-              <FontAwesomeIcon :icon="faQuestion" class="mx-2" />
+              <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" />
             </v-btn>
           </div>
         </v-col>
@@ -86,10 +86,10 @@ import { Logger } from "@/utils/Logger";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
-  faArrowCircleRight,
   faArrowUpRightFromSquare,
+  faCircleArrowRight,
+  faCircleQuestion,
   faComments,
-  faQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Router

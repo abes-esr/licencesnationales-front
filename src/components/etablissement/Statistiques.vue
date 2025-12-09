@@ -1,115 +1,115 @@
 <template>
   <div>
-    <MessageBox></MessageBox>
-    <v-card flat>
+    <MessageBox />
+    <v-card variant="flat">
       <h1>Statistiques de l'application</h1>
-      <br />
-      <v-alert :value="message !== ''" dense type="error">
+      <v-alert
+        v-if="message"
+        type="error"
+        density="compact"
+        class="mt-4"
+      >
         {{ message }}
       </v-alert>
-      <h2>
+
+      <h2 class="mt-6">
         Saisissez la période souhaitée pour les statistiques
       </h2>
-      <v-form ref="form">
+
+      <v-form ref="formRef" class="mt-4">
         <v-row>
           <v-col cols="12" sm="4" md="3" lg="2">
             <v-menu
-              ref="menuDateDebut"
               v-model="menuDateDebut"
               :close-on-content-click="false"
-              :return-value.sync="dateDebut"
               transition="scale-transition"
               offset-y
-              min-width="auto"
             >
-              <template v-slot:activator="{ on, attrs }">
+              <template #activator="{ props }">
                 <v-text-field
-                  ref="dateDebut"
+                  v-bind="props"
+                  ref="dateDebutRef"
                   v-model="formattedDateDebut"
                   label="Date de début"
                   prepend-icon="mdi-calendar"
-                  :rules="rulesForms.dateRules"
+                  :rules="rulesFormConfig.dateRules"
                   readonly
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
+                  variant="outlined"
+                />
               </template>
               <v-date-picker
                 v-model="dateDebut"
                 :show-current="false"
-                no-title
-                scrollable
+                color="primary"
+                @update:model-value="menuDateDebut = false"
               >
-                <v-spacer></v-spacer>
-                <v-btn text @click="menuDateDebut = false">
-                  Annuler
-                </v-btn>
-                <v-btn text @click="$refs.menuDateDebut.save(dateDebut)">
-                  Valider
-                </v-btn>
+                <template #actions>
+                  <v-btn variant="text" @click="menuDateDebut = false">
+                    Annuler
+                  </v-btn>
+                </template>
               </v-date-picker>
-            </v-menu></v-col
-          >
+            </v-menu>
+          </v-col>
 
           <v-col cols="12" sm="4" md="3" lg="2">
             <v-menu
-              ref="menuDateFin"
               v-model="menuDateFin"
               :close-on-content-click="false"
-              :return-value.sync="dateFin"
               transition="scale-transition"
               offset-y
-              min-width="auto"
             >
-              <template v-slot:activator="{ on, attrs }">
+              <template #activator="{ props }">
                 <v-text-field
-                  ref="dateFin"
+                  v-bind="props"
+                  ref="dateFinRef"
                   v-model="formattedDateFin"
                   label="Date de fin"
                   prepend-icon="mdi-calendar"
-                  :rules="rulesForms.dateRules"
+                  :rules="rulesFormConfig.dateRules"
                   readonly
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
+                  variant="outlined"
+                />
               </template>
               <v-date-picker
                 v-model="dateFin"
                 :show-current="false"
-                no-title
-                scrollable
+                color="primary"
+                @update:model-value="menuDateFin = false"
               >
-                <v-spacer></v-spacer>
-                <v-btn text @click="menudateFin = false">
-                  Annuler
-                </v-btn>
-                <v-btn text @click="$refs.menuDateFin.save(dateFin)">
-                  Valider
-                </v-btn>
+                <template #actions>
+                  <v-btn variant="text" @click="menuDateFin = false">
+                    Annuler
+                  </v-btn>
+                </template>
               </v-date-picker>
-            </v-menu></v-col
-          >
+            </v-menu>
+          </v-col>
+
           <v-col cols="12" sm="4" md="2">
-            <v-btn @click="getStats()">Valider</v-btn>
+            <v-btn class="mt-2" color="primary" @click="getStats">
+              Valider
+            </v-btn>
           </v-col>
         </v-row>
       </v-form>
-      <div v-if="etabStats.length > 0">
+
+      <div v-if="etabStats.length > 0" class="mt-4">
         <v-row>
           <h3>
             Statistiques entre le {{ formattedDateDebut }} et le
             {{ formattedDateFin }}
-          </h3></v-row
-        >
-        <v-row>
-          <v-list subheader>
+          </h3>
+        </v-row>
+        <v-row class="mt-2">
+          <v-list subheader class="mr-4">
             <v-subheader>Etablissements</v-subheader>
             <v-list-item v-for="item in etabStats" :key="item.index">
               <div v-for="(value, name) in item" :key="name">
                 {{ name }} : {{ value }}
               </div>
             </v-list-item>
-            <v-divider></v-divider>
+            <v-divider />
           </v-list>
           <v-list subheader>
             <v-subheader>Adresses et plages IP</v-subheader>
@@ -125,96 +125,78 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import { VDatePicker } from "vuetify/components";
+import MessageBox from "@/components/common/MessageBox.vue";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { iPService } from "@/core/service/licencesnationales/IPService";
-import MessageBox from "@/components/common/MessageBox.vue";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { rulesForms } from "@/core/RulesForm";
+import { useAuthStore } from "@/stores/authStore";
+import { useMessageStore } from "@/stores/messageStore";
 import moment from "moment";
 
-@Component({
-  components: { MessageBox }
-})
-export default class Statistiques extends Vue {
-  rulesForms: any = rulesForms;
-  message: string = "";
-  etabStats: Array<any> = [];
-  ipStats: Array<any> = [];
-  dateDebut: string = "";
-  dateFin: string = "";
-  menuDateDebut: boolean = false;
-  menuDateFin: boolean = false;
+const authStore = useAuthStore();
+const messageStore = useMessageStore();
 
-  get formattedDateDebut() {
-    return this.dateDebut ? moment(this.dateDebut).format("DD-MM-yyyy") : "";
+const rulesFormConfig = rulesForms;
+const message = ref("");
+const etabStats = ref<Array<any>>([]);
+const ipStats = ref<Array<any>>([]);
+const dateDebut = ref<string>("");
+const dateFin = ref<string>("");
+const menuDateDebut = ref(false);
+const menuDateFin = ref(false);
+const formRef = ref();
+const dateDebutRef = ref();
+const dateFinRef = ref();
+
+const formattedDateDebut = computed({
+  get: () =>
+    dateDebut.value ? moment(dateDebut.value).format("DD-MM-YYYY") : "",
+  set: value => {
+    dateDebut.value = value ? moment(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
+  }
+});
+
+const formattedDateFin = computed({
+  get: () =>
+    dateFin.value ? moment(dateFin.value).format("DD-MM-YYYY") : "",
+  set: value => {
+    dateFin.value = value ? moment(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
+  }
+});
+
+async function getStats() {
+  const validation = await formRef.value?.validate();
+  const isValid = typeof validation === "boolean" ? validation : validation?.valid;
+
+  if (!isValid) {
+    return;
   }
 
-  get formattedDateFin() {
-    return this.dateFin ? moment(this.dateFin).format("DD-MM-yyyy") : "";
-  }
+  try {
+    const etabsResponse = await etablissementService.getStats(
+      formattedDateDebut.value,
+      formattedDateFin.value,
+      authStore.getToken
+    );
+    etabStats.value = etabsResponse.data.stats;
 
-  getStats(): void {
-    if (
-      (this.$refs.form as Vue & {
-        validate: () => boolean;
-      }).validate()
-    ) {
-      etablissementService
-        .getStats(
-          this.formattedDateDebut,
-          this.formattedDateFin,
-          this.$store.getters.getToken()
-        )
-        .then(response => {
-          this.etabStats = response.data.stats;
-        })
-        .catch(err => {
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          message.texte = err.message;
-          message.isSticky = true;
-          this.$store.dispatch("openDisplayedMessage", message);
-        });
-
-      iPService
-        .getStats(
-          this.formattedDateDebut,
-          this.formattedDateFin,
-          this.$store.getters.getToken()
-        )
-        .then(response => {
-          this.ipStats = response.data.stats;
-        })
-        .catch(err => {
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          message.texte = err.message;
-          message.isSticky = true;
-          this.$store.dispatch("openDisplayedMessage", message);
-        });
-    }
+    const ipResponse = await iPService.getStats(
+      formattedDateDebut.value,
+      formattedDateFin.value,
+      authStore.getToken
+    );
+    ipStats.value = ipResponse.data.stats;
+  } catch (err: any) {
+    const newMessage = new Message();
+    newMessage.type = MessageType.ERREUR;
+    newMessage.texte = err.message;
+    newMessage.isSticky = true;
+    messageStore.openDisplayedMessage(newMessage);
   }
 }
+
 </script>
-
-<style>
-.theme--light tbody tr:nth-of-type(odd) {
-  background-color: white !important;
-}
-
-.theme--dark tbody tr:nth-of-type(odd) {
-  background-color: #424242 !important;
-}
-
-.theme--light .v-picker .v-btn {
-  background-color: white !important;
-  color: black !important;
-}
-
-.theme--dark .v-picker .v-btn {
-  background-color: #424242 !important;
-  color: white !important;
-}
-</style>

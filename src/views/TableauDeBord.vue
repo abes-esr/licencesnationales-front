@@ -11,7 +11,7 @@
           <v-tooltip location="top" max-width="20vw" open-delay="100">
             <template v-slot:activator="{ props }">
               <v-btn icon="icon" class="bouton-simple" @click="downloadEtablissement()" v-bind="props" :loading="isExportLoading">
-                <FontAwesomeIcon :icon="['fas', 'download']" class="mx-2 fa-lg" />
+                <FontAwesomeIcon :icon="faDownload" class="mx-2 fa-lg" />
               </v-btn>
             </template>
             <span>Exporter les infos du compte</span>
@@ -27,7 +27,7 @@
                 <h2 class="my-3 pl-4 mb-0">Etablissement</h2>
                 <v-tooltip location="top" max-width="20vw" open-delay="100" v-if="!isAdmin">
                   <template v-slot:activator="{ props }">
-                    <FontAwesomeIcon v-bind="props" :icon="['fas', 'lock']" class="fa-2x mx-2"
+                    <FontAwesomeIcon v-bind="props" :icon="faLock" class="fa-2x mx-2"
                       style="margin-top: 10px; position: absolute; right: 0;" />
                   </template>
                   <span>Non modifiable par l'utilisateur</span>
@@ -54,7 +54,7 @@
                 </div>
               </v-card-text>
               <v-alert outlined class="ma-2 pt-1 pb-0" style="position: absolute; bottom: 0; font-size: 14px;">
-                <FontAwesomeIcon :icon="['fas', 'info-circle']" class="fa-2x mr-5 mb-1 icone-information" />
+                <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 icone-information" />
                 <p class="mb-0 pl-12">
                   Pour toute demande de modification des infos de
                   l'établissement, nous contacter via le guichet d'assistance
@@ -124,7 +124,7 @@
           <v-col cols="12" md="6" lg="6" xl="6">
             <div style="height: 100%" class="borderCol fondBlanc">
               <v-card-title class="d-block titre-block" style="margin-bottom:-4px;">
-                <FontAwesomeIcon :icon="['fas', 'bell']" class="fa-lg mx-2 icone-standard" />
+                <FontAwesomeIcon :icon="faBell" class="fa-lg mx-2 icone-standard" />
                 <span v-if="isAdmin">Dernières actions des utilisateurs</span>
                 <span v-else>Actions à faire</span>
               </v-card-title>
@@ -154,7 +154,7 @@
           <v-col cols="12" md="6" lg="6" xl="6" v-if="isAdmin">
             <div class="borderCol fondBlanc" style="height: 100%; position: relative;">
               <v-card-title class="d-block titre-block" style="margin-bottom:-4px;">
-                <FontAwesomeIcon :icon="['fas', 'paper-plane']" class="fa-lg mx-2" />
+                <FontAwesomeIcon :icon="faPaperPlane" class="fa-lg mx-2" />
                 Envoi aux éditeurs
               </v-card-title>
               <v-card-text class="no-border">
@@ -202,6 +202,7 @@ import { editeurService } from "@/core/service/licencesnationales/EditeurService
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { Logger } from "@/utils/Logger";
+import { faBell, faCircleInfo, faDownload, faLock, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 // Composables
 const router = useRouter();

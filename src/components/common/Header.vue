@@ -100,7 +100,7 @@
                 target="_blank"
                 v-bind="props"
               >
-                <FontAwesomeIcon :icon="faQuestion" size="2x" />
+                <FontAwesomeIcon :icon="faCircleQuestion" size="2x" />
               </v-btn>
             </template>
             <span>Documentation</span>
@@ -112,7 +112,7 @@
           <v-tooltip top>
             <template #activator="{ props }">
               <v-btn plain @click="seDeconnecter" v-bind="props">
-                <FontAwesomeIcon :icon="faSignOutAlt" size="2x" />
+                <FontAwesomeIcon :icon="faRightFromBracket" size="2x" />
               </v-btn>
             </template>
             <span>Se déconnecter</span>
@@ -134,9 +134,9 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
   faLock,
   faUser,
-  faSignOutAlt,
+  faRightFromBracket,
   faComments,
-  faQuestion
+  faCircleQuestion
 } from "@fortawesome/free-solid-svg-icons";
 
 // Router

@@ -1,69 +1,67 @@
 <template>
   <div>
-    <v-card flat>
-      <v-form ref="formModuleSegmentsIpPlage" lazy-validation>
-        <v-app-bar dense flat class="barIp">
-          <span v-if="this.typeAcces === 'ip'">Adresse IP</span>
+    <v-card elevation="0">
+      <v-form ref="formModuleSegmentsIpPlage">
+        <v-app-bar elevation="0" density="compact" class="barIp">
+          <span v-if="typeAcces === 'ip'">Adresse IP</span>
           <span v-else>Plage d'adresses IP</span>
-          <span v-if="this.typeIp === 'IPV4'">v4</span>
+          <span v-if="typeIp === 'IPV4'">v4</span>
           <span v-else>v6</span>
         </v-app-bar>
-        <v-card-text flat class="overflow-auto fondGrisFonce">
+        <v-card-text class="overflow-auto fondGrisFonce">
           <v-row class="ma-0">
             <v-col class="py-0">
               <p class="caption mb-0">
-                Possibilité de copier/coller directement les IP dans les champs
+                PossibilitÇ¸ de copier/coller directement les IP dans les champs
                 de saisie
               </p>
-              <v-row v-if="this.typeAcces === 'ip'">
+              <v-row v-if="typeAcces === 'ip'">
                 <v-col class="pb-0">
                   <!-- IP v4 -->
-                  <v-row v-if="this.typeIp === 'IPV4'">
-                    <v-col v-for="(value, index) in ipv4Segments" :key="index">
+                  <v-row v-if="typeIp === 'IPV4'">
+                    <v-col
+                      v-for="(value, index) in ipv4Segments"
+                      :key="index"
+                    >
                       <v-text-field
                         :data-length="value.length"
                         :data-index="index"
                         :rules="rulesForm.ipv4SegmentsRules"
-                        ref="ipv4Segments"
+                        ref="ipv4SegmentsRefs"
                         v-model="ipv4Segments[index].value"
-                        v-bind:suffix="getSuffix(index)"
-                        @input="
-                          nextSegment(index, ipv4Segments, 'ipv4Segments')
-                        "
+                        :suffix="getSuffix(index)"
+                        @input="nextSegment(index, ipv4Segments, 'ipv4SegmentsRefs')"
                         @paste="onPasteIp"
                         @paste.prevent
                         @focus="$emit('focus')"
                         maxlength="3"
-                        dense
-                        outlined
-                        filled
+                        variant="outlined"
+                        density="compact"
                         required
-                      >
-                      </v-text-field>
+                      />
                     </v-col>
                   </v-row>
                   <!-- IP v6 -->
                   <v-row v-else>
-                    <v-col v-for="(value, index) in ipv6Segments" :key="index">
+                    <v-col
+                      v-for="(value, index) in ipv6Segments"
+                      :key="index"
+                    >
                       <v-text-field
                         :data-length="value.length"
                         :data-index="index"
                         :rules="rulesForm.ipv6SegmentsRules"
-                        ref="ipv6Segments"
+                        ref="ipv6SegmentsRefs"
                         v-model="value.value"
-                        v-bind:suffix="getSuffix(index)"
-                        @input="
-                          nextSegment(index, ipv6Segments, 'ipv6Segments')
-                        "
+                        :suffix="getSuffix(index)"
+                        @input="nextSegment(index, ipv6Segments, 'ipv6SegmentsRefs')"
                         @paste="onPasteIp"
                         @paste.prevent
                         @focus="$emit('focus')"
-                        dense
-                        outlined
-                        filled
+                        variant="outlined"
+                        density="compact"
                         required
-                      >
-                      </v-text-field>
+                      />
                     </v-col>
                   </v-row>
                 </v-col>
@@ -71,8 +69,8 @@
               <v-row v-else>
                 <v-col>
                   <!-- PLAGE IP v4 -->
-                  <div v-if="this.typeIp === 'IPV4'">
-                    <label>IP de début</label>
+                  <div v-if="typeIp === 'IPV4'">
+                    <label>IP de dÇ¸but</label>
                     <v-row>
                       <v-col
                         v-for="(value, index) in ipv4SegmentsPlageDebut"
@@ -83,26 +81,24 @@
                           :data-length="value.length"
                           :data-index="index"
                           :rules="rulesForm.ipv4SegmentsRules"
-                          ref="ipv4SegmentsPlageDebut"
+                          ref="ipv4SegmentsPlageDebutRefs"
                           v-model="value.value"
-                          v-bind:suffix="getSuffix(index)"
+                          :suffix="getSuffix(index)"
                           @input="
                             nextSegment(
                               index,
                               ipv4SegmentsPlageDebut,
-                              'ipv4SegmentsPlageDebut'
+                              'ipv4SegmentsPlageDebutRefs'
                             )
                           "
                           @paste="onPastePlageDebut"
                           @paste.prevent
                           @focus="$emit('focus')"
                           maxlength="3"
-                          dense
-                          outlined
-                          filled
+                          variant="outlined"
+                          density="compact"
                           required
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <label>IP de fin</label>
@@ -115,34 +111,32 @@
                           :data-length="value.length"
                           :data-index="index"
                           :rules="rulesForm.ipv4SegmentsRules"
-                          ref="ipv4SegmentsPlageFin"
+                          ref="ipv4SegmentsPlageFinRefs"
                           v-model="value.value"
-                          v-bind:suffix="getSuffix(index)"
+                          :suffix="getSuffix(index)"
                           @input="
                             nextSegment(
                               index,
                               ipv4SegmentsPlageFin,
-                              'ipv4SegmentsPlageFin'
+                              'ipv4SegmentsPlageFinRefs'
                             )
                           "
                           @paste="onPastePlageFin"
                           @paste.prevent
                           @focus="$emit('focus')"
-                          :disabled="index > 1 ? false : true"
-                          :filled="index > 1 ? true : false"
+                          :disabled="index <= 1"
                           maxlength="3"
-                          dense
-                          outlined
+                          variant="outlined"
+                          density="compact"
                           required
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                   </div>
 
                   <!-- PLAGE IP v6 -->
                   <div v-else>
-                    <label>IP de début</label>
+                    <label>IP de dÇ¸but</label>
                     <v-row>
                       <v-col
                         v-for="(value, index) in ipv6SegmentsPlageDebut"
@@ -153,25 +147,23 @@
                           :data-length="value.length"
                           :data-index="index"
                           :rules="rulesForm.ipv6SegmentsRules"
-                          ref="ipv6SegmentsPlageDebut"
+                          ref="ipv6SegmentsPlageDebutRefs"
                           v-model="value.value"
-                          v-bind:suffix="getSuffix(index)"
+                          :suffix="getSuffix(index)"
                           @input="
                             nextSegment(
                               index,
                               ipv6SegmentsPlageDebut,
-                              'ipv6SegmentsPlageDebut'
+                              'ipv6SegmentsPlageDebutRefs'
                             )
                           "
                           @paste="onPastePlageDebut"
                           @paste.prevent
                           @focus="$emit('focus')"
-                          dense
-                          outlined
-                          filled
+                          variant="outlined"
+                          density="compact"
                           required
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                     <label>IP de fin</label>
@@ -184,37 +176,38 @@
                           :data-length="value.length"
                           :data-index="index"
                           :rules="rulesForm.ipv6SegmentsRules"
-                          ref="ipv6SegmentsPlageFin"
+                          ref="ipv6SegmentsPlageFinRefs"
                           v-model="value.value"
-                          v-bind:suffix="getSuffix(index)"
+                          :suffix="getSuffix(index)"
                           @input="
                             nextSegment(
                               index,
                               ipv6SegmentsPlageFin,
-                              'ipv6SegmentsPlageFin'
+                              'ipv6SegmentsPlageFinRefs'
                             )
                           "
                           @paste="onPastePlageFin"
                           @paste.prevent
                           @focus="$emit('focus')"
-                          dense
-                          outlined
-                          filled
+                          variant="outlined"
+                          density="compact"
                           required
-                        >
-                        </v-text-field>
+                        />
                       </v-col>
                     </v-row>
                   </div>
-                </v-col> </v-row
-            ></v-col>
+                </v-col>
+              </v-row>
+            </v-col>
             <v-col cols="2">
               <v-row id="fillHeight"> </v-row>
               <v-row>
                 <a @click="clear(false)"
                   >Vider les champs
-                  <FontAwesomeIcon :icon="['fas', 'backspace']"/></a></v-row
-            ></v-col>
+                  <FontAwesomeIcon :icon="faBackspace"
+                /></a>
+              </v-row>
+            </v-col>
           </v-row>
 
           <!-- COMMENTAIRES -->
@@ -222,33 +215,35 @@
             <v-col cols="10" lg="10" md="8" sm="8">
               <v-textarea
                 counter="255"
-                outlined
+                variant="outlined"
                 auto-grow
                 rows="2"
                 label="Commentaires"
-                hint="Apporter ici toute précisions sur l'attribution de cette IP, surtout si elle n'appartient pas au réseau Renater."
+                hint="Apporter ici toute prÇ¸cisions sur l'attribution de cette IP, surtout si elle n'appartient pas au rÇ¸seau Renater."
                 :rules="rulesForm.commentaires"
                 v-model="commentaires"
                 @focus="$emit('focus')"
-                filled
                 clearable
                 persistent-hint
-              ></v-textarea>
+              />
             </v-col>
             <v-col cols="2">
               <v-row id="btnToBtm"></v-row>
               <v-row>
                 <v-card-actions>
                   <v-btn
-                    @click="ajouterIp()"
+                    @click="ajouterIp"
                     :loading="buttonLoading"
                     id="btnSave"
-                    ><span id="btnText">Enregistrer </span
-                    ><v-icon>mdi-arrow-right-circle-outline </v-icon></v-btn
+                    size="large"
+                    color="button"
                   >
-                </v-card-actions></v-row
-              ></v-col
-            >
+                    <span id="btnText">Enregistrer </span>
+                    <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
+                  </v-btn>
+                </v-card-actions>
+              </v-row>
+            </v-col>
           </v-row>
         </v-card-text>
       </v-form>
@@ -256,289 +251,319 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import { SegmentPlage } from "@/core/CommonDefinition";
-import { iPService } from "@/core/service/licencesnationales/IPService";
+<script setup lang="ts">
+import { computed, onMounted, ref, watch } from "vue";
 import { rulesForms } from "@/core/RulesForm";
+import { iPService } from "@/core/service/licencesnationales/IPService";
 import { Logger } from "@/utils/Logger";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useAuthStore } from "@/stores/authStore";
+import { useMessageStore } from "@/stores/messageStore";
+import { useEtablissementStore } from "@/stores/etablissementStore";
+import type { VForm, VTextField } from "vuetify/components";
+import { faBackspace } from "@fortawesome/free-solid-svg-icons";
 
-@Component
-export default class ModuleSegmentsIpPlage extends Vue {
-  @Prop({ default: "IPV4" }) readonly typeIp!: string;
-  @Prop({ default: "ip" }) readonly typeAcces!: string;
-
-  rulesForm: any = rulesForms;
-  suffix: string = "";
-  ipv4Segments: Array<SegmentPlage> = [];
-  ipv6Segments: Array<SegmentPlage> = [];
-  ipv4SegmentsPlageDebut: Array<SegmentPlage> = [];
-  ipv4SegmentsPlageFin: Array<SegmentPlage> = [];
-  ipv6SegmentsPlageDebut: Array<SegmentPlage> = [];
-  ipv6SegmentsPlageFin: Array<SegmentPlage> = [];
-
-  ip: string = "";
-  commentaires: string = "";
-
-  buttonLoading: boolean = false;
-
-  @Watch("ipv4SegmentsPlageDebut")
-  onPlageIpV4Changed() {
-    this.ipv4SegmentsPlageDebut[0] = this.ipv4SegmentsPlageFin[0];
-    this.ipv4SegmentsPlageDebut[1] = this.ipv4SegmentsPlageFin[1];
-  }
-
-  mounted() {
-    this.clear(false);
-  }
-
-  get isAdmin() {
-    return this.$store.getters.isAdmin();
-  }
-
-  getSuffix(index) {
-    if (this.typeIp === "IPV4") {
-      if (index === 3) return "";
-      else return ".";
-    } else {
-      if (index === 7) return "";
-      else return ":";
-    }
-  }
-
-  nextSegment(index, array, refArray) {
-    let indexMax;
-    if (this.typeIp === "IPV4") {
-      indexMax = 3;
-    } else {
-      indexMax = 5;
-    }
-
-    if (this.typeIp === "IPV4") {
-      if (array[index].value.length > 2 && index < indexMax) {
-        (this as any).$refs[refArray][index + 1].focus();
-      }
-    } else {
-      if (array[index].value.length >= 4 && index < indexMax) {
-        (this as any).$refs[refArray][index + 1].focus();
-      }
-    }
-  }
-
-  setIp(): void {
-    let value = "";
-    if (this.typeAcces === "ip") {
-      if (this.typeIp === "IPV4") {
-        for (const field of this.ipv4Segments) {
-          value += field.value + ".";
-        }
-        value = value.substr(0, value.lastIndexOf("."));
-      } else {
-        for (const field of this.ipv6Segments) {
-          value += field.value + ":";
-        }
-        value = value.substr(0, value.lastIndexOf(":"));
-      }
-    } else {
-      if (this.typeIp === "IPV4") {
-        this.ipv4SegmentsPlageDebut.forEach((content, index) => {
-          if (index === 2 || index === 3) {
-            value +=
-              content.value +
-              "-" +
-              this.ipv4SegmentsPlageFin[index].value +
-              ".";
-          } else {
-            value += content.value + ".";
-          }
-        });
-        value = value.substr(0, value.lastIndexOf("."));
-      } else {
-        this.ipv6SegmentsPlageDebut.forEach((content, index) => {
-          if (content.value === this.ipv6SegmentsPlageFin[index].value) {
-            value += content.value + ":";
-          } else {
-            value +=
-              content.value +
-              "-" +
-              this.ipv6SegmentsPlageFin[index].value +
-              ":";
-          }
-        });
-        value = value.substr(0, value.lastIndexOf(":"));
-      }
-    }
-    this.ip = value;
-  }
-
-  ajouterIp(): void {
-    this.buttonLoading = true;
-    if (
-      (this.$refs.formModuleSegmentsIpPlage as Vue & {
-        validate: () => boolean;
-      }).validate()
-    ) {
-      // On emet les IPs pour que le composant parent puisse afficher le tableau récapitulatif
-      this.setIp();
-
-      // Récupération du SIREN si admin, sinon utilisation du SIREN de l'utilisateur connecté
-      let siren = "";
-      if (this.isAdmin) {
-        siren = this.$store.getters.getCurrentEtablissement().siren;
-      } else {
-        siren = this.$store.getters.userSiren();
-      }
-
-      // Envoi au back
-      iPService
-        .addIP(this.$store.getters.getToken(), siren, {
-          typeIp: this.typeIp,
-          ip: this.ip,
-          commentaires: this.commentaires
-        })
-        .then(response => {
-          this.$emit("FormModuleSegmentsIpPlageEvent", {
-            id: response.data.id,
-            typeIp: this.typeIp,
-            ip: this.ip,
-            commentaires: this.commentaires
-          });
-          const refForm: any = this.$refs.formModuleSegmentsIpPlage;
-          refForm.resetValidation();
-          this.clear(false);
-          this.$emit("alertSuccess", response.data.message);
-        })
-        .catch(err => {
-          Logger.error(err.toString());
-          this.$emit("alertError", err.response.data.message);
-        })
-        .finally(() => {
-          this.buttonLoading = false;
-        });
-    } else {
-      this.buttonLoading = false;
-    }
-  }
-
-  clear(dontClearComments: boolean): void {
-    this.ip = "";
-    if (!dontClearComments) this.commentaires = "";
-    this.ipv4Segments = [
-      { length: 3, value: "" },
-      { length: 3, value: "" },
-      { length: 3, value: "" },
-      { length: 3, value: "" }
-    ];
-    this.ipv6Segments = [
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" }
-    ];
-    this.ipv4SegmentsPlageDebut = [
-      { length: 3, value: "" },
-      { length: 3, value: "" },
-      { length: 3, value: "" },
-      { length: 3, value: "" }
-    ];
-    this.ipv4SegmentsPlageFin = [
-      { length: 3, value: "" },
-      { length: 3, value: "" },
-      { length: 3, value: "" },
-      { length: 3, value: "" }
-    ];
-    this.ipv6SegmentsPlageDebut = [
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" }
-    ];
-    this.ipv6SegmentsPlageFin = [
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" },
-      { length: 5, value: "" }
-    ];
-    const refForm: any = this.$refs.formModuleSegmentsIpPlage;
-    refForm.resetValidation();
-    this.$store.dispatch("closeDisplayedMessage");
-  }
-
-  onPasteIp(evt): void {
-    if (this.typeIp === "IPV4") {
-      evt.clipboardData
-        .getData("text")
-        .trim()
-        .split(".")
-        .forEach((content, index) => {
-          this.ipv4Segments[index].value = content.slice(0, 3);
-        });
-    } else {
-      evt.clipboardData
-        .getData("text")
-        .trim()
-        .split(":")
-        .forEach((content, index) => {
-          this.ipv6Segments[index].value = content.slice(0, 4);
-        });
-    }
-  }
-
-  onPastePlageDebut(evt): void {
-    if (this.typeIp === "IPV4") {
-      evt.clipboardData
-        .getData("text")
-        .trim()
-        .split(".")
-        .forEach((content, index) => {
-          this.ipv4SegmentsPlageDebut[index].value = content.slice(0, 3);
-        });
-    } else {
-      evt.clipboardData
-        .getData("text")
-        .trim()
-        .split(":")
-        .forEach((content, index) => {
-          this.ipv6SegmentsPlageDebut[index].value = content.slice(0, 4);
-        });
-    }
-  }
-
-  onPastePlageFin(evt): void {
-    if (this.typeIp === "IPV4") {
-      evt.clipboardData
-        .getData("text")
-        .trim()
-        .split(".")
-        .forEach((content, index) => {
-          if (this.ipv4SegmentsPlageFin[index + 2])
-            this.ipv4SegmentsPlageFin[index + 2].value = content.slice(0, 3);
-        });
-    } else {
-      evt.clipboardData
-        .getData("text")
-        .trim()
-        .split(":")
-        .forEach((content, index) => {
-          this.ipv6SegmentsPlageFin[index].value = content.slice(0, 4);
-        });
-    }
-  }
+interface SegmentPlage {
+  length: number;
+  value: string;
 }
+
+interface Props {
+  typeIp?: string;
+  typeAcces?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  typeIp: "IPV4",
+  typeAcces: "ip"
+});
+
+const emit = defineEmits<{
+  (
+    e: "FormModuleSegmentsIpPlageEvent",
+    payload: { id: string; typeIp: string; ip: string; commentaires: string }
+  ): void;
+  (e: "alertSuccess", message: string): void;
+  (e: "alertError", message: string): void;
+  (e: "focus"): void;
+}>();
+
+const rulesForm = rulesForms;
+const authStore = useAuthStore();
+const messageStore = useMessageStore();
+const etablissementStore = useEtablissementStore();
+
+const formModuleSegmentsIpPlage = ref<VForm | null>(null);
+const ipv4SegmentsRefs = ref<InstanceType<typeof VTextField>[]>([]);
+const ipv6SegmentsRefs = ref<InstanceType<typeof VTextField>[]>([]);
+const ipv4SegmentsPlageDebutRefs = ref<InstanceType<typeof VTextField>[]>([]);
+const ipv4SegmentsPlageFinRefs = ref<InstanceType<typeof VTextField>[]>([]);
+const ipv6SegmentsPlageDebutRefs = ref<InstanceType<typeof VTextField>[]>([]);
+const ipv6SegmentsPlageFinRefs = ref<InstanceType<typeof VTextField>[]>([]);
+
+const ipv4Segments = ref<SegmentPlage[]>([]);
+const ipv6Segments = ref<SegmentPlage[]>([]);
+const ipv4SegmentsPlageDebut = ref<SegmentPlage[]>([]);
+const ipv4SegmentsPlageFin = ref<SegmentPlage[]>([]);
+const ipv6SegmentsPlageDebut = ref<SegmentPlage[]>([]);
+const ipv6SegmentsPlageFin = ref<SegmentPlage[]>([]);
+
+const ip = ref("");
+const commentaires = ref("");
+const buttonLoading = ref(false);
+
+const typeIp = computed(() => props.typeIp);
+const typeAcces = computed(() => props.typeAcces);
+const isAdmin = computed(() => authStore.isAdmin);
+
+const resetSegments = () => {
+  ipv4Segments.value = [
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" }
+  ];
+  ipv6Segments.value = Array.from({ length: 8 }).map(() => ({
+    length: 5,
+    value: ""
+  }));
+  ipv4SegmentsPlageDebut.value = [
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" }
+  ];
+  ipv4SegmentsPlageFin.value = [
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" },
+    { length: 3, value: "" }
+  ];
+  ipv6SegmentsPlageDebut.value = Array.from({ length: 8 }).map(() => ({
+    length: 5,
+    value: ""
+  }));
+  ipv6SegmentsPlageFin.value = Array.from({ length: 8 }).map(() => ({
+    length: 5,
+    value: ""
+  }));
+};
+
+const refMap: Record<string, { value: Array<InstanceType<typeof VTextField>> }> =
+  {
+    ipv4SegmentsRefs,
+    ipv6SegmentsRefs,
+    ipv4SegmentsPlageDebutRefs,
+    ipv4SegmentsPlageFinRefs,
+    ipv6SegmentsPlageDebutRefs,
+    ipv6SegmentsPlageFinRefs
+  };
+
+const getSuffix = (index: number) => {
+  if (typeIp.value === "IPV4") {
+    return index === 3 ? "" : ".";
+  }
+  return index === 7 ? "" : ":";
+};
+
+const nextSegment = (
+  index: number,
+  array: SegmentPlage[],
+  refArray: keyof typeof refMap
+) => {
+  const indexMax = array.length - 1;
+
+  if (typeIp.value === "IPV4") {
+    if (array[index].value.length >= 3 && index < indexMax) {
+      refMap[refArray]?.value?.[index + 1]?.focus?.();
+    }
+  } else {
+    if (array[index].value.length >= 4 && index < indexMax) {
+      refMap[refArray]?.value?.[index + 1]?.focus?.();
+    }
+  }
+};
+
+const setIp = () => {
+  let value = "";
+  if (typeAcces.value === "ip") {
+    if (typeIp.value === "IPV4") {
+      for (const field of ipv4Segments.value) {
+        value += field.value + ".";
+      }
+      value = value.substring(0, value.lastIndexOf("."));
+    } else {
+      for (const field of ipv6Segments.value) {
+        value += field.value + ":";
+      }
+      value = value.substring(0, value.lastIndexOf(":"));
+    }
+  } else {
+    if (typeIp.value === "IPV4") {
+      ipv4SegmentsPlageDebut.value.forEach((content, index) => {
+        if (index === 2 || index === 3) {
+          value +=
+            content.value + "-" + ipv4SegmentsPlageFin.value[index].value + ".";
+        } else {
+          value += content.value + ".";
+        }
+      });
+      value = value.substring(0, value.lastIndexOf("."));
+    } else {
+      ipv6SegmentsPlageDebut.value.forEach((content, index) => {
+        if (content.value === ipv6SegmentsPlageFin.value[index].value) {
+          value += content.value + ":";
+        } else {
+          value += content.value + "-" + ipv6SegmentsPlageFin.value[index].value + ":";
+        }
+      });
+      value = value.substring(0, value.lastIndexOf(":"));
+    }
+  }
+  ip.value = value;
+};
+
+const ajouterIp = async () => {
+  buttonLoading.value = true;
+  const validation = await formModuleSegmentsIpPlage.value?.validate();
+  if (validation?.valid) {
+    setIp();
+
+    let siren = "";
+    if (isAdmin.value) {
+      siren = etablissementStore.getCurrentEtablissement.siren;
+    } else {
+      siren = authStore.userSiren;
+    }
+
+    iPService
+      .addIP(authStore.getToken, siren, {
+        typeIp: typeIp.value,
+        ip: ip.value,
+        commentaires: commentaires.value
+      })
+      .then(response => {
+        emit("FormModuleSegmentsIpPlageEvent", {
+          id: response.data.id,
+          typeIp: typeIp.value,
+          ip: ip.value,
+          commentaires: commentaires.value
+        });
+        formModuleSegmentsIpPlage.value?.resetValidation();
+        clear(false);
+        emit("alertSuccess", response.data.message);
+      })
+      .catch(err => {
+        Logger.error(err?.toString?.() ?? err);
+        emit("alertError", err?.response?.data?.message ?? "Erreur lors de l'enregistrement");
+      })
+      .finally(() => {
+        buttonLoading.value = false;
+      });
+  } else {
+    buttonLoading.value = false;
+  }
+};
+
+const clear = (dontClearComments: boolean) => {
+  ip.value = "";
+  if (!dontClearComments) commentaires.value = "";
+  resetSegments();
+  formModuleSegmentsIpPlage.value?.resetValidation();
+  messageStore.closeDisplayedMessage();
+};
+
+const onPasteIp = (evt: ClipboardEvent) => {
+  const pasted = evt.clipboardData?.getData("text") ?? "";
+  if (typeIp.value === "IPV4") {
+    pasted
+      .trim()
+      .split(".")
+      .forEach((content, index) => {
+        if (ipv4Segments.value[index]) {
+          ipv4Segments.value[index].value = content.slice(0, 3);
+        }
+      });
+  } else {
+    pasted
+      .trim()
+      .split(":")
+      .forEach((content, index) => {
+        if (ipv6Segments.value[index]) {
+          ipv6Segments.value[index].value = content.slice(0, 4);
+        }
+      });
+  }
+};
+
+const onPastePlageDebut = (evt: ClipboardEvent) => {
+  const pasted = evt.clipboardData?.getData("text") ?? "";
+  if (typeIp.value === "IPV4") {
+    pasted
+      .trim()
+      .split(".")
+      .forEach((content, index) => {
+        if (ipv4SegmentsPlageDebut.value[index]) {
+          ipv4SegmentsPlageDebut.value[index].value = content.slice(0, 3);
+        }
+      });
+  } else {
+    pasted
+      .trim()
+      .split(":")
+      .forEach((content, index) => {
+        if (ipv6SegmentsPlageDebut.value[index]) {
+          ipv6SegmentsPlageDebut.value[index].value = content.slice(0, 4);
+        }
+      });
+  }
+};
+
+const onPastePlageFin = (evt: ClipboardEvent) => {
+  const pasted = evt.clipboardData?.getData("text") ?? "";
+  if (typeIp.value === "IPV4") {
+    pasted
+      .trim()
+      .split(".")
+      .forEach((content, index) => {
+        if (ipv4SegmentsPlageFin.value[index + 2]) {
+          ipv4SegmentsPlageFin.value[index + 2].value = content.slice(0, 3);
+        }
+      });
+  } else {
+    pasted
+      .trim()
+      .split(":")
+      .forEach((content, index) => {
+        if (ipv6SegmentsPlageFin.value[index]) {
+          ipv6SegmentsPlageFin.value[index].value = content.slice(0, 4);
+        }
+      });
+  }
+};
+
+watch(
+  ipv4SegmentsPlageDebut,
+  () => {
+    if (ipv4SegmentsPlageFin.value[0]) {
+      ipv4SegmentsPlageDebut.value[0] = ipv4SegmentsPlageFin.value[0];
+    }
+    if (ipv4SegmentsPlageFin.value[1]) {
+      ipv4SegmentsPlageDebut.value[1] = ipv4SegmentsPlageFin.value[1];
+    }
+  },
+  { deep: true }
+);
+
+onMounted(() => {
+  clear(false);
+});
+
+defineExpose({
+  clear
+});
 </script>
+
 <style scoped>
 button {
   font-size: 12px !important;

@@ -1,53 +1,50 @@
 <template>
-  <v-card flat :disabled="disableForm">
+  <v-card variant="flat" :disabled="disableForm">
     <h1>Gestion des comptes établissements</h1>
-    <MessageBox></MessageBox>
+    <MessageBox />
     <v-card-title class="pr-0">
       <v-row class="d-flex flex-row-reverse ma-0">
-        <v-btn @click="allerAScionnerEtab()" class="btn-1 ml-2"
-          >Scission
-          <FontAwesomeIcon :icon="['fas', 'object-ungroup']" class="mx-2" />
+        <v-btn @click="allerAScionnerEtab" class="btn-1 ml-2">
+          Scission
+          <FontAwesomeIcon :icon="faObjectUngroup" class="mx-2" />
         </v-btn>
-        <v-btn @click="allerAFusionnerEtab" class="btn-1 mx-2"
-          >Fusion
-          <FontAwesomeIcon :icon="['fas', 'object-group']" class="mx-2" />
+        <v-btn @click="allerAFusionnerEtab" class="btn-1 mx-2">
+          Fusion
+          <FontAwesomeIcon :icon="faObjectGroup" class="mx-2" />
         </v-btn>
-        <v-btn @click="ajouterEtablissement()" class="btn-1 mx-2"
-          >Créer un établissement
-          <FontAwesomeIcon :icon="['fas', 'plus']" class="mx-2" />
+        <v-btn @click="ajouterEtablissement" class="btn-1 mx-2">
+          Créer un établissement
+          <FontAwesomeIcon :icon="faPlus" class="mx-2" />
         </v-btn>
       </v-row>
     </v-card-title>
     <v-card-text class="mt-3 fondGris">
-      <v-data-table
-        dense
+      <VDataTable
+        density="compact"
         :headers="headers"
         :items="filteredEtabByStatut"
         :items-per-page="25"
-        :footer-props="{
-          showFirstLastPage: true,
-          'items-per-page-options': [25, 50, 100, -1]
-        }"
+        :items-per-page-options="[25, 50, 100, { value: -1, title: 'Tous' }]"
         class="elevation-0 ma-3"
         :search="rechercher"
         :loading="dataLoading"
         id="mytable"
       >
-        <template v-slot:top>
+        <template #top>
           <v-row class="ma-0">
             <v-col cols="12" sm="6" class="px-0">
               <v-tooltip top max-width="20vw" open-delay="100">
-                <template v-slot:activator="{ on }">
+                <template #activator="{ props }">
                   <v-btn
-                    text
-                    @click="downloadEtablissements()"
+                    variant="text"
+                    @click="downloadEtablissements"
                     class="pl-0 bouton-simple"
-                    v-on="on"
+                    v-bind="props"
                     :loading="isExportLoading"
                   >
                     <h2>Télécharger la liste des établissements</h2>
                     <FontAwesomeIcon
-                      :icon="['fas', 'download']"
+                      :icon="faDownload"
                       size="2x"
                       class="mx-2"
                     />
@@ -63,25 +60,24 @@
                   v-model="rechercher"
                   label="Chercher dans les colonnes"
                   prepend-inner-icon="mdi-magnify"
-                  outlined
-                  filled
-                  dense
+                  variant="outlined"
+                  density="compact"
                   clearable
-                ></v-text-field>
+                />
               </div>
             </v-col>
           </v-row>
         </template>
-        <template v-slot:header.typeEtablissement="{ header }">
-          {{ header.texte }}
-          <v-menu offset-y :close-on-content-click="false">
-            <template v-slot:activator="{ on, attrs }">
+
+        <template #header.typeEtablissement="{ column }">
+          {{ column.title }}
+          <v-menu :close-on-content-click="false">
+            <template #activator="{ props }">
               <v-btn
-                text
+                variant="text"
                 class="bouton-simple"
                 style="text-decoration: none;"
-                v-bind="attrs"
-                v-on="on"
+                v-bind="props"
               >
                 <v-icon small :color="statut ? 'primary' : ''">
                   mdi-filter
@@ -93,7 +89,7 @@
               <ul>
                 <li
                   v-for="item in typesEtab"
-                  :key="item.id"
+                  :key="item"
                   @click="eventTypeEtabChoice(item)"
                 >
                   <a>{{ item }}</a>
@@ -102,15 +98,15 @@
             </div>
           </v-menu>
         </template>
-        <template v-slot:header.statutIP="{ header }">
-          {{ header.texte }}
-          <v-menu offset-y :close-on-content-click="false">
-            <template v-slot:activator="{ on, attrs }">
+
+        <template #header.statutIP="{ column }">
+          {{ column.title }}
+          <v-menu :close-on-content-click="false">
+            <template #activator="{ props }">
               <v-btn
-                text
+                variant="text"
                 class="bouton-simple"
-                v-bind="attrs"
-                v-on="on"
+                v-bind="props"
                 style="text-decoration: none;"
               >
                 <v-icon small :color="statut ? 'primary' : ''">
@@ -123,7 +119,7 @@
               <ul>
                 <li
                   v-for="item in selectStatut"
-                  :key="item.id"
+                  :key="item"
                   @click="eventStatutChoice(item)"
                 >
                   <a>{{ item }}</a>
@@ -132,26 +128,30 @@
             </div>
           </v-menu>
         </template>
-        <template v-slot:item.dateCreationFormattedInString="{ item }">
+
+        <template #item.dateCreationFormattedInString="{ item }">
           <span>{{ item.dateCreation.toLocaleDateString() }}</span>
         </template>
 
-        <template v-slot:item.nom="{ item }">
-          <a class="bouton-simple" @click="allerAAfficherEtab(item)"
-            ><strong>{{ item.nom }}</strong></a
-          >
+        <template #item.nom="{ item }">
+          <a class="bouton-simple" @click="allerAAfficherEtab(item)">
+            <strong>{{ item.nom }}</strong>
+          </a>
         </template>
-        <template v-slot:[`item.action`]="{ item }">
-          <v-icon large class="mr-2" @click="allerAIPs(item)"
-            >mdi-ip-network</v-icon
-          >
+
+        <template #item.action="{ item }">
+          <v-icon large class="mr-2" @click="allerAIPs(item)">
+            mdi-ip-network
+          </v-icon>
         </template>
-      </v-data-table>
+      </VDataTable>
     </v-card-text>
   </v-card>
 </template>
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { VDataTable } from "vuetify/components";
 import { Logger } from "@/utils/Logger";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import Etablissement from "@/core/Etablissement";
@@ -162,366 +162,323 @@ import MessageBox from "@/components/common/MessageBox.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useAuthStore } from "@/stores/authStore";
+import { useMessageStore } from "@/stores/messageStore";
+import { useEtablissementStore } from "@/stores/etablissementStore";
+import { faDownload, faObjectGroup, faObjectUngroup, faPlus } from "@fortawesome/free-solid-svg-icons";
 
-@Component({
-  components: { MessageBox }
-})
-export default class ListeEtab extends Vue {
-  isAdmin: boolean = this.$store.getters.isAdmin();
-  disableForm: boolean = false;
-  statut: string = "";
-  dataLoading: boolean = true;
-  selectStatut: Array<string> = [
-    "Tous",
-    "Sans IP",
-    "Examiner IP",
-    "Attestation à envoyer",
-    "IP Ok"
-  ];
-  rechercher: string = "";
-  etabs: Array<Etablissement> = [];
-  etabsFiltered: Array<Etablissement> = [];
-  selectedType: string = "";
-  typesEtab: Array<string> = [];
-  isDisableForm: boolean = false;
-  isExportLoading: boolean = false;
-  title: string = "";
-  id: string = "";
-  headers = [
-    {
-      text: "Date de création",
-      align: "start",
-      value: "dateCreationFormattedInString",
-      sortable: true
-    },
-    { text: "Identifiant Abes", value: "idAbes", sortable: true },
-    { text: "SIREN", value: "siren", sortable: true },
-    { text: "Nom de l'établissement", value: "nom", sortable: true },
-    {
-      text: "Type d'établissement",
-      value: "typeEtablissement",
-      sortable: true
-    },
-    {
-      text: "Dernière date de modification des IPs",
-      value: "dateModificationDerniereIp",
-      sortable: true
-    },
-    { text: "Statut", value: "statutIP", sortable: true },
-    { text: "Liste des IPs", value: "action", sortable: false }
-  ];
+const authStore = useAuthStore();
+const messageStore = useMessageStore();
+const etablissementStore = useEtablissementStore();
+const router = useRouter();
 
-  constructor() {
-    super();
-    if (!this.isAdmin) {
+const disableForm = ref(false);
+const statut = ref("");
+const dataLoading = ref(true);
+const selectStatut = ref<Array<string>>([
+  "Tous",
+  "Sans IP",
+  "Examiner IP",
+  "Attestation à envoyer",
+  "IP Ok"
+]);
+const rechercher = ref("");
+const etabs = ref<Array<Etablissement>>([]);
+const etabsFiltered = ref<Array<Etablissement>>([]);
+const selectedType = ref("");
+const typesEtab = ref<Array<string>>([]);
+const isDisableForm = ref(false);
+const isExportLoading = ref(false);
+const headers = [
+  {
+    title: "Date de création",
+    align: "start",
+    key: "dateCreationFormattedInString",
+    sortable: true
+  },
+  { title: "Identifiant Abes", key: "idAbes", sortable: true },
+  { title: "SIREN", key: "siren", sortable: true },
+  { title: "Nom de l'établissement", key: "nom", sortable: true },
+  {
+    title: "Type d'établissement",
+    key: "typeEtablissement",
+    sortable: true
+  },
+  {
+    title: "Dernière date de modification des IPs",
+    key: "dateModificationDerniereIp",
+    sortable: true
+  },
+  { title: "Statut", key: "statutIP", sortable: true },
+  { title: "Liste des IPs", key: "action", sortable: false }
+];
+
+const isAdmin = computed(() => authStore.isAdmin);
+
+onMounted(() => {
+  if (!isAdmin.value) {
+    const message = new Message();
+    message.type = MessageType.ERREUR;
+    message.texte =
+      "Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnts";
+    message.isSticky = true;
+    messageStore.openDisplayedMessage(message);
+    router.push({ name: "Home" }).catch(err => {
+      Logger.error(err as any);
+    });
+    return;
+  }
+
+  collecterEtab();
+  fetchListeType();
+});
+
+const filteredEtabByStatut = computed((): Array<Etablissement> => {
+  const conditions: Array<string> = [];
+  if (statut.value) {
+    conditions.push(statut.value);
+  }
+  if (selectedType.value) {
+    conditions.push(selectedType.value);
+  }
+
+  if (conditions.length > 0) {
+    etabsFiltered.value = etabs.value.filter(acces =>
+      conditions.every(
+        condition =>
+          acces.typeEtablissement == condition || acces.statutIP == condition
+      )
+    );
+    return etabsFiltered.value;
+  }
+
+  etabs.value.forEach(element => {
+    element.dateCreationFormattedInString = moment(
+      element.dateCreation
+    ).format("YYYY-MM-DD");
+    if (element.dateModificationDerniereIp) {
+      element.dateModificationDerniereIp = element.dateModificationDerniereIp.replace(
+        /-/g,
+        "/"
+      );
+    }
+  });
+  overrideStatuts();
+  etabsFiltered.value = etabs.value;
+  return etabsFiltered.value;
+});
+
+function overrideStatuts(): void {
+  etabs.value.forEach(element => {
+    if (element.statut === "Nouveau") {
+      element.statutIP = "Nouveau";
+    }
+  });
+}
+
+function eventTypeEtabChoice(element: string): void {
+  selectedType.value = element === "Tous" ? "" : element;
+}
+
+function eventStatutChoice(element: string): void {
+  statut.value = element === "Tous" ? "" : element;
+}
+
+async function fetchListeType() {
+  messageStore.closeDisplayedMessage();
+  await etablissementService
+    .listeType()
+    .then(result => {
+      isDisableForm.value = false;
+      typesEtab.value = [...result, "Tous"].sort((n1, n2) =>
+        n1 > n2 ? 1 : n1 < n2 ? -1 : 0
+      );
+      typesEtab.value.unshift(
+        typesEtab.value.splice(
+          typesEtab.value.findIndex(item => item === "Tous"),
+          1
+        )[0]
+      );
+    })
+    .catch(err => {
+      Logger.error(err.toString());
       const message: Message = new Message();
       message.type = MessageType.ERREUR;
-      message.texte =
-        "Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnts";
+      if (err instanceof LicencesNationalesApiError) {
+        isDisableForm.value = true;
+        message.texte =
+          "Fonctionnalité momentanement indisponible pour le moment. Réessayer plus tard";
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
       message.isSticky = true;
-      this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-        Logger.error(err.toString());
-      });
-      this.$router.push({ name: "Home" }).catch(err => {
-        Logger.error(err);
-      });
-    }
+      messageStore.openDisplayedMessage(message);
+    });
+}
 
-    this.collecterEtab();
-    this.fetchListeType();
-  }
-
-  get filteredEtabByStatut(): Array<Etablissement> {
-    const conditions = [] as any;
-    if (this.statut) {
-      conditions.push(this.statut);
-    }
-    if (this.selectedType) {
-      conditions.push(this.selectedType);
-    }
-
-    if (conditions.length > 0) {
-      this.etabsFiltered = this.etabs.filter(acces => {
-        return conditions.every(condition => {
-          return (
-            acces.typeEtablissement == condition || acces.statutIP == condition
-          );
-        });
+function ajouterEtablissement(): void {
+  messageStore.closeDisplayedMessage();
+  etablissementStore
+    .setCurrentEtablissement(new Etablissement())
+    .then(() => {
+      router.push({ name: "CreationEtablissement" }).catch(err => {
+        Logger.error(err as any);
       });
-      return this.etabsFiltered;
-    }
-    //Formatage des dates pour le tri du tableau
-    this.etabs.forEach(element => {
-      element.dateCreationFormattedInString = moment(
-        element.dateCreation
-      ).format("YYYY-MM-DD");
-      if (element.dateModificationDerniereIp) {
-        element.dateModificationDerniereIp = element.dateModificationDerniereIp.replace(
-          /-/g,
-          "/"
-        );
+    })
+    .catch(err => {
+      Logger.error(err.toString());
+      const message: Message = new Message();
+      message.type = MessageType.ERREUR;
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
+      message.isSticky = true;
+
+      messageStore.openDisplayedMessage(message);
+      const messageBox = document.getElementById("messageBox");
+      if (messageBox) {
+        window.scrollTo(0, messageBox.offsetTop);
       }
     });
-    this.overrideStatuts();
-    this.etabsFiltered = this.etabs;
-    return this.etabsFiltered;
-  }
+}
 
-  overrideStatuts(): void {
-    this.etabs.forEach(element => {
-      if (element.statut === "Nouveau") {
-        element.statutIP = "Nouveau";
+function allerAFusionnerEtab(): void {
+  messageStore.closeDisplayedMessage();
+  router.push({ name: "fusionEtablissement" }).catch(err => {
+    Logger.error(err as any);
+  });
+}
+
+function allerAScionnerEtab(): void {
+  messageStore.closeDisplayedMessage();
+  router.push({ name: "scissionEtablissement" }).catch(err => {
+    Logger.error(err as any);
+  });
+}
+
+function collecterEtab(): void {
+  messageStore.closeDisplayedMessage();
+  etablissementService
+    .getEtablissements(authStore.getToken)
+    .then(response => {
+      etabs.value = response;
+    })
+    .catch(err => {
+      Logger.error(err.toString());
+      const message: Message = new Message();
+      message.type = MessageType.ERREUR;
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
+        disableForm.value = true;
+        message.texte =
+          "Vous n'êtes pas autorisé à effectuer cette opération";
+        setTimeout(() => {
+          router.push({ name: "Home" });
+        });
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
+      message.isSticky = true;
+      messageStore.openDisplayedMessage(message);
+    })
+    .finally(() => {
+      dataLoading.value = false;
+    });
+}
+
+function allerAIPs(item: Etablissement): void {
+  messageStore.closeDisplayedMessage();
+  etablissementStore
+    .setCurrentEtablissement(item)
+    .then(() => {
+      router.push({ name: "ListeIP" });
+    })
+    .catch(err => {
+      Logger.error(err.toString());
+      const message: Message = new Message();
+      message.type = MessageType.ERREUR;
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
+      message.isSticky = true;
+
+      messageStore.openDisplayedMessage(message);
+      const messageBox = document.getElementById("messageBox");
+      if (messageBox) {
+        window.scrollTo(0, messageBox.offsetTop);
       }
     });
-  }
+}
 
-  get listEtab(): Array<string> {
-    return this.typesEtab;
-  }
+function downloadEtablissements(): void {
+  isExportLoading.value = true;
+  messageStore.closeDisplayedMessage();
+  const sirens = new Array<string>();
+  etabsFiltered.value.forEach(element => {
+    sirens.push(element.siren);
+  });
+  etablissementService
+    .downloadEtablissements(sirens, authStore.user.token)
+    .then(response => {
+      const fileURL = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/csv" })
+      );
+      const fileLink = document.createElement("a");
 
-  async fetchListeType() {
-    this.$store.dispatch("closeDisplayedMessage");
-    await etablissementService
-      .listeType()
-      .then(result => {
-        this.isDisableForm = false;
-        this.typesEtab = result;
-        this.typesEtab.push("Tous");
+      fileLink.href = fileURL;
+      fileLink.setAttribute("download", "export.csv");
+      document.body.appendChild(fileLink);
 
-        this.typesEtab.sort((n1, n2) => {
-          if (n1 > n2) {
-            return 1;
-          }
-          if (n1 < n2) {
-            return -1;
-          }
-          return 0;
-        });
+      fileLink.click();
 
-        this.typesEtab.unshift(
-          this.typesEtab.splice(
-            this.typesEtab.findIndex(item => item === "Tous"),
-            1
-          )[0]
-        );
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesApiError) {
-          this.isDisableForm = true;
-          message.texte =
-            "Fonctionnalité momentanement indisponible pour le moment. Réessayer plus tard";
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-      });
-  }
+      isExportLoading.value = false;
+    })
+    .catch(err => {
+      Logger.error(err.toString());
+      const message: Message = new Message();
+      message.type = MessageType.ERREUR;
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
+      message.isSticky = true;
 
-  eventTypeEtabChoice(element: string): void {
-    if (element === "Tous") {
-      this.selectedType = "";
-    } else {
-      this.selectedType = element;
-    }
-    this.filteredEtabByStatut;
-  }
+      messageStore.openDisplayedMessage(message);
 
-  eventStatutChoice(element: string): void {
-    if (element === "Tous") {
-      this.statut = "";
-    } else {
-      this.statut = element;
-    }
-    this.filteredEtabByStatut;
-  }
-
-  ajouterEtablissement(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$store
-      .dispatch("setCurrentEtablissement", new Etablissement())
-      .then(() => {
-        this.$router.push({ name: "CreationEtablissement" }).catch(err => {
-          Logger.error(err);
-        });
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-        // On glisse sur le message d'erreur
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-      });
-  }
-
-  allerAFusionnerEtab(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$router.push({ name: "fusionEtablissement" }).catch(err => {
-      Logger.error(err);
+      isExportLoading.value = false;
     });
-  }
+}
 
-  allerAScionnerEtab(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$router.push({ name: "scissionEtablissement" }).catch(err => {
-      Logger.error(err);
+function allerAAfficherEtab(item: Etablissement): void {
+  messageStore.closeDisplayedMessage();
+  etablissementStore
+    .setCurrentEtablissement(item)
+    .then(() => {
+      router.push({ name: "AfficherEtablissement" });
+    })
+    .catch(err => {
+      Logger.error(err.toString());
+      const message: Message = new Message();
+      message.type = MessageType.ERREUR;
+      if (err instanceof LicencesNationalesBadRequestApiError) {
+        message.texte = err.message;
+      } else {
+        message.texte = "Impossible d'exécuter l'action : " + err.message;
+      }
+      message.isSticky = true;
+
+      messageStore.openDisplayedMessage(message);
+      const messageBox = document.getElementById("messageBox");
+      if (messageBox) {
+        window.scrollTo(0, messageBox.offsetTop);
+      }
     });
-  }
-
-  filterStatut(statutRecherche) {
-    return statutRecherche.statutIP.toString().includes(this.statut);
-  }
-
-  collecterEtab(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    etablissementService
-      .getEtablissements(this.$store.getters.getToken())
-      .then(response => {
-        this.etabs = response;
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
-          this.disableForm = true;
-          message.texte =
-            "Vous n'êtes pas autorisé à effectuer cette opération";
-          setTimeout(() => {
-            this.$router.push({ name: "Home" });
-          });
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-      })
-      .finally(() => {
-        this.dataLoading = false;
-      });
-  }
-
-  allerAIPs(item: Etablissement): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$store
-      .dispatch("setCurrentEtablissement", item)
-      .then(() => {
-        this.$router.push({ name: "ListeIP" });
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-        // On glisse sur le message d'erreur
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-      });
-  }
-
-  downloadEtablissements(): void {
-    this.isExportLoading = true;
-    this.$store.dispatch("closeDisplayedMessage");
-    const sirens = new Array<string>();
-    this.etabsFiltered.forEach(element => {
-      sirens.push(element.siren);
-    });
-    etablissementService
-      .downloadEtablissements(sirens, this.$store.state.user.token)
-      .then(response => {
-        const fileURL = window.URL.createObjectURL(
-          new Blob([response.data], { type: "application/csv" })
-        );
-        const fileLink = document.createElement("a");
-
-        fileLink.href = fileURL;
-        fileLink.setAttribute("download", "export.csv");
-        document.body.appendChild(fileLink);
-
-        fileLink.click();
-
-        this.isExportLoading = false;
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-
-        this.isExportLoading = false;
-      });
-  }
-
-  allerAAfficherEtab(item: Etablissement): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$store
-      .dispatch("setCurrentEtablissement", item)
-      .then(() => {
-        this.$router.push({ name: "AfficherEtablissement" });
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesBadRequestApiError) {
-          message.texte = err.message;
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-        // On glisse sur le message d'erreur
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-      });
-  }
 }
 </script>
 <style>

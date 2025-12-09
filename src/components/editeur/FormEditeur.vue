@@ -1,15 +1,15 @@
 <template>
   <v-card class="elevation-0">
     <v-form
-      ref="formEditeur"
-      lazy-validation
+      ref="formEditeurRef"
+      validate-on="lazy"
       class="elevation-0"
       :disabled="isDisableForm"
     >
-      <h1 v-if="action == Action.CREATION">Créer un éditeur</h1>
-      <h1 v-else-if="action == Action.MODIFICATION">Modifier un éditeur</h1>
+      <h1 v-if="action === Action.CREATION">Créer un éditeur</h1>
+      <h1 v-else-if="action === Action.MODIFICATION">Modifier un éditeur</h1>
       <v-card-text class="elevation-0">
-        <v-col cols="12" md="6" lg="6" xl="6"><MessageBox></MessageBox> </v-col>
+        <v-col cols="12" md="6" lg="6" xl="6"><MessageBox /> </v-col>
         <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
         <div class="mx-9">
           <v-row>
@@ -20,22 +20,22 @@
             <v-row>
               <v-col cols="12" md="6" lg="6" xl="6">
                 <v-text-field
-                  outlined
+                  variant="outlined"
                   label="NOM DE L'EDITEUR"
                   placeholder="NOM DE L'EDITEUR"
                   v-model="editeur.nom"
                   :rules="rulesForms.nom"
                   required
-                  @keyup.enter="validate()"
-                ></v-text-field>
+                  @keyup.enter="validate"
+                />
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
                 <v-text-field
-                  outlined
+                  variant="outlined"
                   label="Identifiant éditeur"
                   placeholder="Identifiant éditeur"
                   v-model="editeur.identifiantBis"
-                ></v-text-field>
+                />
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
                 <v-select
@@ -45,11 +45,11 @@
                   placeholder="Groupes d'établissements reliés"
                   persistent-placeholder
                   multiple
-                  outlined
+                  variant="outlined"
                 >
-                  <template v-slot:prepend-item>
-                    <v-list-item ripple @click="toggle">
-                      <v-list-item-action>
+                  <template #prepend-item>
+                    <v-list-item @click="toggle">
+                      <v-list-item-action start>
                         <v-icon
                           :color="
                             editeur.groupesEtabRelies.length > 0
@@ -60,9 +60,9 @@
                           {{ iconEtab }}
                         </v-icon>
                       </v-list-item-action>
-                        <v-list-item-title>
-                          Tout sélectionner
-                        </v-list-item-title>
+                      <v-list-item-title>
+                        Tout sélectionner
+                      </v-list-item-title>
                     </v-list-item>
                     <v-divider class="mt-2"></v-divider>
                   </template>
@@ -70,14 +70,14 @@
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
                 <v-text-field
-                  outlined
+                  variant="outlined"
                   label="Adresse postale"
                   placeholder="Adresse postale"
                   v-model="editeur.adresse"
                   :rules="rulesForms.adresse"
                   required
-                  @keyup.enter="validate()"
-                ></v-text-field>
+                  @keyup.enter="validate"
+                />
               </v-col>
             </v-row>
           </div>
@@ -97,20 +97,20 @@
               :key="index"
             >
               <contact
-                :ref="'contactForm_' + index"
+                :ref="el => contactRefs[index] = el"
                 :contact="contact"
                 @onChange="removeContact(contact)"
-              ></contact>
+              />
             </v-col>
           </v-row>
         </div>
-        <v-card flat>
+        <v-card variant="flat">
           <v-card-title> {{ editeur.contacts.length }} contact(s)</v-card-title>
           <v-card-text> </v-card-text>
 
           <v-card-actions class="v-card__actions">
-            <v-btn class="ma-2 btn-2" @click="addContact()">
-              <FontAwesomeIcon :icon="['fas', 'plus']" class="mx-2" />
+            <v-btn class="ma-2 btn-2" @click="addContact">
+              <FontAwesomeIcon :icon="faPlus" class="mx-2" />
               Ajouter un contact
             </v-btn>
           </v-card-actions>
@@ -126,20 +126,21 @@
           class="d-flex justify-space-around mr-16 flex-wrap"
         >
           <v-btn
-            x-large
+            size="large"
             @click="clear"
             class="bouton-annuler"
             :disabled="isDisableForm"
           >
-            Annuler</v-btn
-          >
+            Annuler
+          </v-btn>
           <v-btn
             color="button"
             :loading="buttonLoading"
             :disabled="isDisableForm"
-            x-large
-            @click="validate()"
-            >Enregistrer
+            size="large"
+            @click="validate"
+          >
+            Enregistrer
             <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
           </v-btn>
         </v-col>
@@ -148,8 +149,9 @@
   </v-card>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import { Logger } from "@/utils/Logger";
 import {
   Action,
@@ -166,244 +168,218 @@ import { etablissementService } from "@/core/service/licencesnationales/Etabliss
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 import { rulesForms } from "@/core/RulesForm";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useAuthStore } from "@/stores/authStore";
+import { useMessageStore } from "@/stores/messageStore";
+import { useEditeurStore } from "@/stores/editeurStore";
+import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
-@Component({
-  components: { MessageBox, Contact }
-})
-export default class ComposantEditeur extends Vue {
-  editeur: Editeur;
-  @Prop() action!: Action;
-  Action: any = Action;
-  rulesForms: any = rulesForms;
-  typesEtab: Array<string> = [];
-  buttonLoading: boolean = false;
-  isDisableForm: boolean = false;
+const props = defineProps<{
+  action: Action;
+}>();
 
-  constructor() {
-    super();
-    this.fetchListeType();
-    this.editeur = this.getCurrentEditeur;
-  }
+const authStore = useAuthStore();
+const messageStore = useMessageStore();
+const editeurStore = useEditeurStore();
+const router = useRouter();
 
-  get getCurrentEditeur(): Editeur {
-    return this.$store.getters.getCurrentEditeur();
-  }
+const editeur = ref<Editeur>(editeurStore.getCurrentEditeur);
+const typesEtab = ref<Array<string>>([]);
+const buttonLoading = ref(false);
+const isDisableForm = ref(false);
+const formEditeurRef = ref();
+const contactRefs = ref<any[]>([]);
 
-  get tousTypesEtab(): any {
-    return this.editeur.groupesEtabRelies.length === this.typesEtab.length;
-  }
+const iconEtab = computed(() => {
+  if (tousTypesEtab.value) return "mdi-close-box";
+  if (certainsTypesEtab.value) return "mdi-minus-box";
+  return "mdi-checkbox-blank-outline";
+});
 
-  get certainsTypesEtab(): any {
-    return this.editeur.groupesEtabRelies.length > 0 && !this.tousTypesEtab;
-  }
+const tousTypesEtab = computed(
+  () => editeur.value.groupesEtabRelies.length === typesEtab.value.length
+);
+const certainsTypesEtab = computed(
+  () => editeur.value.groupesEtabRelies.length > 0 && !tousTypesEtab.value
+);
 
-  get iconEtab() {
-    if (this.tousTypesEtab) return "mdi-close-box";
-    if (this.certainsTypesEtab) return "mdi-minus-box";
-    return "mdi-checkbox-blank-outline";
-  }
+onMounted(() => {
+  fetchListeType();
+});
 
-  toggle(): void {
-    this.$nextTick(() => {
-      if (this.tousTypesEtab) {
-        this.editeur.groupesEtabRelies = [];
-      } else {
-        this.editeur.groupesEtabRelies = this.typesEtab.slice();
-      }
-    });
-  }
-
-  async fetchListeType() {
-    this.$store.dispatch("closeDisplayedMessage");
-    await etablissementService
-      .listeType()
-      .then(result => {
-        this.isDisableForm = false;
-        this.typesEtab = result;
-      })
-      .catch(err => {
-        Logger.error(err.toString());
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        if (err instanceof LicencesNationalesApiError) {
-          this.isDisableForm = true;
-          message.texte =
-            "Fonctionnalité momentanement indisponible pour le moment. Réessayer plus tard";
-        } else {
-          message.texte = "Impossible d'exécuter l'action : " + err.message;
-        }
-        message.isSticky = true;
-        this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-      });
-  }
-
-  validate(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-
-    // On vérifie le formulaire éditeur
-    let isValide: boolean = (this.$refs.formEditeur as Vue & {
-      validate: () => boolean;
-    }).validate();
-
-    const message: Message = new Message();
+async function fetchListeType() {
+  messageStore.closeDisplayedMessage();
+  try {
+    const result = await etablissementService.listeType();
+    isDisableForm.value = false;
+    typesEtab.value = result;
+  } catch (err: any) {
+    Logger.error(err.toString());
+    const message = new Message();
     message.type = MessageType.ERREUR;
-    message.isSticky = true;
-
-    // On vérifie les formulaires contacts
-    let isSubFormValide: boolean = false;
-    let countContactTechnique: number = 0;
-    let countContactCommercial: number = 0;
-    for (let index = 0; index < this.editeur.contacts.length; index++) {
-      if (this.editeur.contacts[index].type == ContactType.TECHNIQUE) {
-        countContactTechnique++;
-      } else if (this.editeur.contacts[index].type == ContactType.COMMERCIAL) {
-        countContactCommercial++;
-      }
-      isSubFormValide = this.$refs["contactForm_" + index][0].validate();
-      if (!isValide || !isSubFormValide) {
-        // Si le formulaire éditeur n'était pas valide, on garde à non valide
-        isValide = false;
-      } else {
-        isValide = true;
-      }
-    }
-    if (countContactCommercial === 0 || countContactTechnique === 0) {
-      isValide = false;
+    if (err instanceof LicencesNationalesApiError) {
+      isDisableForm.value = true;
       message.texte =
-        " - Vous devez saisir au moins un contact technique et un contact commercial";
-    }
-
-    if (isValide) {
-      this.send();
+        "Fonctionnalité momentanement indisponible pour le moment. Réessayer plus tard";
     } else {
-      this.buttonLoading = false;
-      message.texte = `Des champs ne remplissent pas les conditions :
-      ${message.texte}`;
-      message.isMultiline = true;
-      this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-        Logger.error(err.toString());
-      });
-      // On glisse sur le message d'erreur
-      const messageBox = document.getElementById("messageBox");
-      if (messageBox) {
-        window.scrollTo(0, messageBox.offsetTop);
-      }
+      message.texte = "Impossible d'exécuter l'action : " + err.message;
     }
-  }
-
-  addContact(): void {
-    const contact = new ContactEditeur();
-    this.editeur.addContact(contact);
-  }
-
-  removeContact(item: ContactEditeur): void {
-    this.editeur.removeContact(item);
-  }
-
-  send(): void {
-    this.buttonLoading = true;
-
-    if (this.action == Action.CREATION) {
-      editeurService
-        .createEditeur(this.editeur, this.$store.getters.getToken())
-        .then(() => {
-          this.buttonLoading = false;
-          const message: Message = new Message();
-          message.type = MessageType.VALIDATION;
-          message.texte = `L'éditeur a bien été créé`;
-          message.isSticky = false;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          // On glisse jusqu'au message
-          const messageBox = document.getElementById("messageBox");
-          if (messageBox) {
-            window.scrollTo(0, messageBox.offsetTop);
-          }
-          // On redirige après 2 secondes
-          setTimeout(() => {
-            this.$store.dispatch("closeDisplayedMessage");
-            this.$router.push({ path: "/listeEditeurs" });
-          }, 2000);
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          message.texte = `Impossible d'exécuter l'action :
-           ${err.message}`;
-          message.isSticky = true;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          // On glisse jusqu'au message
-          const messageBox = document.getElementById("messageBox");
-          if (messageBox) {
-            window.scrollTo(0, messageBox.offsetTop);
-          }
-        });
-    } else if (this.action == Action.MODIFICATION) {
-      editeurService
-        .updateEditeur(this.editeur, this.$store.getters.getToken())
-        .then(() => {
-          this.buttonLoading = false;
-          const message: Message = new Message();
-          message.type = MessageType.VALIDATION;
-          message.texte = `L'éditeur a bien été modifié`;
-          message.isSticky = false;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          // On glisse jusqu'au message
-          const messageBox = document.getElementById("messageBox");
-          if (messageBox) {
-            window.scrollTo(0, messageBox.offsetTop);
-          }
-          // On redirige après 2 secondes
-          setTimeout(() => {
-            this.$store.dispatch("closeDisplayedMessage");
-            this.$router.push({ path: "/listeEditeurs" });
-          }, 2000);
-        })
-        .catch(err => {
-          this.buttonLoading = false;
-          Logger.error(err.toString());
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          message.texte = `Impossible d'exécuter l'action :
-           ${err.message}`;
-          message.isSticky = true;
-          this.$store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          // On glisse jusqu'au message
-          const messageBox = document.getElementById("messageBox");
-          if (messageBox) {
-            window.scrollTo(0, messageBox.offsetTop);
-          }
-        });
-    }
-  }
-
-  clear() {
-    this.buttonLoading = false;
-    this.$store.dispatch("closeDisplayedMessage");
-    // Reset des formulaires de contact
-    for (let index = 0; index < this.editeur.contacts.length; index++) {
-      // Formulaire contact
-      this.$refs["contactForm_" + index][0].clear();
-    }
-    // Reset du formulaire éditeur
-    (this.$refs.formEditeur as HTMLFormElement).resetValidation();
-
-    this.editeur = this.getCurrentEditeur;
-    window.scrollTo(0, 0);
+    message.isSticky = true;
+    messageStore.openDisplayedMessage(message);
   }
 }
+
+function toggle(): void {
+  requestAnimationFrame(() => {
+    if (tousTypesEtab.value) {
+      editeur.value.groupesEtabRelies = [];
+    } else {
+      editeur.value.groupesEtabRelies = typesEtab.value.slice();
+    }
+  });
+}
+
+async function validate(): Promise<void> {
+  messageStore.closeDisplayedMessage();
+  buttonLoading.value = true;
+
+  const validationResult = await formEditeurRef.value?.validate();
+  let isValide =
+    typeof validationResult === "boolean"
+      ? validationResult
+      : validationResult?.valid;
+
+  const message = new Message();
+  message.type = MessageType.ERREUR;
+  message.isSticky = true;
+
+  let isSubFormValide = true;
+  let countContactTechnique = 0;
+  let countContactCommercial = 0;
+
+  editeur.value.contacts.forEach((contact, index) => {
+    if (contact.type == ContactType.TECHNIQUE) {
+      countContactTechnique++;
+    } else if (contact.type == ContactType.COMMERCIAL) {
+      countContactCommercial++;
+    }
+    const isContactValid = contactRefs.value[index]?.validate?.() ?? false;
+    if (!isValide || !isContactValid) {
+      isValide = false;
+      isSubFormValide = false;
+    }
+  });
+
+  if (countContactCommercial === 0 || countContactTechnique === 0) {
+    isValide = false;
+    message.texte =
+      " - Vous devez saisir au moins un contact technique et un contact commercial";
+  }
+
+  if (isValide && isSubFormValide) {
+    send();
+  } else {
+    buttonLoading.value = false;
+    message.texte = `Des champs ne remplissent pas les conditions :
+      ${message.texte}`;
+    message.isMultiline = true;
+    messageStore.openDisplayedMessage(message);
+    const messageBox = document.getElementById("messageBox");
+    if (messageBox) {
+      window.scrollTo(0, messageBox.offsetTop);
+    }
+  }
+}
+
+function addContact(): void {
+  const contact = new ContactEditeur();
+  editeur.value.addContact(contact);
+}
+
+function removeContact(item: ContactEditeur): void {
+  editeur.value.removeContact(item);
+}
+
+function send(): void {
+  if (props.action === Action.CREATION) {
+    editeurService
+      .createEditeur(editeur.value, authStore.getToken)
+      .then(() => {
+        buttonLoading.value = false;
+        const message = new Message();
+        message.type = MessageType.VALIDATION;
+        message.texte = `L'éditeur a bien été créé`;
+        message.isSticky = false;
+        messageStore.openDisplayedMessage(message);
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+        setTimeout(() => {
+          messageStore.closeDisplayedMessage();
+          router.push({ path: "/listeEditeurs" });
+        }, 2000);
+      })
+      .catch(err => {
+        buttonLoading.value = false;
+        Logger.error(err.toString());
+        const message = new Message();
+        message.type = MessageType.ERREUR;
+        message.texte = `Impossible d'exécuter l'action :
+           ${err.message}`;
+        message.isSticky = true;
+        messageStore.openDisplayedMessage(message);
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      });
+  } else if (props.action === Action.MODIFICATION) {
+    editeurService
+      .updateEditeur(editeur.value, authStore.getToken)
+      .then(() => {
+        buttonLoading.value = false;
+        const message = new Message();
+        message.type = MessageType.VALIDATION;
+        message.texte = `L'éditeur a bien été modifié`;
+        message.isSticky = false;
+        messageStore.openDisplayedMessage(message);
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+        setTimeout(() => {
+          messageStore.closeDisplayedMessage();
+          router.push({ path: "/listeEditeurs" });
+        }, 2000);
+      })
+      .catch(err => {
+        buttonLoading.value = false;
+        Logger.error(err.toString());
+        const message = new Message();
+        message.type = MessageType.ERREUR;
+        message.texte = `Impossible d'exécuter l'action :
+           ${err.message}`;
+        message.isSticky = true;
+        messageStore.openDisplayedMessage(message);
+        const messageBox = document.getElementById("messageBox");
+        if (messageBox) {
+          window.scrollTo(0, messageBox.offsetTop);
+        }
+      });
+  }
+}
+
+function clear() {
+  buttonLoading.value = false;
+  messageStore.closeDisplayedMessage();
+  contactRefs.value.forEach(refItem => refItem?.clear?.());
+  formEditeurRef.value?.resetValidation?.();
+  editeur.value = editeurStore.getCurrentEditeur;
+  window.scrollTo(0, 0);
+}
 </script>
+
 <style scoped lang="scss">
 .v-card__text {
   border: 0;
