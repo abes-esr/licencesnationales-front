@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <v-theme-provider :theme="isDark ? 'dark' : 'light'" >
     <Header />
     <v-layout class="flex-shrink-0">
       <side-menu :display-menu="isLoggedIn" :is-admin="isAdmin" />
@@ -12,6 +13,7 @@
       </v-main>
     </v-layout>
     <Footer />
+    </v-theme-provider>
   </v-app>
 </template>
 

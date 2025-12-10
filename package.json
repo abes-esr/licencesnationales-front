@@ -1,6 +1,6 @@
 {
   "name": "licencesnationales-front",
-  "version": "2.0.0",
+  "version": "9.9.70",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -27,5 +27,10 @@
     "@vitejs/plugin-vue": "^6.0.2",
     "sass": "^1.32.0",
     "typescript": "^5.9.3"
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }

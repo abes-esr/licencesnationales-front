@@ -1,80 +1,4 @@
-.theme--light {
-  $couleur-1: #cf491f; // Orange foncé
-  $couleur-2: #478dcb; // Bleu clair
-  $couleur-3: #252c61; // Bleu foncé
-  $couleur-4: #b8b8b9; // Gris clair
-  $couleur-5: #949597; // Gris
-  $couleur-6: #ffffff; // Blanc
-  $couleur-7: #000000; // Noir
-  $couleur-8: #00b600; // Vert clair
-  $couleur-9: #e3040d; //Rouge
 
-  $bouton-1: #00b600; // Vert clair
-  $bouton-2: #252c61; //Bleu foncé
-  $bouton-3: #e3040d; //Rouge
-
-  $message-couleur-1: #e3040d; // Rouge
-  $message-couleur-2: #eca30f; //Orange clair
-  $message-couleur-3: #00b600; //Vert clair
-
-  $couleur-arriere-plan-1: #fac8c0; // Rouge
-  $couleur-arriere-plan-2: rgba($message-couleur-2, 0.15); //Orange clair
-  $couleur-arriere-plan-3: rgba($message-couleur-3, 0.15); //Vert clair
-  $couleur-arriere-plan-4: #f6988a;
-  $couleur-arriere-plan-5: #122638;
-  $couleur-arriere-plan-6: #ffffff; // Blanc
-  $couleur-arriere-plan-7: #000000; // Noir
-  $couleur-arriere-plan-8: #6262624a;
-  $couleur-arriere-plan-9: #32465b;
-  $couleur-arriere-plan-10: #5f97ce;
-
-  $couleur-fond-card: #f0f0f4;
-
-  $couleur-fond-declaration: #e3e4ea;
-
-  $couleur-tab: rgb(250, 250, 250);
-
-  // @import "style";
-}
-
-.theme--dark {
-  $couleur-1: #cf491f; // Orange foncé
-  $couleur-2: #ffffff; // Bleu clair
-  $couleur-3: #ffffff; // Bleu foncé
-  $couleur-4: #b8b8b9; // Gris clair
-  $couleur-5: #949597; // Gris
-  $couleur-6: #000000; // Noir
-  $couleur-7: #000000;
-  $couleur-8: #00b600; // Vert clair
-  $couleur-9: #e3040d; //Rouge
-
-  $bouton-1: #00b600; // Vert clair
-  $bouton-2: #478dcb; //Bleu foncé
-  $bouton-3: #e3040d; //Rouge
-
-  $message-couleur-1: #e3040d; // Rouge
-  $message-couleur-2: #eca30f; //Orange clair
-  $message-couleur-3: #00b600; //Vert clair
-
-  $couleur-arriere-plan-1: #fac8c0; // Rouge
-  $couleur-arriere-plan-2: rgba($message-couleur-2, 0.15); //Orange clair
-  $couleur-arriere-plan-3: rgba($message-couleur-3, 0.15); //Vert clair
-  $couleur-arriere-plan-4: #f6988a;
-  $couleur-arriere-plan-5: #b8b8b9;
-  $couleur-arriere-plan-6: #000000; // Noir
-  $couleur-arriere-plan-7: #ffffff; // Blanc
-  $couleur-arriere-plan-8: #000000;
-  $couleur-arriere-plan-9: #7d7979;
-  $couleur-arriere-plan-10: #7d7979;
-
-  $couleur-fond-card: #1E1E1E;
-
-  $couleur-fond-declaration: #1E1E1E;
-
-  $couleur-tab: rgb(0, 0, 0);
-
-  // @import "style";
-}
 
 #messageBox .v-btn {
   background-color: transparent !important;
@@ -190,4 +114,9 @@ h1 {
 
 .no-text-transform {
   text-transform: none !important;
+}
+
+.v-btn--elevated {
+    background-color: #c64c21 !important;
+    color: white !important;
 }
