@@ -12,7 +12,7 @@
       >
         <v-card-title class="px-0">
           Information du compte
-          <v-tooltip top max-width="20vw" open-delay="100">
+          <v-tooltip location="top" max-width="20vw" open-delay="100">
             <template #activator="{ props }">
               <v-btn
                 icon
@@ -92,7 +92,7 @@
           <v-card-text class="d-flex justify-space-between flex-column">
             <div class="d-flex justify-space-between align-center">
               <h2 class="mb-3">Etablissement</h2>
-              <v-tooltip top max-width="20vw" open-delay="100" v-if="!isAdmin">
+              <v-tooltip location="top" max-width="20vw" open-delay="100" v-if="!isAdmin">
                 <template #activator="{ props }">
                   <FontAwesomeIcon
                     v-bind="props"

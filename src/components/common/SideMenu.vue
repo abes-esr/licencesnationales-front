@@ -1,13 +1,11 @@
 <template>
   <v-navigation-drawer
     v-if="displayMenu"
-    width="100px"
     app
     flat
     hide-overlay
     permanent
     :visible="displayMenu"
-    height="100%"
   >
     <v-list dense color="transparent">
       <v-row class="mb-15"> </v-row>
@@ -17,7 +15,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerATableauDeBord()"
         >
-          <v-list-item-action class="ma-0 pa-1">
+          <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faGaugeHigh" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Tableau de bord</v-list-item-title>
@@ -29,7 +27,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAListeEtabs()"
         >
-          <v-list-item-action class="ma-0 pa-1">
+          <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faBuildingColumns" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Liste des établissements</v-list-item-title>
@@ -41,7 +39,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAListeEditeurs()"
         >
-          <v-list-item-action class="ma-0 pa-1">
+          <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faList" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Liste des éditeurs</v-list-item-title>
@@ -53,7 +51,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAStatitique()"
         >
-          <v-list-item-action class="ma-0 pa-1">
+          <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faChartBar" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Statistique de l'application</v-list-item-title>
@@ -65,7 +63,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAHistorique()"
         >
-          <v-list-item-action class="ma-0 pa-1">
+          <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faClockRotateLeft" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Historique des actions</v-list-item-title>
@@ -77,7 +75,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerRecherche()"
         >
-          <v-list-item-action class="ma-0 pa-1">
+          <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faMagnifyingGlass" size="2x" />
           </v-list-item-action>
             <v-list-item-title>Recherche</v-list-item-title>
@@ -89,7 +87,7 @@
           class="d-flex align-center justify-center flex-column menu-slot"
           v-on:click="allerAListeIPs()"
         >
-          <v-list-item-action class="ma-0 pa-1">
+          <v-list-item-action class="ma-0 pa-1 justify-center">
             <v-icon xLarge class="mr-2">mdi-ip-network</v-icon>
           </v-list-item-action>
             <v-list-item-title>Adresse IP</v-list-item-title>
@@ -150,4 +148,15 @@ function allerAListeIPs() {
   router.push({ name: "ListeIP" }).catch(err => Logger.error(err));
 }
 </script>
-
+<style scoped lang="scss">
+  .v-navigation-drawer {
+    width: 80px !important;
+    height: auto !important;
+    position: unset !important;
+    top: unset !important;
+    left: unset !important;
+    bottom: unset !important;
+    right: unset !important;
+    transform: unset !important;
+  }
+</style>

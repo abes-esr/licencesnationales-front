@@ -168,7 +168,9 @@
                     </li>
                   </ul>
                 </div>
-                <v-btn @click="envoiEditeurs()" class="bottom ma-4">Envoi aux éditeurs</v-btn>
+                <div class="w-100 d-flex justify-end">
+                  <v-btn @click="envoiEditeurs()" class="bottom ma-4">Envoi aux éditeurs</v-btn>
+                </div>
               </v-card-text>
             </div>
           </v-col>
@@ -532,7 +534,7 @@ ul li::before {
   padding-top: 5px;
 }
 
-.v-card__text .no-border {
+.v-card-text .no-border {
   border: none !important;
 }
 
@@ -560,7 +562,7 @@ h3 {
   font-size: 1rem !important;
 }
 
-.v-card__text {
+.v-card-text {
   font-size: 1rem !important;
 }
 

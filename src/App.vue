@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-theme-provider :theme="isDark ? 'dark' : 'light'" >
+    <v-theme-provider :theme="isDark ? 'dark' : 'light'" with-background>
     <Header />
     <v-layout class="flex-shrink-0">
       <side-menu :display-menu="isLoggedIn" :is-admin="isAdmin" />
@@ -34,6 +34,8 @@ const uiStore = useUiStore();
 const isDark = computed(() => uiStore.isDark);
 const isLoggedIn = computed(() => authStore.isLoggedIn);
 const isAdmin = computed(() => authStore.isAdmin);
+
+console.log("App.vue loaded theme : ", isDark ? 'dark' : 'light');
 
 // Mounted
 onMounted(() => {

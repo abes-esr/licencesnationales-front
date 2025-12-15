@@ -12,7 +12,7 @@
           <v-row class="ma-0">
             <v-col class="py-0">
               <p class="caption mb-0">
-                PossibilitÇ¸ de copier/coller directement les IP dans les champs
+                Possibilité de copier/coller directement les IP dans les champs
                 de saisie
               </p>
               <v-row v-if="typeAcces === 'ip'">
@@ -70,7 +70,7 @@
                 <v-col>
                   <!-- PLAGE IP v4 -->
                   <div v-if="typeIp === 'IPV4'">
-                    <label>IP de dÇ¸but</label>
+                    <label>IP de début</label>
                     <v-row>
                       <v-col
                         v-for="(value, index) in ipv4SegmentsPlageDebut"
@@ -136,7 +136,7 @@
 
                   <!-- PLAGE IP v6 -->
                   <div v-else>
-                    <label>IP de dÇ¸but</label>
+                    <label>IP de début</label>
                     <v-row>
                       <v-col
                         v-for="(value, index) in ipv6SegmentsPlageDebut"
@@ -219,7 +219,7 @@
                 auto-grow
                 rows="2"
                 label="Commentaires"
-                hint="Apporter ici toute prÇ¸cisions sur l'attribution de cette IP, surtout si elle n'appartient pas au rÇ¸seau Renater."
+                hint="Apporter ici toute précision sur l'attribution de cette IP, surtout si elle n'appartient pas au réseau Renater."
                 :rules="rulesForm.commentaires"
                 v-model="commentaires"
                 @focus="$emit('focus')"

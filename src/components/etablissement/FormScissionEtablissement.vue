@@ -45,7 +45,7 @@
                 v-for="n in etablissementNumber"
                 :key="n"
               ></form-etablissement>
-              <v-card-actions class="v-card__actions">
+              <v-card-actions class="v-card-actions">
                 <v-row>
                   <v-spacer class="hidden-sm-and-down"></v-spacer>
                   <v-col

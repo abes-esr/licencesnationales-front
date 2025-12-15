@@ -7,15 +7,15 @@
           <v-row>
             <v-card-title>
               <h1>
-                DÇ¸clarer de nouvelles adresses ou plages IP
+                Déclarer de nouvelles adresses ou plages IP
               </h1>
             </v-card-title>
           </v-row>
           <v-row>
             <v-col>
               <a @click="allerListeAcces">
-                <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir Çÿ la
-                liste complÇùte des IP
+                <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir à la
+                liste complète des IP
               </a>
             </v-col>
           </v-row>
@@ -23,7 +23,7 @@
             <v-col cols="12" md="8" class="pa-0">
               <MessageBox class="mr-2" />
               <v-card-title class="pb-0">
-                Choisir le type d'IP Çÿ dÇ¸clarer
+                Choisir le type d'IP à déclarer
               </v-card-title>
             </v-col>
             <v-col cols="12" md="4" class="pa-3">
@@ -37,7 +37,7 @@
                   href="https://documentation.abes.fr/aidelicencesnationales/index.html#TutoDeDeclarationDesIP"
                   target="_blank"
                   class="pl-3 pb-6 text-body-1 font-weight-bold"
-                  >Consulter l'aide pour la dÇ¸claration des IP</a
+                  >Consulter l'aide pour la déclaration des IP</a
                 >
               </v-card-text>
             </v-col>
@@ -88,7 +88,7 @@
             </v-col>
             <v-col cols="4">
               <v-card-text class="overflow-auto fondGris">
-                <h2 class="pb-4">Nouvelles IP ou plages IP ajoutÇ¸es</h2>
+                <h2 class="pb-4">Nouvelles IP ou plages IP ajoutées</h2>
                 <v-table density="compact">
                   <thead>
                     <tr>
@@ -164,7 +164,7 @@ const metaInfo = {
     {
       name: "description",
       content:
-        "Page de dÇ¸claration d'IP de l'application des Licences Nationales"
+        "Page de déclaration d'IP de l'application des Licences Nationales"
     }
   ],
   title: "Ajout d'IP - Licences Nationales"
@@ -181,9 +181,9 @@ const clear = () => {
 
 const supprimerIP = async (idIP: string, index: number) => {
   const confirmed = await confirm.value?.open(
-    `Vous Ç¦tes sur le point de supprimer dÇ¸finitivement une adresse IP ou une plage d'adresses IP.
+    `Vous êtes sur le point de supprimer définitivement une adresse IP ou une plage d'adresses IP.
 
-                Etes-vous sÇ¯r de vouloir effectuer cette action ?`
+                Etes-vous sûr de vouloir effectuer cette action ?`
   );
   if (confirmed) {
     iPService

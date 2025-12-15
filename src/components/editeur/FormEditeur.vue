@@ -108,7 +108,7 @@
           <v-card-title> {{ editeur.contacts.length }} contact(s)</v-card-title>
           <v-card-text> </v-card-text>
 
-          <v-card-actions class="v-card__actions">
+          <v-card-actions class="v-card-actions">
             <v-btn class="ma-2 btn-2" @click="addContact">
               <FontAwesomeIcon :icon="faPlus" class="mx-2" />
               Ajouter un contact
@@ -381,11 +381,11 @@ function clear() {
 </script>
 
 <style scoped lang="scss">
-.v-card__text {
+.v-card-text {
   border: 0;
 }
 
-.v-card__title {
+.v-card-title {
   width: 100%;
 }
 </style>

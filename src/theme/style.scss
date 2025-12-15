@@ -53,11 +53,11 @@ h4 {
   color: $couleur-8;
 }
 
-.v-card__title {
+.v-card-title {
   color: $couleur-2;
 }
 
-.v-card__text {
+.v-card-text {
   border: 1px solid $couleur-4;
   border-radius: 5px;
 }
@@ -90,10 +90,10 @@ a {
   color: $couleur-3;
 }
 
-.bouton-simple {
-  color: $couleur-3  !important;
-  background-color: transparent !important;
-}
+// .bouton-simple {
+//   color: $couleur-3  !important;
+//   background-color: transparent !important;
+// }
 
 #footer,
 .footer-btn,
@@ -127,7 +127,7 @@ a {
   border-color: $couleur-7  !important;
 }
 
-.v-card__title {
+.v-card-title {
   color: $couleur-3  !important;
 }
 
@@ -283,9 +283,9 @@ tbody tr:nth-of-type(odd) {
   background-color: $couleur-fond-declaration  !important;
 }
 
-.v-btn.v-btn--icon.v-alert {
-  background: transparent !important;
-}
+// .v-btn.v-btn--icon.v-alert {
+//   background: transparent !important;
+// }
 
 @media (min-resolution: 120dpi) {
   #main {

@@ -12,14 +12,14 @@
 
       <v-row class="align-center bg-secondary px-4" no-gutters>
         <v-col cols="12" md="3">
-          <div v-if="isLoggedIn" class="d-flex align-center flex-wrap justify-space-between justify-md-start">
+          <div class="d-flex align-center flex-wrap justify-space-between justify-md-start">
             <v-switch class="theme-selector" density="compact" inset hide-details :model-value="isDark"
               @update:model-value="toggleTheme">
               <template #label>
-                <span class="text-white text-subtitle-2">Thème sombre</span>
+                <p class="text-white text-subtitle-2">Thème sombre</p>
               </template>
             </v-switch>
-            <div class="text-white me-4 my-1 hidden-md-and-up">
+            <div v-if="isLoggedIn" class="text-white me-4 my-1 hidden-md-and-up">
               Bienvenue {{ loggedInUsername }}
             </div>
           </div>
@@ -32,7 +32,11 @@
             </div>
 
             <div v-if="isAdmin" class="d-flex align-center flex-wrap">
-              <v-tooltip top>
+              <v-tooltip
+                location="top"
+                :theme="isDark ? 'dark' : 'light'"
+                :content-class="isDark ? 'text-white' : 'text-black'"
+              >
                 <template #activator="{ props }">
                   <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
                     @click="allerAModifierMotDePasse">
@@ -42,17 +46,25 @@
                 <span>Modifier mot de passe</span>
               </v-tooltip>
 
-              <v-tooltip top>
-                <template #activator="{ props }">
-                  <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2" @click="allerAModifierProfil">
-                    <FontAwesomeIcon :icon="faUser" size="lg" />
-                  </v-btn>
-                </template>
-                <span>Modifier les infos</span>
-              </v-tooltip>
+              <div>
+                <v-tooltip
+                  text="Modifier les infos"
+                  location="top"
+                  activator="parent"
+                  :theme="isDark ? 'dark' : 'light'"
+                  :content-class="isDark ? 'text-white' : 'text-black'"
+                ></v-tooltip>
+                <v-btn variant="text" color="white" class="my-1 me-2" @click="allerAModifierProfil">
+                  <FontAwesomeIcon :icon="faUser" size="lg" />
+                </v-btn>
+              </div>
             </div>
 
-            <v-tooltip top>
+            <v-tooltip
+              location="top"
+              :theme="isDark ? 'dark' : 'light'"
+              :content-class="isDark ? 'text-white' : 'text-black'"
+            >
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
                   href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank">
@@ -62,7 +74,11 @@
               <span>Assistance</span>
             </v-tooltip>
 
-            <v-tooltip top>
+            <v-tooltip
+              location="top"
+              :theme="isDark ? 'dark' : 'light'"
+              :content-class="isDark ? 'text-white' : 'text-black'"
+            >
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
                   href="https://documentation.abes.fr/aidelicencesnationales/index.html#AccederAuxLN" target="_blank">
@@ -72,7 +88,11 @@
               <span>Documentation</span>
             </v-tooltip>
 
-            <v-tooltip top>
+            <v-tooltip
+              location="top"
+              :theme="isDark ? 'dark' : 'light'"
+              :content-class="isDark ? 'text-white' : 'text-black'"
+            >
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1" @click="seDeconnecter">
                   <FontAwesomeIcon :icon="faRightFromBracket" size="lg" />

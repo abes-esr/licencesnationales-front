@@ -1,29 +1,29 @@
 <template>
   <v-footer id="footer" padless>
-    <v-card class="flex" flat>
-      <v-card-title class="teal footer-top align-center pa-0">
+    <v-card class="flex w-100" flat>
+      <v-card-title class="teal footer-top align-center pa-0 d-flex ">
         <!-- Col gauche -->
         <v-col cols="12" md="4" lg="3" xl="3">
           <div class="left-container d-flex flex-column justify-space-between">
             <div class="raccourci">
               <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="mx-2" />
-              <span class="texte">Accès direct</span>
+              <span class="texte text-wrap text-break">Accès direct</span>
             </div>
 
             <v-btn href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank"
               class="footer-btn mx-2 text-center">
-              <span class="texte">Assistance</span>
+              <span class="texte text-wrap text-break">Assistance</span>
               <FontAwesomeIcon :icon="faComments" class="mx-2" />
             </v-btn>
 
             <v-btn href="https://www.licencesnationales.fr/" target="_blank" class="footer-btn mx-2 text-center">
-              <span class="texte">Site Licences nationales</span>
+              <span class="texte text-wrap text-break">Site Licences nationales</span>
               <FontAwesomeIcon :icon="faCircleArrowRight" class="mx-2" />
             </v-btn>
 
             <v-btn href="https://documentation.abes.fr/aidelicencesnationales/index.html" target="_blank"
               class="footer-btn mx-2 text-center">
-              <span class="texte">Documentation</span>
+              <span class="texte text-wrap text-break">Documentation</span>
               <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" />
             </v-btn>
           </div>
@@ -36,7 +36,7 @@
         <!-- Col droite -->
         <v-col cols="12" md="4" lg="4" xl="4" class="d-flex justify-space-around align-center">
           <div class="d-flex flex-column justify-space-between text-right mr-3 right-container">
-            <h4 class="mb-2">Agence bibliographique de l’enseignement supérieur</h4>
+            <h4 class="mb-2 text-wrap text-break">Agence bibliographique de l’enseignement supérieur</h4>
             <div>227 av. Jean-Louis Viala CS 84308<br />34193 Montpellier Cedex 5</div>
             <div>Tél : +33 (0)4 67 54 84 10</div>
           </div>
@@ -56,7 +56,7 @@
       <v-card-text class="py-2 white--text footer-bottom">
         <strong>Licences Nationales </strong>
 
-        <v-tooltip>
+        <v-tooltip location="top" theme="dark" content-class="text-white">
           <template #activator="{ props }">
             <span v-bind="props">{{ appVersion }}</span>
           </template>
@@ -150,7 +150,6 @@ onMounted(async () => {
 
 #mentions a {
   text-decoration: none;
-  color: white;
 }
 
 .logos {

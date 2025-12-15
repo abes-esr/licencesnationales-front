@@ -6,7 +6,7 @@
       :disabled="isDisableForm"
     >
       <h1 v-if="action === Action.CREATION" class="pl-3">
-        CrÇ¸er le compte de votre établissement
+        Créer le compte de votre établissement
       </h1>
       <h1 v-if="action === Action.MODIFICATION" class="pl-3">
         {{ etablissement.nom }}
@@ -16,7 +16,7 @@
         @click="allerAConnexion"
         class="pl-3"
       >
-        Votre établissement a dÇ¸jÇÿ un compte ?
+        Votre établissement a déjà un compte ?
         <a class="bouton-simple elevation-0 large">S'authentifier</a>
         <v-icon>mdi-arrow-right-circle-outline </v-icon>
       </h2>
@@ -28,7 +28,7 @@
           <v-alert variant="outlined">
             <div>
               <a @click="allerPageAccueil()">
-                <FontAwesomeIcon :icon="faReply" /> Revenir Çÿ la page
+                <FontAwesomeIcon :icon="faReply" /> Revenir à la page
                 d'accueil
               </a>
             </div>
@@ -42,26 +42,26 @@
                 class="mx-2 icone-attention"
               />
               <h4 class="mb-1">
-                Avant de crÇ¸er votre compte, vÇ¸rifier l'Ç¸ligibilitÇ¸ de votre
+                Avant de créer votre compte, vérifier l'éligibilité de votre
                 établissement
               </h4>
               <p>
-                <strong>Attention : </strong>L'accÇùs aux corpus sous licences
-                nationales est reservÇ¸ aux établissements bÇ¸nÇ¸ficiaires selon
-                les conditions spÇ¸cifiques nÇ¸gociÇ¸es avec chaque Ç¸diteur. Pour
-                permettre la dÇ¸claration des adresses IP autorisÇ¸es, l'Abes met
-                Çÿ la disposition des professionnels de la documentation cette
-                application dÇ¸diÇ¸e Çÿ la gestion des accÇùs.
+                <strong>Attention : </strong>L'accès aux corpus sous licences
+                nationales est réservé aux établissements bénéficiaires selon
+                les conditions spécifiques négociées avec chaque éditeur. Pour
+                permettre la déclaration des adresses IP autorisées, l'Abes met
+                à la disposition des professionnels de la documentation cette
+                application dédiée à la gestion des accès.
                 <a
                   href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
                   target="_blank"
-                  >VÇ¸rifier l'Ç¸ligibilitÇ¸ de votre établissement.</a
+                  >Vérifier l'éligibilité de votre établissement.</a
                 >
               </p>
               <v-checkbox
                 required
                 :rules="rulesForms.checkboxRules"
-                label="Je confirme que mon établissement est Ç¸ligible"
+                label="Je confirme que mon établissement est éligible"
               />
             </v-alert>
           </v-col>
@@ -196,20 +196,20 @@
         >
           <v-row>
             <v-btn
-              size="x-large"
               @click="clear"
-              class="bouton-annuler"
               :disabled="isDisableForm"
+              variant="text"
+
             >
               Annuler</v-btn
             >
+            
             <v-btn
-              color="button"
               class="ml-4"
               :loading="buttonLoading"
               :disabled="isDisableForm"
-              size="x-large"
               @click="validate"
+              variant="elevated"
             >
               Enregistrer
               <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
@@ -274,7 +274,7 @@ const Action = ActionEnum;
 const isAdmin = computed(() => authStore.isAdmin);
 const tokenrecaptcha = ref("");
 const typesEtab = ref<Array<string>>([]);
-const checkSirenAPI = ref("En attente de vÇ¸rification");
+const checkSirenAPI = ref("En attente de vérification");
 const checkSirenColor = ref("grey");
 const buttonLoading = ref(false);
 const isDisableForm = ref(false);
@@ -293,7 +293,7 @@ const metaInfo = () => {
       {
         name: "description",
         content:
-          "CrÇ¸ation de compte sur l'application des Licences Nationales"
+          "Création de compte sur l'application des Licences Nationales"
       }
     ],
     title: `${titre} - Licences Nationales`
@@ -328,10 +328,10 @@ const fetchListeType = async () => {
     if (err instanceof LicencesNationalesApiError) {
       isDisableForm.value = true;
       message.texte =
-        "FonctionnalitÇ¸ momentanement indisponible pour le moment. RÇ¸essayer plus tard";
+        "Fonctionnalité momentanement indisponible pour le moment. Réessayer plus tard";
     } else {
       message.texte =
-        "Impossible d'exÇ¸cuter l'action : " + (err?.message ?? "");
+        "Impossible d'exécuter l'action : " + (err?.message ?? "");
     }
     message.isSticky = true;
     try {
@@ -416,7 +416,7 @@ const send = async () => {
         const message: Message = new Message();
         message.type = MessageType.VALIDATION;
         message.texte =
-          "Le compte a Ç¸tÇ¸ enregistrÇ¸. Pour y accÇ¸der, merci de vous authentifier";
+          "Le compte a été enregistré. Pour y accéder, merci de vous authentifier";
         message.isSticky = true;
         returnLink.value = true;
         messageStore.openDisplayedMessage(message);
@@ -448,7 +448,7 @@ const send = async () => {
       .then(() => {
         const message: Message = new Message();
         message.type = MessageType.VALIDATION;
-        message.texte = "Votre compte a bien Ç¸tÇ¸ modifiÇ¸";
+        message.texte = "Votre compte a bien été modifié";
         message.isSticky = true;
         returnLink.value = true;
         messageStore.openDisplayedMessage(message);
@@ -485,7 +485,7 @@ const send = async () => {
         clear();
         const message: Message = new Message();
         message.type = MessageType.VALIDATION;
-        message.texte = "Fusion effectuÇ¸e.";
+        message.texte = "Fusion effectuée.";
         message.isSticky = true;
         returnLink.value = true;
         messageStore.openDisplayedMessage(message);
@@ -516,9 +516,9 @@ const send = async () => {
 
 const checkSiren = async () => {
   messageStore.closeDisplayedMessage();
-  checkSirenAPI.value = "En attente de vÇ¸rification";
+  checkSirenAPI.value = "En attente de vérification";
   if (etablissement.value.siren) {
-    checkSirenAPI.value = "VÇ¸rification du SIREN en cours...";
+    checkSirenAPI.value = "Vérification du SIREN en cours...";
     checkSirenColor.value = "siren-default";
     if (etablissement.value.siren.length === 9) {
       try {
@@ -532,7 +532,7 @@ const checkSiren = async () => {
           checkSirenColor.value = "siren-erreur";
         } else if (err instanceof DataGouvApiError) {
           checkSirenAPI.value =
-            "Impossible de contacter le service de vÇ¸rification du numÇ¸ro SIREN";
+            "Impossible de contacter le service de vérification du numéro SIREN";
           checkSirenColor.value = "siren-erreur";
         } else {
           checkSirenAPI.value = "Erreur interne : " + (err?.message ?? "");
@@ -574,11 +574,11 @@ onMounted(() => {
 });
 </script>
 <style scoped lang="scss">
-.v-card__text {
+.v-card-text {
   border: 0;
 }
 
-.v-card__title {
+.v-card-title {
   width: 100%;
 }
 

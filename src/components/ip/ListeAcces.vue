@@ -107,7 +107,7 @@
                           <template #top>
                             <v-row>
                               <v-col cols="12" sm="6" class="px-0">
-                                <v-tooltip top max-width="20vw" open-delay="100">
+                                <v-tooltip location="top" max-width="20vw" open-delay="100">
                                   <template #activator="{ props }">
                                     <v-btn
                                       variant="text"

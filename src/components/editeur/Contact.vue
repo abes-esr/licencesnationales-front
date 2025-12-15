@@ -36,7 +36,7 @@
           v-model="contact.mail"
           :rules="rulesForms.email"
           required
-          @keyup.enter="validate()"
+  @keyup.enter="validate()"
         ></v-text-field>
       </v-card-text>
       <v-card-actions class="pa-0">
@@ -111,11 +111,11 @@ defineExpose({ validate, clear });
 </script>
 
 <style scoped lang="scss">
-.v-card__text {
+.v-card-text {
   border: 0;
 }
 
-.v-card__title {
+.v-card-title {
   width: 100%;
 }
 
