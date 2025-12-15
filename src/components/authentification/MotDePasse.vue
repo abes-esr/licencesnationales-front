@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" :disabled="isDisableForm">
+  <v-form ref="form" :disabled="isDisableForm" class="ga-4 d-flex flex-column">
     <v-alert variant="outlined" class="pa-3 fondBlanc" v-if="linkIsExpired === false">
       <FontAwesomeIcon
         :icon="faCircleInfo"

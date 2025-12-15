@@ -2,7 +2,7 @@
   <v-container fill-height class="d-flex justify-center">
     <v-col cols="8">
       <v-row align="center" justify="center">
-        <v-card flat>
+        <v-card flat class="pa-4">
           <v-form ref="form">
             <h1 class="pb-4">Modifier mon mot de passe</h1>
             <MessageBox />

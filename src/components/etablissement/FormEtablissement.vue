@@ -4,6 +4,7 @@
       ref="formCreationCompte"
       class="elevation-0"
       :disabled="isDisableForm"
+      autocomplete="on"
     >
       <h1 v-if="action === Action.CREATION" class="pl-3">
         Créer le compte de votre établissement
@@ -72,7 +73,7 @@
             (action === Action.MODIFICATION && isAdmin) ||
               action === Action.CREATION ||
               action === Action.FUSION ||
-              Action.SCISSION
+              action === Action.SCISSION
           "
         >
           <v-row>
@@ -87,6 +88,8 @@
                     variant="outlined"
                     label="Nom de l'établissement"
                     placeholder="Nom de l'établissement"
+                    name="organization"
+                    autocomplete="organization"
                     v-model="etablissement.nom"
                     :rules="rulesForms.nomEtabRules"
                     :readonly="action === Action.MODIFICATION && !isAdmin"
@@ -101,6 +104,8 @@
                       label="SIREN"
                       placeholder="SIREN"
                       maxlength="9"
+                      name="siren"
+                      autocomplete="on"
                       v-model="etablissement.siren"
                       :rules="rulesForms.siren"
                       required
@@ -247,12 +252,15 @@ import type { VForm } from "vuetify/components";
 import { faCircleInfo, faReply, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
-  action: ActionEnum;
-  listeSirenFusion: Array<string>;
-  triggerScission: boolean;
+  action: ActionEnum | keyof typeof ActionEnum;
+  listeSirenFusion?: Array<string>;
+  triggerScission?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  listeSirenFusion: () => [],
+  triggerScission: false
+});
 const emit = defineEmits<{
   (e: "send", value: Etablissement): void;
 }>();
@@ -262,12 +270,25 @@ const authStore = useAuthStore();
 const messageStore = useMessageStore();
 const etablissementStore = useEtablissementStore();
 
+const action = computed<ActionEnum>(() =>
+  typeof props.action === "string"
+    ? ActionEnum[props.action as keyof typeof ActionEnum]
+    : props.action
+);
+
 const etablissement = ref<Etablissement>(new Etablissement());
 if (
-  props.action !== ActionEnum.FUSION &&
-  props.action !== ActionEnum.SCISSION
+  action.value !== ActionEnum.FUSION &&
+  action.value !== ActionEnum.SCISSION
 ) {
   etablissement.value = etablissementStore.getCurrentEtablissement;
+  watch(
+    () => etablissementStore.currentEtablissement,
+    () => {
+      etablissement.value = etablissementStore.getCurrentEtablissement;
+    },
+    { immediate: false }
+  );
 }
 
 const Action = ActionEnum;
@@ -285,7 +306,7 @@ const formContact = ref<InstanceType<typeof Contact> | null>(null);
 
 const metaInfo = () => {
   const titre =
-    props.action === ActionEnum.CREATION
+    action.value === ActionEnum.CREATION
       ? "Inscription"
       : "Modification du compte";
   return {
@@ -409,7 +430,7 @@ const send = async () => {
   buttonLoading.value = true;
   messageStore.closeDisplayedMessage();
 
-  if (props.action == ActionEnum.CREATION) {
+  if (action.value == ActionEnum.CREATION) {
     etablissementService
       .creerEtablissement(etablissement.value, tokenrecaptcha.value)
       .then(() => {
@@ -438,7 +459,7 @@ const send = async () => {
       .finally(() => {
         buttonLoading.value = false;
       });
-  } else if (props.action == ActionEnum.MODIFICATION) {
+  } else if (action.value == ActionEnum.MODIFICATION) {
     etablissementService
       .updateEtablissement(
         etablissement.value,
@@ -475,7 +496,7 @@ const send = async () => {
       .finally(() => {
         buttonLoading.value = false;
       });
-  } else if (props.action === ActionEnum.FUSION) {
+  } else if (action.value === ActionEnum.FUSION) {
     etablissementService
       .fusion(authStore.getToken, {
         nouveauEtab: etablissement.value,
@@ -508,7 +529,7 @@ const send = async () => {
       .finally(() => {
         buttonLoading.value = false;
       });
-  } else if (props.action === ActionEnum.SCISSION) {
+  } else if (action.value === ActionEnum.SCISSION) {
     emit("send", etablissement.value);
     buttonLoading.value = false;
   }
@@ -548,7 +569,7 @@ const clear = () => {
   formCreationCompte.value?.resetValidation();
   formContact.value?.clear();
 
-  if (props.action === ActionEnum.MODIFICATION) {
+  if (action.value === ActionEnum.MODIFICATION) {
     etablissementStore.setCurrentEtablissement(etablissement.value);
     router.push({ name: "Home" }).catch(err => {
       Logger.error(err);
@@ -562,7 +583,7 @@ const clear = () => {
 watch(
   () => props.triggerScission,
   (value) => {
-    if (props.action === ActionEnum.SCISSION && value) {
+    if (action.value === ActionEnum.SCISSION && value) {
       validate();
     }
   }
