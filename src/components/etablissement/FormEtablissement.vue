@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="0">
+  <v-container elevation="0">
     <v-form
       ref="formCreationCompte"
       class="elevation-0"
@@ -12,6 +12,7 @@
       <h1 v-if="action === Action.MODIFICATION" class="pl-3">
         {{ etablissement.nom }}
       </h1>
+      <v-card>
       <h2
         v-if="action === Action.CREATION"
         @click="allerAConnexion"
@@ -222,8 +223,9 @@
           </v-row>
         </v-col>
       </v-card-actions>
+      </v-card>
     </v-form>
-  </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -277,19 +279,23 @@ const action = computed<ActionEnum>(() =>
 );
 
 const etablissement = ref<Etablissement>(new Etablissement());
-if (
-  action.value !== ActionEnum.FUSION &&
-  action.value !== ActionEnum.SCISSION
-) {
+
   etablissement.value = etablissementStore.getCurrentEtablissement;
   watch(
     () => etablissementStore.currentEtablissement,
     () => {
       etablissement.value = etablissementStore.getCurrentEtablissement;
     },
-    { immediate: false }
+    { immediate: true }
   );
-}
+
+  watch(
+    () => authStore.getEtablissementConnecte,
+    () => {
+      etablissementStore.setCurrentEtablissement(authStore.getEtablissementConnecte);
+    },
+    { immediate: true }
+  );
 
 const Action = ActionEnum;
 const isAdmin = computed(() => authStore.isAdmin);
@@ -474,6 +480,7 @@ const send = async () => {
         returnLink.value = true;
         messageStore.openDisplayedMessage(message);
         scrollToMessage();
+        
         if (
           etablissement.value.siren ===
           authStore.getEtablissementConnecte.siren

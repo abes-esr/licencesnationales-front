@@ -3,11 +3,11 @@
  */
 
 export enum Action {
-  CREATION,
-  MODIFICATION,
-  VISUALISER,
-  FUSION,
-  SCISSION
+  CREATION = "CREATION",
+  MODIFICATION = "MODIFICATION",
+  VISUALISER = "VISUALISER",
+  FUSION = "FUSION",
+  SCISSION = "SCISSION"
 }
 
 export interface SegmentPlage {

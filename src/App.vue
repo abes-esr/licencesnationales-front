@@ -35,8 +35,6 @@ const isDark = computed(() => uiStore.isDark);
 const isLoggedIn = computed(() => authStore.isLoggedIn);
 const isAdmin = computed(() => authStore.isAdmin);
 
-console.log("App.vue loaded theme : ", isDark ? 'dark' : 'light');
-
 // Mounted
 onMounted(() => {
 
