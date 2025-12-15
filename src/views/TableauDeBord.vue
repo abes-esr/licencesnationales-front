@@ -169,7 +169,7 @@
                   </ul>
                 </div>
                 <div class="w-100 d-flex justify-end">
-                  <v-btn @click="envoiEditeurs()" class="bottom ma-4">Envoi aux éditeurs</v-btn>
+                  <v-btn @click="envoiEditeurs()" class="ma-4">Envoi aux éditeurs</v-btn>
                 </div>
               </v-card-text>
             </div>
@@ -536,12 +536,6 @@ ul li::before {
 
 .v-card-text .no-border {
   border: none !important;
-}
-
-.bottom {
-  position: absolute;
-  bottom: 0;
-  right: 0;
 }
 
 .notifs {

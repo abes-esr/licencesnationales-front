@@ -1,6 +1,6 @@
 <template>
-  <v-footer id="footer" padless>
-    <v-card class="flex w-100" flat>
+  <v-footer id="footer" color="primary" class="pa-0">
+    <v-card class="flex w-100 bg-primary" flat>
       <v-card-title class="teal footer-top align-center pa-0 d-flex ">
         <!-- Col gauche -->
         <v-col cols="12" md="4" lg="3" xl="3">
@@ -53,7 +53,7 @@
       </v-card-title>
 
       <!-- Bas du footer -->
-      <v-card-text class="py-2 white--text footer-bottom">
+      <v-card-text class="py-2 white--text footer-bottom bg-secondary">
         <strong>Licences Nationales </strong>
 
         <v-tooltip location="top" theme="dark" content-class="text-white">
