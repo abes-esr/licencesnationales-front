@@ -1,11 +1,11 @@
 <template>
-  <v-card flat class="mx-9">
+  <v-container class="mx-9">
     <h1>
       Tableau de bord <span v-if="!isAdmin">{{ etablissement.nom }}</span>
     </h1>
     <MessageBox></MessageBox>
     <ConfirmPopup ref="confirm"></ConfirmPopup>
-    <v-container class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
+    <v-card class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
       <v-card-text class="fondGris pa-0 px-6 pb-6">
         <v-card-title class="px-0 pb-0">Information du compte
           <v-tooltip location="top" max-width="20vw" open-delay="100">
@@ -176,8 +176,8 @@
           </v-col>
         </v-row>
       </v-card-text>
-    </v-container>
-  </v-card>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -479,10 +479,8 @@ collecterDates();
 <style scoped lang="scss">
 .container {
   width: auto !important;
-}
-
-.block-content {
-  height: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .bloc-info div {
@@ -492,10 +490,6 @@ collecterDates();
 .titre-block {
   width: 100%;
   min-height: 60px;
-}
-
-.multi-line span {
-  min-height: 1rem;
 }
 
 .notifUserMsg {
@@ -541,11 +535,6 @@ ul li::before {
 .notifs {
   max-height: 500px;
   overflow: auto;
-}
-
-.container {
-  margin-left: 0;
-  margin-right: 0;
 }
 
 .large-container {

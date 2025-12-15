@@ -1,8 +1,8 @@
 <template>
-  <v-card variant="flat" :disabled="disableForm">
+  <v-container variant="flat" :disabled="disableForm">
     <h1>Gestion des comptes établissements</h1>
     <MessageBox />
-    <v-card-title class="pr-0">
+    <v-container-title class="pr-0">
       <v-row class="d-flex flex-row-reverse ma-0">
         <v-btn @click="allerAScionnerEtab" class="btn-1 ml-2">
           Scission
@@ -17,8 +17,8 @@
           <FontAwesomeIcon :icon="faPlus" class="mx-2" />
         </v-btn>
       </v-row>
-    </v-card-title>
-    <v-card-text class="mt-3 fondGris">
+    </v-container-title>
+    <v-card class="mt-3 fondGris">
       <VDataTable
         density="compact"
         :headers="headers"
@@ -145,8 +145,8 @@
           </v-icon>
         </template>
       </VDataTable>
-    </v-card-text>
-  </v-card>
+    </v-card>
+  </v-container>
 </template>
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";

@@ -232,7 +232,7 @@ export class EtablissementService extends LicencesNationalesApiService {
   getNotificationsAdmin(token: string): Promise<Array<Notification>> {
     return new Promise((resolve, reject) => {
       return this.client
-        .get("/etablissements/notificationsAdmin/", token)
+        .get("/etablissements/notificationsAdmin/", token, {}, true)
         .then(result => {
           const response: Array<JsonNotificationAdminResponse> =
             result.data["notifications"];

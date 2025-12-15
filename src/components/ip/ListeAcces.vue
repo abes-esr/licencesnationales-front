@@ -1,213 +1,199 @@
 <template>
   <div>
     <ConfirmPopup ref="confirmRef" />
-    <v-card variant="flat">
-      <v-row>
-        <v-col lg="12" md="12" xs="12">
-          <v-row>
-            <v-col cols="12" sm="12">
-              <v-row>
-                <h1>Liste des IP déclarées par {{ currentEtabNom }}</h1>
-              </v-row>
-              <v-row>
-                <v-col cols="4" sm="4">
-                  <a v-if="isAdmin" @click="revenirInfosEtab">
-                    <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir
-                    aux informations de l'établissement
-                  </a>
-                </v-col>
-                <v-col cols="8">
-                  <v-btn
-                    id="addIpButton"
-                    @click="router.push({ path: '/ajouterAcces/' })"
-                  >
-                    <span class="btnText">Ajouter une IP ou une plage IP</span>
-                    <FontAwesomeIcon
-                      :icon="faCirclePlus"
-                      style="font-size:1.1rem"
-                    />
-                  </v-btn>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <v-alert dense v-if="error" type="error" v-html="error" />
-                  <v-alert dense v-if="notification" type="success">
-                    {{ notification }}
-                  </v-alert>
-                  <v-card-text class="fondGris">
-                    <v-row>
-                      <v-col>
-                        <VDataTable
-                          id="mytable"
-                          :key="refreshKey"
-                          :headers="headers"
-                          :items="filteredAccesByStatut"
-                          :items-per-page="10"
-                          :items-per-page-options="[10, 25, 50, 75, { value: -1, title: 'Tous' }]"
-                          :item-class="RowClasses"
-                          :search="rechercher"
-                          :loading="dataLoading"
-                          no-data-text="Aucune IP déclarée pour l’instant. Déclarez une adresse ou une plage IP."
-                          class="row-height-50"
-                          density="comfortable"
-                        >
-                          <template #header.statut="{ column }">
-                            {{ column.title }}
-                            <v-menu offset-y :close-on-content-click="false">
-                              <template #activator="{ props }">
-                                <v-btn
-                                  variant="text"
-                                  class="bouton-simple"
-                                  style="text-decoration: none;"
-                                  v-bind="props"
-                                >
-                                  <v-icon small :color="statut ? 'primary' : ''">
-                                    mdi-filter
-                                  </v-icon>
-                                  Statut
-                                </v-btn>
-                              </template>
-                              <div style="background-color: white" class="pl-4 pr-8">
-                                <ul>
-                                  <li v-for="item in selectStatut" :key="item" @click="eventStatutChoice(item)">
-                                    <a>{{ item }}</a>
-                                  </li>
-                                </ul>
-                              </div>
-                            </v-menu>
-                          </template>
 
-                          <template #header.typeIp="{ column }">
-                            {{ column.title }}
-                            <v-menu offset-y :close-on-content-click="false">
-                              <template #activator="{ props }">
-                                <v-btn
-                                  variant="text"
-                                  class="bouton-simple"
-                                  style="text-decoration: none;"
-                                  v-bind="props"
-                                >
-                                  <v-icon small :color="statut ? 'primary' : ''">
-                                    mdi-filter
-                                  </v-icon>
-                                  Type d'IP
-                                </v-btn>
-                              </template>
-                              <div style="background-color: white;" class="pl-4 pr-8">
-                                <ul>
-                                  <li v-for="item in selectType" :key="item" @click="eventTypeChoice(item)">
-                                    <a>{{ item }}</a>
-                                  </li>
-                                </ul>
-                              </div>
-                            </v-menu>
-                          </template>
+    <v-container class="pb-0">
+      <h1>Liste des IP déclarées par {{ currentEtabNom }}</h1>
+      <div class="d-flex flex-wrap align-center justify-space-between">
+        <div class="my-2">
+          <a v-if="isAdmin" @click="revenirInfosEtab">
+            <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir
+            aux informations de l'établissement
+          </a>
+        </div>
+        <v-btn
+          id="addIpButton"
+          class="my-2"
+          @click="router.push({ path: '/ajouterAcces/' })"
+        >
+          <span class="btnText">Ajouter une IP ou une plage IP</span>
+          <FontAwesomeIcon
+            :icon="faCirclePlus"
+            style="font-size:1.1rem"
+          />
+        </v-btn>
+      </div>
+    </v-container>
 
-                          <template #top>
-                            <v-row>
-                              <v-col cols="12" sm="6" class="px-0">
-                                <v-tooltip location="top" max-width="20vw" open-delay="100">
-                                  <template #activator="{ props }">
-                                    <v-btn
-                                      variant="text"
-                                      @click="downloadIPs"
-                                      class="bouton-simple pl-0"
-                                      v-bind="props"
-                                      :loading="isExportLoading"
-                                    >
-                                      <h2>Télécharger la liste des IP</h2>
-                                      <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
-                                    </v-btn>
-                                  </template>
-                                  <span>Le téléchargement correspond à la vue filtrée</span>
-                                </v-tooltip>
-                              </v-col>
-                              <v-col cols="0" sm="3"></v-col>
-                              <v-col cols="12" sm="3" class="px-0">
-                                <v-text-field
-                                  v-model="rechercher"
-                                  label="Chercher dans les colonnes"
-                                  prepend-inner-icon="mdi-magnify"
-                                  variant="outlined"
-                                  clearable
-                                />
-                              </v-col>
-                            </v-row>
-                          </template>
+    <v-card variant="flat" class="mt-2">
+      <v-card-text class="fondGris">
+        <v-alert dense v-if="error" type="error" v-html="error" />
+        <v-alert dense v-if="notification" type="success">
+          {{ notification }}
+        </v-alert>
 
-                          <template #item.commentaires="{ item }">
-                            <td class="truncate">
-                              <v-tooltip location="bottom">
-                                <template #activator="{ props }">
-                                  <span v-bind="props">
-                                    {{ item.commentaires }}
-                                  </span>
-                                </template>
-                                <span>{{ item.commentaires }}</span>
-                              </v-tooltip>
-                            </td>
-                          </template>
+        <VDataTable
+          id="mytable"
+          :key="refreshKey"
+          :headers="headers"
+          :items="filteredAccesByStatut"
+          :items-per-page="10"
+          :items-per-page-options="[10, 25, 50, 75, { value: -1, title: 'Tous' }]"
+          :item-class="RowClasses"
+          :search="rechercher"
+          :loading="dataLoading"
+          no-data-text="Aucune IP déclarée pour l’instant. Déclarez une adresse ou une plage IP."
+          class="row-height-50"
+          density="comfortable"
+        >
+          <template #header.statut="{ column }">
+            {{ column.title }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template #activator="{ props }">
+                <v-btn
+                  variant="text"
+                  class="bouton-simple"
+                  style="text-decoration: none;"
+                  v-bind="props"
+                >
+                  <v-icon small :color="statut ? 'primary' : ''">
+                    mdi-filter
+                  </v-icon>
+                  Statut
+                </v-btn>
+              </template>
+              <div style="background-color: white" class="pl-4 pr-8">
+                <ul>
+                  <li v-for="item in selectStatut" :key="item" @click="eventStatutChoice(item)">
+                    <a>{{ item }}</a>
+                  </li>
+                </ul>
+              </div>
+            </v-menu>
+          </template>
 
-                          <template #item.statut="{ item }">
-                            <span class="pr-2">{{ item.statut }}</span>
-                            <v-tooltip location="bottom">
-                              <template #activator="{ props }">
-                                <span v-bind="props">
-                                  <FontAwesomeIcon :icon="faCircleInfo" />
-                                </span>
-                              </template>
-                              <span v-if="item.statut.includes('Validé')">{{ infobulleValid }}</span>
-                              <span v-if="item.statut.includes('Attestation')">{{ infobulleAttestation }}</span>
-                              <span v-if="item.statut.includes('attente')">{{ infobulleAttente }}</span>
-                            </v-tooltip>
-                          </template>
+          <template #header.typeIp="{ column }">
+            {{ column.title }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template #activator="{ props }">
+                <v-btn
+                  variant="text"
+                  class="bouton-simple"
+                  style="text-decoration: none;"
+                  v-bind="props"
+                >
+                  <v-icon small :color="statut ? 'primary' : ''">
+                    mdi-filter
+                  </v-icon>
+                  Type d'IP
+                </v-btn>
+              </template>
+              <div style="background-color: white;" class="pl-4 pr-8">
+                <ul>
+                  <li v-for="item in selectType" :key="item" @click="eventTypeChoice(item)">
+                    <a>{{ item }}</a>
+                  </li>
+                </ul>
+              </div>
+            </v-menu>
+          </template>
 
-                          <template #item.action="{ item }">
-                            <v-btn
-                              v-if="isAdmin && getCurrentEtab.statut == 'Validé'"
-                              class="ma-0 pa-0 bouton-simple "
-                              icon
-                              title="Examiner"
-                              @click.stop="openDialog(item)"
-                            >
-                              <FontAwesomeIcon :icon="faMagnifyingGlass" />
-                            </v-btn>
-                            <v-btn
-                              v-if="!isAdmin"
-                              class="ma-0 pa-0 bouton-simple "
-                              icon
-                              :loading="buttlonLoading"
-                              title="Supprimer"
-                              @click="supprimerIP(item.id, item.ip)"
-                            >
-                              <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
-                            </v-btn>
-                          </template>
-                        </VDataTable>
-                      </v-col>
-                    </v-row>
+          <template #top>
+            <v-row>
+              <v-col cols="12" sm="6" class="px-0">
+                <v-tooltip location="top" max-width="20vw" open-delay="100">
+                  <template #activator="{ props }">
+                    <v-btn
+                      variant="text"
+                      @click="downloadIPs"
+                      class="bouton-simple pl-0"
+                      v-bind="props"
+                      :loading="isExportLoading"
+                    >
+                      <h2>Télécharger la liste des IP</h2>
+                      <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
+                    </v-btn>
+                  </template>
+                  <span>Le téléchargement correspond à la vue filtrée</span>
+                </v-tooltip>
+              </v-col>
+              <v-col cols="0" sm="3"></v-col>
+              <v-col cols="12" sm="3" class="px-0">
+                <v-text-field
+                  v-model="rechercher"
+                  label="Chercher dans les colonnes"
+                  prepend-inner-icon="mdi-magnify"
+                  variant="outlined"
+                  clearable
+                />
+              </v-col>
+            </v-row>
+          </template>
 
-                    <v-row>
-                      <v-col>
-                        <div style="float: right;" class="actions" v-if="isAdmin">
-                          <v-btn @click="clearActions" class="btn-6">
-                            <span class="btnText">Annuler</span>
-                          </v-btn>
-                          <v-btn @click="dispatchAllAction" :loading="buttlonLoading">
-                            <span class="btnText">Enregistrer mes actions</span>
-                            <FontAwesomeIcon :icon="faCircleArrowRight" />
-                          </v-btn>
-                        </div>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
+          <template #item.commentaires="{ item }">
+            <td class="truncate">
+              <v-tooltip location="bottom">
+                <template #activator="{ props }">
+                  <span v-bind="props">
+                    {{ item.commentaires }}
+                  </span>
+                </template>
+                <span>{{ item.commentaires }}</span>
+              </v-tooltip>
+            </td>
+          </template>
+
+          <template #item.statut="{ item }">
+            <span class="pr-2">{{ item.statut }}</span>
+            <v-tooltip location="bottom">
+              <template #activator="{ props }">
+                <span v-bind="props">
+                  <FontAwesomeIcon :icon="faCircleInfo" />
+                </span>
+              </template>
+              <span v-if="item.statut.includes('Validé')">{{ infobulleValid }}</span>
+              <span v-if="item.statut.includes('Attestation')">{{ infobulleAttestation }}</span>
+              <span v-if="item.statut.includes('attente')">{{ infobulleAttente }}</span>
+            </v-tooltip>
+          </template>
+
+          <template #item.action="{ item }">
+            <v-btn
+              v-if="isAdmin && getCurrentEtab.statut == 'Validé'"
+              class="ma-0 pa-0 bouton-simple "
+              icon
+              title="Examiner"
+              @click.stop="openDialog(item)"
+            >
+              <FontAwesomeIcon :icon="faMagnifyingGlass" />
+            </v-btn>
+            <v-btn
+              v-if="!isAdmin"
+              class="ma-0 pa-0 bouton-simple "
+              icon
+              :loading="buttlonLoading"
+              title="Supprimer"
+              @click="supprimerIP(item.id, item.ip)"
+            >
+              <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
+            </v-btn>
+          </template>
+        </VDataTable>
+
+        <v-row>
+          <v-col>
+            <div style="float: right;" class="actions" v-if="isAdmin">
+              <v-btn @click="clearActions" class="btn-6">
+                <span class="btnText">Annuler</span>
+              </v-btn>
+              <v-btn @click="dispatchAllAction" :loading="buttlonLoading">
+                <span class="btnText">Enregistrer mes actions</span>
+                <FontAwesomeIcon :icon="faCircleArrowRight" />
+              </v-btn>
+            </div>
+          </v-col>
+        </v-row>
+      </v-card-text>
     </v-card>
 
     <v-col cols="12" style="padding: 24px;" v-if="!isAdmin">

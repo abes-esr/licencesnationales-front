@@ -1,19 +1,20 @@
 <template>
   <div>
-    <MessageBox />
-    <v-card variant="flat">
+    <v-container class="pb-0">
+      <MessageBox />
       <h1>Historique par établissement</h1>
-
       <v-alert
         v-if="message"
         type="error"
         density="compact"
-        class="mt-4"
+        class="mt-2"
       >
         {{ message }}
       </v-alert>
+    </v-container>
 
-      <v-form ref="searchFormRef" class="mt-4">
+    <v-card variant="flat" class="mt-2">
+      <v-form ref="searchFormRef" class="mt-2">
         <v-row>
           <v-col cols="1" class="d-none d-md-flex"></v-col>
           <v-col cols="12" md="10">

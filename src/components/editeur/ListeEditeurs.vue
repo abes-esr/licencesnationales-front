@@ -1,21 +1,23 @@
 <template>
-  <v-card variant="flat" :disabled="disableForm">
-    <h1>Gestion des éditeurs</h1>
-    <v-col cols="12" md="6" lg="6" xl="6">
-      <MessageBox />
-      <ConfirmPopup ref="confirmRef" />
-    </v-col>
-
-    <v-card-title>
-      <v-row class="d-flex flex-row-reverse">
-        <v-btn @click="ajouterEditeur" class="btn-1 mx-2 mr-0">
+  <div>
+    <v-container class="pb-0" :disabled="disableForm">
+      <h1>Gestion des éditeurs</h1>
+      <v-row class="ma-0">
+        <v-col cols="12" md="6" lg="6" xl="6" class="pa-0">
+          <MessageBox />
+          <ConfirmPopup ref="confirmRef" />
+        </v-col>
+      </v-row>
+      <div class="d-flex flex-row-reverse flex-wrap">
+        <v-btn @click="ajouterEditeur" class="btn-1 mx-2 mr-0 my-2">
           Créer un éditeur
           <FontAwesomeIcon :icon="faCirclePlus" class="mx-2" />
         </v-btn>
-      </v-row>
-    </v-card-title>
+      </div>
+    </v-container>
 
-    <v-card-text class="mt-3 fondGris">
+    <v-card variant="flat" class="mt-2" :disabled="disableForm">
+      <v-card-text class="fondGris">
       <VDataTable
         :headers="headers"
         :items="editeurs"
@@ -85,8 +87,9 @@
           </v-btn>
         </template>
       </VDataTable>
-    </v-card-text>
-  </v-card>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -1,11 +1,13 @@
 <template>
   <div>
-    <v-card flat>
+    <v-container class="pb-0">
       <h1>Rechercher dans toute la base</h1>
-      <br />
-      <v-alert :model-value="Boolean(message)" density="compact" type="error">
+      <v-alert :model-value="Boolean(message)" density="compact" type="error" class="mt-2">
         {{ message }}
       </v-alert>
+    </v-container>
+
+    <v-card flat class="mt-2">
 
       <v-form ref="searchForm">
         <v-row>
