@@ -12,8 +12,15 @@
       >
         <v-card-title class="px-0">
           Information du compte
-          <v-tooltip location="top" max-width="20vw" open-delay="100">
-            <template #activator="{ props }">
+          <v-tooltip
+            text="Exporter les infos du compte"
+            location="top"
+            max-width="20vw"
+            open-delay="100"
+            theme="dark"
+            content-class="text-white"
+          >
+            <template v-slot:activator="{ props }">
               <v-btn
                 icon
                 @click="downloadEtablissement"
@@ -27,7 +34,6 @@
                 />
               </v-btn>
             </template>
-            <span>Exporter les infos du compte</span>
           </v-tooltip>
         </v-card-title>
 
@@ -92,15 +98,22 @@
           <v-card-text class="d-flex justify-space-between flex-column">
             <div class="d-flex justify-space-between align-center">
               <h2 class="mb-3">Etablissement</h2>
-              <v-tooltip location="top" max-width="20vw" open-delay="100" v-if="!isAdmin">
-                <template #activator="{ props }">
+              <v-tooltip
+                text="Non modifiable par l'utilisateur"
+                location="top"
+                max-width="20vw"
+                open-delay="100"
+                theme="dark"
+                content-class="text-white"
+                v-if="!isAdmin"
+              >
+                <template v-slot:activator="{ props }">
                   <FontAwesomeIcon
                     v-bind="props"
                     :icon="faLock"
                     class="fa-2x mx-2"
                   />
                 </template>
-                <span>Non modifiable par l'utilisateur</span>
               </v-tooltip>
             </div>
             <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">

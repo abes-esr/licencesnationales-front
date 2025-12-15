@@ -20,6 +20,7 @@
       <v-card-text class="fondGris">
       <VDataTable
         :headers="headers"
+        :header-props="{class: 'bg-primary'}"
         :items="editeurs"
         :items-per-page="25"
         :items-per-page-options="[25, 50, 100, { value: -1, title: 'Tous' }]"
@@ -32,7 +33,14 @@
         <template #top>
           <v-row class="ma-0">
             <v-col cols="12" sm="6" class="px-0">
-              <v-tooltip location="top" max-width="20vw" open-delay="100">
+              <v-tooltip
+                text="Le téléchargement correspond à la vue filtrée"
+                location="top"
+                max-width="20vw"
+                open-delay="100"
+                theme="dark"
+                content-class="text-white"
+              >
                 <template #activator="{ props }">
                   <v-btn
                     variant="text"
@@ -49,7 +57,6 @@
                     />
                   </v-btn>
                 </template>
-                <span>Le téléchargement correspond à la vue filtrée</span>
               </v-tooltip>
             </v-col>
             <v-col cols="0" sm="3" class="px-0"></v-col>
@@ -72,18 +79,18 @@
 
         <template #item.action="{ item }">
           <v-btn
-            class="ma-0 pa-0 bouton-simple"
-            icon
+            class="ma-0 pa-0"
+            variant="plain"
             @click="modifierEditeur(item)"
           >
-            <FontAwesomeIcon :icon="faPenToSquare" />
+            <FontAwesomeIcon color="#1f3f5f" :icon="faPenToSquare" />
           </v-btn>
           <v-btn
             class="ma-0 pa-0 bouton-simple"
-            icon
+            variant="plain"
             @click="supprimerEditeur(item)"
           >
-            <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
+            <FontAwesomeIcon :icon="faXmark" color="red" />
           </v-btn>
         </template>
       </VDataTable>
@@ -113,6 +120,7 @@ import {
 import { useAuthStore } from "@/stores/authStore";
 import { useMessageStore } from "@/stores/messageStore";
 import { useEditeurStore } from "@/stores/editeurStore";
+import { DataTableHeader } from "vuetify";
 
 const authStore = useAuthStore();
 const messageStore = useMessageStore();
@@ -126,7 +134,7 @@ const editeurs = ref<Array<Editeur>>([]);
 const dataLoading = ref(true);
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
 
-const headers = [
+const headers: DataTableHeader[] = [
   {
     title: "Date de création du compte éditeur",
     align: "start",

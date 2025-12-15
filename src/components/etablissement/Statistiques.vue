@@ -1,7 +1,7 @@
 <template>
   <div>
     <MessageBox />
-    <v-card variant="flat">
+    <v-container variant="flat">
       <h1>Statistiques de l'application</h1>
       <v-alert
         v-if="message"
@@ -87,14 +87,14 @@
           </v-col>
 
           <v-col cols="12" sm="4" md="2">
-            <v-btn class="mt-2" color="primary" @click="getStats">
+            <v-btn class="mt-2" @click="getStats">
               Valider
             </v-btn>
           </v-col>
         </v-row>
       </v-form>
 
-      <div v-if="etabStats.length > 0" class="mt-4">
+      <v-card v-if="etabStats.length > 0" class="mt-4 pa-4">
         <v-row>
           <h3>
             Statistiques entre le {{ formattedDateDebut }} et le
@@ -120,8 +120,8 @@
             </v-list-item>
           </v-list>
         </v-row>
-      </div>
-    </v-card>
+      </v-card>
+    </v-container>
   </div>
 </template>
 

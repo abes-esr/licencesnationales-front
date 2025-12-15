@@ -1,7 +1,7 @@
 <template>
   <v-footer id="footer" color="primary" class="pa-0">
     <v-card class="flex w-100 bg-primary" flat>
-      <v-card-title class="teal footer-top align-center pa-0 d-flex pa-4">
+      <v-card-title class="teal footer-top align-center pa-0 d-md-flex pa-4">
         <!-- Col gauche -->
         <v-col cols="12" md="4" lg="3" xl="3">
           <div class="left-container d-flex flex-column justify-space-between">
@@ -34,6 +34,7 @@
         <v-spacer />
 
         <v-divider class="mx-4 hidden-sm-and-down" vertical style="height: auto" />
+        <v-divider class="mx-4 hidden-md-and-up" style="height: auto" />
 
 
         <!-- Col droite -->
@@ -72,7 +73,7 @@
 
         <div id="mentions">
           <a @click="router.push('/donneespersonnelles')">Données personnelles</a> |
-          <a @click="router.push('/CGU')">CGU</a> |
+          <a @click="router.push('/cgu')">CGU</a> |
           <a @click="router.push('/mentions')">Mentions légales</a> |
           <a @click="router.push('/accessibilite')">Accessibilité</a>
         </div>

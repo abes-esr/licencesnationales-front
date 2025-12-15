@@ -65,7 +65,7 @@ export class EtablissementService extends LicencesNationalesApiService {
   getEtablissements(token: string): Promise<Array<Etablissement>> {
     return new Promise((resolve, reject) => {
       return this.client
-        .get("/etablissements/", token)
+        .get("/etablissements/", token, {}, true)
         .then(result => {
           const response: Array<JsonSimpleEtablissementResponse> = result.data;
           const etabs: Array<Etablissement> = [];

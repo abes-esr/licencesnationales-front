@@ -101,21 +101,27 @@
           <template #top>
             <v-row>
               <v-col cols="12" sm="6" class="px-0">
-                <v-tooltip location="top" max-width="20vw" open-delay="100">
-                  <template #activator="{ props }">
-                    <v-btn
-                      variant="text"
+              <v-tooltip
+                text="Le téléchargement correspond à la vue filtrée"
+                location="top"
+                max-width="20vw"
+                open-delay="100"
+                theme="dark"
+                content-class="text-white"
+              >
+                <template #activator="{ props }">
+                  <v-btn
+                    variant="text"
                       @click="downloadIPs"
                       class="bouton-simple pl-0"
                       v-bind="props"
                       :loading="isExportLoading"
                     >
-                      <h2>Télécharger la liste des IP</h2>
-                      <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
-                    </v-btn>
-                  </template>
-                  <span>Le téléchargement correspond à la vue filtrée</span>
-                </v-tooltip>
+                    <h2>Télécharger la liste des IP</h2>
+                    <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
+                  </v-btn>
+                </template>
+              </v-tooltip>
               </v-col>
               <v-col cols="0" sm="3"></v-col>
               <v-col cols="12" sm="3" class="px-0">
@@ -132,10 +138,10 @@
 
           <template #item.commentaires="{ item }">
             <td class="truncate">
-              <v-tooltip location="bottom">
-                <template #activator="{ props }">
-                  <span v-bind="props">
-                    {{ item.commentaires }}
+                              <v-tooltip location="bottom" theme="dark" content-class="text-white">
+                                <template #activator="{ props }">
+                                  <span v-bind="props">
+                                    {{ item.commentaires }}
                   </span>
                 </template>
                 <span>{{ item.commentaires }}</span>
@@ -145,7 +151,7 @@
 
           <template #item.statut="{ item }">
             <span class="pr-2">{{ item.statut }}</span>
-            <v-tooltip location="bottom">
+            <v-tooltip location="bottom" theme="dark" content-class="text-white">
               <template #activator="{ props }">
                 <span v-bind="props">
                   <FontAwesomeIcon :icon="faCircleInfo" />

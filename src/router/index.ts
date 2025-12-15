@@ -56,7 +56,7 @@ const routes = [
       import("../components/etablissement/CardEtablissement.vue")
   },
   {
-    path: "/ModifierEtablissement",
+    path: "/modifierEtablissement",
     name: "ModifierEtablissement",
     component: () =>
       import("../components/etablissement/FormEtablissement.vue"),
@@ -138,7 +138,7 @@ const routes = [
   },
 
   // Static pages
-  { path: "/CGU", name: "CGU", component: () => import("../views/footer-static/CGU.vue") },
+  { path: "/cgu", name: "CGU", component: () => import("../views/footer-static/CGU.vue") },
   {
     path: "/donneespersonnelles",
     name: "DonneesPersonnelles",

@@ -8,13 +8,19 @@
     <v-card class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
       <v-card-text class="fondGris pa-0 px-6 pb-6">
         <v-card-title class="px-0 pb-0">Information du compte
-          <v-tooltip location="top" max-width="20vw" open-delay="100">
+          <v-tooltip
+            text="Exporter les infos du compte"
+            location="top"
+            max-width="20vw"
+            open-delay="100"
+            theme="dark"
+            content-class="text-white"
+          >
             <template v-slot:activator="{ props }">
               <v-btn icon="icon" class="bouton-simple" @click="downloadEtablissement()" v-bind="props" :loading="isExportLoading">
                 <FontAwesomeIcon :icon="faDownload" class="mx-2 fa-lg" />
               </v-btn>
             </template>
-            <span>Exporter les infos du compte</span>
           </v-tooltip>
         </v-card-title>
         <span>Compte créé le :
@@ -25,12 +31,19 @@
               :class="[display.mdAndDown.value ? 'compact-form' : '']">
               <div class="d-flex">
                 <h2 class="my-3 pl-4 mb-0">Etablissement</h2>
-                <v-tooltip location="top" max-width="20vw" open-delay="100" v-if="!isAdmin">
+                <v-tooltip
+                  text="Non modifiable par l'utilisateur"
+                  location="top"
+                  max-width="20vw"
+                  open-delay="100"
+                  theme="dark"
+                  content-class="text-white"
+                  v-if="!isAdmin"
+                >
                   <template v-slot:activator="{ props }">
                     <FontAwesomeIcon v-bind="props" :icon="faLock" class="fa-2x mx-2"
                       style="margin-top: 10px; position: absolute; right: 0;" />
                   </template>
-                  <span>Non modifiable par l'utilisateur</span>
                 </v-tooltip>
               </div>
               <v-card-text class="d-flex align-content-start flex-wrap pt-0 no-border">

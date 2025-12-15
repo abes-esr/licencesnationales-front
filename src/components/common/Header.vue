@@ -33,9 +33,10 @@
 
             <div v-if="isAdmin" class="d-flex align-center flex-wrap">
               <v-tooltip
+                text="Modifier mot de passe"
                 location="top"
-                :theme="isDark ? 'dark' : 'light'"
-                :content-class="isDark ? 'text-white' : 'text-black'"
+                theme="dark"
+                content-class="text-white"
               >
                 <template #activator="{ props }">
                   <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
@@ -43,7 +44,6 @@
                     <FontAwesomeIcon :icon="faLock" size="lg" />
                   </v-btn>
                 </template>
-                <span>Modifier mot de passe</span>
               </v-tooltip>
 
               <div>
@@ -51,8 +51,8 @@
                   text="Modifier les infos"
                   location="top"
                   activator="parent"
-                  :theme="isDark ? 'dark' : 'light'"
-                  :content-class="isDark ? 'text-white' : 'text-black'"
+                  theme="dark"
+                  content-class="text-white"
                 ></v-tooltip>
                 <v-btn variant="text" color="white" class="my-1 me-2" @click="allerAModifierProfil">
                   <FontAwesomeIcon :icon="faUser" size="lg" />
@@ -61,9 +61,10 @@
             </div>
 
             <v-tooltip
+              text="Assistance"
               location="top"
-              :theme="isDark ? 'dark' : 'light'"
-              :content-class="isDark ? 'text-white' : 'text-black'"
+              theme="dark"
+              content-class="text-white"
             >
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
@@ -71,13 +72,13 @@
                   <FontAwesomeIcon :icon="faComments" size="lg" />
                 </v-btn>
               </template>
-              <span>Assistance</span>
             </v-tooltip>
 
             <v-tooltip
+              text="Documentation"
               location="top"
-              :theme="isDark ? 'dark' : 'light'"
-              :content-class="isDark ? 'text-white' : 'text-black'"
+              theme="dark"
+              content-class="text-white"
             >
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
@@ -85,20 +86,19 @@
                   <FontAwesomeIcon :icon="faCircleQuestion" size="lg" />
                 </v-btn>
               </template>
-              <span>Documentation</span>
             </v-tooltip>
 
             <v-tooltip
+              text="Se déconnecter"
               location="top"
-              :theme="isDark ? 'dark' : 'light'"
-              :content-class="isDark ? 'text-white' : 'text-black'"
+              theme="dark"
+              content-class="text-white"
             >
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1" @click="seDeconnecter">
                   <FontAwesomeIcon :icon="faRightFromBracket" size="lg" />
                 </v-btn>
               </template>
-              <span>Se déconnecter</span>
             </v-tooltip>
           </div>
         </v-col>

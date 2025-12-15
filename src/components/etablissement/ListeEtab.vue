@@ -22,18 +22,25 @@
       <VDataTable
         density="compact"
         :headers="headers"
+        :header-props="{class: 'bg-primary'}"
         :items="filteredEtabByStatut"
         :items-per-page="25"
         :items-per-page-options="[25, 50, 100, { value: -1, title: 'Tous' }]"
-        class="elevation-0 ma-3"
+        class="elevation-0 pa-0"
         :search="rechercher"
         :loading="dataLoading"
         id="mytable"
       >
         <template #top>
-          <v-row class="ma-0">
+          <v-row class="ma-3">
             <v-col cols="12" sm="6" class="px-0">
-              <v-tooltip location="top" max-width="20vw" open-delay="100">
+              <v-tooltip
+                text="Le téléchargement correspond à la vue filtrée"
+                location="top"
+                open-delay="100"
+                theme="dark"
+                content-class="text-white"
+              >
                 <template #activator="{ props }">
                   <v-btn
                     variant="text"
@@ -50,7 +57,6 @@
                     />
                   </v-btn>
                 </template>
-                <span>Le téléchargement correspond à la vue filtrée</span>
               </v-tooltip>
             </v-col>
             <v-col cols="0" sm="3" class="px-0"></v-col>
@@ -69,64 +75,74 @@
           </v-row>
         </template>
 
-        <template #header.typeEtablissement="{ column }">
-          {{ column.title }}
-          <v-menu :close-on-content-click="false">
-            <template #activator="{ props }">
-              <v-btn
-                variant="text"
-                class="bouton-simple"
-                style="text-decoration: none;"
-                v-bind="props"
-              >
-                <v-icon small :color="statut ? 'primary' : ''">
-                  mdi-filter
-                </v-icon>
-                Type d'établissement
-              </v-btn>
-            </template>
-            <div style="background-color: white;" class="pl-4 pr-8">
-              <ul>
-                <li
-                  v-for="item in typesEtab"
-                  :key="item"
-                  @click="eventTypeEtabChoice(item)"
-                >
-                  <a>{{ item }}</a>
-                </li>
-              </ul>
-            </div>
-          </v-menu>
+        <template #header.typeEtablissement="{ column }" >
+          <div class="d-flex align-center">
+            <span>{{ column.title }}</span>
+            <v-menu :close-on-content-click="false">
+              <template #activator="{ props }">
+                <v-tooltip text="Filtrer par type" location="top" theme="dark" content-class="text-white">
+                  <template #activator="{ props: tooltipProps }">
+                    <v-btn
+                      v-bind="{ ...props, ...tooltipProps }"
+                      icon
+                      variant="text"
+                      class="ml-1"
+                    >
+                      <v-icon small :color="selectedType ? 'primary' : ''">
+                        mdi-filter
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+              </template>
+              <div style="background-color: white;" class="pl-4 pr-8">
+                <ul>
+                  <li
+                    v-for="item in typesEtab"
+                    :key="item"
+                    @click="eventTypeEtabChoice(item)"
+                  >
+                    <a>{{ item }}</a>
+                  </li>
+                </ul>
+              </div>
+            </v-menu>
+          </div>
         </template>
 
         <template #header.statutIP="{ column }">
-          {{ column.title }}
-          <v-menu :close-on-content-click="false">
-            <template #activator="{ props }">
-              <v-btn
-                variant="text"
-                class="bouton-simple"
-                v-bind="props"
-                style="text-decoration: none;"
-              >
-                <v-icon small :color="statut ? 'primary' : ''">
-                  mdi-filter
-                </v-icon>
-                Statut
-              </v-btn>
-            </template>
-            <div style="background-color: white;" class="pl-4 pr-8">
-              <ul>
-                <li
-                  v-for="item in selectStatut"
-                  :key="item"
-                  @click="eventStatutChoice(item)"
-                >
-                  <a>{{ item }}</a>
-                </li>
-              </ul>
-            </div>
-          </v-menu>
+          <div class="d-flex align-center">
+            <span>{{ column.title }}</span>
+            <v-menu :close-on-content-click="false">
+              <template #activator="{ props }">
+                <v-tooltip text="Filtrer par statut" location="top" theme="dark" content-class="text-white">
+                  <template #activator="{ props: tooltipProps }">
+                    <v-btn
+                      v-bind="{ ...props, ...tooltipProps }"
+                      icon
+                      variant="text"
+                      class="ml-1"
+                    >
+                      <v-icon small :color="statut ? 'primary' : ''">
+                        mdi-filter
+                      </v-icon>
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+              </template>
+              <div style="background-color: white;" class="pl-4 pr-8">
+                <ul>
+                  <li
+                    v-for="item in selectStatut"
+                    :key="item"
+                    @click="eventStatutChoice(item)"
+                  >
+                    <a>{{ item }}</a>
+                  </li>
+                </ul>
+              </div>
+            </v-menu>
+          </div>
         </template>
 
         <template #item.dateCreationFormattedInString="{ item }">
@@ -166,6 +182,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useMessageStore } from "@/stores/messageStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { faDownload, faObjectGroup, faObjectUngroup, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { DataTableHeader } from "vuetify";
 
 const authStore = useAuthStore();
 const messageStore = useMessageStore();
@@ -189,12 +206,13 @@ const selectedType = ref("");
 const typesEtab = ref<Array<string>>([]);
 const isDisableForm = ref(false);
 const isExportLoading = ref(false);
-const headers = [
+const headers: DataTableHeader[] = [
   {
     title: "Date de création",
     align: "start",
     key: "dateCreationFormattedInString",
-    sortable: true
+    sortable: true,
+    
   },
   { title: "Identifiant Abes", key: "idAbes", sortable: true },
   { title: "SIREN", key: "siren", sortable: true },

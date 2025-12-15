@@ -48,10 +48,10 @@
             <v-window-item value="etabs">
               <v-table density="comfortable">
                 <thead>
-                  <tr>
-                    <th class="text-left">Date</th>
-                    <th class="text-left">Action</th>
-                    <th class="text-left">Informations</th>
+                  <tr class="bg-primary">
+                    <th class="text-left" scope="col">Date</th>
+                    <th class="text-left" scope="col">Action</th>
+                    <th class="text-left" scope="col">Informations</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -81,9 +81,9 @@
               <v-table density="comfortable">
                 <thead>
                   <tr>
-                    <th class="text-left">Date</th>
-                    <th class="text-left">Action</th>
-                    <th class="text-left">Informations</th>
+                    <th class="text-left bg-primary" scope="col">Date</th>
+                    <th class="text-left bg-primary" scope="col">Action</th>
+                    <th class="text-left bg-primary" scope="col">Informations</th>
                   </tr>
                 </thead>
                 <tbody>
