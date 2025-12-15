@@ -244,7 +244,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useMessageStore } from "@/stores/messageStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import type { VForm } from "vuetify/components";
-import { faReply, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faReply, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   action: ActionEnum;

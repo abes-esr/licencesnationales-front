@@ -144,7 +144,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useMessageStore } from "@/stores/messageStore";
 import { useRouter } from "vue-router";
 import type { VForm } from "vuetify/components";
-import { faReply, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faReply, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const router = useRouter();
 const authStore = useAuthStore();
