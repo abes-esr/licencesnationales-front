@@ -30,6 +30,34 @@
         :loading="dataLoading"
         id="mytable"
       >
+        <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
+          <tr>
+            <th
+              v-for="column in columns"
+              :key="column.key"
+              class="text-left"
+              @click="column.sortable ? toggleSort(column) : ''"
+            >
+              <div style="display: flex; align-items: center; white-space: nowrap;">
+                <span>{{ column.title }}</span>
+                <v-icon
+                  v-if="column.sortable && !isSorted(column)"
+                  class="pl-2"
+                  size="small"
+                >
+                  mdi-sort
+                </v-icon>
+                <v-icon
+                  v-else-if="column.sortable"
+                  class="pl-2"
+                  size="small"
+                >
+                  {{ getSortIcon(column) }}
+                </v-icon>
+              </div>
+            </th>
+          </tr>
+        </template>
         <template #top>
           <v-row class="ma-0">
             <v-col cols="12" sm="6" class="px-0">

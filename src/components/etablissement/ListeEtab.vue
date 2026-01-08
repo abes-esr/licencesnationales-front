@@ -75,74 +75,86 @@
           </v-row>
         </template>
 
-        <template #header.typeEtablissement="{ column }" >
-          <div class="d-flex align-center">
-            <span>{{ column.title }}</span>
-            <v-menu :close-on-content-click="false">
-              <template #activator="{ props }">
-                <v-tooltip text="Filtrer par type" location="top" theme="dark" content-class="text-white">
-                  <template #activator="{ props: tooltipProps }">
-                    <v-btn
-                      v-bind="{ ...props, ...tooltipProps }"
-                      icon
-                      variant="text"
-                      class="ml-1"
-                    >
-                      <v-icon small :color="selectedType ? 'primary' : ''">
-                        mdi-filter
-                      </v-icon>
-                    </v-btn>
-                  </template>
-                </v-tooltip>
-              </template>
-              <div style="background-color: white;" class="pl-4 pr-8">
-                <ul>
-                  <li
-                    v-for="item in typesEtab"
-                    :key="item"
-                    @click="eventTypeEtabChoice(item)"
-                  >
-                    <a>{{ item }}</a>
-                  </li>
-                </ul>
-              </div>
-            </v-menu>
-          </div>
-        </template>
+        <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
+          <tr>
+            <th
+              v-for="column in columns"
+              :key="column.key"
+              class="text-left"
+              @click="column.sortable ? toggleSort(column) : ''"
+            >
+              <div style="display: flex; align-items: center; white-space: nowrap;">
+                <span>{{ column.title }}</span>
 
-        <template #header.statutIP="{ column }">
-          <div class="d-flex align-center">
-            <span>{{ column.title }}</span>
-            <v-menu :close-on-content-click="false">
-              <template #activator="{ props }">
-                <v-tooltip text="Filtrer par statut" location="top" theme="dark" content-class="text-white">
-                  <template #activator="{ props: tooltipProps }">
+                <v-icon
+                  v-if="column.sortable && !isSorted(column)"
+                  class="pl-2"
+                  size="small"
+                >
+                  mdi-sort
+                </v-icon>
+                <v-icon
+                  v-else-if="column.sortable"
+                  class="pl-2"
+                  size="small"
+                >
+                  {{ getSortIcon(column) }}
+                </v-icon>
+
+                <v-menu
+                  v-if="column.key === 'typeEtablissement' || column.key === 'statutIP'"
+                  :close-on-content-click="false"
+                >
+                  <template #activator="{ props }">
                     <v-btn
-                      v-bind="{ ...props, ...tooltipProps }"
+                      :aria-label="column.key"
                       icon
                       variant="text"
                       class="ml-1"
+                      v-bind="props"
                     >
-                      <v-icon small :color="statut ? 'primary' : ''">
+                      <v-icon
+                        small
+                        :color="column.key === 'typeEtablissement' ? (selectedType ? 'primary' : '') : (statut ? 'primary' : '')"
+                      >
                         mdi-filter
                       </v-icon>
                     </v-btn>
                   </template>
-                </v-tooltip>
-              </template>
-              <div style="background-color: white;" class="pl-4 pr-8">
-                <ul>
-                  <li
-                    v-for="item in selectStatut"
-                    :key="item"
-                    @click="eventStatutChoice(item)"
+                  <div
+                    v-if="column.key === 'typeEtablissement'"
+                    style="background-color: white;"
+                    class="pl-4 pr-8"
                   >
-                    <a>{{ item }}</a>
-                  </li>
-                </ul>
+                    <ul>
+                      <li
+                        v-for="item in typesEtab"
+                        :key="item"
+                        @click="eventTypeEtabChoice(item)"
+                      >
+                        <a>{{ item }}</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div
+                    v-if="column.key === 'statutIP'"
+                    style="background-color: white;"
+                    class="pl-4 pr-8"
+                  >
+                    <ul>
+                      <li
+                        v-for="item in selectStatut"
+                        :key="item"
+                        @click="eventStatutChoice(item)"
+                      >
+                        <a>{{ item }}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </v-menu>
               </div>
-            </v-menu>
-          </div>
+            </th>
+          </tr>
         </template>
 
         <template #item.dateCreationFormattedInString="{ item }">

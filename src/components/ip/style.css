@@ -7,3 +7,13 @@
 #mytable table thead {
   background: aquamarine;
 }
+.truncate {
+  width: 17%;
+}
+.truncate > span {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

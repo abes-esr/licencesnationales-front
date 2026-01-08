@@ -46,56 +46,88 @@
           class="row-height-50"
           density="comfortable"
         >
-          <template #header.statut="{ column }">
-            {{ column.title }}
-            <v-menu offset-y :close-on-content-click="false">
-              <template #activator="{ props }">
-                <v-btn
-                  variant="text"
-                  class="bouton-simple"
-                  style="text-decoration: none;"
-                  v-bind="props"
-                >
-                  <v-icon small :color="statut ? 'primary' : ''">
-                    mdi-filter
-                  </v-icon>
-                  Statut
-                </v-btn>
-              </template>
-              <div style="background-color: white" class="pl-4 pr-8">
-                <ul>
-                  <li v-for="item in selectStatut" :key="item" @click="eventStatutChoice(item)">
-                    <a>{{ item }}</a>
-                  </li>
-                </ul>
-              </div>
-            </v-menu>
-          </template>
+          <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
+            <tr>
+              <th
+                v-for="column in columns"
+                :key="column.key"
+                class="text-left"
+                @click="column.sortable ? toggleSort(column) : ''"
+              >
+                <div style="display: flex; align-items: center; white-space: nowrap;">
+                  <span>{{ column.title }}</span>
 
-          <template #header.typeIp="{ column }">
-            {{ column.title }}
-            <v-menu offset-y :close-on-content-click="false">
-              <template #activator="{ props }">
-                <v-btn
-                  variant="text"
-                  class="bouton-simple"
-                  style="text-decoration: none;"
-                  v-bind="props"
-                >
-                  <v-icon small :color="statut ? 'primary' : ''">
-                    mdi-filter
+                  <v-icon
+                    v-if="column.sortable && !isSorted(column)"
+                    class="pl-2"
+                    size="small"
+                  >
+                    mdi-sort
                   </v-icon>
-                  Type d'IP
-                </v-btn>
-              </template>
-              <div style="background-color: white;" class="pl-4 pr-8">
-                <ul>
-                  <li v-for="item in selectType" :key="item" @click="eventTypeChoice(item)">
-                    <a>{{ item }}</a>
-                  </li>
-                </ul>
-              </div>
-            </v-menu>
+                  <v-icon
+                    v-else-if="column.sortable"
+                    class="pl-2"
+                    size="small"
+                  >
+                    {{ getSortIcon(column) }}
+                  </v-icon>
+
+                  <v-menu
+                    v-if="column.key === 'statut' || column.key === 'typeIp'"
+                    offset-y
+                    :close-on-content-click="false"
+                  >
+                    <template #activator="{ props }">
+                      <v-btn
+                        :aria-label="column.key"
+                        icon
+                        size="x-small"
+                        v-bind="props"
+                        variant="text"
+                        class="pa-0 ma-0"
+                      >
+                        <v-icon
+                          :color="column.key === 'statut' ? (statut ? 'primary' : '') : (type ? 'primary' : '')"
+                          size="small"
+                        >
+                          mdi-filter
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    <div
+                      v-if="column.key === 'statut'"
+                      style="background-color: white"
+                      class="pl-4 pr-8"
+                    >
+                      <ul>
+                        <li
+                          v-for="item in selectStatut"
+                          :key="item"
+                          @click="eventStatutChoice(item)"
+                        >
+                          <a>{{ item }}</a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div
+                      v-if="column.key === 'typeIp'"
+                      style="background-color: white;"
+                      class="pl-4 pr-8"
+                    >
+                      <ul>
+                        <li
+                          v-for="item in selectType"
+                          :key="item"
+                          @click="eventTypeChoice(item)"
+                        >
+                          <a>{{ item }}</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </v-menu>
+                </div>
+              </th>
+            </tr>
           </template>
 
           <template #top>
@@ -136,16 +168,12 @@
           </template>
 
           <template #item.commentaires="{ item }">
-            <td class="truncate">
-                              <v-tooltip location="bottom" theme="dark" content-class="text-white">
-                                <template #activator="{ props }">
-                                  <span v-bind="props">
-                                    {{ item.commentaires }}
-                  </span>
+              <v-tooltip location="bottom" theme="dark" content-class="text-white">
+                <template #activator="{ props }">
+                  <span v-bind="props" class="text-truncate d-block" :style="{width: '100px'}">{{ item.commentaires }}</span>
                 </template>
-                <span>{{ item.commentaires }}</span>
+                <span  >{{ item.commentaires }}</span>
               </v-tooltip>
-            </td>
           </template>
 
           <template #item.statut="{ item }">
@@ -327,6 +355,7 @@ import { useMessageStore } from "@/stores/messageStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { VDataTable } from "vuetify/components";
 import { useDisplay } from "vuetify";
+import { icon } from "@fortawesome/fontawesome-svg-core";
 
 const props = defineProps<{
   sirenEtabSiAdmin?: string;
@@ -435,7 +464,7 @@ function setHeaders() {
         width: "9%"
       },
       { title: "Valeur", key: "ip", sortable: true, width: "20%" },
-      { title: "Statut", key: "statut", sortable: true, width: "13%" },
+      { title: "Statut", key: "statut", sortable: true, width: "13%"},
       { title: "Action", key: "buffer", sortable: false, width: "13%" },
       {
         title: "Dernière action de l’Abes",
@@ -447,7 +476,8 @@ function setHeaders() {
         title: "Précision sur l’IP",
         key: "commentaires",
         sortable: true,
-        width: "17%"
+        width: "17%",
+        
       },
       { title: "Examiner", key: "action", sortable: false, width: "9%" }
     ];

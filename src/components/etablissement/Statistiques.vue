@@ -33,7 +33,7 @@
                   label="Date de début"
                   prepend-icon="mdi-calendar"
                   :rules="rulesFormConfig.dateRules"
-                  disabled
+                  readonly
                   variant="outlined"
                 />
               </template>
@@ -67,7 +67,7 @@
                   label="Date de fin"
                   prepend-icon="mdi-calendar"
                   :rules="rulesFormConfig.dateRules"
-                  disabled
+                  readonly
                   variant="outlined"
                 />
               </template>
