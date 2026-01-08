@@ -33,7 +33,7 @@
                   label="Date de début"
                   prepend-icon="mdi-calendar"
                   :rules="rulesFormConfig.dateRules"
-                  readonly
+                  disabled
                   variant="outlined"
                 />
               </template>
@@ -44,7 +44,7 @@
                 @update:model-value="menuDateDebut = false"
               >
                 <template #actions>
-                  <v-btn variant="text" @click="menuDateDebut = false">
+                  <v-btn variant="outlined" @click="menuDateDebut = false">
                     Annuler
                   </v-btn>
                 </template>
@@ -67,7 +67,7 @@
                   label="Date de fin"
                   prepend-icon="mdi-calendar"
                   :rules="rulesFormConfig.dateRules"
-                  readonly
+                  disabled
                   variant="outlined"
                 />
               </template>
@@ -78,7 +78,7 @@
                 @update:model-value="menuDateFin = false"
               >
                 <template #actions>
-                  <v-btn variant="text" @click="menuDateFin = false">
+                  <v-btn variant="outlined" @click="menuDateFin = false">
                     Annuler
                   </v-btn>
                 </template>

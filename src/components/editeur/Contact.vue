@@ -1,6 +1,6 @@
 <template>
   <v-card witdh="50%" outlined>
-    <v-form ref="form" :outline="true" lazy-validation>
+    <v-form ref="formRef" :outline="true" lazy-validation>
       <v-card-text class="mb-0 pb-0">
         <v-radio-group row v-model="contact.type" class="d-flex justify-center">
           <v-radio
@@ -95,6 +95,7 @@ function remove() {
 }
 
 function validate(): boolean {
+  console.log("🚀 ~ validate ~ value.validate:", formRef);
   if (formRef.value?.validate) {
     return formRef.value.validate();
   }

@@ -34,6 +34,7 @@
                     @click="clear"
                     class="bouton-annuler"
                     :disabled="isDisableForm"
+                    variant="outlined"
                   >
                     Annuler
                   </v-btn>
@@ -43,6 +44,7 @@
                     :disabled="isDisableForm"
                     size="x-large"
                     @click="recaptcha"
+                    variant="elevated"
                   >
                     Enregistrer
                     <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>

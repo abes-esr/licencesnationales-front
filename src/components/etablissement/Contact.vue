@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" lazy-validation :disabled="isDisableForm">
+  <v-form ref="formRef" lazy-validation :disabled="isDisableForm">
     <v-row>
       <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
         <v-row
@@ -96,10 +96,10 @@
           ></v-text-field
         ></v-row>
         <v-row
-          ><v-form ref="mail" :disabled="isDisableForm" style="width: 100%">
+          ><v-form ref="mailRef" :disabled="isDisableForm" style="width: 100%">
             <v-alert
-              outlined
-              class="pa-3 fondBlanc"
+              variant="outlined"
+              class="pa-2 mb-4"
               v-if="action === Action.CREATION"
             >
               <FontAwesomeIcon
@@ -116,7 +116,7 @@
               label="Mail de contact"
               placeholder="Mail de contact"
               v-model="contact.mail"
-              :rules="rulesForms.email.concat(rulesMailConfirmation)"
+              :rules="emailRules"
               required
               @keyup="checkConfirmationMail()"
               @keyup.enter="validate()"
@@ -127,7 +127,7 @@
               label="Confirmez votre adresse e-mail"
               placeholder="Confirmez votre adresse e-mail"
               v-model="emailConfirmation"
-              :rules="rulesForms.email.concat(rulesMailConfirmation)"
+              :rules="emailRules"
               required
               @keyup="checkConfirmationMail()"
               @keyup.enter="validate()"
@@ -136,7 +136,7 @@
         ></v-row>
         <v-row>
           <MotDePasse
-            ref="motdepasse"
+            ref="motdepasseRef"
             v-if="
               action === Action.CREATION ||
                 action === Action.FUSION ||
@@ -184,7 +184,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
 import ContactEtablissement from "@/core/ContactEtablissement";
@@ -219,10 +219,19 @@ onMounted(() => {
 
 // ---------- Computed ----------
 const rulesMailConfirmation = computed(() => {
-  return () =>
-    emailConfirmation.value === props.contact.mail ||
-    emailConfirmation.value === "" ||
+  return (value: string) =>
+    value === props.contact.mail ||
+    value === "" ||
     "Le mail de confirmation n'est pas valide";
+});
+
+const emailRules = computed(() => {
+  const baseRules = rulesForms.email as Array<(v: string) => true | string>;
+  return baseRules.concat(rulesMailConfirmation.value);
+});
+
+const shouldValidateMail = computed(() => {
+  return props.action === Action.CREATION || ancienMail.value !== props.contact.mail;
 });
 
 // ---------- Methods ----------
@@ -246,7 +255,7 @@ function validate(): boolean {
   }
 
   let isMailValide = true;
-  if (props.action === Action.CREATION || ancienMail.value !== props.contact.mail) {
+  if (shouldValidateMail.value) {
     isMailValide = mailRef.value?.validate() ?? true;
   }
 

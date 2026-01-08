@@ -2,13 +2,13 @@
   <div>
     <v-card elevation="0">
       <v-form ref="formModuleSegmentsIpPlage">
-        <v-app-bar elevation="0" density="compact" class="barIp">
+        <v-app-bar elevation="0" density="compact" class="barIp w-100 pa-2 top-0">
           <span v-if="typeAcces === 'ip'">Adresse IP</span>
           <span v-else>Plage d'adresses IP</span>
           <span v-if="typeIp === 'IPV4'">v4</span>
           <span v-else>v6</span>
         </v-app-bar>
-        <v-card-text class="overflow-auto fondGrisFonce">
+        <v-card-text class="overflow fondGrisFonce">
           <v-row class="ma-0">
             <v-col class="py-0">
               <p class="caption mb-0">
@@ -19,7 +19,7 @@
                 <v-col class="pb-0">
                   <!-- IP v4 -->
                   <v-row v-if="typeIp === 'IPV4'">
-                    <v-col
+                    <v-col class="pa-1"
                       v-for="(value, index) in ipv4Segments"
                       :key="index"
                     >
@@ -43,7 +43,7 @@
                   </v-row>
                   <!-- IP v6 -->
                   <v-row v-else>
-                    <v-col
+                    <v-col class="pa-1"
                       v-for="(value, index) in ipv6Segments"
                       :key="index"
                     >
@@ -72,10 +72,9 @@
                   <div v-if="typeIp === 'IPV4'">
                     <label>IP de début</label>
                     <v-row>
-                      <v-col
+                      <v-col class="pa-1 pb-0"
                         v-for="(value, index) in ipv4SegmentsPlageDebut"
                         :key="index"
-                        class="pb-0"
                       >
                         <v-text-field
                           :data-length="value.length"
@@ -103,7 +102,7 @@
                     </v-row>
                     <label>IP de fin</label>
                     <v-row>
-                      <v-col
+                      <v-col class="pa-1"
                         v-for="(value, index) in ipv4SegmentsPlageFin"
                         :key="index"
                       >
@@ -141,7 +140,7 @@
                       <v-col
                         v-for="(value, index) in ipv6SegmentsPlageDebut"
                         :key="index"
-                        class="pb-0"
+                        class="pa-1 pb-0"
                       >
                         <v-text-field
                           :data-length="value.length"
@@ -168,7 +167,7 @@
                     </v-row>
                     <label>IP de fin</label>
                     <v-row>
-                      <v-col
+                      <v-col class="pa-1"
                         v-for="(value, index) in ipv6SegmentsPlageFin"
                         :key="index"
                       >
@@ -237,6 +236,7 @@
                     id="btnSave"
                     size="large"
                     color="button"
+                    variant="elevated"
                   >
                     <span id="btnText">Enregistrer </span>
                     <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
@@ -360,6 +360,7 @@ const refMap: Record<string, { value: Array<InstanceType<typeof VTextField>> }> 
   };
 
 const getSuffix = (index: number) => {
+  console.log(index)
   if (typeIp.value === "IPV4") {
     return index === 3 ? "" : ".";
   }

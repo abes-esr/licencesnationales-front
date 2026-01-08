@@ -5,7 +5,7 @@
         <v-col lg="12" md="12" xs="12">
           <v-row>
             <v-col cols="2" />
-            <v-col cols="8">
+            <v-col cols="8" class="pa-0">
               <v-card-title>Fusion d'établissements</v-card-title>
               <v-card>
                 <v-card-text>
@@ -20,15 +20,16 @@
                         placeholder="SIREN"
                         v-model="sirenEtab[n - 1]"
                         :rules="rulesForms.siren"
+                        maxlength="9"
                         required
                       />
                     </v-col>
                   </v-row>
                   <v-card-actions>
-                    <v-btn variant="flat" @click="increaseSirenNumber">
+                    <v-btn variant="elevated" @click="increaseSirenNumber">
                       Ajouter un siren
                     </v-btn>
-                    <v-btn variant="flat" @click="decreaseSirenNumber">
+                    <v-btn variant="elevated" @click="decreaseSirenNumber">
                       Supprimer un siren
                     </v-btn>
                   </v-card-actions>

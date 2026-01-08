@@ -4,7 +4,7 @@
       Tableau de bord <span v-if="!isAdmin">{{ etablissement.nom }}</span>
     </h1>
     <MessageBox></MessageBox>
-    <ConfirmPopup ref="confirm"></ConfirmPopup>
+    <ConfirmPopup ref="confirmRef"></ConfirmPopup>
     <v-card class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
       <v-card-text class="fondGris pa-0 px-6 pb-6">
         <v-card-title class="px-0 pb-2">Information du compte
@@ -225,6 +225,7 @@ const etablissementStore = useEtablissementStore();
 const messageStore = useMessageStore();
 
 const etablissement = ref<Etablissement>(etablissementStore.getCurrentEtablissement);
+const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
 const isAdmin = computed(() => authStore.isAdmin);
 const isExportLoading = ref(false);
 const notificationsAdmin = ref<Array<Notification>>([]);
@@ -436,7 +437,7 @@ const allerAAfficherEtab = (item: Etablissement): void => {
 };
 
 const envoiEditeurs = async () => {
-  const confirmed = await (messageStore as any).$refs.confirm.open(
+  const confirmed = await confirmRef.value?.open(
     `Vous êtes sur le point de lancer le traitement d'envoi aux éditeurs.
 
                 Etes-vous sûr de vouloir continuer ?`

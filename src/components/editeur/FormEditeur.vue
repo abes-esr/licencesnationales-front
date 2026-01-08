@@ -49,7 +49,7 @@
                 >
                   <template #prepend-item>
                     <v-list-item @click="toggle">
-                      <v-list-item-action start>
+                      <template #prepend>
                         <v-icon
                           :color="
                             editeur.groupesEtabRelies.length > 0
@@ -59,10 +59,8 @@
                         >
                           {{ iconEtab }}
                         </v-icon>
-                      </v-list-item-action>
-                      <v-list-item-title>
-                        Tout sélectionner
-                      </v-list-item-title>
+                      </template>
+                      <v-list-item-title>Tout sélectionner</v-list-item-title>
                     </v-list-item>
                     <v-divider class="mt-2"></v-divider>
                   </template>
@@ -128,7 +126,7 @@
           <v-btn
             size="large"
             @click="clear"
-            class="bouton-annuler"
+            variant="outlined"
             :disabled="isDisableForm"
           >
             Annuler
@@ -139,6 +137,7 @@
             :disabled="isDisableForm"
             size="large"
             @click="validate"
+            variant="elevated"
           >
             Enregistrer
             <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
@@ -258,17 +257,24 @@ async function validate(): Promise<void> {
   let countContactCommercial = 0;
 
   editeur.value.contacts.forEach((contact, index) => {
+    console.log("🚀 ~ validate ~ contact:", contact)
     if (contact.type == ContactType.TECHNIQUE) {
       countContactTechnique++;
     } else if (contact.type == ContactType.COMMERCIAL) {
       countContactCommercial++;
     }
     const isContactValid = contactRefs.value[index]?.validate?.() ?? false;
+    console.log("🚀 ~ validate ~ contactRefs:", contactRefs.value.length)
+    console.log("🚀 ~ validate ~ isValide1:", isValide)
+    console.log("🚀 ~ validate ~ isContactValid:", isContactValid, contactRefs.value[index])
     if (!isValide || !isContactValid) {
       isValide = false;
       isSubFormValide = false;
     }
   });
+  console.log("🚀 ~ validate ~ editeur:", editeur)
+
+  
 
   if (countContactCommercial === 0 || countContactTechnique === 0) {
     isValide = false;
@@ -276,6 +282,8 @@ async function validate(): Promise<void> {
       " - Vous devez saisir au moins un contact technique et un contact commercial";
   }
 
+  console.log("🚀 ~ validate ~ isValide2:", isValide)
+  console.log("🚀 ~ validate ~ isSubFormValide:", isSubFormValide)
   if (isValide && isSubFormValide) {
     send();
   } else {

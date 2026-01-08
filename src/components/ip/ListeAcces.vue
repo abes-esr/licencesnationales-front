@@ -188,10 +188,10 @@
         <v-row>
           <v-col>
             <div style="float: right;" class="actions" v-if="isAdmin">
-              <v-btn @click="clearActions" class="btn-6">
+              <v-btn @click="clearActions" class="btn-6" variant="outlined">
                 <span class="btnText">Annuler</span>
               </v-btn>
-              <v-btn @click="dispatchAllAction" :loading="buttlonLoading">
+              <v-btn @click="dispatchAllAction" :loading="buttlonLoading" variant="elevated">
                 <span class="btnText">Enregistrer mes actions</span>
                 <FontAwesomeIcon :icon="faCircleArrowRight" />
               </v-btn>
@@ -233,7 +233,6 @@
                   pas partie du réseau RENATER<span style="padding: 5px;" />
                   <FontAwesomeIcon :icon="faXmark" />
                 </span>
-                Afficher/Cacher WhoIS
               </v-expansion-panel-title>
               <v-expansion-panel-text>
                 <p><span v-html="highlightRenater(whoIs)"></span></p>
@@ -248,7 +247,6 @@
                 <span v-else>L'adresse de fin ne fait pas partie du réseau RENATER<span style="padding: 5px;" />
                   <FontAwesomeIcon :icon="faXmark" />
                 </span>
-                Afficher/Cacher WhoIS
               </v-expansion-panel-title>
               <v-expansion-panel-text>
                 <p><span v-html="highlightRenater(whoIs2)"></span></p>
@@ -271,7 +269,7 @@
         <v-card-actions>
           <v-row>
             <v-col>
-              <div style="float: right" class="actions">
+              <div style="float: right" class="actions ga-4 d-flex">
                 <v-btn
                   @click="
                     dialog = false;
@@ -279,16 +277,17 @@
                     commentaires = '';
                   "
                   class="btn-6"
+                  variant="outlined"
                 >
                   Annuler
                 </v-btn>
-                <v-btn @click="addActionToBuffer('SUPPRIMER')" class="btn-5">
+                <v-btn @click="addActionToBuffer('SUPPRIMER')" color="error" variant="flat">
                   Supprimer
                 </v-btn>
-                <v-btn @click="addActionToBuffer('REJETER')" variant="tonal">
+                <v-btn @click="addActionToBuffer('REJETER')" color="primary" variant="tonal">
                   Rejeter
                 </v-btn>
-                <v-btn @click="addActionToBuffer('VALIDER')" class="btn-4">
+                <v-btn @click="addActionToBuffer('VALIDER')" color="success" variant="flat">
                   Valider
                 </v-btn>
               </div>

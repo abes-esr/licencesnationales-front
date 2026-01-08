@@ -1,5 +1,5 @@
 <template>
-  <v-container elevation="0">
+  <v-container elevation="0" class="pa-0">
     <v-form
       ref="formCreationCompte"
       class="elevation-0"
@@ -12,17 +12,18 @@
       <h1 v-if="action === Action.MODIFICATION" class="pl-3">
         {{ etablissement.nom }}
       </h1>
-      <v-card>
+      <v-container class="pa-0">
+        <div         v-if="action === Action.CREATION"
+ class="d-flex flex-row align-center">
       <h2
-        v-if="action === Action.CREATION"
         @click="allerAConnexion"
         class="pl-3"
       >
         Votre établissement a déjà un compte ?
         <a class="bouton-simple elevation-0 large">S'authentifier</a>
-        <v-icon>mdi-arrow-right-circle-outline </v-icon>
       </h2>
-      <v-card-text>
+      <v-icon small>mdi-arrow-right-circle-outline </v-icon>
+      </div>
         <v-col cols="12" md="6" lg="6" xl="6">
           <MessageBox />
         </v-col>
@@ -68,6 +69,8 @@
             </v-alert>
           </v-col>
         </v-row>
+              <v-card>
+
         <div
           class="mx-9"
           v-if="
@@ -93,7 +96,7 @@
                     autocomplete="organization"
                     v-model="etablissement.nom"
                     :rules="rulesForms.nomEtabRules"
-                    :readonly="action === Action.MODIFICATION && !isAdmin"
+                    :disabled="action === Action.MODIFICATION && !isAdmin"
                     required
                     @keyup.enter="validate"
                   />
@@ -112,7 +115,7 @@
                       required
                       @input="checkSiren"
                       @keyup.enter="validate"
-                      :readonly="action === Action.MODIFICATION"
+                      :disabled="action === Action.MODIFICATION"
                     />
                   </v-col>
                 </v-row>
@@ -136,7 +139,7 @@
                     label="ID Abes"
                     placeholder="ID Abes"
                     v-model="etablissement.idAbes"
-                    readonly
+                    disabled
                   />
                 </v-row>
               </v-col>
@@ -149,7 +152,7 @@
                     :items="typesEtab"
                     label="Type d'établissement"
                     placeholder="Type d'établissement"
-                    :readonly="action === Action.MODIFICATION && !isAdmin"
+                    :disabled="action === Action.MODIFICATION && !isAdmin"
                     :rules="rulesForms.typeEtabRules"
                     required
                   />
@@ -189,7 +192,7 @@
             class="mx-9"
           />
         </div>
-      </v-card-text>
+      </v-card>
       <v-card-actions v-if="action !== Action.SCISSION">
         <v-spacer class="d-none d-sm-flex"></v-spacer>
         <v-col
@@ -204,7 +207,7 @@
             <v-btn
               @click="clear"
               :disabled="isDisableForm"
-              variant="text"
+              variant="outlined"
 
             >
               Annuler</v-btn
@@ -223,7 +226,7 @@
           </v-row>
         </v-col>
       </v-card-actions>
-      </v-card>
+      </v-container>
     </v-form>
   </v-container>
 </template>

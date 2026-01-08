@@ -364,14 +364,14 @@ function ajouterEtablissement(): void {
 
 function allerAFusionnerEtab(): void {
   messageStore.closeDisplayedMessage();
-  router.push({ name: "fusionEtablissement" }).catch(err => {
+  router.push({ name: "FusionEtablissement" }).catch(err => {
     Logger.error(err as any);
   });
 }
 
 function allerAScionnerEtab(): void {
   messageStore.closeDisplayedMessage();
-  router.push({ name: "scissionEtablissement" }).catch(err => {
+  router.push({ name: "ScissionEtablissement" }).catch(err => {
     Logger.error(err as any);
   });
 }

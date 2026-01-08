@@ -1,6 +1,6 @@
 <template>
-  <v-form ref="form" :disabled="isDisableForm" class="ga-4 d-flex flex-column">
-    <v-alert variant="outlined" class="pa-3 fondBlanc" v-if="linkIsExpired === false">
+  <v-form ref="form" :disabled="isDisableForm" class="d-flex flex-column">
+    <v-alert variant="outlined" class="pa-2 mb-4" v-if="linkIsExpired === false">
       <FontAwesomeIcon
         :icon="faCircleInfo"
         class="fa-2x mr-5 mb-1 mt-2 icone-information"
@@ -9,10 +9,10 @@
       chiffre, une lettre majuscule, une lettre minuscule et un des caractères
       spéciaux suivants : @ $ ! % * ? &
     </v-alert>
-    <v-alert variant="outlined" class="pa-3" v-if="linkIsExpired === true">
+    <v-alert variant="outlined" class="pa-2 mb-4" v-if="linkIsExpired === true">
       <FontAwesomeIcon
         :icon="faCircleInfo"
-        class="fa-2x mr-5 mb-1 mt-2 icone-information"
+        class="fa-2x mr-5 mb-1 icone-information"
       />
       Ce lien n'est plus valide (expiration après 24 heures). Pour réinitialiser
       votre mot de passe : <a @click="allerPasswordReset">cliquez ici.</a>
@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, withDefaults } from "vue";
 import { useRouter } from "vue-router";
 import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
@@ -83,13 +83,18 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import type { VForm } from "vuetify/components";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
-const props = defineProps<{
-  action: Action;
-  ancienMotDePasse: string;
-  nouveauMotDePasse: string;
-  isDisableForm: boolean;
-  linkIsExpired?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    action: Action;
+    ancienMotDePasse?: string;
+    nouveauMotDePasse: string;
+    isDisableForm: boolean;
+    linkIsExpired?: boolean;
+  }>(),
+  {
+    ancienMotDePasse: ""
+  }
+);
 
 const emit = defineEmits<{
   (e: "update:ancienMotDePasse", value: string): void;
@@ -105,7 +110,7 @@ const show = ref(false);
 const form = ref<VForm | null>(null);
 
 const ancienMotDePasseModel = computed({
-  get: () => props.ancienMotDePasse,
+  get: () => props.ancienMotDePasse ?? "",
   set: value => emit("update:ancienMotDePasse", value)
 });
 

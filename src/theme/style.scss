@@ -57,7 +57,8 @@ $couleur-tab: var(--couleur-tab);
     background-color: $couleur-arriere-plan-5;
   }
 
-  .v-alert--outlined {
+  .v-alert--outlined,
+  .v-alert--variant-outlined {
     border-color: $couleur-4 !important;
   }
 
@@ -246,7 +247,7 @@ $couleur-tab: var(--couleur-tab);
     color: #FFFFFF !important;
   }
 
-  .v-text-field input[readonly="readonly"] :not(v-select__selections) {
+  .v-text-field input[disabled="true"] :not(v-select__selections) {
     background-color: $couleur-4 !important;
   }
 
@@ -295,11 +296,15 @@ $couleur-tab: var(--couleur-tab);
     background-color: $couleur-6 !important;
   }
 
-  .v-input--is-readonly>.v-input__control>.v-input__slot {
+  .v-input--is-disabled>.v-input__control>.v-input__slot {
     background-color: $couleur-4 !important;
   }
 
   .v-textarea--filled>.v-input__control>.v-input__slot {
+    background-color: $couleur-6 !important;
+  }
+
+  .v-field__field {
     background-color: $couleur-6 !important;
   }
 
@@ -317,6 +322,10 @@ $couleur-tab: var(--couleur-tab);
 
   .v-btn.v-btn--icon.v-alert {
     background: transparent !important;
+  }
+
+  .v-alert {
+    overflow: inherit !important;
   }
 
   @media (min-resolution: 120dpi) {

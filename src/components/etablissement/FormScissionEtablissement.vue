@@ -9,32 +9,35 @@
               <v-card-title>Scission d'établissements</v-card-title>
               <v-card>
                 <v-card-text>
-                  <v-row>
                     <v-card-title>
                       Siren de l'établissement à scinder
                     </v-card-title>
-                    <v-col cols="3">
+                    <v-col cols="12">
                       <v-text-field
                         variant="outlined"
                         label="SIREN"
                         placeholder="SIREN"
                         v-model="sirenEtab"
                         :rules="rulesForms.siren"
-                        class="pt-6"
+                        class="pt-6 w-100"
                         required
                         @keyup.enter="validateForm"
+                        maxLength="9"
+
                       />
+                                          <h3>Nombre d'établissements : {{ etablissementNumber }}</h3>
+
                     </v-col>
-                  </v-row>
 
                   <v-card-actions>
-                    <h3>Nombre d'établissements : {{ etablissementNumber }}</h3>
-                    <v-btn variant="flat" @click="increaseEtablissementNumber">
+                    <v-row class="pa-0 ga-4">
+                    <v-btn variant="elevated" @click="increaseEtablissementNumber">
                       Ajouter un etablissement
                     </v-btn>
-                    <v-btn variant="flat" @click="decreaseEtablissementNumber">
+                    <v-btn variant="elevated" @click="decreaseEtablissementNumber">
                       Supprimer un etablissement
                     </v-btn>
+                    </v-row>
                   </v-card-actions>
                 </v-card-text>
               </v-card>
@@ -60,6 +63,7 @@
                       :loading="buttonLoading"
                       size="large"
                       color="button"
+                      variant="elevated"
                     >
                       Enregistrer
                     </v-btn>

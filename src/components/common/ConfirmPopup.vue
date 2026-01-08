@@ -6,7 +6,7 @@
     @keydown.esc="cancel"
   >
     <v-card flat class="confirmPopup">
-      <v-card-text class="pa-3 popup-texte">
+      <v-card-text class="pa-4 popup-texte">
         <FontAwesomeIcon
           :icon="faTriangleExclamation"
           class="mx-2 fa-2x icone-attention"
@@ -15,7 +15,7 @@
       </v-card-text>
       <v-card-actions class="pt-0 ma-3">
         <v-spacer></v-spacer>
-        <v-btn variant="text" class="bouton-annuler" @click="cancel">
+        <v-btn variant="outlined" class="bouton-annuler" @click="cancel">
           Annuler
         </v-btn>
         <v-btn
@@ -42,8 +42,8 @@ type Resolver = (value: boolean) => void;
 const dialog = ref(false);
 const message = ref("");
 const options = reactive<ConfirmPopupOptions>({
-  color: "error",
-  width: "30vw"
+  color: "success",
+  width: "40vw"
 });
 
 const resolver = ref<Resolver | null>(null);
@@ -52,7 +52,7 @@ const rejecter = ref<Resolver | null>(null);
 const open = (newMessage: string, newOptions?: Partial<ConfirmPopupOptions>) => {
   dialog.value = true;
   message.value = newMessage;
-  Object.assign(options, { color: "error", width: "30vw" }, newOptions);
+  Object.assign(options, { color: "success", width: "40vw" }, newOptions);
 
   return new Promise<boolean>((resolve, reject) => {
     resolver.value = resolve;
@@ -75,14 +75,22 @@ defineExpose({ open });
 <style scoped lang="scss">
 .icone-attention {
   float: left;
+  color: #f28c28;
 }
 
 .popup-texte {
   border: 0;
 }
 
+.confirmPopup {
+  border: 1px solid #cfd3d7;
+  border-radius: 12px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+}
+
 .popup-message {
   font-size: 1.3rem;
+  line-height: 1.5;
 }
 
 .popup-texte div {
