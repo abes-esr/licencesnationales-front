@@ -1,11 +1,13 @@
 <template>
   <v-alert
-    text
     :color="getSnackbarColor"
     v-model="snackbarDisplayValue"
-    :class="getSnackbarMultiline ? 'multi-line elevation-0' : 'elevation-0'"
+    :class="getSnackbarMultiline ? 'multi-line elevation-1 mt-4 mb-4' : 'elevation-1 mt-4 mb-4'"
     id="messageBox"
   >
+    <div class="d-flex">
+
+  <div class="d-flex align-center flex-grow-1">
     <FontAwesomeIcon
       v-if="getSnackbarType == MessageType.ERREUR"
       :icon="faBan"
@@ -27,12 +29,11 @@
       class="fa-lg mr-5 mb-1 mt-2 icone-information"
     />
     <span v-for="m in getSnackbarText" v-bind:key="m" v-html="m"></span>
-
-    <template v-slot:close="{ attrs }">
+</div>
       <v-btn
         :color="getSnackbarColor"
         icon
-        v-bind="attrs"
+        variant="text"
         @click="closeSnackBar()"
       >
         <FontAwesomeIcon
@@ -40,7 +41,8 @@
           class="fa-lg mx-2 icone-fermer"
         />
       </v-btn>
-    </template>
+    </div>
+
   </v-alert>
 </template>
 

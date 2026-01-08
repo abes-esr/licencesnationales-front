@@ -1,5 +1,5 @@
 <template>
-  <v-container class="mx-9">
+  <v-container>
     <h1>
       Tableau de bord <span v-if="!isAdmin">{{ etablissement.nom }}</span>
     </h1>
@@ -7,11 +7,10 @@
     <ConfirmPopup ref="confirm"></ConfirmPopup>
     <v-card class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
       <v-card-text class="fondGris pa-0 px-6 pb-6">
-        <v-card-title class="px-0 pb-0">Information du compte
+        <v-card-title class="px-0 pb-2">Information du compte
           <v-tooltip
             text="Exporter les infos du compte"
             location="top"
-            max-width="20vw"
             open-delay="100"
             theme="dark"
             content-class="text-white"
@@ -34,7 +33,6 @@
                 <v-tooltip
                   text="Non modifiable par l'utilisateur"
                   location="top"
-                  max-width="20vw"
                   open-delay="100"
                   theme="dark"
                   content-class="text-white"
@@ -125,10 +123,10 @@
                 </div>
                 <v-row style="position: absolute; bottom: 0; right: 0;" class="text-right pb-4 pr-4">
                   <v-col cols="12">
-                    <v-btn class="btn-2 " @click="allerAMonProfil()">Modifier contact</v-btn>
+                    <v-btn variant="tonal" @click="allerAMonProfil()">Modifier contact</v-btn>
                   </v-col>
                   <v-col cols="12">
-                    <v-btn class="btn-2" @click="allerAModifierMotDePasse()">Modifier mot de passe</v-btn>
+                    <v-btn variant="tonal" @click="allerAModifierMotDePasse()">Modifier mot de passe</v-btn>
                   </v-col>
                 </v-row>
               </v-card-text>

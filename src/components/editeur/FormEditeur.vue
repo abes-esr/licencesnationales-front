@@ -109,7 +109,7 @@
           <v-card-text> </v-card-text>
 
           <v-card-actions class="v-card-actions">
-            <v-btn class="ma-2 btn-2" @click="addContact">
+            <v-btn class="ma-2" variant="tonal" @click="addContact">
               <FontAwesomeIcon :icon="faPlus" class="mx-2" />
               Ajouter un contact
             </v-btn>

@@ -1,10 +1,78 @@
+@use "./style.scss" as theme;
 
-h1 {
-  color: #478dcb;
-  font-weight: 900;
-  font-size: 30px !important;
+.v-theme--light main {
+  --couleur-1: #cf491f;
+  --couleur-2: #478dcb;
+  --couleur-3: #252c61;
+  --couleur-4: #b8b8b9;
+  --couleur-5: #949597;
+  --couleur-6: #ffffff;
+  --couleur-7: #000000;
+  --couleur-8: #00b600;
+  --couleur-9: #e3040d;
+
+  --bouton-1: #00b600;
+  --bouton-2: #252c61;
+  --bouton-3: #e3040d;
+
+  --message-couleur-1: #e3040d;
+  --message-couleur-2: #eca30f;
+  --message-couleur-3: #00b600;
+
+  --couleur-arriere-plan-1: #fac8c0;
+  --couleur-arriere-plan-2: rgba(236, 163, 15, 0.15);
+  --couleur-arriere-plan-3: rgba(0, 182, 0, 0.15);
+  --couleur-arriere-plan-4: #f6988a;
+  --couleur-arriere-plan-5: #122638;
+  --couleur-arriere-plan-6: #ffffff;
+  --couleur-arriere-plan-7: #000000;
+  --couleur-arriere-plan-8: #6262624a;
+  --couleur-arriere-plan-9: #32465b;
+  --couleur-arriere-plan-10: #5f97ce;
+
+  --couleur-fond-card: #f0f0f4;
+  --couleur-fond-declaration: #e3e4ea;
+  --couleur-tab: rgb(250, 250, 250);
+
+  @include theme.styles();
 }
 
+.v-theme--dark main {
+  --couleur-1: #cf491f;
+  --couleur-2: #ffffff;
+  --couleur-3: #ffffff;
+  --couleur-4: #b8b8b9;
+  --couleur-5: #949597;
+  --couleur-6: #000000;
+  --couleur-7: #000000;
+  --couleur-8: #00b600;
+  --couleur-9: #e3040d;
+
+  --bouton-1: #00b600;
+  --bouton-2: #478dcb;
+  --bouton-3: #e3040d;
+
+  --message-couleur-1: #e3040d;
+  --message-couleur-2: #eca30f;
+  --message-couleur-3: #00b600;
+
+  --couleur-arriere-plan-1: #fac8c0;
+  --couleur-arriere-plan-2: rgba(236, 163, 15, 0.15);
+  --couleur-arriere-plan-3: rgba(0, 182, 0, 0.15);
+  --couleur-arriere-plan-4: #f6988a;
+  --couleur-arriere-plan-5: #b8b8b9;
+  --couleur-arriere-plan-6: #000000;
+  --couleur-arriere-plan-7: #ffffff;
+  --couleur-arriere-plan-8: #000000;
+  --couleur-arriere-plan-9: #7d7979;
+  --couleur-arriere-plan-10: #7d7979;
+
+  --couleur-fond-card: #1e1e1e;
+  --couleur-fond-declaration: #1e1e1e;
+  --couleur-tab: rgb(0, 0, 0);
+
+  @include theme.styles();
+}
 h2 {
   font-size: 1.5em !important;
   font-weight: 900;
@@ -38,6 +106,7 @@ h2, h3 {
 
 a {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .bouton-simple {
@@ -127,10 +196,6 @@ nav .v-list-item-title {
   text-align: center;
 }
 
-h1 {
-  font-weight: 900;
-}
-
 .v-card-title {
   font-size: 1.5em !important;
   font-weight: 900 !important;
@@ -147,4 +212,10 @@ h1 {
 .v-btn--elevated {
     background-color: #c64c21 !important;
     color: white !important;
+}
+
+.v-tooltip .v-overlay__content {
+  max-width: 320px;
+  white-space: normal;
+  word-break: normal;
 }

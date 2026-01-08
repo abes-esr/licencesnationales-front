@@ -1,7 +1,7 @@
 <template>
-  <v-footer id="footer" color="primary" class="pa-0">
-    <v-card class="flex w-100 bg-primary" flat>
-      <v-card-title class="teal footer-top align-center pa-0 d-md-flex pa-4">
+  <v-footer id="footer" color="primary" class="pa-0 text-white">
+    <v-card class="flex w-100 footer-card" flat>
+      <v-card-title class="teal footer-top align-center pa-0 d-md-flex pa-4 text-white">
         <!-- Col gauche -->
         <v-col cols="12" md="4" lg="3" xl="3">
           <div class="left-container d-flex flex-column justify-space-between">
@@ -11,18 +11,18 @@
             </div>
 
             <v-btn href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank"
-              class="footer-btn mx-2 text-center">
+              class="footer-btn mx-2 text-center text-white">
               <span class="texte text-wrap text-break">Assistance</span>
               <FontAwesomeIcon :icon="faComments" class="mx-2" />
             </v-btn>
 
-            <v-btn href="https://www.licencesnationales.fr/" target="_blank" class="footer-btn mx-2 text-center">
+            <v-btn href="https://www.licencesnationales.fr/" target="_blank" class="footer-btn mx-2 text-center text-white">
               <span class="texte text-wrap text-break">Site Licences nationales</span>
               <FontAwesomeIcon :icon="faCircleArrowRight" class="mx-2" />
             </v-btn>
 
             <v-btn href="https://documentation.abes.fr/aidelicencesnationales/index.html" target="_blank"
-              class="footer-btn mx-2 text-center">
+              class="footer-btn mx-2 text-center text-white">
               <span class="texte text-wrap text-break">Documentation</span>
               <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" />
             </v-btn>
@@ -39,7 +39,7 @@
 
         <!-- Col droite -->
         <v-col cols="12" md="4" lg="4" xl="4" class="d-flex justify-space-around align-center">
-          <div class="d-flex flex-column justify-space-between text-right mr-3 right-container">
+          <div class="d-flex flex-column justify-space-between text-right mr-3 right-container text-white">
             <h4 class="mb-2 text-wrap text-break">Agence bibliographique de l’enseignement supérieur</h4>
             <div>227 av. Jean-Louis Viala CS 84308<br />34193 Montpellier Cedex 5</div>
             <div>Tél : +33 (0)4 67 54 84 10</div>
@@ -57,7 +57,7 @@
       </v-card-title>
 
       <!-- Bas du footer -->
-      <v-card-text class="py-2 white--text footer-bottom bg-secondary">
+      <v-card-text class="py-2 text-white footer-bottom bg-secondary">
         <strong>Licences Nationales </strong>
 
         <v-tooltip location="top" theme="dark" content-class="text-white">
@@ -66,16 +66,16 @@
           </template>
 
           <span>
-            Front: {{ appVersion }}<br /><br />
+            Front: {{ appVersion }}<br />
             Back: {{ backVersion }}
           </span>
         </v-tooltip>
 
         <div id="mentions">
-          <a @click="router.push('/donneespersonnelles')">Données personnelles</a> |
-          <a @click="router.push('/cgu')">CGU</a> |
-          <a @click="router.push('/mentions')">Mentions légales</a> |
-          <a @click="router.push('/accessibilite')">Accessibilité</a>
+          <a class="text-white" @click="router.push('/donneespersonnelles')">Données personnelles</a> |
+          <a class="text-white" @click="router.push('/cgu')">CGU</a> |
+          <a class="text-white" @click="router.push('/mentions')">Mentions légales</a> |
+          <a class="text-white" @click="router.push('/accessibilite')">Accessibilité</a>
         </div>
       </v-card-text>
     </v-card>
@@ -125,6 +125,10 @@ onMounted(async () => {
   padding-left: 4vw;
 }
 
+.footer-card {
+  background-color: transparent !important;
+}
+
 .right-container {
   width: 250px;
   font-size: 0.8rem;
@@ -160,3 +164,6 @@ onMounted(async () => {
   width: 30%;
 }
 </style>
+
+
+

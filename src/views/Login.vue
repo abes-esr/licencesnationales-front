@@ -17,11 +17,11 @@
                 Votre établissement n'a pas encore de compte ?
               </h1>
             </span>
-            <v-btn class="btn-2" href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+            <v-btn variant="tonal" href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
               target="_blank">Vérifier l'éligibilité
               <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
-            <v-btn class="btn-2" @click="creerCompte">Créer un compte
+            <v-btn variant="tonal" @click="creerCompte">Créer un compte
               <FontAwesomeIcon :icon="faCirclePlus" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
           </div>

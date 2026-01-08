@@ -18,6 +18,8 @@ import vuetify from './plugins/vuetify'
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import piniaPersist from 'pinia-plugin-persistedstate'
+import moment from "moment";
+import "moment/locale/fr";
 
 // Handle all Vue errors
 /*Vue.config.errorHandler = error =>
@@ -29,6 +31,7 @@ declare module "*.vue";
 const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPersist)
+moment.locale("fr");
 // Création du store
 app.use(pinia)
 

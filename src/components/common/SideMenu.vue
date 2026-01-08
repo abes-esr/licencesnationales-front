@@ -1,11 +1,10 @@
 <template>
   <v-navigation-drawer
-    v-if="displayMenu"
     app
     flat
     hide-overlay
     permanent
-    :visible="displayMenu"
+    :model-value="displayMenu"
   >
     <v-list dense color="transparent">
       <v-row class="mb-15"> </v-row>

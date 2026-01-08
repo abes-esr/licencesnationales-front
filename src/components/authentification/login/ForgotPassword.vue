@@ -1,13 +1,11 @@
 <template>
-  <v-card elevation="0">
-    <v-card-title class="pb-0 pl-0 pa-3">
+  <v-container elevation="0">
       <h1 class="pb-1">Mot de passe oublié</h1>
-    </v-card-title>
-    <v-card-title class="pa-1">
+    <h2 class="pa-1">
       Choisir une option de réinitialisation <MessageBox />
-    </v-card-title>
+    </h2>
+    <v-card class="pa-4">
     <v-radio-group id="radio" v-model="sirenRadio">
-      <v-card-text class="fondGris">
         <v-row>
           <v-col cols="1" />
           <v-col cols="10">
@@ -59,9 +57,9 @@
             </v-form>
           </v-col>
         </v-row>
-      </v-card-text>
     </v-radio-group>
-    <v-card-actions>
+      </v-card>
+
       <v-row>
         <v-col>
           <v-btn
@@ -75,8 +73,7 @@
           </v-btn>
         </v-col>
       </v-row>
-    </v-card-actions>
-  </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">

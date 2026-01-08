@@ -104,7 +104,6 @@
               <v-tooltip
                 text="Le téléchargement correspond à la vue filtrée"
                 location="top"
-                max-width="20vw"
                 open-delay="100"
                 theme="dark"
                 content-class="text-white"
@@ -167,7 +166,7 @@
             <v-btn
               v-if="isAdmin && getCurrentEtab.statut == 'Validé'"
               class="ma-0 pa-0 bouton-simple "
-              icon
+              variant="flat"
               title="Examiner"
               @click.stop="openDialog(item)"
             >
@@ -286,7 +285,7 @@
                 <v-btn @click="addActionToBuffer('SUPPRIMER')" class="btn-5">
                   Supprimer
                 </v-btn>
-                <v-btn @click="addActionToBuffer('REJETER')" class="btn-2">
+                <v-btn @click="addActionToBuffer('REJETER')" variant="tonal">
                   Rejeter
                 </v-btn>
                 <v-btn @click="addActionToBuffer('VALIDER')" class="btn-4">
@@ -702,7 +701,7 @@ function RowClasses(item: any) {
       action = element.action;
     }
   });
-  return action;
+  return action + " pb-2 pt-2";
 }
 
 function clearActions() {

@@ -1,11 +1,11 @@
 <template>
-  <v-card variant="flat">
+  <v-container variant="flat">
     <h1>Etablissement {{ etablissement.nom }}</h1>
     <v-col cols="12" md="6" lg="6" xl="6" class="pa-1">
       <MessageBox />
       <ConfirmPopup ref="confirmRef" />
     </v-col>
-    <v-container class="mx-9 elevation-0 pt-0">
+    <v-container class=" elevation-0 pt-0">
       <v-col
         cols="12"
         class="d-flex align-content-start justify-space-between flex-wrap mx-0 px-0 py-0"
@@ -15,7 +15,6 @@
           <v-tooltip
             text="Exporter les infos du compte"
             location="top"
-            max-width="20vw"
             open-delay="100"
             theme="dark"
             content-class="text-white"
@@ -37,7 +36,7 @@
           </v-tooltip>
         </v-card-title>
 
-        <v-btn class="btn-2 mt-3" @click="allerAIPs">
+        <v-btn variant="tonal" class="mt-3" @click="allerAIPs">
           Voir la liste des IPs
           <v-icon class="ml-2">mdi-ip-network</v-icon>
         </v-btn>
@@ -48,7 +47,7 @@
       </span>
       <v-btn
         v-if="modificationModeDisabled"
-        class="btn-2 mt-3"
+        class="mt-3" variant="tonal"
         style="margin-right: 1em"
         @click="entrerEnModification"
       >
@@ -56,7 +55,7 @@
       </v-btn>
       <v-btn
         v-if="!modificationModeDisabled"
-        class="btn-2 mt-3"
+        class="mt-3" variant="tonal"
         @click="validerModifications"
         style="margin-right: 1em"
         color="success"
@@ -65,14 +64,14 @@
       </v-btn>
       <v-btn
         v-if="!modificationModeDisabled"
-        class="btn-2 mt-3"
+        class="mt-3" variant="tonal"
         @click="annulerModifications"
       >
         Réinitialiser les champs d'origine
       </v-btn>
       <v-btn
         v-if="modificationModeDisabled && getEtablissement.statut !== 'Validé'"
-        class="btn-2  mt-3"
+        class="mt-3" variant="tonal"
         style="margin-right: 1em"
         :loading="buttonValidationLoading"
         @click="validerEtablissement"
@@ -87,21 +86,20 @@
       >
         Dévalider le compte
       </v-btn>
-      <v-row class="d-flex justify-space-between flex-wrap ma-0">
+      <v-row class="d-flex justify-space-between flex-wrap ma-0 pa-0">
         <v-col
           cols="12"
           md="6"
           lg="6"
           xl="6"
-          class="d-flex align-content-start justify-center flex-wrap"
+          class="d-flex align-content-start justify-center flex-wrap px-0 pr-2"
         >
-          <v-card-text class="d-flex justify-space-between flex-column">
+          <v-card class="d-flex justify-space-between flex-column w-100 pa-4">
             <div class="d-flex justify-space-between align-center">
               <h2 class="mb-3">Etablissement</h2>
               <v-tooltip
                 text="Non modifiable par l'utilisateur"
                 location="top"
-                max-width="20vw"
                 open-delay="100"
                 theme="dark"
                 content-class="text-white"
@@ -122,7 +120,7 @@
                 placeholder="Siren"
                 variant="outlined"
                 v-model="etablissement.siren"
-                readonly
+                disabled
                 class="mt-1"
               />
               <v-text-field
@@ -130,7 +128,7 @@
                 placeholder="Nom de l'établissement"
                 variant="outlined"
                 v-model="etablissement.nom"
-                :readonly="modificationModeDisabled"
+                :disabled="modificationModeDisabled"
                 class="mt-1"
               />
               <v-text-field
@@ -138,7 +136,7 @@
                 placeholder="ID Abes"
                 variant="outlined"
                 v-model="etablissement.idAbes"
-                readonly
+                disabled
                 class="mt-1"
               />
               <v-select
@@ -146,7 +144,7 @@
                 :items="typesEtab"
                 variant="outlined"
                 v-model="etablissement.typeEtablissement"
-                :readonly="modificationModeDisabled"
+                :disabled="modificationModeDisabled"
                 class="mt-1"
               />
               <div class="mt-1">
@@ -158,16 +156,16 @@
                 {{ etablissement.statutIP }}
               </div>
             </div>
-          </v-card-text>
+          </v-card>
         </v-col>
         <v-col
           cols="12"
           md="6"
           lg="6"
           xl="6"
-          class="d-flex align-content-start justify-center flex-wrap"
+          class="d-flex align-content-start justify-center flex-wrap px-0 pl-2"
         >
-          <v-card-text class="d-flex justify-space-between flex-column">
+          <v-card class="d-flex justify-space-between flex-column w-100 pa-4">
             <div class="d-flex justify-space-between align-center">
               <h2 class="mb-3">Contact</h2>
             </div>
@@ -177,7 +175,7 @@
                 placeholder="Nom du contact"
                 variant="outlined"
                 v-model="etablissement.contact.nom"
-                :readonly="modificationModeDisabled"
+                :disabled="modificationModeDisabled"
                 class="mt-1"
               />
               <v-text-field
@@ -185,7 +183,7 @@
                 placeholder="Prénom du contact"
                 variant="outlined"
                 v-model="etablissement.contact.prenom"
-                :readonly="modificationModeDisabled"
+                :disabled="modificationModeDisabled"
                 class="mt-1"
               />
               <v-text-field
@@ -193,7 +191,7 @@
                 placeholder="Téléphone du contact"
                 variant="outlined"
                 v-model="etablissement.contact.telephone"
-                :readonly="modificationModeDisabled"
+                :disabled="modificationModeDisabled"
                 class="mt-1"
               />
               <v-text-field
@@ -201,7 +199,7 @@
                 placeholder="Mail du contact"
                 variant="outlined"
                 v-model="etablissement.contact.mail"
-                :readonly="modificationModeDisabled"
+                :disabled="modificationModeDisabled"
                 class="mt-1"
               />
               <v-text-field
@@ -209,7 +207,7 @@
                 placeholder="Adresse du contact"
                 variant="outlined"
                 v-model="etablissement.contact.adresse"
-                :readonly="modificationModeDisabled"
+                :disabled="modificationModeDisabled"
                 class="mt-1"
               />
               <v-text-field
@@ -217,7 +215,7 @@
                 placeholder="BP du contact"
                 variant="outlined"
                 v-model="etablissement.contact.boitePostale"
-                :readonly="modificationModeDisabled"
+                :disabled="modificationModeDisabled"
                 class="mt-1"
               />
               <v-text-field
@@ -225,7 +223,7 @@
                 placeholder="Code Postal du contact"
                 variant="outlined"
                 v-model="etablissement.contact.codePostal"
-                :readonly="modificationModeDisabled"
+                :disabled="modificationModeDisabled"
                 class="mt-1"
               />
               <v-text-field
@@ -233,7 +231,7 @@
                 placeholder="Ville du contact"
                 variant="outlined"
                 v-model="etablissement.contact.ville"
-                :readonly="modificationModeDisabled"
+                :disabled="modificationModeDisabled"
                 class="mt-1"
               />
               <v-text-field
@@ -241,11 +239,11 @@
                 placeholder="Cedex du contact"
                 variant="outlined"
                 v-model="etablissement.contact.cedex"
-                :readonly="modificationModeDisabled"
+                :disabled="modificationModeDisabled"
                 class="mt-1"
               />
             </div>
-          </v-card-text>
+          </v-card>
         </v-col>
       </v-row>
       <v-row>
@@ -261,7 +259,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-card>
+    </v-container>
 </template>
 
 <script setup lang="ts">
@@ -293,7 +291,6 @@ const buttonSuppresionLoading = ref(false);
 const isExportLoading = ref(false);
 const typesEtab = ref<Array<string>>([]);
 const modificationModeDisabled = ref(true);
-const ActionLocal = Action;
 
 const isAdmin = computed(() => authStore.isAdmin);
 const getEtablissement = computed(() => etablissementStore.getCurrentEtablissement);
@@ -482,6 +479,8 @@ function clear() {
 }
 
 function entrerEnModification(): void {
+    console.log("ENTRY");
+
   modificationModeDisabled.value = false;
 }
 
@@ -508,6 +507,8 @@ function validerModifications(): void {
       }
     })
     .finally(() => {
+        console.log("FINAL VALID");
+
       modificationModeDisabled.value = true;
     });
 }
@@ -515,7 +516,11 @@ function validerModifications(): void {
 function annulerModifications(): void {
   etablissement.value = etablissementStore.getCurrentEtablissement;
   modificationModeDisabled.value = true;
+  console.log("CANCEL");
+
 }
+
+console.log(modificationModeDisabled.value);
 
 function downloadEtablissement(): void {
   isExportLoading.value = true;

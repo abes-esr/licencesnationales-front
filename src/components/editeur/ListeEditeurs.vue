@@ -36,7 +36,6 @@
               <v-tooltip
                 text="Le téléchargement correspond à la vue filtrée"
                 location="top"
-                max-width="20vw"
                 open-delay="100"
                 theme="dark"
                 content-class="text-white"
