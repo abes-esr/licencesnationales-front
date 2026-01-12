@@ -19,13 +19,13 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import ForgotPassword from "../components/authentification/login/ForgotPassword.vue";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 
 const router = useRouter();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 
 function allerAConnexion(): void {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   router.push({ name: "Login" });
 }
 </script>

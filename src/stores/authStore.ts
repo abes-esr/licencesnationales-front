@@ -2,10 +2,7 @@ import { defineStore } from "pinia";
 import User from "@/core/User";
 import Etablissement from "@/core/Etablissement";
 import router from "@/router";
-import {
-  authService,
-  JsonLoginRequest
-} from "@/core/service/licencesnationales/AuthentificationService";
+import { authService } from "@/core/service/licencesnationales/AuthentificationService";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 
 interface AuthState {
@@ -39,7 +36,7 @@ export const useAuthStore = defineStore("auth", {
   },
 
   actions: {
-    async login(data: JsonLoginRequest): Promise<boolean> {
+    async login(data: { login: string; password: string }): Promise<boolean> {
       try {
         const result = await authService.login(data.login, data.password);
 

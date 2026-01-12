@@ -1,87 +1,46 @@
 <template>
   <v-form ref="form" :disabled="isDisableForm" class="d-flex flex-column">
     <v-alert variant="outlined" class="pa-2 mb-4" v-if="linkIsExpired === false">
-      <FontAwesomeIcon
-        :icon="faCircleInfo"
-        class="fa-2x mr-5 mb-1 mt-2 icone-information"
-      />
+      <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 mt-2 icone-information" />
       Le mot de passe doit contenir au moins 8 caractères, dont au moins un
       chiffre, une lettre majuscule, une lettre minuscule et un des caractères
       spéciaux suivants : @ $ ! % * ? &
     </v-alert>
     <v-alert variant="outlined" class="pa-2 mb-4" v-if="linkIsExpired === true">
-      <FontAwesomeIcon
-        :icon="faCircleInfo"
-        class="fa-2x mr-5 mb-1 icone-information"
-      />
+      <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 icone-information" />
       Ce lien n'est plus valide (expiration après 24 heures). Pour réinitialiser
       votre mot de passe : <a @click="allerPasswordReset">cliquez ici.</a>
     </v-alert>
-    <v-text-field
-      v-if="action === Action.MODIFICATION && linkIsExpired === false"
-      variant="outlined"
-      label="Ancien mot de passe"
-      placeholder="Ancien mot de passe"
-      :type="show ? 'text' : 'password'"
-      :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-      v-model="ancienMotDePasseModel"
-      :rules="regleFormulaire.motDePasse.concat(regleConfirmationMotDePasse)"
-      required
-      @click:append-inner="show = !show"
-      autocomplete="new-password"
-      @keyup.enter="validate"
-    />
-    <v-text-field
-      v-if="linkIsExpired === false"
-      variant="outlined"
-      :label="
-        action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
-      "
-      :placeholder="
-        action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
-      "
-      :type="show ? 'text' : 'password'"
-      :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-      v-model="nouveauMotDePasseModel"
-      :rules="regleFormulaire.motDePasse.concat(regleMotDePasse)"
-      required
-      @click:append-inner="show = !show"
-      autocomplete="new-password"
-      @keyup.enter="validate"
-    />
-    <v-text-field
-      v-if="linkIsExpired === false"
-      variant="outlined"
-      :label="
-        action === Action.CREATION
+    <v-text-field v-if="action === Action.MODIFICATION && linkIsExpired === false" variant="outlined"
+      label="Ancien mot de passe" placeholder="Ancien mot de passe" :type="show ? 'text' : 'password'"
+      :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'" v-model="ancienMotDePasseModel"
+      :rules="regleFormulaire.motDePasse.concat(regleConfirmationMotDePasse)" required
+      @click:append-inner="show = !show" autocomplete="new-password" @keyup.enter="validate" />
+    <v-text-field v-if="linkIsExpired === false" variant="outlined" :label="action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
+      " :placeholder="action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
+        " :type="show ? 'text' : 'password'" :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+      v-model="nouveauMotDePasseModel" :rules="regleFormulaire.motDePasse.concat(regleMotDePasse)" required
+      @click:append-inner="show = !show" autocomplete="new-password" @keyup.enter="validate" />
+    <v-text-field v-if="linkIsExpired === false" variant="outlined" :label="action === Action.CREATION
+        ? 'Confirmation du mot de passe'
+        : 'Confirmation du nouveau mot de passe'
+      " :placeholder="action === Action.CREATION
           ? 'Confirmation du mot de passe'
           : 'Confirmation du nouveau mot de passe'
-      "
-      :placeholder="
-        action === Action.CREATION
-          ? 'Confirmation du mot de passe'
-          : 'Confirmation du nouveau mot de passe'
-      "
-      :type="show ? 'text' : 'password'"
-      :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-      v-model="confirmationNouveauMotDePasse"
-      :rules="regleFormulaire.motDePasse.concat(regleConfirmationMotDePasse)"
-      required
-      @click:append-inner="show = !show"
-      autocomplete="new-password"
-      @keyup.enter="validate"
-    />
+        " :type="show ? 'text' : 'password'" :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+      v-model="confirmationNouveauMotDePasse" :rules="regleFormulaire.motDePasse.concat(regleConfirmationMotDePasse)"
+      required @click:append-inner="show = !show" autocomplete="new-password" @keyup.enter="validate" />
   </v-form>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, withDefaults } from "vue";
-import { useRouter } from "vue-router";
-import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import type { VForm } from "vuetify/components";
+import { rulesForms } from "@/core/RulesForm";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { computed, ref, watch } from "vue";
+import { useRouter } from "vue-router";
+import type { VForm } from "vuetify/components";
 
 const props = withDefaults(
   defineProps<{

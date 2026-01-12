@@ -88,10 +88,10 @@ import { etablissementService } from "@/core/service/licencesnationales/Etabliss
 import { rulesForms } from "@/core/RulesForm";
 import { Action, Message, MessageType } from "@/core/CommonDefinition";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 
 const authStore = useAuthStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 const router = useRouter();
 
 const sirenEtab = ref("");
@@ -128,7 +128,7 @@ async function send(payload: any): Promise<void> {
         message.type = MessageType.VALIDATION;
         message.texte = "Scission effectuée.";
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         router.push({ name: "ListeEtab" }).catch(err => {
           Logger.error(err);
         });
@@ -138,7 +138,7 @@ async function send(payload: any): Promise<void> {
         message.type = MessageType.ERREUR;
         message.texte = err.response?.data?.message ?? err.message;
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);

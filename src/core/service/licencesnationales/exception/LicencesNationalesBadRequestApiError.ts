@@ -6,6 +6,6 @@ export class LicencesNationalesBadRequestApiError extends LicencesNationalesApiE
     public path?: string,
     public deBugMessage?: string
   ) {
-    super(message, path, deBugMessage);
+    super(path, deBugMessage);
   }
 }

@@ -9,7 +9,7 @@
       <h1 v-if="action === Action.CREATION">Créer un éditeur</h1>
       <h1 v-else-if="action === Action.MODIFICATION">Modifier un éditeur</h1>
       <v-card-text class="elevation-0">
-        <v-col cols="12" md="6" lg="6" xl="6"><MessageBox /> </v-col>
+        <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
         <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
         <div class="mx-9">
           <v-row>
@@ -162,13 +162,12 @@ import Editeur from "@/core/Editeur";
 import Contact from "@/components/editeur/Contact.vue";
 import ContactEditeur from "@/core/ContactEditeur";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
-import MessageBox from "@/components/common/MessageBox.vue";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 import { rulesForms } from "@/core/RulesForm";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { useEditeurStore } from "@/stores/editeurStore";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -178,7 +177,7 @@ const props = defineProps<{
 }>();
 
 const authStore = useAuthStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 const editeurStore = useEditeurStore();
 const router = useRouter();
 
@@ -207,7 +206,7 @@ onMounted(() => {
 });
 
 async function fetchListeType() {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   try {
     const result = await etablissementService.listeType();
     isDisableForm.value = false;
@@ -224,7 +223,7 @@ async function fetchListeType() {
       message.texte = "Impossible d'exécuter l'action : " + err.message;
     }
     message.isSticky = true;
-    messageStore.openDisplayedMessage(message);
+    snackbar.show(message.text ?? message.texte ?? "");
   }
 }
 
@@ -239,7 +238,7 @@ function toggle(): void {
 }
 
 async function validate(): Promise<void> {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   buttonLoading.value = true;
 
   const validationResult = await formEditeurRef.value?.validate();
@@ -291,7 +290,7 @@ async function validate(): Promise<void> {
     message.texte = `Des champs ne remplissent pas les conditions :
       ${message.texte}`;
     message.isMultiline = true;
-    messageStore.openDisplayedMessage(message);
+    snackbar.show(message.text ?? message.texte ?? "");
     const messageBox = document.getElementById("messageBox");
     if (messageBox) {
       window.scrollTo(0, messageBox.offsetTop);
@@ -318,13 +317,13 @@ function send(): void {
         message.type = MessageType.VALIDATION;
         message.texte = `L'éditeur a bien été créé`;
         message.isSticky = false;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
         }
         setTimeout(() => {
-          messageStore.closeDisplayedMessage();
+          snackbar.hide();
           router.push({ path: "/listeEditeurs" });
         }, 2000);
       })
@@ -336,7 +335,7 @@ function send(): void {
         message.texte = `Impossible d'exécuter l'action :
            ${err.message}`;
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
@@ -351,13 +350,13 @@ function send(): void {
         message.type = MessageType.VALIDATION;
         message.texte = `L'éditeur a bien été modifié`;
         message.isSticky = false;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
         }
         setTimeout(() => {
-          messageStore.closeDisplayedMessage();
+          snackbar.hide();
           router.push({ path: "/listeEditeurs" });
         }, 2000);
       })
@@ -369,7 +368,7 @@ function send(): void {
         message.texte = `Impossible d'exécuter l'action :
            ${err.message}`;
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
@@ -380,7 +379,7 @@ function send(): void {
 
 function clear() {
   buttonLoading.value = false;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   contactRefs.value.forEach(refItem => refItem?.clear?.());
   formEditeurRef.value?.resetValidation?.();
   editeur.value = editeurStore.getCurrentEditeur;

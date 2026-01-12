@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-container class="pb-0">
-      <MessageBox />
       <h1>Historique par établissement</h1>
       <v-alert
         v-if="message"
@@ -116,16 +115,15 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import MessageBox from "@/components/common/MessageBox.vue";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { iPService } from "@/core/service/licencesnationales/IPService";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import Etablissement from "@/core/Etablissement";
 
 const authStore = useAuthStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 
 const etabs = ref<Array<Etablissement>>([]);
 const message = ref("");
@@ -140,7 +138,7 @@ onMounted(() => {
 });
 
 function collecterEtab() {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   etablissementService
     .getEtablissements(authStore.getToken)
     .then(response => {
@@ -151,7 +149,7 @@ function collecterEtab() {
       newMessage.type = MessageType.ERREUR;
       newMessage.texte = "Impossible d'exécuter l'action : " + err.message;
       newMessage.isSticky = true;
-      messageStore.openDisplayedMessage(newMessage);
+      snackbar.show(newMessage);
     });
 }
 
@@ -172,7 +170,7 @@ function getHistorique(siren: string) {
       newMessage.type = MessageType.ERREUR;
       newMessage.texte = err.message;
       newMessage.isSticky = true;
-      messageStore.openDisplayedMessage(newMessage);
+      snackbar.show(newMessage);
     });
 
   iPService
@@ -185,7 +183,7 @@ function getHistorique(siren: string) {
       newMessage.type = MessageType.ERREUR;
       newMessage.texte = err.message;
       newMessage.isSticky = true;
-      messageStore.openDisplayedMessage(newMessage);
+      snackbar.show(newMessage);
     });
 }
 </script>

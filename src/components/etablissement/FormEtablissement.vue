@@ -25,7 +25,6 @@
       <v-icon small>mdi-arrow-right-circle-outline </v-icon>
       </div>
         <v-col cols="12" md="6" lg="6" xl="6">
-          <MessageBox />
         </v-col>
         <v-col cols="12" md="6" lg="6" xl="6" v-if="returnLink">
           <v-alert variant="outlined">
@@ -248,10 +247,9 @@ import {
 } from "@/core/CommonDefinition";
 import Contact from "@/components/etablissement/Contact.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
-import MessageBox from "@/components/common/MessageBox.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import type { VForm } from "vuetify/components";
 import { faCircleInfo, faReply, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
@@ -272,7 +270,7 @@ const emit = defineEmits<{
 
 const router = useRouter();
 const authStore = useAuthStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 const etablissementStore = useEtablissementStore();
 
 const action = computed<ActionEnum>(() =>
@@ -346,7 +344,7 @@ const executeRecaptcha = async (action: string) => {
 };
 
 const fetchListeType = async () => {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   try {
     const result = await etablissementService.listeType();
     isDisableForm.value = false;
@@ -365,7 +363,7 @@ const fetchListeType = async () => {
     }
     message.isSticky = true;
     try {
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
     } catch (error: any) {
       Logger.error(error?.toString?.() ?? error);
     }
@@ -373,7 +371,7 @@ const fetchListeType = async () => {
 };
 
 const allerAConnexion = () => {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   router.push({ name: "Login" }).catch(err => {
     Logger.error(err);
   });
@@ -399,7 +397,7 @@ const recaptcha = async () => {
 
 const validate = async () => {
   buttonLoading.value = true;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
 
   await recaptcha();
 
@@ -425,7 +423,7 @@ const validate = async () => {
 
       message.isSticky = true;
       try {
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
       } catch (err: any) {
         Logger.error(err?.toString?.() ?? err);
       }
@@ -437,7 +435,7 @@ const validate = async () => {
 
 const send = async () => {
   buttonLoading.value = true;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
 
   if (action.value == ActionEnum.CREATION) {
     etablissementService
@@ -449,7 +447,7 @@ const send = async () => {
           "Le compte a été enregistré. Pour y accéder, merci de vous authentifier";
         message.isSticky = true;
         returnLink.value = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         router.push("/");
       })
       .catch(err => {
@@ -459,7 +457,7 @@ const send = async () => {
         message.texte = err?.message ?? "";
         message.isSticky = true;
         try {
-          messageStore.openDisplayedMessage(message);
+          snackbar.show(message.text ?? message.texte ?? "");
         } catch (error: any) {
           Logger.error(error?.toString?.() ?? error);
         }
@@ -481,7 +479,7 @@ const send = async () => {
         message.texte = "Votre compte a bien été modifié";
         message.isSticky = true;
         returnLink.value = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         scrollToMessage();
         
         if (
@@ -497,7 +495,7 @@ const send = async () => {
         message.texte = err?.message ?? "";
         message.isSticky = true;
         try {
-          messageStore.openDisplayedMessage(message);
+          snackbar.show(message.text ?? message.texte ?? "");
         } catch (error: any) {
           Logger.error(error?.toString?.() ?? error);
         }
@@ -519,7 +517,7 @@ const send = async () => {
         message.texte = "Fusion effectuée.";
         message.isSticky = true;
         returnLink.value = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         router.push({ name: "ListeEtab" }).catch(err => {
           Logger.error(err);
         });
@@ -530,7 +528,7 @@ const send = async () => {
         message.texte = err?.message ?? "";
         message.isSticky = true;
         try {
-          messageStore.openDisplayedMessage(message);
+          snackbar.show(message.text ?? message.texte ?? "");
         } catch (error: any) {
           Logger.error(error?.toString?.() ?? error);
         }
@@ -546,7 +544,7 @@ const send = async () => {
 };
 
 const checkSiren = async () => {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   checkSirenAPI.value = "En attente de vérification";
   if (etablissement.value.siren) {
     checkSirenAPI.value = "Vérification du SIREN en cours...";
@@ -575,7 +573,7 @@ const checkSiren = async () => {
 };
 
 const clear = () => {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   formCreationCompte.value?.resetValidation();
   formContact.value?.clear();
 

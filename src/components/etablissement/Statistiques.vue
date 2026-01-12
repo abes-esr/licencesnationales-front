@@ -1,6 +1,5 @@
 <template>
   <div>
-    <MessageBox />
     <v-container variant="flat">
       <h1>Statistiques de l'application</h1>
       <v-alert
@@ -128,17 +127,16 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { VDatePicker } from "vuetify/components";
-import MessageBox from "@/components/common/MessageBox.vue";
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { iPService } from "@/core/service/licencesnationales/IPService";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { rulesForms } from "@/core/RulesForm";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import moment from "moment";
 
 const authStore = useAuthStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 
 const rulesFormConfig = rulesForms;
 const message = ref("");
@@ -195,7 +193,7 @@ async function getStats() {
     newMessage.type = MessageType.ERREUR;
     newMessage.texte = err.message;
     newMessage.isSticky = true;
-    messageStore.openDisplayedMessage(newMessage);
+    snackbar.show(newMessage);
   }
 }
 

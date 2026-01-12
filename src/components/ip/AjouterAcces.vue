@@ -21,7 +21,6 @@
           </v-row>
           <v-row>
             <v-col cols="12" md="8" class="pa-0">
-              <MessageBox class="mr-2" />
               <v-card-title class="pb-0">
                 Choisir le type d'IP à déclarer
               </v-card-title>
@@ -137,18 +136,17 @@ import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
 import { iPService } from "@/core/service/licencesnationales/IPService";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { Logger } from "@/utils/Logger";
-import MessageBox from "@/components/common/MessageBox.vue";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { useRouter } from "vue-router";
 import type { VForm } from "vuetify/components";
 import { faCircleInfo, faReply, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const router = useRouter();
 const authStore = useAuthStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 
 const typeIp = ref<string>("IPV4");
 const typesIp = ["IPV4", "IPV6"];
@@ -193,11 +191,11 @@ const supprimerIP = async (idIP: string, index: number) => {
         message.type = MessageType.VALIDATION;
         message.texte = response.data.message;
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         scrollToMessage();
 
         setTimeout(() => {
-          messageStore.closeDisplayedMessage();
+          snackbar.hide();
         }, 5000);
         arrayAjouterIp.value.splice(index, 1);
       })
@@ -207,7 +205,7 @@ const supprimerIP = async (idIP: string, index: number) => {
         message.type = MessageType.ERREUR;
         message.texte = err?.response?.data?.message ?? "";
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         scrollToMessage();
       });
   }
@@ -218,11 +216,11 @@ const alertSuccess = (evt: string) => {
   message.type = MessageType.VALIDATION;
   message.texte = evt;
   message.isSticky = true;
-  messageStore.openDisplayedMessage(message);
+  snackbar.show(message.text ?? message.texte ?? "");
   scrollToMessage();
 
   setTimeout(() => {
-    messageStore.closeDisplayedMessage();
+    snackbar.hide();
   }, 5000);
 };
 
@@ -231,7 +229,7 @@ const alertError = (evt: string) => {
   message.type = MessageType.ERREUR;
   message.texte = evt;
   message.isSticky = true;
-  messageStore.openDisplayedMessage(message);
+  snackbar.show(message.text ?? message.texte ?? "");
   scrollToMessage();
 };
 

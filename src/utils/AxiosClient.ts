@@ -20,7 +20,11 @@ class AxiosClient {
    * @param data Body de la requête HTTP
    * @param token Token Bearer à ajouter à l'entête
    */
-  post(url: string, data: any, token?: string): Promise<AxiosResponse> {
+  async post<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    data: any,
+    token?: string
+  ): Promise<R> {
     // Si un token est renseigné, on le rajoute à l'entête
     let config;
     if (token) {
@@ -35,7 +39,7 @@ class AxiosClient {
         timeout: 1000 * 10
       };
     }
-    return this.client.post(url, data, config);
+    return await this.client.post<T, R, D>(url, data, config);
   }
 
   /**
@@ -68,12 +72,7 @@ class AxiosClient {
    * @param url URL de la requête HTTP
    * @param token Token Bearer à ajouter à l'entête
    */
-  get(
-    url: string,
-    token?: string,
-    param?: any,
-    longRequest?: boolean
-  ): Promise<AxiosResponse> {
+  get(url: string, token?: string, param?: any, longRequest?: boolean): Promise<AxiosResponse> {
     // Si un token est renseigné, on le rajoute à l'entête
     let config;
     let timeout = 3000 * 10;

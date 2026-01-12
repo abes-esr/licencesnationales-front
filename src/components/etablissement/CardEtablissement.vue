@@ -2,7 +2,6 @@
   <v-container variant="flat">
     <h1>Etablissement {{ etablissement.nom }}</h1>
     <v-col cols="12" md="6" lg="6" xl="6" class="pa-1">
-      <MessageBox />
       <ConfirmPopup ref="confirmRef" />
     </v-col>
     <v-container class=" elevation-0 pt-0">
@@ -265,7 +264,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import MessageBox from "@/components/common/MessageBox.vue";
 import Etablissement from "@/core/Etablissement";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { Logger } from "@/utils/Logger";
@@ -275,12 +273,12 @@ import { LicencesNationalesApiError } from "@/core/service/licencesnationales/ex
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { faDownload, faLock } from "@fortawesome/free-solid-svg-icons";
 
 const authStore = useAuthStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 const etablissementStore = useEtablissementStore();
 const router = useRouter();
 
@@ -303,7 +301,7 @@ onMounted(() => {
     message.texte =
       "Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnt";
     message.isSticky = true;
-    messageStore.openDisplayedMessage(message);
+    snackbar.show(message.text ?? message.texte ?? "");
     router.push({ name: "Home" }).catch(err => Logger.error(err as any));
   }
 });
@@ -322,18 +320,18 @@ async function fetchListeType() {
       message.texte = "Impossible d'exécuter l'action : " + err.message;
     }
     message.isSticky = true;
-    messageStore.openDisplayedMessage(message);
+    snackbar.show(message.text ?? message.texte ?? "");
   }
 }
 
 function allerAIPs(): void {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   router.push({ name: "ListeIP" });
 }
 
 async function supprimerEtablissement() {
   buttonSuppresionLoading.value = true;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
 
   const confirmed = await confirmRef.value?.open(
     `ATTENTION : Vous êtes sur le point de supprimer définitivement le compte de l'établissement ${etablissement.value.nom} avec toutes les informations associées (les des IPs,...)
@@ -349,13 +347,13 @@ async function supprimerEtablissement() {
         message.type = MessageType.VALIDATION;
         message.texte = "Le compte a bien été supprimé";
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
         }
         setTimeout(() => {
-          messageStore.closeDisplayedMessage();
+          snackbar.hide();
           router.push({ name: "ListeEtab" }).catch(err => {
             Logger.error(err.toString());
           });
@@ -367,7 +365,7 @@ async function supprimerEtablissement() {
         message.type = MessageType.ERREUR;
         message.texte = err.message;
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
@@ -383,7 +381,7 @@ async function supprimerEtablissement() {
 
 async function validerEtablissement() {
   buttonValidationLoading.value = true;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
 
   const confirmed = await confirmRef.value?.open(
     `Vous êtes sur le point de valider le compte de l'établissement ${etablissement.value.nom}
@@ -400,7 +398,7 @@ async function validerEtablissement() {
         message.type = MessageType.VALIDATION;
         message.texte = response.data.message;
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
@@ -412,7 +410,7 @@ async function validerEtablissement() {
         message.type = MessageType.ERREUR;
         message.texte = err.response?.data?.message ?? err.message;
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
@@ -428,7 +426,7 @@ async function validerEtablissement() {
 
 async function devaliderEtablissement() {
   buttonValidationLoading.value = true;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
 
   const confirmed = await confirmRef.value?.open(
     `Vous êtes sur le point de dévalider le compte de l'établissement ${etablissement.value.nom}
@@ -445,7 +443,7 @@ async function devaliderEtablissement() {
         message.type = MessageType.VALIDATION;
         message.texte = response.data.message;
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
@@ -457,7 +455,7 @@ async function devaliderEtablissement() {
         message.type = MessageType.ERREUR;
         message.texte = err.response?.data?.message ?? err.message;
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message);
+        snackbar.show(message.text ?? message.texte ?? "");
         const messageBox = document.getElementById("messageBox");
         if (messageBox) {
           window.scrollTo(0, messageBox.offsetTop);
@@ -472,7 +470,7 @@ async function devaliderEtablissement() {
 }
 
 function clear() {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   router.push({ name: "ListeEtab" }).catch(err => {
     Logger.error(err as any);
   });
@@ -500,7 +498,7 @@ function validerModifications(): void {
       message.type = MessageType.ERREUR;
       message.texte = err.message;
       message.isSticky = true;
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
       const messageBox = document.getElementById("messageBox");
       if (messageBox) {
         window.scrollTo(0, messageBox.offsetTop);
@@ -524,7 +522,7 @@ console.log(modificationModeDisabled.value);
 
 function downloadEtablissement(): void {
   isExportLoading.value = true;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   const siren = [etablissement.value.siren];
   etablissementService
     .downloadEtablissements(siren, authStore.user.token)
@@ -553,7 +551,7 @@ function downloadEtablissement(): void {
       }
       message.isSticky = true;
 
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
 
       isExportLoading.value = false;
     });

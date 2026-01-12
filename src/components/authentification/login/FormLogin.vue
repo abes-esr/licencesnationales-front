@@ -1,85 +1,74 @@
-<template>
-  <v-card elevation="0">
-    <v-card-title class="pa-3"><h1>S'authentifier</h1></v-card-title>
-    <MessageBox />
-    <v-card-text class="rounded pa-3 fondGris">
+﻿<template>
+  <v-card class="pa-8 login-card">
+    <v-card-title class="text-center">
+      <h1>Connexion</h1>
+    </v-card-title>
+    <v-card-text class="pa-0">
       <v-form ref="form">
         <v-row>
-          <v-col cols="1" />
-          <v-col cols="10" class="pb-0">
+          <v-col cols="12" class="pa-2">
             <v-text-field
               ref="loginRef"
-              variant="outlined"
-              placeholder="SIREN"
-              maxlength="9"
               v-model="siren"
+              label="Siren"
+              placeholder="Siren"
               :rules="rulesForms.siren"
+              variant="outlined"
               required
               @keyup.enter="validate"
-            />
+            ></v-text-field>
           </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="1" />
-          <v-col cols="10" class="pt-0">
-            <v-icon> mdi-information </v-icon>
-            <a
-              href="https://annuaire-entreprises.data.gouv.fr/"
-              target="_blank"
-              style="font-size: 1.1rem"
-              >Trouver le SIREN de votre établissement</a
-            >
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="1" />
-          <v-col cols="10" class="pt-0">
+          <v-col cols="12" class="pa-2">
             <v-text-field
               ref="passwordRef"
-              variant="outlined"
-              placeholder="Mot de passe"
-              :type="show ? 'text' : 'password'"
-              :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
               v-model="password"
+              :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="show ? 'text' : 'password'"
+              label="Mot de passe"
+              placeholder="Mot de passe"
               :rules="rulesForms.motDePasse"
+              variant="outlined"
               required
               @click:append-inner="show = !show"
               @keyup.enter="validate"
-            />
+              autocomplete="current-password"
+            ></v-text-field>
           </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="8" class="pl-10">
-            <a @click="afficherMotDePasseOulie">Mot de passe oublié ?</a>
-          </v-col>
-          <v-col>
-            <v-btn class="btn-1" :loading="buttonLoading" @click="validate">
+          <v-col cols="12" class="pa-2 d-flex justify-end">
+            <v-btn
+              :loading="buttonLoading"
+              size="x-large"
+              class="bouton-connexion"
+              @click="validate"
+            >
               Se connecter
-              <v-icon>mdi-arrow-right-circle-outline </v-icon>
+              <v-icon class="pl-2">mdi-arrow-right-circle-outline</v-icon>
             </v-btn>
           </v-col>
         </v-row>
       </v-form>
+    </v-card-text>
+    <v-card-text class="pa-0 pt-4">
+      <v-btn variant="text" class="text-none" @click="afficherMotDePasseOulie">
+        Mot de passe oublie ?
+      </v-btn>
     </v-card-text>
   </v-card>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { useAuthStore } from "@/stores/authStore";
 import { Logger } from "@/utils/Logger";
-import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { rulesForms } from "@/core/RulesForm";
-import { Message, MessageType } from "@/core/CommonDefinition";
-import MessageBox from "@/components/common/MessageBox.vue";
 import type { VForm } from "vuetify/components";
 
 const emit = defineEmits<{
   (e: "onChange"): void;
 }>();
 
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 const authStore = useAuthStore();
 
 const siren = ref("");
@@ -93,7 +82,7 @@ const loginRef = ref<any>(null);
 const passwordRef = ref<any>(null);
 
 const validate = async () => {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   const validation = await form.value?.validate();
   if (validation?.valid) {
     login();
@@ -102,7 +91,7 @@ const validate = async () => {
 
 const login = async () => {
   buttonLoading.value = true;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
 
   try {
     await authStore.login({
@@ -111,23 +100,7 @@ const login = async () => {
     });
   } catch (err: any) {
     Logger.error(err?.toString?.() ?? err);
-
-    const message = new Message();
-    message.type = MessageType.ERREUR;
-
-    if (err instanceof LicencesNationalesBadRequestApiError) {
-      message.texte = err.message;
-    } else {
-      message.texte = "Impossible d'exécuter l'action : " + (err?.message ?? "");
-    }
-
-    message.isSticky = true;
-
-    try {
-      messageStore.openDisplayedMessage(message);
-    } catch (error: any) {
-      Logger.error(error?.toString?.() ?? error);
-    }
+    snackbar.error(err);
   } finally {
     buttonLoading.value = false;
   }
@@ -138,3 +111,17 @@ const afficherMotDePasseOulie = () => {
 };
 </script>
 
+<style scoped>
+.login-card {
+  width: 350px;
+}
+
+h1 {
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.bouton-connexion {
+  width: 100%;
+}
+</style>

@@ -55,17 +55,13 @@ export class IPService extends LicencesNationalesApiService {
    * @param token Jeton de session
    * @exception LicencesNationalesApiError si l'appel API a échoué
    */
-  downloadIPs(siren: string, token: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      return this.client
-        .post("/ip/export/" + siren, null, token)
-        .then(response => {
-          resolve(response);
-        })
-        .catch(err => {
-          reject(this.buildException(err));
-        });
-    });
+  async downloadIPs(siren: string, token: string): Promise<any> {
+    try {
+      const response = await this.client.post("/ip/export/" + siren, null, token);
+      return response;
+    } catch (err) {
+      throw this.buildException(err);
+    }
   }
 }
 

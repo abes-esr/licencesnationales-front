@@ -1,7 +1,6 @@
 <template>
   <v-container variant="flat" :disabled="disableForm">
     <h1>Gestion des comptes établissements</h1>
-    <MessageBox />
     <v-container-title class="pr-0">
       <v-row class="d-flex flex-row-reverse ma-0">
         <v-btn @click="allerAScionnerEtab" class="btn-1 ml-2">
@@ -186,18 +185,17 @@ import Etablissement from "@/core/Etablissement";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
-import MessageBox from "@/components/common/MessageBox.vue";
 import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { faDownload, faObjectGroup, faObjectUngroup, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { DataTableHeader } from "vuetify";
 
 const authStore = useAuthStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 const etablissementStore = useEtablissementStore();
 const router = useRouter();
 
@@ -252,7 +250,7 @@ onMounted(() => {
     message.texte =
       "Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnts";
     message.isSticky = true;
-    messageStore.openDisplayedMessage(message);
+    snackbar.show(message.text ?? message.texte ?? "");
     router.push({ name: "Home" }).catch(err => {
       Logger.error(err as any);
     });
@@ -315,7 +313,7 @@ function eventStatutChoice(element: string): void {
 }
 
 async function fetchListeType() {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   await etablissementService
     .listeType()
     .then(result => {
@@ -342,12 +340,12 @@ async function fetchListeType() {
         message.texte = "Impossible d'exécuter l'action : " + err.message;
       }
       message.isSticky = true;
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
     });
 }
 
 function ajouterEtablissement(): void {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   etablissementStore
     .setCurrentEtablissement(new Etablissement())
     .then(() => {
@@ -366,7 +364,7 @@ function ajouterEtablissement(): void {
       }
       message.isSticky = true;
 
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
       const messageBox = document.getElementById("messageBox");
       if (messageBox) {
         window.scrollTo(0, messageBox.offsetTop);
@@ -375,21 +373,21 @@ function ajouterEtablissement(): void {
 }
 
 function allerAFusionnerEtab(): void {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   router.push({ name: "FusionEtablissement" }).catch(err => {
     Logger.error(err as any);
   });
 }
 
 function allerAScionnerEtab(): void {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   router.push({ name: "ScissionEtablissement" }).catch(err => {
     Logger.error(err as any);
   });
 }
 
 function collecterEtab(): void {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   etablissementService
     .getEtablissements(authStore.getToken)
     .then(response => {
@@ -412,7 +410,7 @@ function collecterEtab(): void {
         message.texte = "Impossible d'exécuter l'action : " + err.message;
       }
       message.isSticky = true;
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
     })
     .finally(() => {
       dataLoading.value = false;
@@ -420,7 +418,7 @@ function collecterEtab(): void {
 }
 
 function allerAIPs(item: Etablissement): void {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   etablissementStore
     .setCurrentEtablissement(item)
     .then(() => {
@@ -437,7 +435,7 @@ function allerAIPs(item: Etablissement): void {
       }
       message.isSticky = true;
 
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
       const messageBox = document.getElementById("messageBox");
       if (messageBox) {
         window.scrollTo(0, messageBox.offsetTop);
@@ -447,7 +445,7 @@ function allerAIPs(item: Etablissement): void {
 
 function downloadEtablissements(): void {
   isExportLoading.value = true;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   const sirens = new Array<string>();
   etabsFiltered.value.forEach(element => {
     sirens.push(element.siren);
@@ -479,14 +477,14 @@ function downloadEtablissements(): void {
       }
       message.isSticky = true;
 
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
 
       isExportLoading.value = false;
     });
 }
 
 function allerAAfficherEtab(item: Etablissement): void {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   etablissementStore
     .setCurrentEtablissement(item)
     .then(() => {
@@ -503,7 +501,7 @@ function allerAAfficherEtab(item: Etablissement): void {
       }
       message.isSticky = true;
 
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
       const messageBox = document.getElementById("messageBox");
       if (messageBox) {
         window.scrollTo(0, messageBox.offsetTop);

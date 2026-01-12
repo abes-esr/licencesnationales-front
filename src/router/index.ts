@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/stores/authStore";
+import { MessageType } from "@/core/CommonDefinition";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import { Message, MessageType } from "@/core/CommonDefinition";
 
 import Login from "../views/Login.vue";
 import { createRouter, createWebHistory } from "vue-router";
@@ -161,7 +162,13 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    }
+    return { left: 0, top: 0 };
+  }
 });
 
 const DEFAULT_TITLE = "Licences Nationales";
@@ -174,6 +181,7 @@ router.afterEach((to) => {
 // ---- Guards ----
 router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore();
+  const snackbar = useSnackbar();
 
   if (to.meta.requiresAuth && !auth.isLoggedIn) {
     return next("/login");
@@ -192,12 +200,7 @@ router.beforeEach(async (to, from, next) => {
       const isValid = await authService.verifierValiditeToken(auth.getToken);
 
       if (!isValid) {
-        const message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = "Votre session a expiré";
-        message.isSticky = true;
-
-        auth.openDisplayedMessage(message);
+        snackbar.error("Votre session a expiré", { sticky: true });
         auth.logout();
 
         return;
@@ -206,12 +209,7 @@ router.beforeEach(async (to, from, next) => {
       return next();
 
     } catch (err: any) {
-      const message = new Message();
-      message.type = MessageType.ERREUR;
-      message.texte = err.message + ". Vous avez été déconnecté";
-      message.isSticky = true;
-
-      auth.openDisplayedMessage(message);
+      snackbar.error(err);
       auth.logout();
 
       return;

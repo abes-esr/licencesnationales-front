@@ -36,7 +36,7 @@ import { ref } from "vue";
 import Etablissement from "@/core/Etablissement";
 import FormLogin from "@/components/authentification/login/FormLogin.vue";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { useRouter } from "vue-router";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -45,7 +45,7 @@ import { faCirclePlus, faCircleQuestion } from "@fortawesome/free-solid-svg-icon
 // Store & Router
 const authStore = useAuthStore();
 const etablissementStore = useEtablissementStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 const router = useRouter();
 
 // États locaux
@@ -74,7 +74,7 @@ async function creerCompte() {
 
 async function afficherMotDePasseOublie() {
   try {
-    await messageStore.closeDisplayedMessage();
+    await snackbar.hide();
     router.push({ name: "ForgotPassword" });
   } catch (err) {
     Logger.error(err);

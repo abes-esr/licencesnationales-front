@@ -2,6 +2,6 @@ import { DataGouvApiError } from "@/core/service/data.gouv/exception/DataGouvApi
 
 export class SirenNotFoundError extends DataGouvApiError {
   constructor(public message: string) {
-    super(404, message);
+    super(404);
   }
 }

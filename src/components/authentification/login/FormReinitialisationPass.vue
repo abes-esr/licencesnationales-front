@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <v-container fill-height class="d-flex justify-center">
     <v-row align="center" justify="center">
       <v-col lg="5" md="8" xs="10">
@@ -6,46 +6,21 @@
           <v-card class="elevation-0">
             <v-form ref="formReinitialisationPass" class="elevation-0" :disabled="!tokenValid">
               <v-card-title class="pa-3">
-                <h1>Réinitialiser le mot de passe</h1>
+                <h1>Reinitialiser le mot de passe</h1>
               </v-card-title>
-              <MessageBox />
               <v-card-text>
-                <MotDePasse
-                  ref="motDePasse"
-                  :action="Action.CREATION"
-                  :nouveau-mot-de-passe="newPassword"
-                  @update:nouveauMotDePasse="updateMotDePasse"
-                  class="ma-3"
-                  :link-is-expired="!tokenValid"
-                />
+                <MotDePasse ref="motDePasse" :action="Action.CREATION" v-model:nouveauMotDePasse="newPassword"
+                  class="ma-3" :link-is-expired="!tokenValid" :is-disable-form="!tokenValid" />
               </v-card-text>
               <v-card-actions>
                 <v-spacer class="hidden-sm-and-down"></v-spacer>
-                <v-col
-                  cols="12"
-                  md="8"
-                  lg="8"
-                  xl="8"
-                  class="d-flex justify-space-around"
-                >
-                  <v-btn
-                    v-if="!linkExpired"
-                    size="x-large"
-                    @click="clear"
-                    class="bouton-annuler"
-                    :disabled="isDisableForm"
-                    variant="outlined"
-                  >
+                <v-col cols="12" md="8" lg="8" xl="8" class="d-flex justify-space-around">
+                  <v-btn v-if="!linkExpired" size="x-large" @click="clear" class="bouton-annuler"
+                    :disabled="isDisableForm" variant="outlined">
                     Annuler
                   </v-btn>
-                  <v-btn
-                    v-if="!linkExpired"
-                    :loading="buttonLoading"
-                    :disabled="isDisableForm"
-                    size="x-large"
-                    @click="recaptcha"
-                    variant="elevated"
-                  >
+                  <v-btn v-if="!linkExpired" :loading="buttonLoading" :disabled="isDisableForm" size="x-large"
+                    @click="recaptcha" variant="elevated">
                     Enregistrer
                     <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
                   </v-btn>
@@ -54,7 +29,7 @@
               <v-card-actions>
                 <v-col cols="8"> </v-col>
                 <a @click="revenirPageAccueil">
-                  <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir à la page d'accueil
+                  <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir a la page d'accueil
                 </a>
               </v-card-actions>
             </v-form>
@@ -66,24 +41,22 @@
 </template>
 
 <script setup lang="ts">
+import MotDePasse from "@/components/authentification/MotDePasse.vue";
+import { useRecaptcha } from "@/composables/useRecaptcha";
+import { useSnackbar } from "@/composables/useSnackbar";
+import { Action } from "@/core/CommonDefinition";
+import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import { Logger } from "@/utils/Logger";
+import { faReply } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { Logger } from "@/utils/Logger";
-import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import { Message, MessageType } from "@/core/CommonDefinition";
-import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
-import MessageBox from "@/components/common/MessageBox.vue";
-import { Action } from "@/core/CommonDefinition";
-import MotDePasse from "@/components/authentification/MotDePasse.vue";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useMessageStore } from "@/stores/messageStore";
 import type { VForm } from "vuetify/components";
-import { faReply } from "@fortawesome/free-solid-svg-icons";
 
 const router = useRouter();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
+const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
 
-const ActionRef = Action;
 const resetToken = ref("");
 const isDisableForm = ref(false);
 const tokenValid = ref(true);
@@ -96,7 +69,7 @@ const formReinitialisationPass = ref<VForm | null>(null);
 const motDePasse = ref<InstanceType<typeof MotDePasse> | null>(null);
 
 onMounted(async () => {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
 
   resetToken.value = window.location.href.substring(
     window.location.href.lastIndexOf("=") + 1
@@ -124,25 +97,6 @@ const verifierToken = async (token: string): Promise<boolean> => {
   }
 };
 
-const loadRecaptcha = async () => {
-  const maybeRecaptchaLoaded = (globalThis as any).$recaptchaLoaded;
-  if (maybeRecaptchaLoaded) {
-    await maybeRecaptchaLoaded();
-  }
-};
-
-const executeRecaptcha = async (action: string) => {
-  const maybeRecaptcha = (globalThis as any).$recaptcha;
-  if (maybeRecaptcha) {
-    return await maybeRecaptcha(action);
-  }
-  return "";
-};
-
-const updateMotDePasse = (value: string) => {
-  newPassword.value = value;
-};
-
 const recaptcha = async () => {
   await loadRecaptcha();
   tokenrecaptcha.value = await executeRecaptcha("reinitialisationPass");
@@ -150,12 +104,7 @@ const recaptcha = async () => {
   if (isValid) {
     reinitialisationPass();
   } else {
-    const message: Message = new Message();
-    message.type = MessageType.ERREUR;
-    message.texte = "Des champs ne remplissent pas les conditions";
-    message.isSticky = true;
-    messageStore.openDisplayedMessage(message);
-    scrollToMessage();
+    snackbar.error("Des champs ne remplissent pas les conditions");
   }
 };
 
@@ -167,7 +116,7 @@ const validate = async (): Promise<boolean> => {
 
 const reinitialisationPass = async (): Promise<void> => {
   buttonLoading.value = true;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
 
   try {
     const response = await authService.reinitialiserMotDePasse({
@@ -175,12 +124,7 @@ const reinitialisationPass = async (): Promise<void> => {
       recaptcha: tokenrecaptcha.value,
       token: resetToken.value
     });
-    const message: Message = new Message();
-    message.type = MessageType.VALIDATION;
-    message.texte = response.message;
-    message.isSticky = true;
-    messageStore.openDisplayedMessage(message);
-    scrollToMessage();
+    snackbar.success(response.message);
     setTimeout(() => {
       router.push({ name: "Login" });
     }, 4000);
@@ -193,28 +137,7 @@ const reinitialisationPass = async (): Promise<void> => {
 
 const handleError = (err: any) => {
   Logger.error(err?.toString?.() ?? err);
-  const message: Message = new Message();
-  message.type = MessageType.ERREUR;
-  if (err instanceof LicencesNationalesBadRequestApiError) {
-    message.texte = err.message;
-  } else {
-    message.texte = "Impossible d'exécuter l'action : " + (err?.message ?? "");
-  }
-  message.isSticky = true;
-
-  try {
-    messageStore.openDisplayedMessage(message);
-  } catch (error: any) {
-    Logger.error(error?.toString?.() ?? error);
-  }
-  scrollToMessage();
-};
-
-const scrollToMessage = () => {
-  const messageBox = document.getElementById("messageBox");
-  if (messageBox) {
-    window.scrollTo(0, messageBox.offsetTop);
-  }
+  snackbar.error(err);
 };
 
 const clear = () => {
@@ -227,9 +150,5 @@ const revenirPageAccueil = () => {
   router.push({ name: "Login" }).catch(err => {
     Logger.error(err);
   });
-};
-
-const afficherMotDePasseOulie = () => {
-  // utilisé par le parent si besoin
 };
 </script>

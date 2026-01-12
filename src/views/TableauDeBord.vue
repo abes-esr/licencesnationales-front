@@ -3,7 +3,6 @@
     <h1>
       Tableau de bord <span v-if="!isAdmin">{{ etablissement.nom }}</span>
     </h1>
-    <MessageBox></MessageBox>
     <ConfirmPopup ref="confirmRef"></ConfirmPopup>
     <v-card class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
       <v-card-text class="fondGris pa-0 px-6 pb-6">
@@ -196,8 +195,6 @@ import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 import moment from "moment/moment";
-
-import MessageBox from "@/components/common/MessageBox.vue";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -208,7 +205,7 @@ import NotificationUser from "@/core/service/NotificationUser";
 
 import { useAuthStore } from "@/stores/authStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 
 import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
@@ -222,7 +219,7 @@ const router = useRouter();
 const display = useDisplay();
 const authStore = useAuthStore();
 const etablissementStore = useEtablissementStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 
 const etablissement = ref<Etablissement>(etablissementStore.getCurrentEtablissement);
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
@@ -249,7 +246,7 @@ const metaInfo = () => ({
 });
 
 onMounted(() => {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
 });
 
 const dateFormatted = (d: Date): string => {
@@ -268,7 +265,7 @@ const allerAModifierMotDePasse = (): void => {
 
 const downloadEtablissement = (): void => {
   isExportLoading.value = true;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   const siren = new Array<string>();
   siren.push(authStore.user.siren);
   etablissementService
@@ -296,7 +293,7 @@ const downloadEtablissement = (): void => {
         message.texte = "Impossible d'exécuter l'action : " + err.message;
       }
       message.isSticky = true;
-      messageStore.openDisplayedMessage(message).catch(err => {
+      snackbar.show(message.text ?? message.texte ?? "").catch(err => {
         Logger.error(err.toString());
       });
       isExportLoading.value = false;
@@ -332,7 +329,7 @@ const collecterDates = (): void => {
           "Impossible d'exécuter l'action : " + err.response.data.message;
 
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message).catch(err => {
+        snackbar.show(message.text ?? message.texte ?? "").catch(err => {
           Logger.error(err.toString());
         });
       })
@@ -365,7 +362,7 @@ const collecterNotifs = (): void => {
           message.texte = "Impossible d'exécuter l'action : " + err.message;
         }
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message).catch(err => {
+        snackbar.show(message.text ?? message.texte ?? "").catch(err => {
           Logger.error(err.toString());
         });
       })
@@ -397,7 +394,7 @@ const collecterNotifs = (): void => {
           message.texte = "Impossible d'exécuter l'action : " + err.message;
         }
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message).catch(err => {
+        snackbar.show(message.text ?? message.texte ?? "").catch(err => {
           Logger.error(err.toString());
         });
       })
@@ -408,7 +405,7 @@ const collecterNotifs = (): void => {
 };
 
 const allerAAfficherEtab = (item: Etablissement): void => {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   etablissementStore
     .setCurrentEtablissement(item)
     .then(() => {
@@ -425,7 +422,7 @@ const allerAAfficherEtab = (item: Etablissement): void => {
       }
       message.isSticky = true;
 
-      messageStore.openDisplayedMessage(message).catch(err => {
+      snackbar.show(message.text ?? message.texte ?? "").catch(err => {
         Logger.error(err.toString());
       });
       // On glisse sur le message d'erreur
@@ -452,7 +449,7 @@ const envoiEditeurs = async () => {
         message.texte = response.data.message;
 
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message).catch(err => {
+        snackbar.show(message.text ?? message.texte ?? "").catch(err => {
           Logger.error(err.toString());
         });
         const messageBox = document.getElementById("messageBox");
@@ -471,7 +468,7 @@ const envoiEditeurs = async () => {
             "Impossible d'exécuter l'action : " + err.response.data.message;
         }
         message.isSticky = true;
-        messageStore.openDisplayedMessage(message).catch(err => {
+        snackbar.show(message.text ?? message.texte ?? "").catch(err => {
           Logger.error(err.toString());
         });
         const messageBox = document.getElementById("messageBox");

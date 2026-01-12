@@ -1,10 +1,10 @@
 // plugins/vuetify.js
-import "vuetify/styles";
 import { createVuetify } from "vuetify";
-import { fr } from "vuetify/locale";
-import { aliases, mdi } from "vuetify/iconsets/mdi";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
+import { aliases, mdi } from "vuetify/iconsets/mdi";
+import { fr } from "vuetify/locale";
+import "vuetify/styles";
 
 const lightTheme = {
   dark: false,
@@ -42,7 +42,7 @@ const lightTheme = {
     "theme-kbd": "#1f3f5f",
     "theme-on-kbd": "#ffffff",
     "theme-code": "#f0f4f9",
-    "theme-on-code": "#0f1c2a",
+    "theme-on-code": "#0f1c2a"
   }
 };
 

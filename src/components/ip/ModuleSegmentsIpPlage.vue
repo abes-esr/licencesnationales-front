@@ -258,7 +258,7 @@ import { iPService } from "@/core/service/licencesnationales/IPService";
 import { Logger } from "@/utils/Logger";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import type { VForm, VTextField } from "vuetify/components";
 import { faBackspace } from "@fortawesome/free-solid-svg-icons";
@@ -290,7 +290,7 @@ const emit = defineEmits<{
 
 const rulesForm = rulesForms;
 const authStore = useAuthStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 const etablissementStore = useEtablissementStore();
 
 const formModuleSegmentsIpPlage = ref<VForm | null>(null);
@@ -471,7 +471,7 @@ const clear = (dontClearComments: boolean) => {
   if (!dontClearComments) commentaires.value = "";
   resetSegments();
   formModuleSegmentsIpPlage.value?.resetValidation();
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
 };
 
 const onPasteIp = (evt: ClipboardEvent) => {

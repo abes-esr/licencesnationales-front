@@ -79,7 +79,8 @@ h2 {
   text-transform: unset !important;
 }
 
-h2, h3 {
+h2,
+h3 {
   color: #356ca5;
 }
 
@@ -91,11 +92,6 @@ h2, h3 {
     text-transform: uppercase !important;
   }
 }
-
-// #messageBox .v-btn {
-//   background-color: transparent !important;
-//   border-left: 0;
-// }
 
 .icone-information,
 .icone-erreur,
@@ -127,8 +123,7 @@ a {
 .fade-enter,
 .fade-leave-to
 
-/* .fade-leave-active below version 2.1.8 */
-  {
+/* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
 
@@ -149,10 +144,9 @@ header {
 }
 
 .v-data-table .thead .v-data-table-header__th {
-    font-size: 12px !important;
+  font-size: 12px !important;
   padding: 0;
   margin: 0;
-  
 }
 
 main {
@@ -210,8 +204,8 @@ nav .v-list-item-title {
 }
 
 .v-btn--elevated {
-    background-color: #c64c21 !important;
-    color: white !important;
+  background-color: #c64c21 !important;
+  color: white !important;
 }
 
 .v-tooltip .v-overlay__content {

@@ -351,7 +351,7 @@ import {
   faXmark
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { VDataTable } from "vuetify/components";
 import { useDisplay } from "vuetify";
@@ -362,7 +362,7 @@ const props = defineProps<{
 }>();
 
 const authStore = useAuthStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 const etablissementStore = useEtablissementStore();
 const router = useRouter();
 const { mdAndDown } = useDisplay();
@@ -793,7 +793,7 @@ function downloadIPs(): void {
       }
       message.isSticky = true;
 
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
       isExportLoading.value = false;
     });
 }

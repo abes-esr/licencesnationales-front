@@ -39,8 +39,8 @@ export enum MessageType {
 
 export class Message {
   isDisplayed = false;
-  isSticky = false;
-  isMultiline = true;
+  sticky = false;
+  multiline = true;
   type: MessageType = MessageType.INFORMATION;
   texte = "";
 }

@@ -23,7 +23,7 @@ import "moment/locale/fr";
 
 // Handle all Vue errors
 /*Vue.config.errorHandler = error =>
-  Logger.error(error.message, error.constructor.name);*/
+  Logger.error(error.error.constructor.name);*/
 
 declare module "*.vue";
 

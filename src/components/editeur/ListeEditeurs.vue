@@ -4,7 +4,6 @@
       <h1>Gestion des éditeurs</h1>
       <v-row class="ma-0">
         <v-col cols="12" md="6" lg="6" xl="6" class="pa-0">
-          <MessageBox />
           <ConfirmPopup ref="confirmRef" />
         </v-col>
       </v-row>
@@ -135,7 +134,6 @@ import Editeur from "@/core/Editeur";
 import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
 import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import MessageBox from "@/components/common/MessageBox.vue";
 import { Message, MessageType } from "@/core/CommonDefinition";
 import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -145,12 +143,12 @@ import {
   faXmark
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuthStore } from "@/stores/authStore";
-import { useMessageStore } from "@/stores/messageStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { useEditeurStore } from "@/stores/editeurStore";
 import { DataTableHeader } from "vuetify";
 
 const authStore = useAuthStore();
-const messageStore = useMessageStore();
+const snackbar = useSnackbar();
 const editeurStore = useEditeurStore();
 const router = useRouter();
 
@@ -181,7 +179,7 @@ onMounted(() => {
     message.texte =
       "Vous n'êtes pas autorisé à exécuter l'action ListeEditeur";
     message.isSticky = true;
-    messageStore.openDisplayedMessage(message);
+    snackbar.show(message.text ?? message.texte ?? "");
     router.push({ name: "Home" }).catch(err => Logger.error(err.toString()));
     return;
   }
@@ -211,7 +209,7 @@ function fetchEditeurs() {
         message.texte = "Impossible d'exécuter l'action : " + err.message;
       }
       message.isSticky = true;
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
     })
     .finally(() => {
       dataLoading.value = false;
@@ -219,7 +217,7 @@ function fetchEditeurs() {
 }
 
 async function ajouterEditeur() {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   try {
     await editeurStore.setCurrentEditeur(new Editeur());
     router.push({ name: "NouvelEditeur" });
@@ -229,12 +227,12 @@ async function ajouterEditeur() {
     message.type = MessageType.ERREUR;
     message.texte = buildErrorMessage(err);
     message.isSticky = true;
-    messageStore.openDisplayedMessage(message);
+    snackbar.show(message.text ?? message.texte ?? "");
   }
 }
 
 async function modifierEditeur(item: Editeur) {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   try {
     await editeurStore.setCurrentEditeur(item);
     router.push({ name: "ModifierEditeur" });
@@ -244,13 +242,13 @@ async function modifierEditeur(item: Editeur) {
     message.type = MessageType.ERREUR;
     message.texte = buildErrorMessage(err);
     message.isSticky = true;
-    messageStore.openDisplayedMessage(message);
+    snackbar.show(message.text ?? message.texte ?? "");
   }
 }
 
 function downloadEditeurs(): void {
   isExportLoading.value = true;
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
   const ids = editeurs.value.map(element => element.id);
 
   editeurService
@@ -279,13 +277,13 @@ function downloadEditeurs(): void {
       }
       message.isSticky = true;
 
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
       isExportLoading.value = false;
     });
 }
 
 async function supprimerEditeur(item: Editeur) {
-  messageStore.closeDisplayedMessage();
+  snackbar.hide();
 
   const confirmed = await confirmRef.value?.open(
     `Vous êtes sur le point de supprimer le compte de l'éditeur ${item.nom}
@@ -304,7 +302,7 @@ async function supprimerEditeur(item: Editeur) {
       message.type = MessageType.VALIDATION;
       message.texte = `L'éditeur ${item.nom} a bien été supprimé`;
       message.isSticky = false;
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
 
       const messageBox = document.getElementById("messageBox");
       if (messageBox) {
@@ -323,7 +321,7 @@ async function supprimerEditeur(item: Editeur) {
       }
       message.isSticky = true;
 
-      messageStore.openDisplayedMessage(message);
+      snackbar.show(message.text ?? message.texte ?? "");
     });
 }
 
