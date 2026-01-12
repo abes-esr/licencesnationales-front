@@ -17,140 +17,91 @@
 
     <v-card variant="flat" class="mt-2" :disabled="disableForm">
       <v-card-text class="fondGris">
-      <VDataTable
-        :headers="headers"
-        :header-props="{class: 'bg-primary'}"
-        :items="editeurs"
-        :items-per-page="25"
-        :items-per-page-options="[25, 50, 100, { value: -1, title: 'Tous' }]"
-        class="elevation-0 ma-3"
-        :search="rechercher"
-        density="compact"
-        :loading="dataLoading"
-        id="mytable"
-      >
-        <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
-          <tr>
-            <th
-              v-for="column in columns"
-              :key="column.key"
-              class="text-left"
-              @click="column.sortable ? toggleSort(column) : ''"
-            >
-              <div style="display: flex; align-items: center; white-space: nowrap;">
-                <span>{{ column.title }}</span>
-                <v-icon
-                  v-if="column.sortable && !isSorted(column)"
-                  class="pl-2"
-                  size="small"
-                >
-                  mdi-sort
-                </v-icon>
-                <v-icon
-                  v-else-if="column.sortable"
-                  class="pl-2"
-                  size="small"
-                >
-                  {{ getSortIcon(column) }}
-                </v-icon>
-              </div>
-            </th>
-          </tr>
-        </template>
-        <template #top>
-          <v-row class="ma-0">
-            <v-col cols="12" sm="6" class="px-0">
-              <v-tooltip
-                text="Le téléchargement correspond à la vue filtrée"
-                location="top"
-                open-delay="100"
-                theme="dark"
-                content-class="text-white"
-              >
-                <template #activator="{ props }">
-                  <v-btn
-                    variant="text"
-                    @click="downloadEditeurs"
-                    class="bouton-simple pl-0"
-                    v-bind="props"
-                    :loading="isExportLoading"
-                  >
-                    <h2>Télécharger la liste des éditeurs</h2>
-                    <FontAwesomeIcon
-                      :icon="download"
-                      class="mx-2"
-                      size="2x"
-                    />
-                  </v-btn>
-                </template>
-              </v-tooltip>
-            </v-col>
-            <v-col cols="0" sm="3" class="px-0"></v-col>
-            <v-col cols="12" sm="3" class="px-0">
-              <v-text-field
-                v-model="rechercher"
-                label="Chercher dans les colonnes"
-                prepend-inner-icon="mdi-magnify"
-                variant="outlined"
-                density="compact"
-                clearable
-              />
-            </v-col>
-          </v-row>
-        </template>
+        <VDataTable :headers="headers" :header-props="{ class: 'bg-primary' }" :items="editeurs" :items-per-page="25"
+          :items-per-page-options="[25, 50, 100, { value: -1, title: 'Tous' }]" class="elevation-0 ma-3"
+          :search="rechercher" density="compact" :loading="dataLoading" id="mytable">
+          <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
+            <tr>
+              <th v-for="column in columns" :key="column.key" class="text-left"
+                @click="column.sortable ? toggleSort(column) : ''">
+                <div style="display: flex; align-items: center; white-space: nowrap;">
+                  <span>{{ column.title }}</span>
+                  <v-icon v-if="column.sortable && !isSorted(column)" class="pl-2" size="small">
+                    mdi-sort
+                  </v-icon>
+                  <v-icon v-else-if="column.sortable" class="pl-2" size="small">
+                    {{ getSortIcon(column) }}
+                  </v-icon>
+                </div>
+              </th>
+            </tr>
+          </template>
+          <template #top>
+            <v-row class="ma-0">
+              <v-col cols="12" sm="6" class="px-0">
+                <v-tooltip text="Le téléchargement correspond à la vue filtrée" location="top" open-delay="100"
+                  theme="dark" content-class="text-white">
+                  <template #activator="{ props }">
+                    <v-btn variant="text" @click="downloadEditeurs" class="bouton-simple pl-0" v-bind="props"
+                      :loading="isExportLoading">
+                      <h2>Télécharger la liste des éditeurs</h2>
+                      <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+              </v-col>
+              <v-col cols="0" sm="3" class="px-0"></v-col>
+              <v-col cols="12" sm="3" class="px-0">
+                <v-text-field v-model="rechercher" label="Chercher dans les colonnes" prepend-inner-icon="mdi-magnify"
+                  variant="outlined" density="compact" clearable />
+              </v-col>
+            </v-row>
+          </template>
 
-        <template #item.dateCreation="{ item }">
-          <span>{{ item.dateCreation.toLocaleDateString() }}</span>
-        </template>
+          <template #item.dateCreation="{ item }">
+            <span>{{ item.dateCreation.toLocaleDateString() }}</span>
+          </template>
 
-        <template #item.action="{ item }">
-          <v-btn
-            class="ma-0 pa-0"
-            variant="plain"
-            @click="modifierEditeur(item)"
-          >
-            <FontAwesomeIcon color="#1f3f5f" :icon="faPenToSquare" />
-          </v-btn>
-          <v-btn
-            class="ma-0 pa-0 bouton-simple"
-            variant="plain"
-            @click="supprimerEditeur(item)"
-          >
-            <FontAwesomeIcon :icon="faXmark" color="red" />
-          </v-btn>
-        </template>
-      </VDataTable>
+          <template #item.action="{ item }">
+            <v-btn class="ma-0 pa-0" variant="plain" @click="modifierEditeur(item)">
+              <FontAwesomeIcon color="#1f3f5f" :icon="faPenToSquare" />
+            </v-btn>
+            <v-btn class="ma-0 pa-0 bouton-simple" variant="plain" @click="supprimerEditeur(item)">
+              <FontAwesomeIcon :icon="faXmark" color="red" />
+            </v-btn>
+          </template>
+        </VDataTable>
       </v-card-text>
     </v-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import { VDataTable } from "vuetify/components";
-import { Logger } from "@/utils/Logger";
-import Editeur from "@/core/Editeur";
-import { LicencesNationalesUnauthorizedApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesUnauthorizedApiError";
-import { editeurService } from "@/core/service/licencesnationales/EditeurService";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import { Message, MessageType } from "@/core/CommonDefinition";
-import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useEditeurService } from "@/composables/useEditeurService";
+import { useSnackbar } from "@/composables/useSnackbar";
+import Editeur from "@/core/Editeur";
+import { LicencesNationalesUnauthorizedApiError } from "@/exception/licencesnationales/LicencesNationalesUnauthorizedApiError";
+import { useAuthStore } from "@/stores/authStore";
+import { useEditeurStore } from "@/stores/editeurStore";
+import { formatApiError } from "@/utils/formatApiError";
 import {
   faCirclePlus,
+  faDownload,
   faPenToSquare,
   faXmark
 } from "@fortawesome/free-solid-svg-icons";
-import { useAuthStore } from "@/stores/authStore";
-import { useSnackbar } from "@/composables/useSnackbar";
-import { useEditeurStore } from "@/stores/editeurStore";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import { DataTableHeader } from "vuetify";
+import { VDataTable } from "vuetify/components";
 
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
 const editeurStore = useEditeurStore();
 const router = useRouter();
+const editeurService = useEditeurService();
 
 const disableForm = ref(false);
 const isExportLoading = ref(false);
@@ -174,47 +125,36 @@ const isAdmin = computed(() => authStore.isAdmin);
 
 onMounted(() => {
   if (!isAdmin.value) {
-    const message = new Message();
-    message.type = MessageType.ERREUR;
-    message.texte =
-      "Vous n'êtes pas autorisé à exécuter l'action ListeEditeur";
-    message.isSticky = true;
-    snackbar.show(message.text ?? message.texte ?? "");
-    router.push({ name: "Home" }).catch(err => Logger.error(err.toString()));
-    return;
+
+    snackbar.error("Vous n'êtes pas autorisé à exécuter l'action ListeEditeur", {
+      onHide: () => {
+        router.push({ name: "Home" })
+      }
+    });
+  } else {
+    fetchEditeurs();
   }
-  fetchEditeurs();
 });
 
-function fetchEditeurs() {
-  editeurService
-    .getEditeurs(authStore.getToken)
-    .then(res => {
-      editeurs.value = res;
-    })
-    .catch(err => {
-      Logger.error(err.toString());
-      const message = new Message();
-      message.type = MessageType.ERREUR;
-      if (err instanceof LicencesNationalesBadRequestApiError) {
-        message.texte = err.message;
-      } else if (err instanceof LicencesNationalesUnauthorizedApiError) {
-        disableForm.value = true;
-        message.texte =
-          "Vous n'êtes pas autorisé à effectuer cette opération";
-        setTimeout(() => {
-          router.push({ name: "Home" }).catch(r => Logger.error(r.toString()));
-        });
-      } else {
-        message.texte = "Impossible d'exécuter l'action : " + err.message;
-      }
-      message.isSticky = true;
-      snackbar.show(message.text ?? message.texte ?? "");
-    })
-    .finally(() => {
-      dataLoading.value = false;
-    });
+async function fetchEditeurs() {
+  try {
+    editeurs.value = await editeurService.getEditeurs(authStore.getToken);
+  } catch (err: any) {
+    if (err instanceof LicencesNationalesUnauthorizedApiError) {
+      disableForm.value = true;
+      snackbar.error("Vous n'??tes pas autoris?? ?? effectuer cette op??ration", {
+        onHide: () => {
+          router.push({ name: "Home" })
+        }
+      });
+    } else {
+      snackbar.error(err);
+    }
+  } finally {
+    dataLoading.value = false;
+  }
 }
+
 
 async function ajouterEditeur() {
   snackbar.hide();
@@ -222,12 +162,7 @@ async function ajouterEditeur() {
     await editeurStore.setCurrentEditeur(new Editeur());
     router.push({ name: "NouvelEditeur" });
   } catch (err: any) {
-    Logger.error(err.toString());
-    const message = new Message();
-    message.type = MessageType.ERREUR;
-    message.texte = buildErrorMessage(err);
-    message.isSticky = true;
-    snackbar.show(message.text ?? message.texte ?? "");
+    snackbar.error(err);
   }
 }
 
@@ -237,50 +172,37 @@ async function modifierEditeur(item: Editeur) {
     await editeurStore.setCurrentEditeur(item);
     router.push({ name: "ModifierEditeur" });
   } catch (err: any) {
-    Logger.error(err.toString());
-    const message = new Message();
-    message.type = MessageType.ERREUR;
-    message.texte = buildErrorMessage(err);
-    message.isSticky = true;
-    snackbar.show(message.text ?? message.texte ?? "");
+    snackbar.error(err);
   }
 }
 
-function downloadEditeurs(): void {
+async function downloadEditeurs(): Promise<void> {
   isExportLoading.value = true;
   snackbar.hide();
   const ids = editeurs.value.map(element => element.id);
 
-  editeurService
-    .downloadEditeurs(ids, authStore.user.token)
-    .then(response => {
-      const fileURL = window.URL.createObjectURL(
-        new Blob([response.data], { type: "application/csv" })
-      );
-      const fileLink = document.createElement("a");
+  try {
+    const response = await editeurService.downloadEditeurs(
+      ids,
+      authStore.user.token
+    );
+    const fileURL = window.URL.createObjectURL(
+      new Blob([response.data], { type: "application/csv" })
+    );
+    const fileLink = document.createElement("a");
 
-      fileLink.href = fileURL;
-      fileLink.setAttribute("download", "export.csv");
-      document.body.appendChild(fileLink);
+    fileLink.href = fileURL;
+    fileLink.setAttribute("download", "export.csv");
+    document.body.appendChild(fileLink);
 
-      fileLink.click();
-      isExportLoading.value = false;
-    })
-    .catch(err => {
-      Logger.error(err.toString());
-      const message = new Message();
-      message.type = MessageType.ERREUR;
-      if (err instanceof LicencesNationalesBadRequestApiError) {
-        message.texte = err.message;
-      } else {
-        message.texte = "Impossible d'exécuter l'action : " + err.message;
-      }
-      message.isSticky = true;
-
-      snackbar.show(message.text ?? message.texte ?? "");
-      isExportLoading.value = false;
-    });
+    fileLink.click();
+  } catch (err: any) {
+    snackbar.error(formatApiError(err));
+  } finally {
+    isExportLoading.value = false;
+  }
 }
+
 
 async function supprimerEditeur(item: Editeur) {
   snackbar.hide();
@@ -295,42 +217,15 @@ async function supprimerEditeur(item: Editeur) {
     return;
   }
 
-  editeurService
-    .deleteEditeur(item.id, authStore.getToken)
-    .then(() => {
-      const message = new Message();
-      message.type = MessageType.VALIDATION;
-      message.texte = `L'éditeur ${item.nom} a bien été supprimé`;
-      message.isSticky = false;
-      snackbar.show(message.text ?? message.texte ?? "");
-
-      const messageBox = document.getElementById("messageBox");
-      if (messageBox) {
-        window.scrollTo(0, messageBox.offsetTop);
-      }
-      fetchEditeurs();
-    })
-    .catch(err => {
-      Logger.error(err.toString());
-      const message = new Message();
-      message.type = MessageType.ERREUR;
-      if (err instanceof LicencesNationalesBadRequestApiError) {
-        message.texte = err.message;
-      } else {
-        message.texte = "Impossible d'exécuter l'action : " + err.message;
-      }
-      message.isSticky = true;
-
-      snackbar.show(message.text ?? message.texte ?? "");
-    });
-}
-
-function buildErrorMessage(err: any) {
-  if (err instanceof LicencesNationalesBadRequestApiError) {
-    return err.message;
+  try {
+    await editeurService.deleteEditeur(item.id, authStore.getToken);
+    snackbar.success(`L'??diteur ${item.nom} a bien ??t?? supprim??`);
+    fetchEditeurs();
+  } catch (err: any) {
+    snackbar.error(formatApiError(err));
   }
-  return "Impossible d'exécuter l'action : " + err.message;
 }
+
 </script>
 
 <style>

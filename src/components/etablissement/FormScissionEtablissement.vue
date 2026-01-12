@@ -9,62 +9,36 @@
               <v-card-title>Scission d'établissements</v-card-title>
               <v-card>
                 <v-card-text>
-                    <v-card-title>
-                      Siren de l'établissement à scinder
-                    </v-card-title>
-                    <v-col cols="12">
-                      <v-text-field
-                        variant="outlined"
-                        label="SIREN"
-                        placeholder="SIREN"
-                        v-model="sirenEtab"
-                        :rules="rulesForms.siren"
-                        class="pt-6 w-100"
-                        required
-                        @keyup.enter="validateForm"
-                        maxLength="9"
+                  <v-card-title>
+                    Siren de l'établissement à scinder
+                  </v-card-title>
+                  <v-col cols="12">
+                    <v-text-field variant="outlined" label="SIREN" placeholder="SIREN" v-model="sirenEtab"
+                      :rules="rulesForms.siren" class="pt-6 w-100" required @keyup.enter="validateForm" maxLength="9" />
+                    <h3>Nombre d'établissements : {{ etablissementNumber }}</h3>
 
-                      />
-                                          <h3>Nombre d'établissements : {{ etablissementNumber }}</h3>
-
-                    </v-col>
+                  </v-col>
 
                   <v-card-actions>
                     <v-row class="pa-0 ga-4">
-                    <v-btn variant="elevated" @click="increaseEtablissementNumber">
-                      Ajouter un etablissement
-                    </v-btn>
-                    <v-btn variant="elevated" @click="decreaseEtablissementNumber">
-                      Supprimer un etablissement
-                    </v-btn>
+                      <v-btn variant="elevated" @click="increaseEtablissementNumber">
+                        Ajouter un etablissement
+                      </v-btn>
+                      <v-btn variant="elevated" @click="decreaseEtablissementNumber">
+                        Supprimer un etablissement
+                      </v-btn>
                     </v-row>
                   </v-card-actions>
                 </v-card-text>
               </v-card>
-              <form-etablissement
-                :action="Action.SCISSION"
-                :trigger-scission="triggerScission"
-                @send="send"
-                v-for="n in etablissementNumber"
-                :key="n"
-              ></form-etablissement>
+              <form-etablissement :action="Action.SCISSION" :trigger-scission="triggerScission" @send="send"
+                v-for="n in etablissementNumber" :key="n"></form-etablissement>
               <v-card-actions class="v-card-actions">
                 <v-row>
                   <v-spacer class="hidden-sm-and-down"></v-spacer>
-                  <v-col
-                    cols="12"
-                    md="3"
-                    lg="3"
-                    xl="3"
-                    class="d-flex justify-space-around mr-16 flex-wrap"
-                  >
-                    <v-btn
-                      @click="triggerChildrenForm"
-                      :loading="buttonLoading"
-                      size="large"
-                      color="button"
-                      variant="elevated"
-                    >
+                  <v-col cols="12" md="3" lg="3" xl="3" class="d-flex justify-space-around mr-16 flex-wrap">
+                    <v-btn @click="triggerChildrenForm" :loading="buttonLoading" size="large" color="button"
+                      variant="elevated">
                       Enregistrer
                     </v-btn>
                   </v-col>
@@ -80,18 +54,18 @@
 </template>
 <style src="./style.css"></style>
 <script setup lang="ts">
+import FormEtablissement from "@/components/etablissement/FormEtablissement.vue";
+import { useEtablissementService } from "@/composables/useEtablissementService";
+import { useSnackbar } from "@/composables/useSnackbar";
+import { Action } from "@/core/CommonDefinition";
+import { rulesForms } from "@/core/RulesForm";
+import { useAuthStore } from "@/stores/authStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import FormEtablissement from "@/components/etablissement/FormEtablissement.vue";
-import { Logger } from "@/utils/Logger";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
-import { rulesForms } from "@/core/RulesForm";
-import { Action, Message, MessageType } from "@/core/CommonDefinition";
-import { useAuthStore } from "@/stores/authStore";
-import { useSnackbar } from "@/composables/useSnackbar";
 
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
+const etablissementService = useEtablissementService();
 const router = useRouter();
 
 const sirenEtab = ref("");
@@ -124,25 +98,11 @@ async function send(payload: any): Promise<void> {
         nouveauxEtabs: etablissementDTOS.value
       })
       .then(() => {
-        const message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = "Scission effectuée.";
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        router.push({ name: "ListeEtab" }).catch(err => {
-          Logger.error(err);
-        });
+        snackbar.success("La scission a bien été effectuée.");
+        router.push({ name: "ListeEtab" })
       })
       .catch((err: any) => {
-        const message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err.response?.data?.message ?? err.message;
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
+        snackbar.error(err);
       })
       .finally(() => {
         buttonLoading.value = false;

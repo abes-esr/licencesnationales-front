@@ -254,7 +254,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import { rulesForms } from "@/core/RulesForm";
-import { iPService } from "@/core/service/licencesnationales/IPService";
+import { useIpService } from "@/composables/useIpService";
 import { Logger } from "@/utils/Logger";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAuthStore } from "@/stores/authStore";
@@ -292,6 +292,7 @@ const rulesForm = rulesForms;
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
 const etablissementStore = useEtablissementStore();
+const iPService = useIpService();
 
 const formModuleSegmentsIpPlage = ref<VForm | null>(null);
 const ipv4SegmentsRefs = ref<InstanceType<typeof VTextField>[]>([]);

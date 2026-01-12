@@ -1,11 +1,6 @@
 <template>
   <v-card class="elevation-0">
-    <v-form
-      ref="formEditeurRef"
-      validate-on="lazy"
-      class="elevation-0"
-      :disabled="isDisableForm"
-    >
+    <v-form ref="formEditeurRef" validate-on="lazy" class="elevation-0" :disabled="isDisableForm">
       <h1 v-if="action === Action.CREATION">Créer un éditeur</h1>
       <h1 v-else-if="action === Action.MODIFICATION">Modifier un éditeur</h1>
       <v-card-text class="elevation-0">
@@ -19,44 +14,23 @@
           <div class="mx-9">
             <v-row>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-text-field
-                  variant="outlined"
-                  label="NOM DE L'EDITEUR"
-                  placeholder="NOM DE L'EDITEUR"
-                  v-model="editeur.nom"
-                  :rules="rulesForms.nom"
-                  required
-                  @keyup.enter="validate"
-                />
+                <v-text-field variant="outlined" label="NOM DE L'EDITEUR" placeholder="NOM DE L'EDITEUR"
+                  v-model="editeur.nom" :rules="rulesForms.nom" required @keyup.enter="validate" />
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-text-field
-                  variant="outlined"
-                  label="Identifiant éditeur"
-                  placeholder="Identifiant éditeur"
-                  v-model="editeur.identifiantBis"
-                />
+                <v-text-field variant="outlined" label="Identifiant éditeur" placeholder="Identifiant éditeur"
+                  v-model="editeur.identifiantBis" />
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-select
-                  v-model="editeur.groupesEtabRelies"
-                  :items="typesEtab"
-                  label="Groupes d'établissements reliés"
-                  placeholder="Groupes d'établissements reliés"
-                  persistent-placeholder
-                  multiple
-                  variant="outlined"
-                >
+                <v-select v-model="editeur.groupesEtabRelies" :items="typesEtab" label="Groupes d'établissements reliés"
+                  placeholder="Groupes d'établissements reliés" persistent-placeholder multiple variant="outlined">
                   <template #prepend-item>
                     <v-list-item @click="toggle">
                       <template #prepend>
-                        <v-icon
-                          :color="
-                            editeur.groupesEtabRelies.length > 0
-                              ? 'indigo darken-4'
-                              : ''
-                          "
-                        >
+                        <v-icon :color="editeur.groupesEtabRelies.length > 0
+                          ? 'indigo darken-4'
+                          : ''
+                          ">
                           {{ iconEtab }}
                         </v-icon>
                       </template>
@@ -67,15 +41,8 @@
                 </v-select>
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-text-field
-                  variant="outlined"
-                  label="Adresse postale"
-                  placeholder="Adresse postale"
-                  v-model="editeur.adresse"
-                  :rules="rulesForms.adresse"
-                  required
-                  @keyup.enter="validate"
-                />
+                <v-text-field variant="outlined" label="Adresse postale" placeholder="Adresse postale"
+                  v-model="editeur.adresse" :rules="rulesForms.adresse" required @keyup.enter="validate" />
               </v-col>
             </v-row>
           </div>
@@ -86,19 +53,8 @@
           </v-card-title>
           <v-divider class="mb-4"></v-divider>
           <v-row>
-            <v-col
-              cols="12"
-              md="3"
-              lg="3"
-              xl="3"
-              v-for="(contact, index) in editeur.contacts"
-              :key="index"
-            >
-              <contact
-                :ref="el => contactRefs[index] = el"
-                :contact="contact"
-                @onChange="removeContact(contact)"
-              />
+            <v-col cols="12" md="3" lg="3" xl="3" v-for="(contact, index) in editeur.contacts" :key="index">
+              <contact :ref="el => contactRefs[index] = el" :contact="contact" @onChange="removeContact(contact)" />
             </v-col>
           </v-row>
         </div>
@@ -116,29 +72,12 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer class="hidden-sm-and-down"></v-spacer>
-        <v-col
-          cols="12"
-          md="3"
-          lg="3"
-          xl="3"
-          class="d-flex justify-space-around mr-16 flex-wrap"
-        >
-          <v-btn
-            size="large"
-            @click="clear"
-            variant="outlined"
-            :disabled="isDisableForm"
-          >
+        <v-col cols="12" md="3" lg="3" xl="3" class="d-flex justify-space-around mr-16 flex-wrap">
+          <v-btn size="large" @click="clear" variant="outlined" :disabled="isDisableForm">
             Annuler
           </v-btn>
-          <v-btn
-            color="button"
-            :loading="buttonLoading"
-            :disabled="isDisableForm"
-            size="large"
-            @click="validate"
-            variant="elevated"
-          >
+          <v-btn color="button" :loading="buttonLoading" :disabled="isDisableForm" size="large" @click="validate"
+            variant="elevated">
             Enregistrer
             <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
           </v-btn>
@@ -149,28 +88,23 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import { Logger } from "@/utils/Logger";
+import Contact from "@/components/editeur/Contact.vue";
+import { useSnackbar } from "@/composables/useSnackbar";
+import { useEditeurService } from "@/composables/useEditeurService";
+import { useEtablissementService } from "@/composables/useEtablissementService";
 import {
   Action,
-  ContactType,
-  Message,
-  MessageType
+  ContactType
 } from "@/core/CommonDefinition";
-import Editeur from "@/core/Editeur";
-import Contact from "@/components/editeur/Contact.vue";
 import ContactEditeur from "@/core/ContactEditeur";
-import { editeurService } from "@/core/service/licencesnationales/EditeurService";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
-import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
+import Editeur from "@/core/Editeur";
 import { rulesForms } from "@/core/RulesForm";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useAuthStore } from "@/stores/authStore";
-import { useSnackbar } from "@/composables/useSnackbar";
 import { useEditeurStore } from "@/stores/editeurStore";
-import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const props = defineProps<{
   action: Action;
@@ -180,6 +114,8 @@ const authStore = useAuthStore();
 const snackbar = useSnackbar();
 const editeurStore = useEditeurStore();
 const router = useRouter();
+const editeurService = useEditeurService();
+const etablissementService = useEtablissementService();
 
 const editeur = ref<Editeur>(editeurStore.getCurrentEditeur);
 const typesEtab = ref<Array<string>>([]);
@@ -212,18 +148,7 @@ async function fetchListeType() {
     isDisableForm.value = false;
     typesEtab.value = result;
   } catch (err: any) {
-    Logger.error(err.toString());
-    const message = new Message();
-    message.type = MessageType.ERREUR;
-    if (err instanceof LicencesNationalesApiError) {
-      isDisableForm.value = true;
-      message.texte =
-        "Fonctionnalité momentanement indisponible pour le moment. Réessayer plus tard";
-    } else {
-      message.texte = "Impossible d'exécuter l'action : " + err.message;
-    }
-    message.isSticky = true;
-    snackbar.show(message.text ?? message.texte ?? "");
+    snackbar.error(err);
   }
 }
 
@@ -240,6 +165,7 @@ function toggle(): void {
 async function validate(): Promise<void> {
   snackbar.hide();
   buttonLoading.value = true;
+  let errorMessage = "";
 
   const validationResult = await formEditeurRef.value?.validate();
   let isValide =
@@ -247,54 +173,36 @@ async function validate(): Promise<void> {
       ? validationResult
       : validationResult?.valid;
 
-  const message = new Message();
-  message.type = MessageType.ERREUR;
-  message.isSticky = true;
-
   let isSubFormValide = true;
   let countContactTechnique = 0;
   let countContactCommercial = 0;
 
   editeur.value.contacts.forEach((contact, index) => {
-    console.log("🚀 ~ validate ~ contact:", contact)
     if (contact.type == ContactType.TECHNIQUE) {
       countContactTechnique++;
     } else if (contact.type == ContactType.COMMERCIAL) {
       countContactCommercial++;
     }
     const isContactValid = contactRefs.value[index]?.validate?.() ?? false;
-    console.log("🚀 ~ validate ~ contactRefs:", contactRefs.value.length)
-    console.log("🚀 ~ validate ~ isValide1:", isValide)
-    console.log("🚀 ~ validate ~ isContactValid:", isContactValid, contactRefs.value[index])
+
     if (!isValide || !isContactValid) {
       isValide = false;
       isSubFormValide = false;
     }
   });
-  console.log("🚀 ~ validate ~ editeur:", editeur)
-
-  
 
   if (countContactCommercial === 0 || countContactTechnique === 0) {
     isValide = false;
-    message.texte =
-      " - Vous devez saisir au moins un contact technique et un contact commercial";
+
+    errorMessage =
+      "Vous devez saisir au moins un contact technique et un contact commercial";
   }
 
-  console.log("🚀 ~ validate ~ isValide2:", isValide)
-  console.log("🚀 ~ validate ~ isSubFormValide:", isSubFormValide)
   if (isValide && isSubFormValide) {
     send();
   } else {
     buttonLoading.value = false;
-    message.texte = `Des champs ne remplissent pas les conditions :
-      ${message.texte}`;
-    message.isMultiline = true;
-    snackbar.show(message.text ?? message.texte ?? "");
-    const messageBox = document.getElementById("messageBox");
-    if (messageBox) {
-      window.scrollTo(0, messageBox.offsetTop);
-    }
+    snackbar.error("Des champs ne remplissent pas les conditions : " + errorMessage);
   }
 }
 
@@ -307,75 +215,32 @@ function removeContact(item: ContactEditeur): void {
   editeur.value.removeContact(item);
 }
 
-function send(): void {
-  if (props.action === Action.CREATION) {
-    editeurService
-      .createEditeur(editeur.value, authStore.getToken)
-      .then(() => {
-        buttonLoading.value = false;
-        const message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = `L'éditeur a bien été créé`;
-        message.isSticky = false;
-        snackbar.show(message.text ?? message.texte ?? "");
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-        setTimeout(() => {
-          snackbar.hide();
+async function send(): Promise<void> {
+  try {
+    if (props.action === Action.CREATION) {
+      await editeurService.createEditeur(editeur.value, authStore.getToken);
+      snackbar.success("L'?diteur a bien ?t? cr??", {
+        onHide: () => {
           router.push({ path: "/listeEditeurs" });
-        }, 2000);
-      })
-      .catch(err => {
-        buttonLoading.value = false;
-        Logger.error(err.toString());
-        const message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = `Impossible d'exécuter l'action :
-           ${err.message}`;
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
+        },
+        timeout: 2000
       });
-  } else if (props.action === Action.MODIFICATION) {
-    editeurService
-      .updateEditeur(editeur.value, authStore.getToken)
-      .then(() => {
-        buttonLoading.value = false;
-        const message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = `L'éditeur a bien été modifié`;
-        message.isSticky = false;
-        snackbar.show(message.text ?? message.texte ?? "");
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-        setTimeout(() => {
-          snackbar.hide();
+    } else if (props.action === Action.MODIFICATION) {
+      await editeurService.updateEditeur(editeur.value, authStore.getToken);
+      snackbar.success("L'?diteur a bien ?t? modifi?", {
+        onHide: () => {
           router.push({ path: "/listeEditeurs" });
-        }, 2000);
-      })
-      .catch(err => {
-        buttonLoading.value = false;
-        Logger.error(err.toString());
-        const message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = `Impossible d'exécuter l'action :
-           ${err.message}`;
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
+        },
+        timeout: 2000
       });
+    }
+  } catch (err: any) {
+    snackbar.error(err);
+  } finally {
+    buttonLoading.value = false;
   }
 }
+
 
 function clear() {
   buttonLoading.value = false;

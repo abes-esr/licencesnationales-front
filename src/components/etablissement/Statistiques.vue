@@ -2,12 +2,7 @@
   <div>
     <v-container variant="flat">
       <h1>Statistiques de l'application</h1>
-      <v-alert
-        v-if="message"
-        type="error"
-        density="compact"
-        class="mt-4"
-      >
+      <v-alert v-if="message" type="error" density="compact" class="mt-4">
         {{ message }}
       </v-alert>
 
@@ -18,30 +13,13 @@
       <v-form ref="formRef" class="mt-4">
         <v-row>
           <v-col cols="12" sm="4" md="3" lg="2">
-            <v-menu
-              v-model="menuDateDebut"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-            >
+            <v-menu v-model="menuDateDebut" :close-on-content-click="false" transition="scale-transition" offset-y>
               <template #activator="{ props }">
-                <v-text-field
-                  v-bind="props"
-                  ref="dateDebutRef"
-                  v-model="formattedDateDebut"
-                  label="Date de début"
-                  prepend-icon="mdi-calendar"
-                  :rules="rulesFormConfig.dateRules"
-                  readonly
-                  variant="outlined"
-                />
+                <v-text-field v-bind="props" ref="dateDebutRef" v-model="formattedDateDebut" label="Date de début"
+                  prepend-icon="mdi-calendar" :rules="rulesFormConfig.dateRules" readonly variant="outlined" />
               </template>
-              <v-date-picker
-                v-model="dateDebut"
-                :show-current="false"
-                color="primary"
-                @update:model-value="menuDateDebut = false"
-              >
+              <v-date-picker v-model="dateDebut" :show-current="false" color="primary"
+                @update:model-value="menuDateDebut = false">
                 <template #actions>
                   <v-btn variant="outlined" @click="menuDateDebut = false">
                     Annuler
@@ -52,30 +30,13 @@
           </v-col>
 
           <v-col cols="12" sm="4" md="3" lg="2">
-            <v-menu
-              v-model="menuDateFin"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-            >
+            <v-menu v-model="menuDateFin" :close-on-content-click="false" transition="scale-transition" offset-y>
               <template #activator="{ props }">
-                <v-text-field
-                  v-bind="props"
-                  ref="dateFinRef"
-                  v-model="formattedDateFin"
-                  label="Date de fin"
-                  prepend-icon="mdi-calendar"
-                  :rules="rulesFormConfig.dateRules"
-                  readonly
-                  variant="outlined"
-                />
+                <v-text-field v-bind="props" ref="dateFinRef" v-model="formattedDateFin" label="Date de fin"
+                  prepend-icon="mdi-calendar" :rules="rulesFormConfig.dateRules" readonly variant="outlined" />
               </template>
-              <v-date-picker
-                v-model="dateFin"
-                :show-current="false"
-                color="primary"
-                @update:model-value="menuDateFin = false"
-              >
+              <v-date-picker v-model="dateFin" :show-current="false" color="primary"
+                @update:model-value="menuDateFin = false">
                 <template #actions>
                   <v-btn variant="outlined" @click="menuDateFin = false">
                     Annuler
@@ -125,18 +86,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { VDatePicker } from "vuetify/components";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
-import { iPService } from "@/core/service/licencesnationales/IPService";
-import { Message, MessageType } from "@/core/CommonDefinition";
+import { useEtablissementService } from "@/composables/useEtablissementService";
+import { useIpService } from "@/composables/useIpService";
+import { useSnackbar } from "@/composables/useSnackbar";
 import { rulesForms } from "@/core/RulesForm";
 import { useAuthStore } from "@/stores/authStore";
-import { useSnackbar } from "@/composables/useSnackbar";
 import moment from "moment";
+import { computed, ref } from "vue";
+import { VDatePicker } from "vuetify/components";
 
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
+const etablissementService = useEtablissementService();
+const iPService = useIpService();
 
 const rulesFormConfig = rulesForms;
 const message = ref("");
@@ -189,11 +151,7 @@ async function getStats() {
     );
     ipStats.value = ipResponse.data.stats;
   } catch (err: any) {
-    const newMessage = new Message();
-    newMessage.type = MessageType.ERREUR;
-    newMessage.texte = err.message;
-    newMessage.isSticky = true;
-    snackbar.show(newMessage);
+    snackbar.error(err);
   }
 }
 

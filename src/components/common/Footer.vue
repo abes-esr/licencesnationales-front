@@ -16,7 +16,8 @@
               <FontAwesomeIcon :icon="faComments" class="mx-2" />
             </v-btn>
 
-            <v-btn href="https://www.licencesnationales.fr/" target="_blank" class="footer-btn mx-2 text-center text-white">
+            <v-btn href="https://www.licencesnationales.fr/" target="_blank"
+              class="footer-btn mx-2 text-center text-white">
               <span class="texte text-wrap text-break">Site Licences nationales</span>
               <FontAwesomeIcon :icon="faCircleArrowRight" class="mx-2" />
             </v-btn>
@@ -38,7 +39,7 @@
 
 
         <!-- Col droite -->
-        <v-col cols="12" md="4" lg="4" xl="4" class="d-flex justify-space-around align-center">
+        <v-col cols="12" md="6" lg="4" xl="4" class="d-flex justify-space-around align-center">
           <div class="d-flex flex-column justify-space-between text-right mr-3 right-container text-white">
             <h4 class="mb-2 text-wrap text-break">Agence bibliographique de l’enseignement supérieur</h4>
             <div>227 av. Jean-Louis Viala CS 84308<br />34193 Montpellier Cedex 5</div>
@@ -83,21 +84,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import { useAuthService } from "@/composables/useAuthService";
 import { Logger } from "@/utils/Logger";
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
   faArrowUpRightFromSquare,
   faCircleArrowRight,
   faCircleQuestion,
   faComments,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 // Router
 const router = useRouter();
+const authService = useAuthService();
 
 // Versions
 const appVersion = import.meta.env.VITE_APP_VERSION as string;
@@ -164,6 +166,3 @@ onMounted(async () => {
   width: 30%;
 }
 </style>
-
-
-

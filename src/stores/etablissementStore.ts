@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
 import Etablissement from "@/core/Etablissement";
 import ContactEtablissement from "@/core/ContactEtablissement";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
+import { useEtablissementService } from "@/composables/useEtablissementService";
 import { useAuthStore } from "./authStore";
+
+const etablissementService = useEtablissementService();
 
 export const useEtablissementStore = defineStore("etablissement", {
   state: () => ({

@@ -27,17 +27,10 @@
             </v-col>
             <v-col cols="12" md="4" class="pa-3">
               <v-card-text class="fondGris">
-                <FontAwesomeIcon
-                  :icon="faCircleInfo"
-                  size="2x"
-                  style="color: #478dcb;"
-                />
-                <a
-                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#TutoDeDeclarationDesIP"
-                  target="_blank"
-                  class="pl-3 pb-6 text-body-1 font-weight-bold"
-                  >Consulter l'aide pour la déclaration des IP</a
-                >
+                <FontAwesomeIcon :icon="faCircleInfo" size="2x" style="color: #478dcb;" />
+                <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#TutoDeDeclarationDesIP"
+                  target="_blank" class="pl-3 pb-6 text-body-1 font-weight-bold">Consulter l'aide pour la déclaration
+                  des IP</a>
               </v-card-text>
             </v-col>
           </v-row>
@@ -45,45 +38,23 @@
             <v-col cols="8" class="pb-0">
               <v-divider />
               <div id="radioIP">
-                <v-radio-group
-                  v-model="typeIp"
-                  inline
-                  @change="
-                    clearChild(true);
-                    clearChild(false);
-                  "
-                >
-                  <v-radio
-                    v-for="n in 2"
-                    :key="n"
-                    :label="typesIp[n - 1]"
-                    :value="typesIp[n - 1]"
-                  />
+                <v-radio-group v-model="typeIp" inline @change="
+                  clearChild(true);
+                clearChild(false);
+                ">
+                  <v-radio v-for="n in 2" :key="n" :label="typesIp[n - 1]" :value="typesIp[n - 1]" />
                 </v-radio-group>
               </div>
             </v-col>
           </v-row>
           <v-row class="mt-0">
             <v-col cols="8">
-              <ModuleSegmentsIpPlage
-                :typeIp="typeIp"
-                typeAcces="ip"
-                ref="ip"
-                @FormModuleSegmentsIpPlageEvent="validate"
-                @alertSuccess="alertSuccess"
-                @alertError="alertError"
-                @focus="clearChild(false)"
-              />
+              <ModuleSegmentsIpPlage :typeIp="typeIp" typeAcces="ip" ref="ip" @FormModuleSegmentsIpPlageEvent="validate"
+                @alertSuccess="alertSuccess" @alertError="alertError" @focus="clearChild(false)" />
               <br />
-              <ModuleSegmentsIpPlage
-                :typeIp="typeIp"
-                typeAcces="plage"
-                ref="plage"
-                @FormModuleSegmentsIpPlageEvent="validate"
-                @alertSuccess="alertSuccess"
-                @alertError="alertError"
-                @focus="clearChild(true)"
-              />
+              <ModuleSegmentsIpPlage :typeIp="typeIp" typeAcces="plage" ref="plage"
+                @FormModuleSegmentsIpPlageEvent="validate" @alertSuccess="alertSuccess" @alertError="alertError"
+                @focus="clearChild(true)" />
             </v-col>
             <v-col cols="4">
               <v-card-text class="overflow-auto fondGris">
@@ -97,24 +68,13 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr
-                      v-for="(item, index) in arrayAjouterIp"
-                      :key="item.id ?? index"
-                    >
+                    <tr v-for="(item, index) in arrayAjouterIp" :key="item.id ?? index">
                       <td>{{ item.typeIp }}</td>
                       <td>{{ item.ip }}</td>
                       <td>
-                        <v-btn
-                          class="ma-0 pa-0 bouton-simple"
-                          variant="text"
-                          icon
-                          title="Supprimer"
-                          @click="supprimerIP(item.id, index)"
-                        >
-                          <FontAwesomeIcon
-                            :icon="faXmark"
-                            class="fa-orange"
-                          />
+                        <v-btn class="ma-0 pa-0 bouton-simple" variant="text" icon title="Supprimer"
+                          @click="supprimerIP(item.id, index)">
+                          <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
                         </v-btn>
                       </td>
                     </tr>
@@ -131,22 +91,21 @@
 </template>
 <style src="./style.css"></style>
 <script setup lang="ts">
-import { ref } from "vue";
-import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
-import { iPService } from "@/core/service/licencesnationales/IPService";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import { Logger } from "@/utils/Logger";
-import { Message, MessageType } from "@/core/CommonDefinition";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useAuthStore } from "@/stores/authStore";
+import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
+import { useIpService } from "@/composables/useIpService";
 import { useSnackbar } from "@/composables/useSnackbar";
+import { useAuthStore } from "@/stores/authStore";
+import { faCircleInfo, faReply, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import type { VForm } from "vuetify/components";
-import { faCircleInfo, faReply, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const router = useRouter();
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
+const iPService = useIpService();
 
 const typeIp = ref<string>("IPV4");
 const typesIp = ["IPV4", "IPV6"];
@@ -187,50 +146,21 @@ const supprimerIP = async (idIP: string, index: number) => {
     iPService
       .deleteIP(authStore.getToken, idIP)
       .then(response => {
-        const message: Message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = response.data.message;
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        scrollToMessage();
-
-        setTimeout(() => {
-          snackbar.hide();
-        }, 5000);
+        snackbar.success(response.data.message);
         arrayAjouterIp.value.splice(index, 1);
       })
       .catch(err => {
-        Logger.error(err?.toString?.() ?? err);
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err?.response?.data?.message ?? "";
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        scrollToMessage();
+        snackbar.error(err);
       });
   }
 };
 
 const alertSuccess = (evt: string) => {
-  const message: Message = new Message();
-  message.type = MessageType.VALIDATION;
-  message.texte = evt;
-  message.isSticky = true;
-  snackbar.show(message.text ?? message.texte ?? "");
-  scrollToMessage();
-
-  setTimeout(() => {
-    snackbar.hide();
-  }, 5000);
+  snackbar.success(evt);
 };
 
 const alertError = (evt: string) => {
-  const message: Message = new Message();
-  message.type = MessageType.ERREUR;
-  message.texte = evt;
-  message.isSticky = true;
-  snackbar.show(message.text ?? message.texte ?? "");
-  scrollToMessage();
+  snackbar.error(evt);
 };
 
 const clearChild = (isPlage: boolean) => {

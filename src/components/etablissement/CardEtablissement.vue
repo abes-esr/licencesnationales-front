@@ -5,31 +5,15 @@
       <ConfirmPopup ref="confirmRef" />
     </v-col>
     <v-container class=" elevation-0 pt-0">
-      <v-col
-        cols="12"
-        class="d-flex align-content-start justify-space-between flex-wrap mx-0 px-0 py-0"
-      >
+      <v-col cols="12" class="d-flex align-content-start justify-space-between flex-wrap mx-0 px-0 py-0">
         <v-card-title class="px-0">
           Information du compte
-          <v-tooltip
-            text="Exporter les infos du compte"
-            location="top"
-            open-delay="100"
-            theme="dark"
-            content-class="text-white"
-          >
+          <v-tooltip text="Exporter les infos du compte" location="top" open-delay="100" theme="dark"
+            content-class="text-white">
             <template v-slot:activator="{ props }">
-              <v-btn
-                icon
-                @click="downloadEtablissement"
-                class="bouton-simple"
-                v-bind="props"
-                :loading="isExportLoading"
-              >
-                <FontAwesomeIcon
-                  :icon="faDownload"
-                  class="mx-2 fa-lg"
-                />
+              <v-btn icon @click="downloadEtablissement" class="bouton-simple" v-bind="props"
+                :loading="isExportLoading">
+                <FontAwesomeIcon :icon="faDownload" class="mx-2 fa-lg" />
               </v-btn>
             </template>
           </v-tooltip>
@@ -44,108 +28,46 @@
         Compte créé le :
         {{ etablissement.dateCreation.toLocaleDateString() }}
       </span>
-      <v-btn
-        v-if="modificationModeDisabled"
-        class="mt-3" variant="tonal"
-        style="margin-right: 1em"
-        @click="entrerEnModification"
-      >
+      <v-btn v-if="modificationModeDisabled" class="mt-3" variant="tonal" style="margin-right: 1em"
+        @click="entrerEnModification">
         Modifier le compte
       </v-btn>
-      <v-btn
-        v-if="!modificationModeDisabled"
-        class="mt-3" variant="tonal"
-        @click="validerModifications"
-        style="margin-right: 1em"
-        color="success"
-      >
+      <v-btn v-if="!modificationModeDisabled" class="mt-3" variant="tonal" @click="validerModifications"
+        style="margin-right: 1em" color="success">
         Valider les modifications du compte
       </v-btn>
-      <v-btn
-        v-if="!modificationModeDisabled"
-        class="mt-3" variant="tonal"
-        @click="annulerModifications"
-      >
+      <v-btn v-if="!modificationModeDisabled" class="mt-3" variant="tonal" @click="annulerModifications">
         Réinitialiser les champs d'origine
       </v-btn>
-      <v-btn
-        v-if="modificationModeDisabled && getEtablissement.statut !== 'Validé'"
-        class="mt-3" variant="tonal"
-        style="margin-right: 1em"
-        :loading="buttonValidationLoading"
-        @click="validerEtablissement"
-      >
+      <v-btn v-if="modificationModeDisabled && getEtablissement.statut !== 'Validé'" class="mt-3" variant="tonal"
+        style="margin-right: 1em" :loading="buttonValidationLoading" @click="validerEtablissement">
         Valider le compte
       </v-btn>
-      <v-btn
-        v-if="modificationModeDisabled && getEtablissement.statut === 'Validé'"
-        class="btn-5  mt-3"
-        :loading="buttonValidationLoading"
-        @click="devaliderEtablissement"
-      >
+      <v-btn v-if="modificationModeDisabled && getEtablissement.statut === 'Validé'" class="btn-5  mt-3"
+        :loading="buttonValidationLoading" @click="devaliderEtablissement">
         Dévalider le compte
       </v-btn>
       <v-row class="d-flex justify-space-between flex-wrap ma-0 pa-0">
-        <v-col
-          cols="12"
-          md="6"
-          lg="6"
-          xl="6"
-          class="d-flex align-content-start justify-center flex-wrap px-0 pr-2"
-        >
+        <v-col cols="12" md="6" lg="6" xl="6" class="d-flex align-content-start justify-center flex-wrap px-0 pr-2">
           <v-card class="d-flex justify-space-between flex-column w-100 pa-4">
             <div class="d-flex justify-space-between align-center">
               <h2 class="mb-3">Etablissement</h2>
-              <v-tooltip
-                text="Non modifiable par l'utilisateur"
-                location="top"
-                open-delay="100"
-                theme="dark"
-                content-class="text-white"
-                v-if="!isAdmin"
-              >
+              <v-tooltip text="Non modifiable par l'utilisateur" location="top" open-delay="100" theme="dark"
+                content-class="text-white" v-if="!isAdmin">
                 <template v-slot:activator="{ props }">
-                  <FontAwesomeIcon
-                    v-bind="props"
-                    :icon="faLock"
-                    class="fa-2x mx-2"
-                  />
+                  <FontAwesomeIcon v-bind="props" :icon="faLock" class="fa-2x mx-2" />
                 </template>
               </v-tooltip>
             </div>
             <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-              <v-text-field
-                label="Siren"
-                placeholder="Siren"
-                variant="outlined"
-                v-model="etablissement.siren"
-                disabled
-                class="mt-1"
-              />
-              <v-text-field
-                label="Nom de l'établissement"
-                placeholder="Nom de l'établissement"
-                variant="outlined"
-                v-model="etablissement.nom"
-                :disabled="modificationModeDisabled"
-                class="mt-1"
-              />
-              <v-text-field
-                label="ID Abes"
-                placeholder="ID Abes"
-                variant="outlined"
-                v-model="etablissement.idAbes"
-                disabled
-                class="mt-1"
-              />
-              <v-select
-                label="Type d'établissement"
-                :items="typesEtab"
-                variant="outlined"
-                v-model="etablissement.typeEtablissement"
-                :disabled="modificationModeDisabled"
-                class="mt-1"
-              />
+              <v-text-field label="Siren" placeholder="Siren" variant="outlined" v-model="etablissement.siren" disabled
+                class="mt-1" />
+              <v-text-field label="Nom de l'établissement" placeholder="Nom de l'établissement" variant="outlined"
+                v-model="etablissement.nom" :disabled="modificationModeDisabled" class="mt-1" />
+              <v-text-field label="ID Abes" placeholder="ID Abes" variant="outlined" v-model="etablissement.idAbes"
+                disabled class="mt-1" />
+              <v-select label="Type d'établissement" :items="typesEtab" variant="outlined"
+                v-model="etablissement.typeEtablissement" :disabled="modificationModeDisabled" class="mt-1" />
               <div class="mt-1">
                 <h3 class="d-inline">Statut de l'établissement:</h3>
                 {{ etablissement.statut }}
@@ -157,130 +79,63 @@
             </div>
           </v-card>
         </v-col>
-        <v-col
-          cols="12"
-          md="6"
-          lg="6"
-          xl="6"
-          class="d-flex align-content-start justify-center flex-wrap px-0 pl-2"
-        >
+        <v-col cols="12" md="6" lg="6" xl="6" class="d-flex align-content-start justify-center flex-wrap px-0 pl-2">
           <v-card class="d-flex justify-space-between flex-column w-100 pa-4">
             <div class="d-flex justify-space-between align-center">
               <h2 class="mb-3">Contact</h2>
             </div>
             <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-              <v-text-field
-                label="Nom du contact"
-                placeholder="Nom du contact"
-                variant="outlined"
-                v-model="etablissement.contact.nom"
-                :disabled="modificationModeDisabled"
-                class="mt-1"
-              />
-              <v-text-field
-                label="Prénom du contact"
-                placeholder="Prénom du contact"
-                variant="outlined"
-                v-model="etablissement.contact.prenom"
-                :disabled="modificationModeDisabled"
-                class="mt-1"
-              />
-              <v-text-field
-                label="Téléphone du contact"
-                placeholder="Téléphone du contact"
-                variant="outlined"
-                v-model="etablissement.contact.telephone"
-                :disabled="modificationModeDisabled"
-                class="mt-1"
-              />
-              <v-text-field
-                label="Mail du contact"
-                placeholder="Mail du contact"
-                variant="outlined"
-                v-model="etablissement.contact.mail"
-                :disabled="modificationModeDisabled"
-                class="mt-1"
-              />
-              <v-text-field
-                label="Adresse du contact"
-                placeholder="Adresse du contact"
-                variant="outlined"
-                v-model="etablissement.contact.adresse"
-                :disabled="modificationModeDisabled"
-                class="mt-1"
-              />
-              <v-text-field
-                label="BP du contact"
-                placeholder="BP du contact"
-                variant="outlined"
-                v-model="etablissement.contact.boitePostale"
-                :disabled="modificationModeDisabled"
-                class="mt-1"
-              />
-              <v-text-field
-                label="Code Postal du contact"
-                placeholder="Code Postal du contact"
-                variant="outlined"
-                v-model="etablissement.contact.codePostal"
-                :disabled="modificationModeDisabled"
-                class="mt-1"
-              />
-              <v-text-field
-                label="Ville du contact"
-                placeholder="Ville du contact"
-                variant="outlined"
-                v-model="etablissement.contact.ville"
-                :disabled="modificationModeDisabled"
-                class="mt-1"
-              />
-              <v-text-field
-                label="Cedex du contact"
-                placeholder="Cedex du contact"
-                variant="outlined"
-                v-model="etablissement.contact.cedex"
-                :disabled="modificationModeDisabled"
-                class="mt-1"
-              />
+              <v-text-field label="Nom du contact" placeholder="Nom du contact" variant="outlined"
+                v-model="etablissement.contact.nom" :disabled="modificationModeDisabled" class="mt-1" />
+              <v-text-field label="Prénom du contact" placeholder="Prénom du contact" variant="outlined"
+                v-model="etablissement.contact.prenom" :disabled="modificationModeDisabled" class="mt-1" />
+              <v-text-field label="Téléphone du contact" placeholder="Téléphone du contact" variant="outlined"
+                v-model="etablissement.contact.telephone" :disabled="modificationModeDisabled" class="mt-1" />
+              <v-text-field label="Mail du contact" placeholder="Mail du contact" variant="outlined"
+                v-model="etablissement.contact.mail" :disabled="modificationModeDisabled" class="mt-1" />
+              <v-text-field label="Adresse du contact" placeholder="Adresse du contact" variant="outlined"
+                v-model="etablissement.contact.adresse" :disabled="modificationModeDisabled" class="mt-1" />
+              <v-text-field label="BP du contact" placeholder="BP du contact" variant="outlined"
+                v-model="etablissement.contact.boitePostale" :disabled="modificationModeDisabled" class="mt-1" />
+              <v-text-field label="Code Postal du contact" placeholder="Code Postal du contact" variant="outlined"
+                v-model="etablissement.contact.codePostal" :disabled="modificationModeDisabled" class="mt-1" />
+              <v-text-field label="Ville du contact" placeholder="Ville du contact" variant="outlined"
+                v-model="etablissement.contact.ville" :disabled="modificationModeDisabled" class="mt-1" />
+              <v-text-field label="Cedex du contact" placeholder="Cedex du contact" variant="outlined"
+                v-model="etablissement.contact.cedex" :disabled="modificationModeDisabled" class="mt-1" />
             </div>
           </v-card>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <v-btn
-            color="button"
-            class="bouton-supprimer"
-            :loading="buttonSuppresionLoading"
-            @click="supprimerEtablissement"
-          >
+          <v-btn color="button" class="bouton-supprimer" :loading="buttonSuppresionLoading"
+            @click="supprimerEtablissement">
             Supprimer le compte
           </v-btn>
         </v-col>
       </v-row>
     </v-container>
-    </v-container>
+  </v-container>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import Etablissement from "@/core/Etablissement";
-import { Message, MessageType } from "@/core/CommonDefinition";
-import { Logger } from "@/utils/Logger";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
-import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useAuthStore } from "@/stores/authStore";
+import { useEtablissementService } from "@/composables/useEtablissementService";
 import { useSnackbar } from "@/composables/useSnackbar";
+import Etablissement from "@/core/Etablissement";
+import { useAuthStore } from "@/stores/authStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { faDownload, faLock } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
 const etablissementStore = useEtablissementStore();
 const router = useRouter();
+const etablissementService = useEtablissementService();
 
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
 const etablissement = ref<Etablissement>(etablissementStore.getCurrentEtablissement);
@@ -296,13 +151,8 @@ const getEtablissement = computed(() => etablissementStore.getCurrentEtablisseme
 onMounted(() => {
   fetchListeType();
   if (!isAdmin.value) {
-    const message = new Message();
-    message.type = MessageType.ERREUR;
-    message.texte =
-      "Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnt";
-    message.isSticky = true;
-    snackbar.show(message.text ?? message.texte ?? "");
-    router.push({ name: "Home" }).catch(err => Logger.error(err as any));
+    snackbar.error("Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnt");
+    router.push({ name: "Home" });
   }
 });
 
@@ -310,17 +160,7 @@ async function fetchListeType() {
   try {
     typesEtab.value = await etablissementService.listeType();
   } catch (err: any) {
-    Logger.error(err.toString());
-    const message = new Message();
-    message.type = MessageType.ERREUR;
-    if (err instanceof LicencesNationalesApiError) {
-      message.texte =
-        "Fonctionnalité momentanement indisponible pour le moment. Réessayer plus tard";
-    } else {
-      message.texte = "Impossible d'exécuter l'action : " + err.message;
-    }
-    message.isSticky = true;
-    snackbar.show(message.text ?? message.texte ?? "");
+    snackbar.error(err)
   }
 }
 
@@ -343,33 +183,16 @@ async function supprimerEtablissement() {
     etablissementService
       .deleteEtab(etablissement.value.siren, authStore.getToken)
       .then(() => {
-        const message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = "Le compte a bien été supprimé";
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
-        setTimeout(() => {
-          snackbar.hide();
-          router.push({ name: "ListeEtab" }).catch(err => {
-            Logger.error(err.toString());
-          });
-        }, 4000);
+        snackbar.success("Le compte a bien été supprimé", {
+          onHide: () => {
+            router.push({ name: "ListeEtab" });
+          },
+          timeout: 4000
+        });
+
       })
       .catch(err => {
-        Logger.error(err.toString());
-        const message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err.message;
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
+        snackbar.error(err);
       })
       .finally(() => {
         buttonSuppresionLoading.value = false;
@@ -394,27 +217,10 @@ async function validerEtablissement() {
       .validerEtablissement(etablissement.value.siren, authStore.getToken)
       .then(response => {
         etablissementStore.updateCurrentEtablissement(etablissement.value);
-        const message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = response.data.message;
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
+        snackbar.success(response.data.message);
       })
       .catch((err: any) => {
-        Logger.error(err.toString());
-        const message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err.response?.data?.message ?? err.message;
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
+        snackbar.error(err);
       })
       .finally(() => {
         buttonValidationLoading.value = false;
@@ -439,27 +245,10 @@ async function devaliderEtablissement() {
       .devaliderEtablissement(etablissement.value.siren, authStore.getToken)
       .then(response => {
         etablissementStore.updateCurrentEtablissement(etablissement.value);
-        const message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = response.data.message;
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
+        snackbar.success(response.data.message);
       })
       .catch((err: any) => {
-        Logger.error(err.toString());
-        const message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err.response?.data?.message ?? err.message;
-        message.isSticky = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        const messageBox = document.getElementById("messageBox");
-        if (messageBox) {
-          window.scrollTo(0, messageBox.offsetTop);
-        }
+        snackbar.error(err);
       })
       .finally(() => {
         buttonValidationLoading.value = false;
@@ -469,16 +258,8 @@ async function devaliderEtablissement() {
   }
 }
 
-function clear() {
-  snackbar.hide();
-  router.push({ name: "ListeEtab" }).catch(err => {
-    Logger.error(err as any);
-  });
-}
-
 function entrerEnModification(): void {
-    console.log("ENTRY");
-
+  console.log("ENTRY");
   modificationModeDisabled.value = false;
 }
 
@@ -493,19 +274,10 @@ function validerModifications(): void {
       etablissementStore.updateCurrentEtablissement(etablissement.value);
     })
     .catch((err: any) => {
-      Logger.error(err.toString());
-      const message = new Message();
-      message.type = MessageType.ERREUR;
-      message.texte = err.message;
-      message.isSticky = true;
-      snackbar.show(message.text ?? message.texte ?? "");
-      const messageBox = document.getElementById("messageBox");
-      if (messageBox) {
-        window.scrollTo(0, messageBox.offsetTop);
-      }
+      snackbar.error(err);
     })
     .finally(() => {
-        console.log("FINAL VALID");
+      console.log("FINAL VALID");
 
       modificationModeDisabled.value = true;
     });
@@ -541,18 +313,7 @@ function downloadEtablissement(): void {
       isExportLoading.value = false;
     })
     .catch(err => {
-      Logger.error(err.toString());
-      const message = new Message();
-      message.type = MessageType.ERREUR;
-      if (err instanceof LicencesNationalesBadRequestApiError) {
-        message.texte = err.message;
-      } else {
-        message.texte = "Impossible d'exécuter l'action : " + err.message;
-      }
-      message.isSticky = true;
-
-      snackbar.show(message.text ?? message.texte ?? "");
-
+      snackbar.error(err);
       isExportLoading.value = false;
     });
 }

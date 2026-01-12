@@ -2,8 +2,11 @@ import { defineStore } from "pinia";
 import User from "@/core/User";
 import Etablissement from "@/core/Etablissement";
 import router from "@/router";
-import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
+import { useAuthService } from "@/composables/useAuthService";
+import { useEtablissementService } from "@/composables/useEtablissementService";
+
+const authService = useAuthService();
+const etablissementService = useEtablissementService();
 
 interface AuthState {
   user: User;

@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/stores/authStore";
 import { MessageType } from "@/core/CommonDefinition";
 import { useSnackbar } from "@/composables/useSnackbar";
-import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import { useAuthService } from "@/composables/useAuthService";
 
 import Login from "../views/Login.vue";
 import { createRouter, createWebHistory } from "vue-router";
@@ -172,6 +172,7 @@ const router = createRouter({
 });
 
 const DEFAULT_TITLE = "Licences Nationales";
+const authService = useAuthService();
 
 // ---- After Navigation ----
 router.afterEach((to) => {

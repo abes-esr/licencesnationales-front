@@ -1,4 +1,4 @@
-import { DataGouvApiError } from "@/core/service/data.gouv/exception/DataGouvApiError";
+import { DataGouvApiError } from "@/exception/data.gouv/DataGouvApiError";
 
 export class SirenNotFoundError extends DataGouvApiError {
   constructor(public message: string) {

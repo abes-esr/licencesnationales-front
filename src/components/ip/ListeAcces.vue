@@ -11,16 +11,9 @@
             aux informations de l'établissement
           </a>
         </div>
-        <v-btn
-          id="addIpButton"
-          class="my-2"
-          @click="router.push({ path: '/ajouterAcces/' })"
-        >
+        <v-btn id="addIpButton" class="my-2" @click="router.push({ path: '/ajouterAcces/' })">
           <span class="btnText">Ajouter une IP ou une plage IP</span>
-          <FontAwesomeIcon
-            :icon="faCirclePlus"
-            style="font-size:1.1rem"
-          />
+          <FontAwesomeIcon :icon="faCirclePlus" style="font-size:1.1rem" />
         </v-btn>
       </div>
     </v-container>
@@ -32,94 +25,46 @@
           {{ notification }}
         </v-alert>
 
-        <VDataTable
-          id="mytable"
-          :key="refreshKey"
-          :headers="headers"
-          :items="filteredAccesByStatut"
-          :items-per-page="10"
-          :items-per-page-options="[10, 25, 50, 75, { value: -1, title: 'Tous' }]"
-          :item-class="RowClasses"
-          :search="rechercher"
-          :loading="dataLoading"
-          no-data-text="Aucune IP déclarée pour l’instant. Déclarez une adresse ou une plage IP."
-          class="row-height-50"
-          density="comfortable"
-        >
+        <VDataTable id="mytable" :key="refreshKey" :headers="headers" :items="filteredAccesByStatut"
+          :items-per-page="10" :items-per-page-options="[10, 25, 50, 75, { value: -1, title: 'Tous' }]"
+          :item-class="RowClasses" :search="rechercher" :loading="dataLoading"
+          no-data-text="Aucune IP déclarée pour l’instant. Déclarez une adresse ou une plage IP." class="row-height-50"
+          density="comfortable">
           <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
             <tr>
-              <th
-                v-for="column in columns"
-                :key="column.key"
-                class="text-left"
-                @click="column.sortable ? toggleSort(column) : ''"
-              >
+              <th v-for="column in columns" :key="column.key" class="text-left"
+                @click="column.sortable ? toggleSort(column) : ''">
                 <div style="display: flex; align-items: center; white-space: nowrap;">
                   <span>{{ column.title }}</span>
 
-                  <v-icon
-                    v-if="column.sortable && !isSorted(column)"
-                    class="pl-2"
-                    size="small"
-                  >
+                  <v-icon v-if="column.sortable && !isSorted(column)" class="pl-2" size="small">
                     mdi-sort
                   </v-icon>
-                  <v-icon
-                    v-else-if="column.sortable"
-                    class="pl-2"
-                    size="small"
-                  >
+                  <v-icon v-else-if="column.sortable" class="pl-2" size="small">
                     {{ getSortIcon(column) }}
                   </v-icon>
 
-                  <v-menu
-                    v-if="column.key === 'statut' || column.key === 'typeIp'"
-                    offset-y
-                    :close-on-content-click="false"
-                  >
+                  <v-menu v-if="column.key === 'statut' || column.key === 'typeIp'" offset-y
+                    :close-on-content-click="false">
                     <template #activator="{ props }">
-                      <v-btn
-                        :aria-label="column.key"
-                        icon
-                        size="x-small"
-                        v-bind="props"
-                        variant="text"
-                        class="pa-0 ma-0"
-                      >
-                        <v-icon
-                          :color="column.key === 'statut' ? (statut ? 'primary' : '') : (type ? 'primary' : '')"
-                          size="small"
-                        >
+                      <v-btn :aria-label="column.key" icon size="x-small" v-bind="props" variant="text"
+                        class="pa-0 ma-0">
+                        <v-icon :color="column.key === 'statut' ? (statut ? 'primary' : '') : (type ? 'primary' : '')"
+                          size="small">
                           mdi-filter
                         </v-icon>
                       </v-btn>
                     </template>
-                    <div
-                      v-if="column.key === 'statut'"
-                      style="background-color: white"
-                      class="pl-4 pr-8"
-                    >
+                    <div v-if="column.key === 'statut'" style="background-color: white" class="pl-4 pr-8">
                       <ul>
-                        <li
-                          v-for="item in selectStatut"
-                          :key="item"
-                          @click="eventStatutChoice(item)"
-                        >
+                        <li v-for="item in selectStatut" :key="item" @click="eventStatutChoice(item)">
                           <a>{{ item }}</a>
                         </li>
                       </ul>
                     </div>
-                    <div
-                      v-if="column.key === 'typeIp'"
-                      style="background-color: white;"
-                      class="pl-4 pr-8"
-                    >
+                    <div v-if="column.key === 'typeIp'" style="background-color: white;" class="pl-4 pr-8">
                       <ul>
-                        <li
-                          v-for="item in selectType"
-                          :key="item"
-                          @click="eventTypeChoice(item)"
-                        >
+                        <li v-for="item in selectType" :key="item" @click="eventTypeChoice(item)">
                           <a>{{ item }}</a>
                         </li>
                       </ul>
@@ -133,47 +78,33 @@
           <template #top>
             <v-row>
               <v-col cols="12" sm="6" class="px-0">
-              <v-tooltip
-                text="Le téléchargement correspond à la vue filtrée"
-                location="top"
-                open-delay="100"
-                theme="dark"
-                content-class="text-white"
-              >
-                <template #activator="{ props }">
-                  <v-btn
-                    variant="text"
-                      @click="downloadIPs"
-                      class="bouton-simple pl-0"
-                      v-bind="props"
-                      :loading="isExportLoading"
-                    >
-                    <h2>Télécharger la liste des IP</h2>
-                    <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
-                  </v-btn>
-                </template>
-              </v-tooltip>
+                <v-tooltip text="Le téléchargement correspond à la vue filtrée" location="top" open-delay="100"
+                  theme="dark" content-class="text-white">
+                  <template #activator="{ props }">
+                    <v-btn variant="text" @click="downloadIPs" class="bouton-simple pl-0" v-bind="props"
+                      :loading="isExportLoading">
+                      <h2>Télécharger la liste des IP</h2>
+                      <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
+                    </v-btn>
+                  </template>
+                </v-tooltip>
               </v-col>
               <v-col cols="0" sm="3"></v-col>
               <v-col cols="12" sm="3" class="px-0">
-                <v-text-field
-                  v-model="rechercher"
-                  label="Chercher dans les colonnes"
-                  prepend-inner-icon="mdi-magnify"
-                  variant="outlined"
-                  clearable
-                />
+                <v-text-field v-model="rechercher" label="Chercher dans les colonnes" prepend-inner-icon="mdi-magnify"
+                  variant="outlined" clearable />
               </v-col>
             </v-row>
           </template>
 
           <template #item.commentaires="{ item }">
-              <v-tooltip location="bottom" theme="dark" content-class="text-white">
-                <template #activator="{ props }">
-                  <span v-bind="props" class="text-truncate d-block" :style="{width: '100px'}">{{ item.commentaires }}</span>
-                </template>
-                <span  >{{ item.commentaires }}</span>
-              </v-tooltip>
+            <v-tooltip location="bottom" theme="dark" content-class="text-white">
+              <template #activator="{ props }">
+                <span v-bind="props" class="text-truncate d-block" :style="{ width: '100px' }">{{ item.commentaires
+                  }}</span>
+              </template>
+              <span>{{ item.commentaires }}</span>
+            </v-tooltip>
           </template>
 
           <template #item.statut="{ item }">
@@ -191,23 +122,12 @@
           </template>
 
           <template #item.action="{ item }">
-            <v-btn
-              v-if="isAdmin && getCurrentEtab.statut == 'Validé'"
-              class="ma-0 pa-0 bouton-simple "
-              variant="flat"
-              title="Examiner"
-              @click.stop="openDialog(item)"
-            >
+            <v-btn v-if="isAdmin && getCurrentEtab.statut == 'Validé'" class="ma-0 pa-0 bouton-simple " variant="flat"
+              title="Examiner" @click.stop="openDialog(item)">
               <FontAwesomeIcon :icon="faMagnifyingGlass" />
             </v-btn>
-            <v-btn
-              v-if="!isAdmin"
-              class="ma-0 pa-0 bouton-simple "
-              icon
-              :loading="buttlonLoading"
-              title="Supprimer"
-              @click="supprimerIP(item.id, item.ip)"
-            >
+            <v-btn v-if="!isAdmin" class="ma-0 pa-0 bouton-simple " icon :loading="buttlonLoading" title="Supprimer"
+              @click="supprimerIP(item.id, item.ip)">
               <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
             </v-btn>
           </template>
@@ -283,30 +203,18 @@
           </v-expansion-panels>
           <br />
           <h3>Commentaire admin</h3>
-          <v-textarea
-            variant="outlined"
-            auto-grow
-            counter="4000"
-            :rules="rulesForm.commentaireAdmin"
-            rows="2"
-            label="Raisons de la suppression"
-            v-model="commentaires"
-            clearable
-          />
+          <v-textarea variant="outlined" auto-grow counter="4000" :rules="rulesForm.commentaireAdmin" rows="2"
+            label="Raisons de la suppression" v-model="commentaires" clearable />
         </v-card-text>
         <v-card-actions>
           <v-row>
             <v-col>
               <div style="float: right" class="actions ga-4 d-flex">
-                <v-btn
-                  @click="
-                    dialog = false;
-                    currentIPid = '';
-                    commentaires = '';
-                  "
-                  class="btn-6"
-                  variant="outlined"
-                >
+                <v-btn @click="
+                  dialog = false;
+                currentIPid = '';
+                commentaires = '';
+                " class="btn-6" variant="outlined">
                   Annuler
                 </v-btn>
                 <v-btn @click="addActionToBuffer('SUPPRIMER')" color="error" variant="flat">
@@ -328,18 +236,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import moment from "moment";
-import { Logger } from "@/utils/Logger";
-import { iPService } from "@/core/service/licencesnationales/IPService";
-import { Message, MessageType } from "@/core/CommonDefinition";
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
-import { AxiosResponse } from "axios";
-import { rulesForms } from "@/core/RulesForm";
 import InfosIPs from "@/components/ip/InfosIPs.vue";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useIpService } from "@/composables/useIpService";
+import { useSnackbar } from "@/composables/useSnackbar";
+import { rulesForms } from "@/core/RulesForm";
+import { useAuthStore } from "@/stores/authStore";
+import { useEtablissementStore } from "@/stores/etablissementStore";
+import { Logger } from "@/utils/Logger";
 import {
   faCheck,
   faCircleArrowRight,
@@ -350,12 +254,13 @@ import {
   faReply,
   faXmark
 } from "@fortawesome/free-solid-svg-icons";
-import { useAuthStore } from "@/stores/authStore";
-import { useSnackbar } from "@/composables/useSnackbar";
-import { useEtablissementStore } from "@/stores/etablissementStore";
-import { VDataTable } from "vuetify/components";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { AxiosResponse } from "axios";
+import moment from "moment";
+import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
-import { icon } from "@fortawesome/fontawesome-svg-core";
+import { VDataTable } from "vuetify/components";
 
 const props = defineProps<{
   sirenEtabSiAdmin?: string;
@@ -366,6 +271,7 @@ const snackbar = useSnackbar();
 const etablissementStore = useEtablissementStore();
 const router = useRouter();
 const { mdAndDown } = useDisplay();
+const iPService = useIpService();
 
 const rulesForm = rulesForms;
 const refreshKey = ref(0);
@@ -464,7 +370,7 @@ function setHeaders() {
         width: "9%"
       },
       { title: "Valeur", key: "ip", sortable: true, width: "20%" },
-      { title: "Statut", key: "statut", sortable: true, width: "13%"},
+      { title: "Statut", key: "statut", sortable: true, width: "13%" },
       { title: "Action", key: "buffer", sortable: false, width: "13%" },
       {
         title: "Dernière action de l’Abes",
@@ -477,7 +383,7 @@ function setHeaders() {
         key: "commentaires",
         sortable: true,
         width: "17%",
-        
+
       },
       { title: "Examiner", key: "action", sortable: false, width: "9%" }
     ];
@@ -783,17 +689,7 @@ function downloadIPs(): void {
       isExportLoading.value = false;
     })
     .catch(err => {
-      Logger.error(err.toString());
-      const message = new Message();
-      message.type = MessageType.ERREUR;
-      if (err instanceof LicencesNationalesBadRequestApiError) {
-        message.texte = err.message;
-      } else {
-        message.texte = "Impossible d'exécuter l'action : " + err.message;
-      }
-      message.isSticky = true;
-
-      snackbar.show(message.text ?? message.texte ?? "");
+      snackbar.error(err);
       isExportLoading.value = false;
     });
 }

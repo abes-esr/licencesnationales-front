@@ -1,36 +1,18 @@
 ﻿<template>
-  <v-snackbar
-    v-model="isOpen"
-    :color="snackbarColor"
-    :timeout="snackbarTimeout"
-    :multi-line="isMultiline"
-    id="messageBox"
-  >
+  <v-snackbar v-model="isOpen" :color="snackbarColor" :timeout="snackbarTimeout" :multi-line="isMultiline">
     <div class="d-flex">
       <div class="d-flex align-center flex-grow-1">
-        <FontAwesomeIcon
-          v-if="snackbarType === MessageType.ERREUR"
-          :icon="faBan"
-          class="fa-lg mr-5 mb-1 mt-2 icone-erreur"
-        />
-        <FontAwesomeIcon
-          v-if="snackbarType === MessageType.VALIDATION"
-          :icon="faCircleCheck"
-          class="fa-lg mr-5 mb-1 mt-2 icone-validation"
-        />
-        <FontAwesomeIcon
-          v-if="snackbarType === MessageType.AVERTISSEMENT"
-          :icon="faTriangleExclamation"
-          class="fa-lg mr-5 mb-1 mt-2 icone-avertissement"
-        />
-        <FontAwesomeIcon
-          v-if="snackbarType === MessageType.INFORMATION"
-          :icon="faCircleInfo"
-          class="fa-lg mr-5 mb-1 mt-2 icone-information"
-        />
+        <FontAwesomeIcon v-if="snackbarType === MessageType.ERREUR" :icon="faBan"
+          class="fa-lg mr-5 mb-1 mt-2 icone-erreur" />
+        <FontAwesomeIcon v-if="snackbarType === MessageType.VALIDATION" :icon="faCircleCheck"
+          class="fa-lg mr-5 mb-1 mt-2 icone-validation" />
+        <FontAwesomeIcon v-if="snackbarType === MessageType.AVERTISSEMENT" :icon="faTriangleExclamation"
+          class="fa-lg mr-5 mb-1 mt-2 icone-avertissement" />
+        <FontAwesomeIcon v-if="snackbarType === MessageType.INFORMATION" :icon="faCircleInfo"
+          class="fa-lg mr-5 mb-1 mt-2 icone-information" />
         <span v-for="m in snackbarText" :key="m" v-html="m"></span>
       </div>
-      <v-btn :color="snackbarColor" icon variant="text" @click="closeSnackBar">
+      <v-btn :color="snackbarColor" icon variant="text" @click="hide">
         <FontAwesomeIcon :icon="faXmark" class="fa-lg mx-2 icone-fermer" />
       </v-btn>
     </div>
@@ -73,7 +55,7 @@ const isOpen = computed({
   get: () => state.isDisplayed,
   set: value => {
     if (!value) {
-      closeSnackBar();
+      hide();
     }
   }
 });
@@ -86,9 +68,6 @@ const isMultiline = computed(() => state.multiline);
 const snackbarText = computed(() => state.text.split("\n"));
 const snackbarType = computed(() => state.type);
 
-function closeSnackBar() {
-  hide();
-}
 </script>
 
 <style scoped>

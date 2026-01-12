@@ -34,7 +34,7 @@
 import MotDePasse from "@/components/authentification/MotDePasse.vue";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { Action } from "@/core/CommonDefinition";
-import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import { useAuthService } from "@/composables/useAuthService";
 import { useAuthStore } from "@/stores/authStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -43,6 +43,7 @@ import type { VForm } from "vuetify/components";
 const router = useRouter();
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
+const authService = useAuthService();
 
 const form = ref<VForm | null>(null);
 const motDePasse = ref<InstanceType<typeof MotDePasse> | null>(null);

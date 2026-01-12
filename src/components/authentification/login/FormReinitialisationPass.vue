@@ -45,7 +45,7 @@ import MotDePasse from "@/components/authentification/MotDePasse.vue";
 import { useRecaptcha } from "@/composables/useRecaptcha";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { Action } from "@/core/CommonDefinition";
-import { authService } from "@/core/service/licencesnationales/AuthentificationService";
+import { useAuthService } from "@/composables/useAuthService";
 import { Logger } from "@/utils/Logger";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -55,6 +55,7 @@ import type { VForm } from "vuetify/components";
 
 const router = useRouter();
 const snackbar = useSnackbar();
+const authService = useAuthService();
 const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
 
 const resetToken = ref("");

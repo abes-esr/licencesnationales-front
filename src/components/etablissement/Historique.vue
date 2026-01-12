@@ -2,12 +2,7 @@
   <div>
     <v-container class="pb-0">
       <h1>Historique par établissement</h1>
-      <v-alert
-        v-if="message"
-        type="error"
-        density="compact"
-        class="mt-2"
-      >
+      <v-alert v-if="message" type="error" density="compact" class="mt-2">
         {{ message }}
       </v-alert>
     </v-container>
@@ -18,18 +13,9 @@
           <v-col cols="1" class="d-none d-md-flex"></v-col>
           <v-col cols="12" md="10">
             <v-card-text class="fondGris">
-              <v-autocomplete
-                v-model="selectedSiren"
-                :items="etabs"
-                item-title="nom"
-                item-value="siren"
-                label="Etablissement"
-                placeholder="Sélectionner un établissement"
-                persistent-placeholder
-                variant="outlined"
-                density="comfortable"
-                @update:model-value="getHistorique"
-              />
+              <v-autocomplete v-model="selectedSiren" :items="etabs" item-title="nom" item-value="siren"
+                label="Etablissement" placeholder="Sélectionner un établissement" persistent-placeholder
+                variant="outlined" density="comfortable" @update:model-value="getHistorique" />
             </v-card-text>
           </v-col>
         </v-row>
@@ -59,14 +45,12 @@
                     <td>{{ item.event }}</td>
                     <td>
                       <span v-for="(value, name) in item" :key="name">
-                        <span
-                          v-if="
-                            value !== null &&
-                            name != 'event' &&
-                            name != 'date' &&
-                            name != 'siren'
-                          "
-                        >
+                        <span v-if="
+                          value !== null &&
+                          name != 'event' &&
+                          name != 'date' &&
+                          name != 'siren'
+                        ">
                           {{ name }} : {{ value }},&nbsp;
                         </span>
                       </span>
@@ -91,13 +75,11 @@
                     <td>{{ item.event }}</td>
                     <td>
                       <span v-for="(value, name) in item" :key="name">
-                        <span
-                          v-if="
-                            value !== null &&
-                            name != 'event' &&
-                            name != 'date'
-                          "
-                        >
+                        <span v-if="
+                          value !== null &&
+                          name != 'event' &&
+                          name != 'date'
+                        ">
                           {{ name }} : {{ value }},&nbsp;
                         </span>
                       </span>
@@ -114,16 +96,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
-import { iPService } from "@/core/service/licencesnationales/IPService";
-import { Message, MessageType } from "@/core/CommonDefinition";
-import { useAuthStore } from "@/stores/authStore";
+import { useEtablissementService } from "@/composables/useEtablissementService";
+import { useIpService } from "@/composables/useIpService";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Etablissement from "@/core/Etablissement";
+import { useAuthStore } from "@/stores/authStore";
+import { onMounted, ref } from "vue";
 
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
+const etablissementService = useEtablissementService();
+const iPService = useIpService();
 
 const etabs = ref<Array<Etablissement>>([]);
 const message = ref("");
@@ -145,11 +128,7 @@ function collecterEtab() {
       etabs.value = response;
     })
     .catch(err => {
-      const newMessage = new Message();
-      newMessage.type = MessageType.ERREUR;
-      newMessage.texte = "Impossible d'exécuter l'action : " + err.message;
-      newMessage.isSticky = true;
-      snackbar.show(newMessage);
+      snackbar.error(err);
     });
 }
 
@@ -166,11 +145,7 @@ function getHistorique(siren: string) {
       etabHisto.value = response.data;
     })
     .catch(err => {
-      const newMessage = new Message();
-      newMessage.type = MessageType.ERREUR;
-      newMessage.texte = err.message;
-      newMessage.isSticky = true;
-      snackbar.show(newMessage);
+      snackbar.error(err);
     });
 
   iPService
@@ -179,11 +154,7 @@ function getHistorique(siren: string) {
       ipHisto.value = response.data;
     })
     .catch(err => {
-      const newMessage = new Message();
-      newMessage.type = MessageType.ERREUR;
-      newMessage.texte = err.message;
-      newMessage.isSticky = true;
-      snackbar.show(newMessage);
+      snackbar.error(err);
     });
 }
 </script>

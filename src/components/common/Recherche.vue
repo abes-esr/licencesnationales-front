@@ -116,9 +116,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { rulesForm } from "@/core/RulesForm";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
-import { editeurService } from "@/core/service/licencesnationales/EditeurService";
-import { iPService } from "@/core/service/licencesnationales/IPService";
+import { useEtablissementService } from "@/composables/useEtablissementService";
+import { useEditeurService } from "@/composables/useEditeurService";
+import { useIpService } from "@/composables/useIpService";
 import { useAuthStore } from "@/stores/authStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { useEditeurStore } from "@/stores/editeurStore";
@@ -128,6 +128,9 @@ const router = useRouter();
 const authStore = useAuthStore();
 const etablissementStore = useEtablissementStore();
 const editeurStore = useEditeurStore();
+const etablissementService = useEtablissementService();
+const editeurService = useEditeurService();
+const iPService = useIpService();
 
 const criteres = ref("");
 const domaine = ref("");

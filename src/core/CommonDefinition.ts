@@ -36,11 +36,3 @@ export enum MessageType {
   AVERTISSEMENT,
   VALIDATION
 }
-
-export class Message {
-  isDisplayed = false;
-  sticky = false;
-  multiline = true;
-  type: MessageType = MessageType.INFORMATION;
-  texte = "";
-}

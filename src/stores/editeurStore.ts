@@ -1,7 +1,9 @@
 import { defineStore } from "pinia";
 import Editeur from "@/core/Editeur";
-import { editeurService } from "@/core/service/licencesnationales/EditeurService";
+import { useEditeurService } from "@/composables/useEditeurService";
 import { useAuthStore } from "./authStore";
+
+const editeurService = useEditeurService();
 
 export const useEditeurStore = defineStore("editeur", {
   state: () => ({

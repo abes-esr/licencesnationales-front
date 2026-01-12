@@ -11,24 +11,11 @@
           <v-col cols="10">
             <v-radio label="Je connais le SIREN de mon etablissement" :value="true" />
             <v-form ref="formSIREN">
-              <v-text-field
-                variant="outlined"
-                label="SIREN"
-                placeholder="SIREN"
-                v-model="siren"
-                maxlength="9"
-                :rules="rulesForms.siren"
-                required
-                @keyup.enter="validate"
-                :disabled="!sirenRadio"
-              />
+              <v-text-field variant="outlined" label="SIREN" placeholder="SIREN" v-model="siren" maxlength="9"
+                :rules="rulesForms.siren" required @keyup.enter="validate" :disabled="!sirenRadio" />
               <v-icon> mdi-information </v-icon>
-              <a
-                href="https://annuaire-entreprises.data.gouv.fr/"
-                target="_blank"
-                style="font-size: 1.1rem"
-                >Trouver le SIREN de votre etablissement</a
-              >
+              <a href="https://annuaire-entreprises.data.gouv.fr/" target="_blank" style="font-size: 1.1rem">Trouver le
+                SIREN de votre etablissement</a>
             </v-form>
           </v-col>
         </v-row>
@@ -37,17 +24,9 @@
           <v-col cols="10">
             <v-radio label="Je connais l'adresse de contact de mon etablissement :" :value="false" />
             <v-form ref="formMail">
-              <v-text-field
-                variant="outlined"
-                label="Adresse mail de contact"
-                placeholder="Adresse mail de contact"
-                type="mail"
-                v-model="mail"
-                :rules="rulesForms.email"
-                required
-                @keyup.enter="validate"
-                :disabled="sirenRadio"
-              />
+              <v-text-field variant="outlined" label="Adresse mail de contact" placeholder="Adresse mail de contact"
+                type="mail" v-model="mail" :rules="rulesForms.email" required @keyup.enter="validate"
+                :disabled="sirenRadio" />
             </v-form>
           </v-col>
         </v-row>
@@ -66,15 +45,16 @@
 </template>
 
 <script setup lang="ts">
+import { useAuthService } from "@/composables/useAuthService";
 import { useRecaptcha } from "@/composables/useRecaptcha";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { rulesForms } from "@/core/RulesForm";
-import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import { LicencesNationalesBadRequestApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesBadRequestApiError";
+import { LicencesNationalesBadRequestApiError } from "@/exception/licencesnationales/LicencesNationalesBadRequestApiError";
 import { ref } from "vue";
 import type { VForm } from "vuetify/components";
 
 const snackbar = useSnackbar();
+const authService = useAuthService();
 const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
 
 const siren = ref("");

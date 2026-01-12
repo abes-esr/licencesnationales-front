@@ -1,11 +1,6 @@
 <template>
   <v-container elevation="0" class="pa-0">
-    <v-form
-      ref="formCreationCompte"
-      class="elevation-0"
-      :disabled="isDisableForm"
-      autocomplete="on"
-    >
+    <v-form ref="formCreationCompte" class="elevation-0" :disabled="isDisableForm" autocomplete="on">
       <h1 v-if="action === Action.CREATION" class="pl-3">
         Créer le compte de votre établissement
       </h1>
@@ -13,17 +8,13 @@
         {{ etablissement.nom }}
       </h1>
       <v-container class="pa-0">
-        <div         v-if="action === Action.CREATION"
- class="d-flex flex-row align-center">
-      <h2
-        @click="allerAConnexion"
-        class="pl-3"
-      >
-        Votre établissement a déjà un compte ?
-        <a class="bouton-simple elevation-0 large">S'authentifier</a>
-      </h2>
-      <v-icon small>mdi-arrow-right-circle-outline </v-icon>
-      </div>
+        <div v-if="action === Action.CREATION" class="d-flex flex-row align-center">
+          <h2 @click="allerAConnexion" class="pl-3">
+            Votre établissement a déjà un compte ?
+            <a class="bouton-simple elevation-0 large">S'authentifier</a>
+          </h2>
+          <v-icon small>mdi-arrow-right-circle-outline </v-icon>
+        </div>
         <v-col cols="12" md="6" lg="6" xl="6">
         </v-col>
         <v-col cols="12" md="6" lg="6" xl="6" v-if="returnLink">
@@ -39,10 +30,7 @@
         <v-row v-if="action === Action.CREATION">
           <v-col cols="12" md="6" lg="6" xl="6">
             <v-alert variant="outlined" density="compact">
-              <FontAwesomeIcon
-                :icon="faTriangleExclamation"
-                class="mx-2 icone-attention"
-              />
+              <FontAwesomeIcon :icon="faTriangleExclamation" class="mx-2 icone-attention" />
               <h4 class="mb-1">
                 Avant de créer votre compte, vérifier l'éligibilité de votre
                 établissement
@@ -54,205 +42,124 @@
                 permettre la déclaration des adresses IP autorisées, l'Abes met
                 à la disposition des professionnels de la documentation cette
                 application dédiée à la gestion des accès.
-                <a
-                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
-                  target="_blank"
-                  >Vérifier l'éligibilité de votre établissement.</a
-                >
+                <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+                  target="_blank">Vérifier l'éligibilité de votre établissement.</a>
               </p>
-              <v-checkbox
-                required
-                :rules="rulesForms.checkboxRules"
-                label="Je confirme que mon établissement est éligible"
-              />
+              <v-checkbox required :rules="rulesForms.checkboxRules"
+                label="Je confirme que mon établissement est éligible" />
             </v-alert>
           </v-col>
         </v-row>
-              <v-card>
+        <v-card>
 
-        <div
-          class="mx-9"
-          v-if="
+          <div class="mx-9" v-if="
             (action === Action.MODIFICATION && isAdmin) ||
-              action === Action.CREATION ||
-              action === Action.FUSION ||
-              action === Action.SCISSION
-          "
-        >
-          <v-row>
-            <v-card-title>Informations de l'établissement</v-card-title>
-          </v-row>
-          <v-divider class="mb-4"></v-divider>
-          <div class="mx-9">
+            action === Action.CREATION ||
+            action === Action.FUSION ||
+            action === Action.SCISSION
+          ">
             <v-row>
-              <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
-                <v-row>
-                  <v-text-field
-                    variant="outlined"
-                    label="Nom de l'établissement"
-                    placeholder="Nom de l'établissement"
-                    name="organization"
-                    autocomplete="organization"
-                    v-model="etablissement.nom"
-                    :rules="rulesForms.nomEtabRules"
-                    :disabled="action === Action.MODIFICATION && !isAdmin"
-                    required
-                    @keyup.enter="validate"
-                  />
-                </v-row>
-                <v-row>
-                  <v-col :cols="12" class="pa-0">
-                    <v-text-field
-                      variant="outlined"
-                      label="SIREN"
-                      placeholder="SIREN"
-                      maxlength="9"
-                      name="siren"
-                      autocomplete="on"
-                      v-model="etablissement.siren"
-                      :rules="rulesForms.siren"
-                      required
-                      @input="checkSiren"
-                      @keyup.enter="validate"
-                      :disabled="action === Action.MODIFICATION"
-                    />
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-chip
-                    class="ma-2"
-                    :class="checkSirenColor"
-                    label
-                    v-if="
-                      action == Action.CREATION ||
-                        action == Action.FUSION ||
-                        action == Action.SCISSION
-                    "
-                  >
-                    SIREN : {{ checkSirenAPI }}
-                  </v-chip>
-                </v-row>
-                <v-row v-if="action == Action.MODIFICATION">
-                  <v-text-field
-                    variant="outlined"
-                    label="ID Abes"
-                    placeholder="ID Abes"
-                    v-model="etablissement.idAbes"
-                    disabled
-                  />
-                </v-row>
-              </v-col>
-              <v-col cols="0" md="1" lg="1" xl="1" class="pa-0"></v-col>
-              <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
-                <v-row>
-                  <v-select
-                    variant="outlined"
-                    v-model="etablissement.typeEtablissement"
-                    :items="typesEtab"
-                    label="Type d'établissement"
-                    placeholder="Type d'établissement"
-                    :disabled="action === Action.MODIFICATION && !isAdmin"
-                    :rules="rulesForms.typeEtabRules"
-                    required
-                  />
-                </v-row>
-                <v-row>
-                  <v-alert
-                    variant="outlined"
-                    v-if="action == Action.CREATION"
-                    style="width: 100%"
-                  >
-                    <FontAwesomeIcon
-                      :icon="faCircleInfo"
-                      class="fa-2x mr-5 mb-1 icone-information"
-                    />
-                    <a
-                      class="noUnderlineLink"
-                      href="https://annuaire-entreprises.data.gouv.fr/"
-                      target="_blank"
-                      >Trouver le SIREN de votre établissement</a
-                    >
-                  </v-alert>
-                </v-row>
-              </v-col>
+              <v-card-title>Informations de l'établissement</v-card-title>
             </v-row>
+            <v-divider class="mb-4"></v-divider>
+            <div class="mx-9">
+              <v-row>
+                <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
+                  <v-row>
+                    <v-text-field variant="outlined" label="Nom de l'établissement" placeholder="Nom de l'établissement"
+                      name="organization" autocomplete="organization" v-model="etablissement.nom"
+                      :rules="rulesForms.nomEtabRules" :disabled="action === Action.MODIFICATION && !isAdmin" required
+                      @keyup.enter="validate" />
+                  </v-row>
+                  <v-row>
+                    <v-col :cols="12" class="pa-0">
+                      <v-text-field variant="outlined" label="SIREN" placeholder="SIREN" maxlength="9" name="siren"
+                        autocomplete="on" v-model="etablissement.siren" :rules="rulesForms.siren" required
+                        @input="checkSiren" @keyup.enter="validate" :disabled="action === Action.MODIFICATION" />
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-chip class="ma-2" :class="checkSirenColor" label v-if="
+                      action == Action.CREATION ||
+                      action == Action.FUSION ||
+                      action == Action.SCISSION
+                    ">
+                      SIREN : {{ checkSirenAPI }}
+                    </v-chip>
+                  </v-row>
+                  <v-row v-if="action == Action.MODIFICATION">
+                    <v-text-field variant="outlined" label="ID Abes" placeholder="ID Abes"
+                      v-model="etablissement.idAbes" disabled />
+                  </v-row>
+                </v-col>
+                <v-col cols="0" md="1" lg="1" xl="1" class="pa-0"></v-col>
+                <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
+                  <v-row>
+                    <v-select variant="outlined" v-model="etablissement.typeEtablissement" :items="typesEtab"
+                      label="Type d'établissement" placeholder="Type d'établissement"
+                      :disabled="action === Action.MODIFICATION && !isAdmin" :rules="rulesForms.typeEtabRules"
+                      required />
+                  </v-row>
+                  <v-row>
+                    <v-alert variant="outlined" v-if="action == Action.CREATION" style="width: 100%">
+                      <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 icone-information" />
+                      <a class="noUnderlineLink" href="https://annuaire-entreprises.data.gouv.fr/"
+                        target="_blank">Trouver le SIREN de votre établissement</a>
+                    </v-alert>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </div>
           </div>
-        </div>
-        <div class="mx-9">
-          <v-card-title>
-            Information Contact
-          </v-card-title>
-          <v-divider class="mb-4"></v-divider>
-          <Contact
-            ref="formContact"
-            :action="action"
-            :contact="etablissement.contact"
-            :isDisableForm="isDisableForm"
-            class="mx-9"
-          />
-        </div>
-      </v-card>
-      <v-card-actions v-if="action !== Action.SCISSION">
-        <v-spacer class="d-none d-sm-flex"></v-spacer>
-        <v-col
-          cols="12"
-          md="4"
-          lg="4"
-          xl="4"
-          class="d-flex justify-space-around flex-wrap"
-          style="float: right;"
-        >
-          <v-row>
-            <v-btn
-              @click="clear"
-              :disabled="isDisableForm"
-              variant="outlined"
+          <div class="mx-9">
+            <v-card-title>
+              Information Contact
+            </v-card-title>
+            <v-divider class="mb-4"></v-divider>
+            <Contact ref="formContact" :action="action" :contact="etablissement.contact" :isDisableForm="isDisableForm"
+              class="mx-9" />
+          </div>
+        </v-card>
+        <v-card-actions v-if="action !== Action.SCISSION">
+          <v-spacer class="d-none d-sm-flex"></v-spacer>
+          <v-col cols="12" md="6" lg="4" xl="4" class="d-flex justify-space-around flex-wrap" style="float: right;">
+            <v-row>
+              <v-btn @click="clear" :disabled="isDisableForm" variant="outlined">
+                Annuler</v-btn>
 
-            >
-              Annuler</v-btn
-            >
-            
-            <v-btn
-              class="ml-4"
-              :loading="buttonLoading"
-              :disabled="isDisableForm"
-              @click="validate"
-              variant="elevated"
-            >
-              Enregistrer
-              <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
-            </v-btn>
-          </v-row>
-        </v-col>
-      </v-card-actions>
+              <v-btn class="ml-4" :loading="buttonLoading" :disabled="isDisableForm" @click="validate"
+                variant="elevated">
+                Enregistrer
+                <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
+              </v-btn>
+            </v-row>
+          </v-col>
+        </v-card-actions>
       </v-container>
     </v-form>
   </v-container>
 </template>
 
 <script setup lang="ts">
+import Contact from "@/components/etablissement/Contact.vue";
+import { useDataGouvService } from "@/composables/useDataGouvService";
+import { useEtablissementService } from "@/composables/useEtablissementService";
+import { useSnackbar } from "@/composables/useSnackbar";
+import {
+  Action as ActionEnum
+} from "@/core/CommonDefinition";
+import Etablissement from "@/core/Etablissement";
+import { rulesForms } from "@/core/RulesForm";
+import { DataGouvApiError } from "@/exception/data.gouv/DataGouvApiError";
+import { SirenNotFoundError } from "@/exception/data.gouv/SirenNotFoundError";
+import { useAuthStore } from "@/stores/authStore";
+import { useEtablissementStore } from "@/stores/etablissementStore";
+import { Logger } from "@/utils/Logger";
+import { faCircleInfo, faReply, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { Logger } from "@/utils/Logger";
-import { serviceGouv } from "@/core/service/data.gouv/DataGouvApiService";
-import { SirenNotFoundError } from "@/core/service/data.gouv/exception/SirenNotFoundError";
-import { DataGouvApiError } from "@/core/service/data.gouv/exception/DataGouvApiError";
-import { etablissementService } from "@/core/service/licencesnationales/EtablissementService";
-import { rulesForms } from "@/core/RulesForm";
-import Etablissement from "@/core/Etablissement";
-import {
-  Action as ActionEnum,
-  Message,
-  MessageType
-} from "@/core/CommonDefinition";
-import Contact from "@/components/etablissement/Contact.vue";
-import { LicencesNationalesApiError } from "@/core/service/licencesnationales/exception/LicencesNationalesApiError";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useAuthStore } from "@/stores/authStore";
-import { useSnackbar } from "@/composables/useSnackbar";
-import { useEtablissementStore } from "@/stores/etablissementStore";
 import type { VForm } from "vuetify/components";
-import { faCircleInfo, faReply, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   action: ActionEnum | keyof typeof ActionEnum;
@@ -271,6 +178,8 @@ const emit = defineEmits<{
 const router = useRouter();
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
+const dataGouvService = useDataGouvService();
+const etablissementService = useEtablissementService();
 const etablissementStore = useEtablissementStore();
 
 const action = computed<ActionEnum>(() =>
@@ -281,22 +190,22 @@ const action = computed<ActionEnum>(() =>
 
 const etablissement = ref<Etablissement>(new Etablissement());
 
-  etablissement.value = etablissementStore.getCurrentEtablissement;
-  watch(
-    () => etablissementStore.currentEtablissement,
-    () => {
-      etablissement.value = etablissementStore.getCurrentEtablissement;
-    },
-    { immediate: true }
-  );
+etablissement.value = etablissementStore.getCurrentEtablissement;
+watch(
+  () => etablissementStore.currentEtablissement,
+  () => {
+    etablissement.value = etablissementStore.getCurrentEtablissement;
+  },
+  { immediate: true }
+);
 
-  watch(
-    () => authStore.getEtablissementConnecte,
-    () => {
-      etablissementStore.setCurrentEtablissement(authStore.getEtablissementConnecte);
-    },
-    { immediate: true }
-  );
+watch(
+  () => authStore.getEtablissementConnecte,
+  () => {
+    etablissementStore.setCurrentEtablissement(authStore.getEtablissementConnecte);
+  },
+  { immediate: true }
+);
 
 const Action = ActionEnum;
 const isAdmin = computed(() => authStore.isAdmin);
@@ -350,23 +259,7 @@ const fetchListeType = async () => {
     isDisableForm.value = false;
     typesEtab.value = result;
   } catch (err: any) {
-    Logger.error(err?.toString?.() ?? err);
-    const message: Message = new Message();
-    message.type = MessageType.ERREUR;
-    if (err instanceof LicencesNationalesApiError) {
-      isDisableForm.value = true;
-      message.texte =
-        "Fonctionnalité momentanement indisponible pour le moment. Réessayer plus tard";
-    } else {
-      message.texte =
-        "Impossible d'exécuter l'action : " + (err?.message ?? "");
-    }
-    message.isSticky = true;
-    try {
-      snackbar.show(message.text ?? message.texte ?? "");
-    } catch (error: any) {
-      Logger.error(error?.toString?.() ?? error);
-    }
+    snackbar.error(err);
   }
 };
 
@@ -378,16 +271,7 @@ const allerAConnexion = () => {
 };
 
 const allerPageAccueil = () => {
-  router.push({ name: "Login" }).catch(err => {
-    Logger.error(err);
-  });
-};
-
-const scrollToMessage = () => {
-  const messageBox = document.getElementById("messageBox");
-  if (messageBox) {
-    window.scrollTo(0, messageBox.offsetTop);
-  }
+  router.push({ name: "Login" })
 };
 
 const recaptcha = async () => {
@@ -410,24 +294,14 @@ const validate = async () => {
     if (isFormValide && isSubFormValide) {
       await send();
     } else {
-      const message: Message = new Message();
-      message.type = MessageType.ERREUR;
-      message.texte = "Des champs ne remplissent pas les conditions";
-
       if (
         checkSirenAPI.value === "inconnu" ||
         checkSirenAPI.value === "Inconnu"
       ) {
-        message.texte += "<br /> Le SIREN de l'établissement est inconnu";
+        snackbar.error("Le SIREN de l'établissement est inconnu");
+      } else {
+        snackbar.error("Certains champs du formulaire sont invalides");
       }
-
-      message.isSticky = true;
-      try {
-        snackbar.show(message.text ?? message.texte ?? "");
-      } catch (err: any) {
-        Logger.error(err?.toString?.() ?? err);
-      }
-      scrollToMessage();
     }
   }
   buttonLoading.value = false;
@@ -441,27 +315,11 @@ const send = async () => {
     etablissementService
       .creerEtablissement(etablissement.value, tokenrecaptcha.value)
       .then(() => {
-        const message: Message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte =
-          "Le compte a été enregistré. Pour y accéder, merci de vous authentifier";
-        message.isSticky = true;
-        returnLink.value = true;
-        snackbar.show(message.text ?? message.texte ?? "");
+        snackbar.success("Le compte a été enregistré. Pour y accéder, merci de vous authentifier");
         router.push("/");
       })
       .catch(err => {
-        Logger.error(err?.toString?.() ?? err);
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err?.message ?? "";
-        message.isSticky = true;
-        try {
-          snackbar.show(message.text ?? message.texte ?? "");
-        } catch (error: any) {
-          Logger.error(error?.toString?.() ?? error);
-        }
-        scrollToMessage();
+        snackbar.error(err);
       })
       .finally(() => {
         buttonLoading.value = false;
@@ -474,14 +332,8 @@ const send = async () => {
         authStore.isAdmin
       )
       .then(() => {
-        const message: Message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = "Votre compte a bien été modifié";
-        message.isSticky = true;
-        returnLink.value = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        scrollToMessage();
-        
+        snackbar.success("Votre compte a bien été modifié.");
+
         if (
           etablissement.value.siren ===
           authStore.getEtablissementConnecte.siren
@@ -490,16 +342,7 @@ const send = async () => {
         }
       })
       .catch(err => {
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err?.message ?? "";
-        message.isSticky = true;
-        try {
-          snackbar.show(message.text ?? message.texte ?? "");
-        } catch (error: any) {
-          Logger.error(error?.toString?.() ?? error);
-        }
-        scrollToMessage();
+        snackbar.error(err);
       })
       .finally(() => {
         buttonLoading.value = false;
@@ -512,27 +355,11 @@ const send = async () => {
       })
       .then(() => {
         clear();
-        const message: Message = new Message();
-        message.type = MessageType.VALIDATION;
-        message.texte = "Fusion effectuée.";
-        message.isSticky = true;
-        returnLink.value = true;
-        snackbar.show(message.text ?? message.texte ?? "");
-        router.push({ name: "ListeEtab" }).catch(err => {
-          Logger.error(err);
-        });
+        snackbar.success("La fusion a bien été effectuée.");
+        router.push({ name: "ListeEtab" })
       })
       .catch(err => {
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err?.message ?? "";
-        message.isSticky = true;
-        try {
-          snackbar.show(message.text ?? message.texte ?? "");
-        } catch (error: any) {
-          Logger.error(error?.toString?.() ?? error);
-        }
-        scrollToMessage();
+        snackbar.error(err);
       })
       .finally(() => {
         buttonLoading.value = false;
@@ -551,7 +378,7 @@ const checkSiren = async () => {
     checkSirenColor.value = "siren-default";
     if (etablissement.value.siren.length === 9) {
       try {
-        const data = await serviceGouv.checkSiren(etablissement.value.siren);
+        const data = await dataGouvService.checkSiren(etablissement.value.siren);
         checkSirenAPI.value = data;
         checkSirenColor.value = "siren-ok";
       } catch (err: any) {
