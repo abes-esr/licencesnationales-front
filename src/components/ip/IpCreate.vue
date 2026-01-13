@@ -49,10 +49,10 @@
           </v-row>
           <v-row class="mt-0">
             <v-col cols="8">
-              <ModuleSegmentsIpPlage :typeIp="typeIp" typeAcces="ip" ref="ip" @FormModuleSegmentsIpPlageEvent="validate"
+              <IpRangeSegments :typeIp="typeIp" typeAcces="ip" ref="ip" @FormModuleSegmentsIpPlageEvent="validate"
                 @alertSuccess="alertSuccess" @alertError="alertError" @focus="clearChild(false)" />
               <br />
-              <ModuleSegmentsIpPlage :typeIp="typeIp" typeAcces="plage" ref="plage"
+              <IpRangeSegments :typeIp="typeIp" typeAcces="plage" ref="plage"
                 @FormModuleSegmentsIpPlageEvent="validate" @alertSuccess="alertSuccess" @alertError="alertError"
                 @focus="clearChild(true)" />
             </v-col>
@@ -92,9 +92,10 @@
 <style src="./style.css"></style>
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import ModuleSegmentsIpPlage from "@/components/ip/ModuleSegmentsIpPlage.vue";
+import IpRangeSegments from "@/components/ip/IpRangeSegments.vue";
 import { useIpService } from "@/composables/useIpService";
 import { useSnackbar } from "@/composables/useSnackbar";
+import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { faCircleInfo, faReply, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -113,8 +114,8 @@ const arrayAjouterIp = ref<Array<any>>([]);
 
 const formAjouterAcces = ref<VForm | null>(null);
 const confirm = ref<InstanceType<typeof ConfirmPopup> | null>(null);
-const ip = ref<InstanceType<typeof ModuleSegmentsIpPlage> | null>(null);
-const plage = ref<InstanceType<typeof ModuleSegmentsIpPlage> | null>(null);
+const ip = ref<InstanceType<typeof IpRangeSegments> | null>(null);
+const plage = ref<InstanceType<typeof IpRangeSegments> | null>(null);
 
 const metaInfo = {
   meta: [
@@ -179,7 +180,7 @@ const scrollToMessage = () => {
 };
 
 const allerListeAcces = () => {
-  router.push({ path: "/listeAcces" });
+  router.push({ name: RouteName.IpList });
 };
 </script>
 <style scoped>

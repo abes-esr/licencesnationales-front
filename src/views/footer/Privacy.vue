@@ -95,12 +95,12 @@
               <tbody>
                 <tr>
                   <td>pk_session</td>
-                  <td>Statistiques piwik</td>
+                  <td>Statistics piwik</td>
                   <td>7 jours</td>
                 </tr>
                 <tr>
                   <td>pk_id</td>
-                  <td>Statistiques piwik</td>
+                  <td>Statistics piwik</td>
                   <td>30 minutes</td>
                 </tr>
               </tbody>

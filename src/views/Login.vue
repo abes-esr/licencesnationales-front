@@ -3,7 +3,7 @@
     <v-container class="d-flex justify-center">
       <v-row align="center" justify="center">
         <v-col xl="5" lg="7" md="9" xs="11">
-          <form-login @onChange="afficherMotDePasseOublie()" />
+          <LoginForm @onChange="showForgotPassword()" />
 
           <div id="noAccount" class="
                                                             mt-6
@@ -21,7 +21,7 @@
               target="_blank">Vérifier l'éligibilité
               <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
-            <v-btn variant="tonal" @click="creerCompte">Créer un compte
+            <v-btn variant="tonal" @click="createAccount">Créer un compte
               <FontAwesomeIcon :icon="faCirclePlus" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
           </div>
@@ -31,16 +31,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
- import { Logger } from "@/utils/Logger";
-import Etablissement from "@/core/Etablissement";
-import FormLogin from "@/components/authentification/login/FormLogin.vue";
-import { useAuthStore } from "@/stores/authStore";
+import LoginForm from "@/components/authentication/login/LoginForm.vue";
 import { useSnackbar } from "@/composables/useSnackbar";
+import Etablissement from "@/core/Etablissement";
+import { RouteName } from "@/router";
+import { useAuthStore } from "@/stores/authStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
-import { useRouter } from "vue-router";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { Logger } from "@/utils/Logger";
 import { faCirclePlus, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 // Store & Router
 const authStore = useAuthStore();
@@ -63,19 +64,19 @@ const metaInfo = {
 };
 
 // Fonctions
-async function creerCompte() {
+async function createAccount() {
   try {
     await etablissementStore.setCurrentEtablissement(new Etablissement());
-    router.push({ name: "CreationEtablissement" });
+    router.push({ name: RouteName.InstitutionCreate });
   } catch (err) {
     Logger.error(err);
   }
 }
 
-async function afficherMotDePasseOublie() {
+async function showForgotPassword() {
   try {
     await snackbar.hide();
-    router.push({ name: "ForgotPassword" });
+    router.push({ name: RouteName.ForgotPassword });
   } catch (err) {
     Logger.error(err);
   }

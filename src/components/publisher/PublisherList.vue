@@ -82,6 +82,7 @@ import { useEditeurService } from "@/composables/useEditeurService";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Editeur from "@/core/Editeur";
 import { LicencesNationalesUnauthorizedApiError } from "@/exception/licencesnationales/LicencesNationalesUnauthorizedApiError";
+import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useEditeurStore } from "@/stores/editeurStore";
 import { formatApiError } from "@/utils/formatApiError";
@@ -128,7 +129,7 @@ onMounted(() => {
 
     snackbar.error("Vous n'êtes pas autorisé à exécuter l'action ListeEditeur", {
       onHide: () => {
-        router.push({ name: "Home" })
+        router.push({ name: RouteName.Home })
       }
     });
   } else {
@@ -144,7 +145,7 @@ async function fetchEditeurs() {
       disableForm.value = true;
       snackbar.error("Vous n'??tes pas autoris?? ?? effectuer cette op??ration", {
         onHide: () => {
-          router.push({ name: "Home" })
+          router.push({ name: RouteName.Home })
         }
       });
     } else {
@@ -160,7 +161,7 @@ async function ajouterEditeur() {
   snackbar.hide();
   try {
     await editeurStore.setCurrentEditeur(new Editeur());
-    router.push({ name: "NouvelEditeur" });
+    router.push({ name: RouteName.PublisherCreate });
   } catch (err: any) {
     snackbar.error(err);
   }
@@ -170,7 +171,7 @@ async function modifierEditeur(item: Editeur) {
   snackbar.hide();
   try {
     await editeurStore.setCurrentEditeur(item);
-    router.push({ name: "ModifierEditeur" });
+    router.push({ name: RouteName.PublisherEdit });
   } catch (err: any) {
     snackbar.error(err);
   }

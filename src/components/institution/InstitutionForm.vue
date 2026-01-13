@@ -116,8 +116,13 @@
               Information Contact
             </v-card-title>
             <v-divider class="mb-4"></v-divider>
-            <Contact ref="formContact" :action="action" :contact="etablissement.contact" :isDisableForm="isDisableForm"
-              class="mx-9" />
+            <InstitutionContact
+              ref="formContact"
+              :action="action"
+              :contact="etablissement.contact"
+              :isDisableForm="isDisableForm"
+              class="mx-9"
+            />
           </div>
         </v-card>
         <v-card-actions v-if="action !== Action.SCISSION">
@@ -141,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-import Contact from "@/components/etablissement/Contact.vue";
+import InstitutionContact from "@/components/institution/InstitutionContact.vue";
 import { useDataGouvService } from "@/composables/useDataGouvService";
 import { useEtablissementService } from "@/composables/useEtablissementService";
 import { useSnackbar } from "@/composables/useSnackbar";
@@ -152,6 +157,7 @@ import Etablissement from "@/core/Etablissement";
 import { rulesForms } from "@/core/RulesForm";
 import { DataGouvApiError } from "@/exception/data.gouv/DataGouvApiError";
 import { SirenNotFoundError } from "@/exception/data.gouv/SirenNotFoundError";
+import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { Logger } from "@/utils/Logger";
@@ -218,7 +224,7 @@ const isDisableForm = ref(false);
 const returnLink = ref(false);
 
 const formCreationCompte = ref<VForm | null>(null);
-const formContact = ref<InstanceType<typeof Contact> | null>(null);
+const formContact = ref<InstanceType<typeof InstitutionContact> | null>(null);
 
 const metaInfo = () => {
   const titre =
@@ -265,13 +271,13 @@ const fetchListeType = async () => {
 
 const allerAConnexion = () => {
   snackbar.hide();
-  router.push({ name: "Login" }).catch(err => {
+  router.push({ name: RouteName.Login }).catch(err => {
     Logger.error(err);
   });
 };
 
 const allerPageAccueil = () => {
-  router.push({ name: "Login" })
+  router.push({ name: RouteName.Login })
 };
 
 const recaptcha = async () => {
@@ -316,7 +322,7 @@ const send = async () => {
       .creerEtablissement(etablissement.value, tokenrecaptcha.value)
       .then(() => {
         snackbar.success("Le compte a été enregistré. Pour y accéder, merci de vous authentifier");
-        router.push("/");
+        router.push({ name: RouteName.Home });
       })
       .catch(err => {
         snackbar.error(err);
@@ -356,7 +362,7 @@ const send = async () => {
       .then(() => {
         clear();
         snackbar.success("La fusion a bien été effectuée.");
-        router.push({ name: "ListeEtab" })
+        router.push({ name: RouteName.Institutions })
       })
       .catch(err => {
         snackbar.error(err);
@@ -406,7 +412,7 @@ const clear = () => {
 
   if (action.value === ActionEnum.MODIFICATION) {
     etablissementStore.setCurrentEtablissement(etablissement.value);
-    router.push({ name: "Home" }).catch(err => {
+    router.push({ name: RouteName.Home }).catch(err => {
       Logger.error(err);
     });
   } else {

@@ -114,6 +114,7 @@ import { useEtablissementService } from "@/composables/useEtablissementService";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Etablissement from "@/core/Etablissement";
 import { LicencesNationalesUnauthorizedApiError } from "@/exception/licencesnationales/LicencesNationalesUnauthorizedApiError";
+import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { Logger } from "@/utils/Logger";
@@ -181,7 +182,7 @@ onMounted(() => {
     fetchListeType();
   } else {
     snackbar.error("Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnts");
-    router.push({ name: "Home" })
+    router.push({ name: RouteName.Home })
   }
 
 });
@@ -263,7 +264,7 @@ function ajouterEtablissement(): void {
   etablissementStore
     .setCurrentEtablissement(new Etablissement())
     .then(() => {
-      router.push({ name: "CreationEtablissement" }).catch(err => {
+      router.push({ name: RouteName.InstitutionCreate }).catch(err => {
         Logger.error(err as any);
       });
     })
@@ -274,12 +275,12 @@ function ajouterEtablissement(): void {
 
 function allerAFusionnerEtab(): void {
   snackbar.hide();
-  router.push({ name: "FusionEtablissement" })
+  router.push({ name: RouteName.InstitutionMerge })
 }
 
 function allerAScionnerEtab(): void {
   snackbar.hide();
-  router.push({ name: "ScissionEtablissement" })
+  router.push({ name: RouteName.InstitutionSplit })
 }
 
 function collecterEtab(): void {
@@ -294,7 +295,7 @@ function collecterEtab(): void {
         disableForm.value = true;
         snackbar.error("Vous n'êtes pas autorisé à effectuer cette opération", {
           onHide: () => {
-            router.push({ name: "Home" });
+            router.push({ name: RouteName.Home });
           }
         });
       } else {
@@ -312,7 +313,7 @@ function allerAIPs(item: Etablissement): void {
   etablissementStore
     .setCurrentEtablissement(item)
     .then(() => {
-      router.push({ name: "ListeIP" });
+      router.push({ name: RouteName.IpList });
     })
     .catch(err => {
       snackbar.error(err);
@@ -353,7 +354,7 @@ function allerAAfficherEtab(item: Etablissement): void {
   etablissementStore
     .setCurrentEtablissement(item)
     .then(() => {
-      router.push({ name: "AfficherEtablissement" });
+      router.push({ name: RouteName.InstitutionView });
     })
     .catch(err => {
       snackbar.error(err);

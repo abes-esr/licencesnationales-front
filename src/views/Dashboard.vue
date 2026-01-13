@@ -138,7 +138,7 @@
                       Siren: {{ item.siren }}<br />Nom établissement:
                       <a @click="allerPageEtablissement(item.siren)">{{
                         item.nomEtab
-                        }}</a><br />Evenement: {{ item.typeNotif }}<br />Date:
+                      }}</a><br />Evenement: {{ item.typeNotif }}<br />Date:
                       {{ dateFormatted(item.dateEvent) }}
                     </li>
                     <li style="margin-bottom: 1em" v-for="item in notificationsUser" :key="item.index">
@@ -197,6 +197,7 @@ import { useEtablissementStore } from "@/stores/etablissementStore";
 
 import { useEditeurService } from "@/composables/useEditeurService";
 import { useEtablissementService } from "@/composables/useEtablissementService";
+import { RouteName } from "@/router";
 import { Logger } from "@/utils/Logger";
 import { faBell, faCircleInfo, faDownload, faLock, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
@@ -248,11 +249,11 @@ const dateFormatted = (d: Date): string => {
 };
 
 const allerAMonProfil = (): void => {
-  router.push({ name: "Profil" });
+  router.push({ name: RouteName.Profile });
 };
 
 const allerAModifierMotDePasse = (): void => {
-  router.push({ name: "Password" }).catch(err => {
+  router.push({ name: RouteName.Password }).catch(err => {
     Logger.error(err);
   });
 };
@@ -349,7 +350,7 @@ const allerAAfficherEtab = (item: Etablissement): void => {
   etablissementStore
     .setCurrentEtablissement(item)
     .then(() => {
-      router.push({ name: "AfficherEtablissement" });
+      router.push({ name: RouteName.InstitutionView });
     })
     .catch(err => {
       snackbar.error(err);

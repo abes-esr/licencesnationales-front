@@ -4,13 +4,13 @@
       <v-col lg="5" md="8" xs="10">
         <div>
           <v-card class="elevation-0">
-            <v-form ref="formReinitialisationPass" class="elevation-0" :disabled="!tokenValid">
+            <v-form ref="formReinitialisationPass" class="elevation-0" :disabled="status !== 'valid'">
               <v-card-title class="pa-3">
                 <h1>Reinitialiser le mot de passe</h1>
               </v-card-title>
               <v-card-text>
-                <MotDePasse ref="motDePasse" :action="Action.CREATION" v-model:nouveauMotDePasse="newPassword"
-                  class="ma-3" :link-is-expired="!tokenValid" :is-disable-form="!tokenValid" />
+                <PasswordFields ref="motDePasse" :action="Action.CREATION" v-model:nouveauMotDePasse="formState.newPassword"
+                  class="ma-3" :link-is-expired="status !== 'valid'" :is-disable-form="status !== 'valid'" />
               </v-card-text>
               <v-card-actions>
                 <v-spacer class="hidden-sm-and-down"></v-spacer>
@@ -20,7 +20,7 @@
                     Annuler
                   </v-btn>
                   <v-btn v-if="!linkExpired" :loading="buttonLoading" :disabled="isDisableForm" size="x-large"
-                    @click="recaptcha" variant="elevated">
+                    @click="handleRecaptcha" variant="elevated">
                     Enregistrer
                     <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
                   </v-btn>
@@ -28,9 +28,9 @@
               </v-card-actions>
               <v-card-actions>
                 <v-col cols="8"> </v-col>
-                <a @click="revenirPageAccueil">
+                <router-link :to="{ name: RouteName.Login }">
                   <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir a la page d'accueil
-                </a>
+                </router-link>
               </v-card-actions>
             </v-form>
           </v-card>
@@ -41,18 +41,19 @@
 </template>
 
 <script setup lang="ts">
-import MotDePasse from "@/components/authentification/MotDePasse.vue";
+import PasswordFields from "@/components/authentication/PasswordFields.vue";
+import { useAuthService } from "@/composables/useAuthService";
 import { useRecaptcha } from "@/composables/useRecaptcha";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { Action } from "@/core/CommonDefinition";
-import { useAuthService } from "@/composables/useAuthService";
-import { Logger } from "@/utils/Logger";
+import { RouteName } from "@/router";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { computed, onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import type { VForm } from "vuetify/components";
 
+const route = useRoute();
 const router = useRouter();
 const snackbar = useSnackbar();
 const authService = useAuthService();
@@ -60,45 +61,36 @@ const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
 
 const resetToken = ref("");
 const isDisableForm = ref(false);
-const tokenValid = ref(true);
 const tokenrecaptcha = ref("");
-const newPassword = ref("");
+const formState = ref({
+  newPassword: ""
+});
 const buttonLoading = ref(false);
-const linkExpired = ref(false);
+const status = ref<"checking" | "valid" | "expired">("checking");
+const linkExpired = computed(() => status.value === "expired");
 
 const formReinitialisationPass = ref<VForm | null>(null);
-const motDePasse = ref<InstanceType<typeof MotDePasse> | null>(null);
+const motDePasse = ref<InstanceType<typeof PasswordFields> | null>(null);
 
 onMounted(async () => {
   snackbar.hide();
-
-  resetToken.value = window.location.href.substring(
-    window.location.href.lastIndexOf("=") + 1
-  );
-
-  try {
-    const valid = await verifierToken(resetToken.value);
-    tokenValid.value = valid;
-    linkExpired.value = !valid;
-  } catch (err: any) {
-    tokenValid.value = false;
-    linkExpired.value = true;
-    handleError(err);
-  }
+  await setupToken();
 });
 
-const verifierToken = async (token: string): Promise<boolean> => {
+const setupToken = async () => {
+  const token = route.query?.token;
+  resetToken.value = typeof token === "string" ? token : "";
+
   try {
-    const response = await authService.verifierValiditeToken(token);
-    return response;
+    const valid = await authService.verifierValiditeToken(resetToken.value);
+    status.value = valid ? "valid" : "expired";
   } catch (err: any) {
-    throw err;
-  } finally {
-    buttonLoading.value = false;
+    status.value = "expired";
+    snackbar.error(err);
   }
 };
 
-const recaptcha = async () => {
+const handleRecaptcha = async () => {
   await loadRecaptcha();
   tokenrecaptcha.value = await executeRecaptcha("reinitialisationPass");
   const isValid = await validate();
@@ -115,41 +107,31 @@ const validate = async (): Promise<boolean> => {
   return Boolean(formValid?.valid && mdpValid);
 };
 
-const reinitialisationPass = async (): Promise<void> => {
+const reinitialisationPass = async () => {
   buttonLoading.value = true;
   snackbar.hide();
 
   try {
     const response = await authService.reinitialiserMotDePasse({
-      nouveauMotDePasse: newPassword.value,
+      nouveauMotDePasse: formState.value.newPassword,
       recaptcha: tokenrecaptcha.value,
       token: resetToken.value
     });
-    snackbar.success(response.message);
-    setTimeout(() => {
-      router.push({ name: "Login" });
-    }, 4000);
+    snackbar.success(response.message, {
+      timeout: 4000,
+      onHide: () => router.push({ name: RouteName.Login })
+    });
   } catch (err: any) {
-    handleError(err);
+    snackbar.error(err);
   } finally {
     buttonLoading.value = false;
   }
 };
 
-const handleError = (err: any) => {
-  Logger.error(err?.toString?.() ?? err);
-  snackbar.error(err);
-};
-
 const clear = () => {
   motDePasse.value?.clear();
   formReinitialisationPass.value?.resetValidation();
-  newPassword.value = "";
+  formState.value.newPassword = "";
 };
 
-const revenirPageAccueil = () => {
-  router.push({ name: "Login" }).catch(err => {
-    Logger.error(err);
-  });
-};
 </script>

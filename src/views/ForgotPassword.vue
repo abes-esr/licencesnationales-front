@@ -2,10 +2,10 @@
   <v-container class="fill-height d-flex justify-center">
     <v-row align="center" justify="center">
       <v-col xl="5" lg="7" md="9" cols="11">
-        <forgot-password />
+        <ForgotPasswordForm />
         <v-row id="row_RevenirAccueil" class="mt-4">
           <v-col cols="12" class="text-center">
-            <a @click="allerAConnexion()">
+            <a @click="goToLogin()">
               <v-icon icon="mdi-reply"></v-icon>&nbsp;Revenir à la page
               d'accueil
             </a>
@@ -17,16 +17,17 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import ForgotPassword from "../components/authentification/login/ForgotPassword.vue";
 import { useSnackbar } from "@/composables/useSnackbar";
+import { RouteName } from "@/router";
+import { useRouter } from "vue-router";
+import ForgotPasswordForm from "../components/authentication/login/ForgotPasswordForm.vue";
 
 const router = useRouter();
 const snackbar = useSnackbar();
 
-function allerAConnexion(): void {
+function goToLogin(): void {
   snackbar.hide();
-  router.push({ name: "Login" });
+  router.push({ name: RouteName.Login });
 }
 </script>
 

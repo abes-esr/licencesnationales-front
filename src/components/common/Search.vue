@@ -16,28 +16,13 @@
             <v-card-text>
               <v-row class="d-flex justify-center align-center">
                 <v-col cols="2" class="pb-0">
-                  <v-select
-                    variant="outlined"
-                    :items="listeDomaine"
-                    v-model="domaine"
-                    placeholder="Domaine de recherche"
-                    hide-details="auto"
-                    persistent-placeholder
-                    required
-                    :rules="rulesForm.selectSearchRules"
-                  />
+                  <v-select variant="outlined" :items="listeDomaine" v-model="domaine"
+                    placeholder="Domaine de recherche" hide-details="auto" persistent-placeholder required
+                    :rules="rulesForm.selectSearchRules" />
                 </v-col>
                 <v-col cols="9" class="pb-0">
-                  <v-text-field
-                    variant="outlined"
-                    label="Mots clés"
-                    placeholder="Mots clés"
-                    hide-details="auto"
-                    v-model="criteres"
-                    required
-                    :rules="rulesForm.searchRules"
-                    @keyup.enter="search"
-                  />
+                  <v-text-field variant="outlined" label="Mots clés" placeholder="Mots clés" hide-details="auto"
+                    v-model="criteres" required :rules="rulesForm.searchRules" @keyup.enter="search" />
                 </v-col>
                 <v-col class="pb-0">
                   <v-btn @click="search" :loading="buttonLoading">Rechercher</v-btn>
@@ -88,16 +73,11 @@
                   <v-list-item-title>
                     {{ item.idEditeur }} - {{ item.nom }} - {{ item.adresse }}
                   </v-list-item-title>
-                  <v-list-item-subtitle
-                    v-for="contactCommerciaux in item.contactsCommerciaux"
-                    :key="contactCommerciaux.id"
-                  >
+                  <v-list-item-subtitle v-for="contactCommerciaux in item.contactsCommerciaux"
+                    :key="contactCommerciaux.id">
                     {{ contactCommerciaux.nom }} {{ contactCommerciaux.prenom }} - {{ contactCommerciaux.mail }}
                   </v-list-item-subtitle>
-                  <v-list-item-subtitle
-                    v-for="contactTechnique in item.contactsTechniques"
-                    :key="contactTechnique.id"
-                  >
+                  <v-list-item-subtitle v-for="contactTechnique in item.contactsTechniques" :key="contactTechnique.id">
                     {{ contactTechnique.nom }} {{ contactTechnique.prenom }} - {{ contactTechnique.mail }}
                   </v-list-item-subtitle>
                 </v-list-item>
@@ -113,15 +93,16 @@
 </template>
 
 <script setup lang="ts">
+import { useEditeurService } from "@/composables/useEditeurService";
+import { useEtablissementService } from "@/composables/useEtablissementService";
+import { useIpService } from "@/composables/useIpService";
+import { rulesForm } from "@/core/RulesForm";
+import { RouteName } from "@/router";
+import { useAuthStore } from "@/stores/authStore";
+import { useEditeurStore } from "@/stores/editeurStore";
+import { useEtablissementStore } from "@/stores/etablissementStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { rulesForm } from "@/core/RulesForm";
-import { useEtablissementService } from "@/composables/useEtablissementService";
-import { useEditeurService } from "@/composables/useEditeurService";
-import { useIpService } from "@/composables/useIpService";
-import { useAuthStore } from "@/stores/authStore";
-import { useEtablissementStore } from "@/stores/etablissementStore";
-import { useEditeurStore } from "@/stores/editeurStore";
 import type { VForm } from "vuetify/components";
 
 const router = useRouter();
@@ -185,7 +166,7 @@ const search = async () => {
 const clickEtab = async (item: any) => {
   try {
     await etablissementStore.setCurrentEtablissement(item);
-    router.push({ name: "AfficherEtablissement" });
+    router.push({ name: RouteName.InstitutionView });
   } catch (err: any) {
     message.value = err?.data?.message ?? "Erreur lors de la navigation";
     window.scrollTo(0, 0);
@@ -195,7 +176,7 @@ const clickEtab = async (item: any) => {
 const clickIP = async (item: any) => {
   try {
     await etablissementStore.setCurrentEtablissement(item);
-    router.push({ name: "ListeIP" });
+    router.push({ name: RouteName.IpList });
   } catch (err: any) {
     message.value = err?.data?.message ?? "Erreur lors de la navigation";
     window.scrollTo(0, 0);
@@ -205,7 +186,7 @@ const clickIP = async (item: any) => {
 const clickEditeur = async (item: any) => {
   try {
     await editeurStore.setCurrentEditeur(item);
-    router.push({ name: "ModifierEditeur" });
+    router.push({ name: RouteName.PublisherEdit });
   } catch (err: any) {
     message.value = err?.data?.message ?? "Erreur lors de la navigation";
     window.scrollTo(0, 0);

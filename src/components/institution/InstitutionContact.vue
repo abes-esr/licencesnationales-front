@@ -135,7 +135,7 @@
             ></v-text-field> </v-form
         ></v-row>
         <v-row>
-          <MotDePasse
+          <PasswordFields
             ref="motdepasseRef"
             v-if="
               action === Action.CREATION ||
@@ -147,7 +147,7 @@
             :nouveau-mot-de-passe="contact.motDePasse"
             @update:nouveauMotDePasse="updateMotDePasse"
             :isDisableForm="isDisableForm"
-          ></MotDePasse>
+          ></PasswordFields>
         </v-row>
         <v-row
           ><div v-if="action === Action.CREATION">
@@ -188,7 +188,7 @@ import { ref, computed, onMounted } from "vue";
 import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
 import ContactEtablissement from "@/core/ContactEtablissement";
-import MotDePasse from "@/components/authentification/MotDePasse.vue";
+import PasswordFields from "@/components/authentication/PasswordFields.vue";
 import { useRouter } from "vue-router";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
@@ -236,7 +236,7 @@ const shouldValidateMail = computed(() => {
 
 // ---------- Methods ----------
 function gotoDonneesPersonnellesInNewPage() {
-  const route = router.resolve({ path: "/donneespersonnelles" });
+  const route = router.resolve({ path: "/privacy" });
   window.open(route.href);
 }
 

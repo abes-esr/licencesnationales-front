@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container class="pb-0">
-      <h1>Historique par établissement</h1>
+      <h1>History par établissement</h1>
       <v-alert v-if="message" type="error" density="compact" class="mt-2">
         {{ message }}
       </v-alert>

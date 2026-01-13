@@ -54,7 +54,11 @@
           <v-divider class="mb-4"></v-divider>
           <v-row>
             <v-col cols="12" md="3" lg="3" xl="3" v-for="(contact, index) in editeur.contacts" :key="index">
-              <contact :ref="el => contactRefs[index] = el" :contact="contact" @onChange="removeContact(contact)" />
+              <PublisherContact
+                :ref="el => contactRefs[index] = el"
+                :contact="contact"
+                @onChange="removeContact(contact)"
+              />
             </v-col>
           </v-row>
         </div>
@@ -88,10 +92,10 @@
 </template>
 
 <script setup lang="ts">
-import Contact from "@/components/editeur/Contact.vue";
-import { useSnackbar } from "@/composables/useSnackbar";
+import PublisherContact from "@/components/publisher/PublisherContact.vue";
 import { useEditeurService } from "@/composables/useEditeurService";
 import { useEtablissementService } from "@/composables/useEtablissementService";
+import { useSnackbar } from "@/composables/useSnackbar";
 import {
   Action,
   ContactType
@@ -99,6 +103,7 @@ import {
 import ContactEditeur from "@/core/ContactEditeur";
 import Editeur from "@/core/Editeur";
 import { rulesForms } from "@/core/RulesForm";
+import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useEditeurStore } from "@/stores/editeurStore";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -221,7 +226,7 @@ async function send(): Promise<void> {
       await editeurService.createEditeur(editeur.value, authStore.getToken);
       snackbar.success("L'?diteur a bien ?t? cr??", {
         onHide: () => {
-          router.push({ path: "/listeEditeurs" });
+          router.push({ name: RouteName.Publishers });
         },
         timeout: 2000
       });
@@ -229,7 +234,7 @@ async function send(): Promise<void> {
       await editeurService.updateEditeur(editeur.value, authStore.getToken);
       snackbar.success("L'?diteur a bien ?t? modifi?", {
         onHide: () => {
-          router.push({ path: "/listeEditeurs" });
+          router.push({ name: RouteName.Publishers });
         },
         timeout: 2000
       });

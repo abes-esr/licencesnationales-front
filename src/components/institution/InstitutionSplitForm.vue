@@ -31,8 +31,13 @@
                   </v-card-actions>
                 </v-card-text>
               </v-card>
-              <form-etablissement :action="Action.SCISSION" :trigger-scission="triggerScission" @send="send"
-                v-for="n in etablissementNumber" :key="n"></form-etablissement>
+              <InstitutionForm
+                :action="Action.SCISSION"
+                :trigger-scission="triggerScission"
+                @send="send"
+                v-for="n in etablissementNumber"
+                :key="n"
+              />
               <v-card-actions class="v-card-actions">
                 <v-row>
                   <v-spacer class="hidden-sm-and-down"></v-spacer>
@@ -54,11 +59,12 @@
 </template>
 <style src="./style.css"></style>
 <script setup lang="ts">
-import FormEtablissement from "@/components/etablissement/FormEtablissement.vue";
+import InstitutionForm from "@/components/institution/InstitutionForm.vue";
 import { useEtablissementService } from "@/composables/useEtablissementService";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { Action } from "@/core/CommonDefinition";
 import { rulesForms } from "@/core/RulesForm";
+import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -99,7 +105,7 @@ async function send(payload: any): Promise<void> {
       })
       .then(() => {
         snackbar.success("La scission a bien été effectuée.");
-        router.push({ name: "ListeEtab" })
+        router.push({ name: RouteName.Institutions })
       })
       .catch((err: any) => {
         snackbar.error(err);

@@ -73,10 +73,10 @@
         </v-tooltip>
 
         <div id="mentions">
-          <a class="text-white" @click="router.push('/donneespersonnelles')">Données personnelles</a> |
-          <a class="text-white" @click="router.push('/cgu')">CGU</a> |
-          <a class="text-white" @click="router.push('/mentions')">Mentions légales</a> |
-          <a class="text-white" @click="router.push('/accessibilite')">Accessibilité</a>
+          <a class="text-white" @click="router.push({ name: RouteName.Privacy })">Données personnelles</a> |
+          <a class="text-white" @click="router.push({ name: RouteName.Terms })">CGU</a> |
+          <a class="text-white" @click="router.push({ name: RouteName.Legal })">Mentions légales</a> |
+          <a class="text-white" @click="router.push({ name: RouteName.Accessibility })">Accessibilité</a>
         </div>
       </v-card-text>
     </v-card>
@@ -89,6 +89,7 @@ import { Logger } from "@/utils/Logger";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
+import { RouteName } from "@/router";
 import {
   faArrowUpRightFromSquare,
   faCircleArrowRight,

@@ -11,7 +11,7 @@
             aux informations de l'établissement
           </a>
         </div>
-        <v-btn id="addIpButton" class="my-2" @click="router.push({ path: '/ajouterAcces/' })">
+        <v-btn id="addIpButton" class="my-2" @click="router.push({ name: RouteName.IpCreate })">
           <span class="btnText">Ajouter une IP ou une plage IP</span>
           <FontAwesomeIcon :icon="faCirclePlus" style="font-size:1.1rem" />
         </v-btn>
@@ -101,7 +101,7 @@
             <v-tooltip location="bottom" theme="dark" content-class="text-white">
               <template #activator="{ props }">
                 <span v-bind="props" class="text-truncate d-block" :style="{ width: '100px' }">{{ item.commentaires
-                  }}</span>
+                }}</span>
               </template>
               <span>{{ item.commentaires }}</span>
             </v-tooltip>
@@ -237,10 +237,11 @@
 
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import InfosIPs from "@/components/ip/InfosIPs.vue";
+import IpInfo from "@/components/ip/IpInfo.vue";
 import { useIpService } from "@/composables/useIpService";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { rulesForms } from "@/core/RulesForm";
+import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { Logger } from "@/utils/Logger";
@@ -695,7 +696,7 @@ function downloadIPs(): void {
 }
 
 function revenirInfosEtab(): void {
-  router.push({ name: "AfficherEtablissement" });
+  router.push({ name: RouteName.InstitutionView });
 }
 </script>
 

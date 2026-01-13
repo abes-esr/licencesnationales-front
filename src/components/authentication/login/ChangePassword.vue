@@ -7,13 +7,8 @@
             <h1 class="pb-4">Modifier mon mot de passe</h1>
             <v-card-text class="fondGris">
               <div class="pt-4 px-4">
-                <MotDePasse
-                  ref="motDePasse"
-                  :action="Action.MODIFICATION"
-                  v-model:ancienMotDePasse="oldPassword"
-                  v-model:nouveauMotDePasse="newPassword"
-                  :linkIsExpired="false"
-                />
+                <PasswordFields ref="motDePasse" :action="Action.MODIFICATION" v-model:ancienMotDePasse="oldPassword"
+                  v-model:nouveauMotDePasse="newPassword" :linkIsExpired="false" />
               </div>
               <v-spacer class="hidden-sm-and-down"></v-spacer>
               <v-col cols="12" class="d-flex justify-end">
@@ -31,10 +26,11 @@
 </template>
 
 <script setup lang="ts">
-import MotDePasse from "@/components/authentification/MotDePasse.vue";
+import PasswordFields from "@/components/authentication/PasswordFields.vue";
+import { useAuthService } from "@/composables/useAuthService";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { Action } from "@/core/CommonDefinition";
-import { useAuthService } from "@/composables/useAuthService";
+import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -46,7 +42,7 @@ const snackbar = useSnackbar();
 const authService = useAuthService();
 
 const form = ref<VForm | null>(null);
-const motDePasse = ref<InstanceType<typeof MotDePasse> | null>(null);
+const motDePasse = ref<InstanceType<typeof PasswordFields> | null>(null);
 const buttonLoading = ref(false);
 const oldPassword = ref("");
 const newPassword = ref("");
@@ -71,7 +67,7 @@ const submit = async () => {
 
     snackbar.success("Le mot de passe a ete mis a jour", {
       timeout: 2000,
-      onHide: () => router.push({ name: "Home" })
+      onHide: () => router.push({ name: RouteName.Home })
     });
   } catch (err: any) {
     snackbar.error(err);

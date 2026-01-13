@@ -32,12 +32,7 @@
             </div>
 
             <div v-if="isAdmin" class="d-flex align-center flex-wrap">
-              <v-tooltip
-                text="Modifier mot de passe"
-                location="top"
-                theme="dark"
-                content-class="text-white"
-              >
+              <v-tooltip text="Modifier mot de passe" location="top" theme="dark" content-class="text-white">
                 <template #activator="{ props }">
                   <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
                     @click="allerAModifierMotDePasse">
@@ -47,25 +42,15 @@
               </v-tooltip>
 
               <div>
-                <v-tooltip
-                  text="Modifier les infos"
-                  location="top"
-                  activator="parent"
-                  theme="dark"
-                  content-class="text-white"
-                ></v-tooltip>
+                <v-tooltip text="Modifier les infos" location="top" activator="parent" theme="dark"
+                  content-class="text-white"></v-tooltip>
                 <v-btn variant="text" color="white" class="my-1 me-2" @click="allerAModifierProfil">
                   <FontAwesomeIcon :icon="faUser" size="lg" />
                 </v-btn>
               </div>
             </div>
 
-            <v-tooltip
-              text="Assistance"
-              location="top"
-              theme="dark"
-              content-class="text-white"
-            >
+            <v-tooltip text="Assistance" location="top" theme="dark" content-class="text-white">
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
                   href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank">
@@ -74,12 +59,7 @@
               </template>
             </v-tooltip>
 
-            <v-tooltip
-              text="Documentation"
-              location="top"
-              theme="dark"
-              content-class="text-white"
-            >
+            <v-tooltip text="Documentation" location="top" theme="dark" content-class="text-white">
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
                   href="https://documentation.abes.fr/aidelicencesnationales/index.html#AccederAuxLN" target="_blank">
@@ -88,12 +68,7 @@
               </template>
             </v-tooltip>
 
-            <v-tooltip
-              text="Se déconnecter"
-              location="top"
-              theme="dark"
-              content-class="text-white"
-            >
+            <v-tooltip text="Se déconnecter" location="top" theme="dark" content-class="text-white">
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1" @click="seDeconnecter">
                   <FontAwesomeIcon :icon="faRightFromBracket" size="lg" />
@@ -108,20 +83,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRouter } from "vue-router";
+import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useUiStore } from "@/stores/uiStore";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useDisplay } from 'vuetify'
-
 import {
-  faLock,
-  faUser,
-  faRightFromBracket,
+  faCircleQuestion,
   faComments,
-  faCircleQuestion
+  faLock,
+  faRightFromBracket,
+  faUser
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { useDisplay } from 'vuetify';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -139,15 +114,15 @@ function toggleTheme() {
 }
 
 function allerAModifierMotDePasse() {
-  router.push({ name: "Password" });
+  router.push({ name: RouteName.Password });
 }
 
 function allerAModifierProfil() {
-  router.push({ name: "Profil" });
+  router.push({ name: RouteName.Profile });
 }
 
 function goHome() {
-  router.push({ name: "Home" });
+  router.push({ name: RouteName.Home });
 }
 
 function seDeconnecter() {

@@ -1,9 +1,9 @@
-import { defineStore } from "pinia";
-import User from "@/core/User";
-import Etablissement from "@/core/Etablissement";
-import router from "@/router";
 import { useAuthService } from "@/composables/useAuthService";
 import { useEtablissementService } from "@/composables/useEtablissementService";
+import Etablissement from "@/core/Etablissement";
+import User from "@/core/User";
+import router, { RouteName } from "@/router";
+import { defineStore } from "pinia";
 
 const authService = useAuthService();
 const etablissementService = useEtablissementService();
@@ -52,7 +52,7 @@ export const useAuthStore = defineStore("auth", {
 
         this.etablissementConnecte = etablissement;
 
-        router.push({ name: "Home" });
+        router.push({ name: RouteName.Home });
 
         return true;
       } catch (err) {
@@ -67,7 +67,7 @@ export const useAuthStore = defineStore("auth", {
       this.user.isLoggedIn = false;
       this.user.isAdmin = false;
 
-      router.push({ name: "Login" });
+      router.push({ name: RouteName.Login });
     },
 
     setSirenEtabSiAdmin(value: string) {

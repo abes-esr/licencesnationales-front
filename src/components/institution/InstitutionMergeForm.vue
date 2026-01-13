@@ -35,10 +35,10 @@
                   </v-card-actions>
                 </v-card-text>
               </v-card>
-              <form-etablissement
+              <InstitutionForm
                 :listeSirenFusion="sirenEtab"
                 :action="Action.FUSION"
-              ></form-etablissement>
+              />
             </v-col>
           </v-row>
         </v-col>
@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import FormEtablissement from "@/components/etablissement/FormEtablissement.vue";
+import InstitutionForm from "@/components/institution/InstitutionForm.vue";
 import { rulesForms } from "@/core/RulesForm";
 import { Action } from "@/core/CommonDefinition";
 

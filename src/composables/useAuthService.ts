@@ -1,5 +1,5 @@
-import User from "@/core/User";
 import { useApiService } from "@/composables/useApiService";
+import User from "@/core/User";
 
 interface JsonLoginResponse {
   accessToken: string;
@@ -11,7 +11,7 @@ interface JsonLoginResponse {
   role: string;
 }
 
-interface JsonMotDePasseOublieResponse {
+export interface JsonMotDePasseOublieResponse {
   message: string;
 }
 

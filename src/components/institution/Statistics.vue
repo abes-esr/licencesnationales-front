@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container variant="flat">
-      <h1>Statistiques de l'application</h1>
+      <h1>Statistics de l'application</h1>
       <v-alert v-if="message" type="error" density="compact" class="mt-4">
         {{ message }}
       </v-alert>
@@ -57,7 +57,7 @@
       <v-card v-if="etabStats.length > 0" class="mt-4 pa-4">
         <v-row>
           <h3>
-            Statistiques entre le {{ formattedDateDebut }} et le
+            Statistics entre le {{ formattedDateDebut }} et le
             {{ formattedDateFin }}
           </h3>
         </v-row>

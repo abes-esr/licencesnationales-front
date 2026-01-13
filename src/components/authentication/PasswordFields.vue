@@ -12,30 +12,32 @@
       votre mot de passe : <a @click="allerPasswordReset">cliquez ici.</a>
     </v-alert>
     <v-text-field v-if="action === Action.MODIFICATION && linkIsExpired === false" variant="outlined"
-      label="Ancien mot de passe" placeholder="Ancien mot de passe" :type="show ? 'text' : 'password'"
-      :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'" v-model="ancienMotDePasseModel"
+      label="Ancien mot de passe" placeholder="Ancien mot de passe" :type="inputType"
+      :append-inner-icon="appendIcon" v-model="ancienMotDePasseModel"
       :rules="regleFormulaire.motDePasse.concat(regleConfirmationMotDePasse)" required
-      @click:append-inner="show = !show" autocomplete="new-password" @keyup.enter="validate" />
+      @click:append-inner="toggleShow" autocomplete="new-password" @keyup.enter="validate" />
     <v-text-field v-if="linkIsExpired === false" variant="outlined" :label="action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
       " :placeholder="action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
-        " :type="show ? 'text' : 'password'" :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+        " :type="inputType" :append-inner-icon="appendIcon"
       v-model="nouveauMotDePasseModel" :rules="regleFormulaire.motDePasse.concat(regleMotDePasse)" required
-      @click:append-inner="show = !show" autocomplete="new-password" @keyup.enter="validate" />
+      @click:append-inner="toggleShow" autocomplete="new-password" @keyup.enter="validate" />
     <v-text-field v-if="linkIsExpired === false" variant="outlined" :label="action === Action.CREATION
+      ? 'Confirmation du mot de passe'
+      : 'Confirmation du nouveau mot de passe'
+      " :placeholder="action === Action.CREATION
         ? 'Confirmation du mot de passe'
         : 'Confirmation du nouveau mot de passe'
-      " :placeholder="action === Action.CREATION
-          ? 'Confirmation du mot de passe'
-          : 'Confirmation du nouveau mot de passe'
-        " :type="show ? 'text' : 'password'" :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+        " :type="inputType" :append-inner-icon="appendIcon"
       v-model="confirmationNouveauMotDePasse" :rules="regleFormulaire.motDePasse.concat(regleConfirmationMotDePasse)"
-      required @click:append-inner="show = !show" autocomplete="new-password" @keyup.enter="validate" />
+      required @click:append-inner="toggleShow" autocomplete="new-password" @keyup.enter="validate" />
   </v-form>
 </template>
 
 <script setup lang="ts">
+import { useToggle } from "@/utils/useToggle";
 import { Action } from "@/core/CommonDefinition";
 import { rulesForms } from "@/core/RulesForm";
+import { RouteName } from "@/router";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed, ref, watch } from "vue";
@@ -65,8 +67,10 @@ const ActionRef = Action;
 const regleFormulaire: any = rulesForms;
 
 const confirmationNouveauMotDePasse = ref("");
-const show = ref(false);
 const form = ref<VForm | null>(null);
+const { value: show, toggle: toggleShow } = useToggle(false);
+const inputType = computed(() => (show.value ? "text" : "password"));
+const appendIcon = computed(() => (show.value ? "mdi-eye" : "mdi-eye-off"));
 
 const ancienMotDePasseModel = computed({
   get: () => props.ancienMotDePasse ?? "",
@@ -102,13 +106,13 @@ const validate = async (): Promise<boolean> => {
   return validation?.valid ?? false;
 };
 
-const clear = async (): Promise<void> => {
-  await form.value?.resetValidation();
+const clear = () => {
+  form.value?.resetValidation();
   confirmationNouveauMotDePasse.value = "";
 };
 
 const allerPasswordReset = () => {
-  router.push({ name: "Login" });
+  router.push({ name: RouteName.Login });
 };
 
 defineExpose({ validate, clear, Action: ActionRef });

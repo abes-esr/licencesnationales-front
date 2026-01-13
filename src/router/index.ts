@@ -1,159 +1,177 @@
-import { useAuthStore } from "@/stores/authStore";
-import { MessageType } from "@/core/CommonDefinition";
-import { useSnackbar } from "@/composables/useSnackbar";
 import { useAuthService } from "@/composables/useAuthService";
+import { useSnackbar } from "@/composables/useSnackbar";
+import { useAuthStore } from "@/stores/authStore";
 
-import Login from "../views/Login.vue";
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
-const routes = [
+export enum RouteName {
+  Home = "Home",
+  Login = "Login",
+  Password = "Password",
+  ForgotPassword = "ForgotPassword",
+  PasswordReset = "PasswordReset",
+  InstitutionCreate = "InstitutionCreate",
+  Profile = "Profile",
+  InstitutionView = "InstitutionView",
+  InstitutionEdit = "InstitutionEdit",
+  Institutions = "Institutions",
+  InstitutionMerge = "InstitutionMerge",
+  InstitutionSplit = "InstitutionSplit",
+  IpList = "IpList",
+  IpCreate = "IpCreate",
+  Publishers = "Publishers",
+  PublisherCreate = "PublisherCreate",
+  PublisherEdit = "PublisherEdit",
+  Search = "Search",
+  History = "History",
+  Statistics = "Statistics",
+  Terms = "Terms",
+  Privacy = "Privacy",
+  Legal = "Legal",
+  Accessibility = "Accessibility"
+}
+
+const routes: RouteRecordRaw[] = [
   {
     path: "/",
-    name: "Home",
-    component: () => import("../views/TableauDeBord.vue"),
+    name: RouteName.Home,
+    component: () => import("../views/Dashboard.vue"),
     meta: { requiresAuth: true }
   },
 
   // Authentication
-  { path: "/login", name: "Login", component: () => import("../views/Login.vue") },
+  { path: "/login", name: RouteName.Login, component: () => import("../views/Login.vue") },
   {
     path: "/password",
-    name: "Password",
+    name: RouteName.Password,
     component: () => import("../views/Password.vue"),
     meta: { requiresAuth: true }
   },
   {
-    path: "/motdepasseoublie",
-    name: "ForgotPassword",
+    path: "/password/forgot",
+    name: RouteName.ForgotPassword,
     component: () => import("../views/ForgotPassword.vue")
   },
   {
-    path: "/reinitialisationPass",
-    name: "ReinitialisationPass",
-    component: () =>
-      import("../components/authentification/login/FormReinitialisationPass.vue")
+    path: "/password/reset",
+    name: RouteName.PasswordReset,
+    component: () => import("../components/authentication/login/PasswordResetForm.vue")
   },
 
   // Etablissement
   {
-    path: "/creationEtablissement",
-    name: "CreationEtablissement",
-    component: () =>
-      import("../components/etablissement/FormEtablissement.vue"),
+    path: "/institutions/create",
+    name: RouteName.InstitutionCreate,
+    component: () => import("../components/institution/InstitutionForm.vue"),
     props: { action: "CREATION" }
   },
   {
-    path: "/profil",
-    name: "Profil",
-    component: () =>
-      import("../components/etablissement/FormEtablissement.vue"),
+    path: "/profile",
+    name: RouteName.Profile,
+    component: () => import("../components/institution/InstitutionForm.vue"),
     props: { action: "MODIFICATION" },
     meta: { requiresAuth: true }
   },
   {
-    path: "/afficherEtablissement",
-    name: "AfficherEtablissement",
-    component: () =>
-      import("../components/etablissement/CardEtablissement.vue")
+    path: "/institutions/view",
+    name: RouteName.InstitutionView,
+    component: () => import("../components/institution/InstitutionCard.vue")
   },
   {
-    path: "/modifierEtablissement",
-    name: "ModifierEtablissement",
-    component: () =>
-      import("../components/etablissement/FormEtablissement.vue"),
+    path: "/institutions/edit",
+    name: RouteName.InstitutionEdit,
+    component: () => import("../components/institution/InstitutionForm.vue"),
     props: { action: "MODIFICATION" },
     meta: { requiresAuth: true }
   },
   {
-    path: "/listeEtab",
-    name: "ListeEtab",
-    component: () => import("../components/etablissement/ListeEtab.vue")
+    path: "/institutions",
+    name: RouteName.Institutions,
+    component: () => import("../components/institution/InstitutionList.vue")
   },
 
   {
-    path: "/fusionEtablissement",
-    name: "FusionEtablissement",
-    component: () =>
-      import("../components/etablissement/FormFusionEtablissement.vue"),
+    path: "/institutions/merge",
+    name: RouteName.InstitutionMerge,
+    component: () => import("../components/institution/InstitutionMergeForm.vue"),
     meta: { requiresAuth: true, isAdmin: true }
   },
   {
-    path: "/scissionEtablissement",
-    name: "ScissionEtablissement",
-    component: () =>
-      import("../components/etablissement/FormScissionEtablissement.vue"),
+    path: "/institutions/split",
+    name: RouteName.InstitutionSplit,
+    component: () => import("../components/institution/InstitutionSplitForm.vue"),
     meta: { requiresAuth: true, isAdmin: true }
   },
 
   {
-    path: "/listeAcces",
-    name: "ListeIP",
-    component: () => import("../components/ip/ListeAcces.vue"),
+    path: "/ip",
+    name: RouteName.IpList,
+    component: () => import("../components/ip/IpList.vue"),
     meta: { requiresAuth: true }
   },
   {
-    path: "/ajouterAcces",
-    name: "ajouterAcces",
-    component: () => import("../components/ip/AjouterAcces.vue"),
+    path: "/ip/create",
+    name: RouteName.IpCreate,
+    component: () => import("../components/ip/IpCreate.vue"),
     meta: { requiresAuth: true }
   },
 
   // Editeurs
   {
-    path: "/listeEditeurs",
-    name: "ListeEditeurs",
-    component: () => import("../components/editeur/ListeEditeurs.vue"),
+    path: "/publishers",
+    name: RouteName.Publishers,
+    component: () => import("../components/publisher/PublisherList.vue"),
     meta: { requiresAuth: true, isAdmin: true }
   },
   {
-    path: "/nouvelEditeur",
-    name: "NouvelEditeur",
-    component: () => import("../components/editeur/FormEditeur.vue"),
+    path: "/publishers/create",
+    name: RouteName.PublisherCreate,
+    component: () => import("../components/publisher/PublisherForm.vue"),
     props: { action: "CREATION" },
     meta: { requiresAuth: true, isAdmin: true }
   },
   {
-    path: "/modifierEditeur",
-    name: "ModifierEditeur",
-    component: () => import("../components/editeur/FormEditeur.vue"),
+    path: "/publishers/edit",
+    name: RouteName.PublisherEdit,
+    component: () => import("../components/publisher/PublisherForm.vue"),
     props: { action: "MODIFICATION" },
     meta: { requiresAuth: true, isAdmin: true }
   },
   {
-    path: "/recherche",
-    name: "Recherche",
-    component: () => import("../components/common/Recherche.vue"),
+    path: "/search",
+    name: RouteName.Search,
+    component: () => import("../components/common/Search.vue"),
     meta: { requiresAuth: true, isAdmin: true }
   },
   {
-    path: "/historique",
-    name: "Historique",
-    component: () => import("../components/etablissement/Historique.vue"),
+    path: "/history",
+    name: RouteName.History,
+    component: () => import("../components/institution/History.vue"),
     meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/stats",
-    name: "Statistiques",
-    component: () => import("../components/etablissement/Statistiques.vue"),
+    name: RouteName.Statistics,
+    component: () => import("../components/institution/Statistics.vue"),
     meta: { requiresAuth: true, isAdmin: true }
   },
 
   // Static pages
-  { path: "/cgu", name: "CGU", component: () => import("../views/footer-static/CGU.vue") },
+  { path: "/terms", name: RouteName.Terms, component: () => import("../views/footer/Terms.vue") },
   {
-    path: "/donneespersonnelles",
-    name: "DonneesPersonnelles",
-    component: () => import("../views/footer-static/DonneesPersonnelles.vue")
+    path: "/privacy",
+    name: RouteName.Privacy,
+    component: () => import("../views/footer/Privacy.vue")
   },
   {
-    path: "/mentions",
-    name: "MentionsLegales",
-    component: () => import("../views/footer-static/MentionsLegales.vue")
+    path: "/legal",
+    name: RouteName.Legal,
+    component: () => import("../views/footer/Legal.vue")
   },
   {
-    path: "/accessibilite",
-    name: "Accessibilite",
-    component: () => import("../views/footer-static/Accessibilite.vue")
+    path: "/accessibility",
+    name: RouteName.Accessibility,
+    component: () => import("../views/footer/Accessibility.vue")
   },
 
   // Fallback
@@ -164,9 +182,9 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    }
+    // if (savedPosition) {
+    //   return savedPosition;
+    // }
     return { left: 0, top: 0 };
   }
 });
@@ -188,11 +206,11 @@ router.beforeEach(async (to, from, next) => {
     return next("/login");
   }
 
-  if (to.name === "Login" && auth.isLoggedIn) {
+  if (to.name === RouteName.Login && auth.isLoggedIn) {
     return next("/");
   }
 
-  if (to.name === "ReinitialisationPass" && auth.isLoggedIn) {
+  if (to.name === RouteName.PasswordReset && auth.isLoggedIn) {
     return next("/");
   }
 
@@ -208,7 +226,6 @@ router.beforeEach(async (to, from, next) => {
       }
 
       return next();
-
     } catch (err: any) {
       snackbar.error(err);
       auth.logout();

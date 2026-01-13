@@ -124,6 +124,7 @@ import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { useEtablissementService } from "@/composables/useEtablissementService";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Etablissement from "@/core/Etablissement";
+import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { faDownload, faLock } from "@fortawesome/free-solid-svg-icons";
@@ -152,7 +153,7 @@ onMounted(() => {
   fetchListeType();
   if (!isAdmin.value) {
     snackbar.error("Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnt");
-    router.push({ name: "Home" });
+    router.push({ name: RouteName.Home });
   }
 });
 
@@ -166,7 +167,7 @@ async function fetchListeType() {
 
 function allerAIPs(): void {
   snackbar.hide();
-  router.push({ name: "ListeIP" });
+  router.push({ name: RouteName.IpList });
 }
 
 async function supprimerEtablissement() {
@@ -185,7 +186,7 @@ async function supprimerEtablissement() {
       .then(() => {
         snackbar.success("Le compte a bien été supprimé", {
           onHide: () => {
-            router.push({ name: "ListeEtab" });
+            router.push({ name: RouteName.Institutions });
           },
           timeout: 4000
         });
