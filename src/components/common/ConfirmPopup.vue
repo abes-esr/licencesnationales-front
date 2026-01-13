@@ -16,7 +16,7 @@
       <v-card-actions class="pt-0 ma-3">
         <v-spacer></v-spacer>
         <v-btn variant="outlined" class="bouton-annuler" @click="cancel">
-          Annuler
+          {{ $t("common.confirm.cancel") }}
         </v-btn>
         <v-btn
           variant="flat"
@@ -24,7 +24,7 @@
           :color="options.color"
           @click="agree"
         >
-          Valider
+          {{ $t("common.confirm.confirm") }}
         </v-btn>
       </v-card-actions>
     </v-card>

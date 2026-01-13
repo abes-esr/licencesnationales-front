@@ -7,24 +7,33 @@
           <div class="left-container d-flex flex-column justify-space-between">
             <div class="raccourci">
               <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="mx-2" />
-              <span class="texte text-wrap text-break">Accès direct</span>
+              <span class="texte text-wrap text-break">{{ $t("common.footer.quickAccess") }}</span>
             </div>
 
-            <v-btn href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank"
-              class="footer-btn mx-2 text-center text-white">
-              <span class="texte text-wrap text-break">Assistance</span>
+            <v-btn
+              href="https://stp.abes.fr/node/3?origine=LicencesNationales"
+              target="_blank"
+              class="footer-btn mx-2 text-center text-white"
+            >
+              <span class="texte text-wrap text-break">{{ $t("common.footer.assistance") }}</span>
               <FontAwesomeIcon :icon="faComments" class="mx-2" />
             </v-btn>
 
-            <v-btn href="https://www.licencesnationales.fr/" target="_blank"
-              class="footer-btn mx-2 text-center text-white">
-              <span class="texte text-wrap text-break">Site Licences nationales</span>
+            <v-btn
+              href="https://www.licencesnationales.fr/"
+              target="_blank"
+              class="footer-btn mx-2 text-center text-white"
+            >
+              <span class="texte text-wrap text-break">{{ $t("common.footer.site") }}</span>
               <FontAwesomeIcon :icon="faCircleArrowRight" class="mx-2" />
             </v-btn>
 
-            <v-btn href="https://documentation.abes.fr/aidelicencesnationales/index.html" target="_blank"
-              class="footer-btn mx-2 text-center text-white">
-              <span class="texte text-wrap text-break">Documentation</span>
+            <v-btn
+              href="https://documentation.abes.fr/aidelicencesnationales/index.html"
+              target="_blank"
+              class="footer-btn mx-2 text-center text-white"
+            >
+              <span class="texte text-wrap text-break">{{ $t("common.footer.documentation") }}</span>
               <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" />
             </v-btn>
           </div>
@@ -37,21 +46,23 @@
         <v-divider class="mx-4 hidden-sm-and-down" vertical style="height: auto" />
         <v-divider class="mx-4 hidden-md-and-up" style="height: auto" />
 
-
         <!-- Col droite -->
         <v-col cols="12" md="6" lg="4" xl="4" class="d-flex justify-space-around align-center">
           <div class="d-flex flex-column justify-space-between text-right mr-3 right-container text-white">
-            <h4 class="mb-2 text-wrap text-break">Agence bibliographique de l’enseignement supérieur</h4>
-            <div>227 av. Jean-Louis Viala CS 84308<br />34193 Montpellier Cedex 5</div>
-            <div>Tél : +33 (0)4 67 54 84 10</div>
+            <h4 class="mb-2 text-wrap text-break">{{ $t("common.footer.agencyName") }}</h4>
+            <div>
+              {{ $t("common.footer.addressLine1") }}<br />
+              {{ $t("common.footer.addressLine2") }}
+            </div>
+            <div>{{ $t("common.footer.phone") }}</div>
           </div>
 
           <div class="d-flex flex-column justify-space-around logos">
             <a href="https://abes.fr/" target="_blank" class="ma-2">
-              <v-img src="/logo-abes-blanc.svg" max-width="60" alt="Logo Abes" />
+              <v-img src="/logo-abes-blanc.svg" max-width="60" :alt="$t('common.footer.abesLogoAlt')" />
             </a>
             <a href="https://www.enseignementsup-recherche.gouv.fr/" target="_blank" class="ma-2">
-              <v-img src="/logo-mesri-2020.svg" max-width="60" alt="Logo MESRI" />
+              <v-img src="/logo-mesri-2020.svg" max-width="60" :alt="$t('common.footer.mesriLogoAlt')" />
             </a>
           </div>
         </v-col>
@@ -59,7 +70,7 @@
 
       <!-- Bas du footer -->
       <v-card-text class="py-2 text-white footer-bottom bg-secondary">
-        <strong>Licences Nationales </strong>
+        <strong>{{ $t("common.footer.licencesNationales") }} </strong>
 
         <v-tooltip location="top" theme="dark" content-class="text-white">
           <template #activator="{ props }">
@@ -67,16 +78,27 @@
           </template>
 
           <span>
-            Front: {{ appVersion }}<br />
-            Back: {{ backVersion }}
+            {{ $t("common.footer.front") }}: {{ appVersion }}<br />
+            {{ $t("common.footer.back") }}: {{ backVersion }}
           </span>
         </v-tooltip>
 
         <div id="mentions">
-          <a class="text-white" @click="router.push({ name: RouteName.Privacy })">Données personnelles</a> |
-          <a class="text-white" @click="router.push({ name: RouteName.Terms })">CGU</a> |
-          <a class="text-white" @click="router.push({ name: RouteName.Legal })">Mentions légales</a> |
-          <a class="text-white" @click="router.push({ name: RouteName.Accessibility })">Accessibilité</a>
+          <a class="text-white" @click="router.push({ name: RouteName.Privacy })">
+            {{ $t("common.footer.personalData") }}
+          </a>
+          |
+          <a class="text-white" @click="router.push({ name: RouteName.Terms })">
+            {{ $t("common.footer.terms") }}
+          </a>
+          |
+          <a class="text-white" @click="router.push({ name: RouteName.Legal })">
+            {{ $t("common.footer.legal") }}
+          </a>
+          |
+          <a class="text-white" @click="router.push({ name: RouteName.Accessibility })">
+            {{ $t("common.footer.accessibility") }}
+          </a>
         </div>
       </v-card-text>
     </v-card>
@@ -85,11 +107,8 @@
 
 <script setup lang="ts">
 import { useAuthService } from "@/composables/useAuthService";
-import { Logger } from "@/utils/Logger";
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-
 import { RouteName } from "@/router";
+import { Logger } from "@/utils/Logger";
 import {
   faArrowUpRightFromSquare,
   faCircleArrowRight,
@@ -97,22 +116,23 @@ import {
   faComments,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
 
-// Router
 const router = useRouter();
 const authService = useAuthService();
+const { t } = useI18n();
 
-// Versions
 const appVersion = import.meta.env.VITE_APP_VERSION as string;
 const backVersion = ref("");
 
-// OnMounted
 onMounted(async () => {
   try {
     const response = await authService.getVersion();
     backVersion.value = response.data;
   } catch (error: any) {
-    Logger.error("Impossible de récupérer le numéro de version : " + error);
+    Logger.error(t("common.footer.versionError", { error: String(error) }));
   }
 });
 </script>

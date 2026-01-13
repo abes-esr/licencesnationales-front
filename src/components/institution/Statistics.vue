@@ -1,13 +1,13 @@
 <template>
   <div>
     <v-container variant="flat">
-      <h1>Statistics de l'application</h1>
+      <h1>{{ $t("institution.stats.title") }}</h1>
       <v-alert v-if="message" type="error" density="compact" class="mt-4">
         {{ message }}
       </v-alert>
 
       <h2 class="mt-6">
-        Saisissez la période souhaitée pour les statistiques
+        {{ $t("institution.stats.periodTitle") }}
       </h2>
 
       <v-form ref="formRef" class="mt-4">
@@ -15,14 +15,26 @@
           <v-col cols="12" sm="4" md="3" lg="2">
             <v-menu v-model="menuDateDebut" :close-on-content-click="false" transition="scale-transition" offset-y>
               <template #activator="{ props }">
-                <v-text-field v-bind="props" ref="dateDebutRef" v-model="formattedDateDebut" label="Date de début"
-                  prepend-icon="mdi-calendar" :rules="rulesFormConfig.dateRules" readonly variant="outlined" />
+                <v-text-field
+                  v-bind="props"
+                  ref="dateDebutRef"
+                  v-model="formattedDateDebut"
+                  :label="$t('institution.stats.startDate')"
+                  prepend-icon="mdi-calendar"
+                  :rules="rulesFormConfig.dateRules"
+                  readonly
+                  variant="outlined"
+                />
               </template>
-              <v-date-picker v-model="dateDebut" :show-current="false" color="primary"
-                @update:model-value="menuDateDebut = false">
+              <v-date-picker
+                v-model="dateDebut"
+                :show-current="false"
+                color="primary"
+                @update:model-value="menuDateDebut = false"
+              >
                 <template #actions>
                   <v-btn variant="outlined" @click="menuDateDebut = false">
-                    Annuler
+                    {{ $t("institution.stats.cancel") }}
                   </v-btn>
                 </template>
               </v-date-picker>
@@ -32,14 +44,26 @@
           <v-col cols="12" sm="4" md="3" lg="2">
             <v-menu v-model="menuDateFin" :close-on-content-click="false" transition="scale-transition" offset-y>
               <template #activator="{ props }">
-                <v-text-field v-bind="props" ref="dateFinRef" v-model="formattedDateFin" label="Date de fin"
-                  prepend-icon="mdi-calendar" :rules="rulesFormConfig.dateRules" readonly variant="outlined" />
+                <v-text-field
+                  v-bind="props"
+                  ref="dateFinRef"
+                  v-model="formattedDateFin"
+                  :label="$t('institution.stats.endDate')"
+                  prepend-icon="mdi-calendar"
+                  :rules="rulesFormConfig.dateRules"
+                  readonly
+                  variant="outlined"
+                />
               </template>
-              <v-date-picker v-model="dateFin" :show-current="false" color="primary"
-                @update:model-value="menuDateFin = false">
+              <v-date-picker
+                v-model="dateFin"
+                :show-current="false"
+                color="primary"
+                @update:model-value="menuDateFin = false"
+              >
                 <template #actions>
                   <v-btn variant="outlined" @click="menuDateFin = false">
-                    Annuler
+                    {{ $t("institution.stats.cancel") }}
                   </v-btn>
                 </template>
               </v-date-picker>
@@ -48,7 +72,7 @@
 
           <v-col cols="12" sm="4" md="2">
             <v-btn class="mt-2" @click="getStats">
-              Valider
+              {{ $t("institution.stats.validate") }}
             </v-btn>
           </v-col>
         </v-row>
@@ -57,13 +81,12 @@
       <v-card v-if="etabStats.length > 0" class="mt-4 pa-4">
         <v-row>
           <h3>
-            Statistics entre le {{ formattedDateDebut }} et le
-            {{ formattedDateFin }}
+            {{ $t("institution.stats.resultsTitle", { start: formattedDateDebut, end: formattedDateFin }) }}
           </h3>
         </v-row>
         <v-row class="mt-2">
           <v-list subheader class="mr-4">
-            <v-subheader>Etablissements</v-subheader>
+            <v-subheader>{{ $t("institution.stats.institutions") }}</v-subheader>
             <v-list-item v-for="item in etabStats" :key="item.index">
               <div v-for="(value, name) in item" :key="name">
                 {{ name }} : {{ value }}
@@ -72,7 +95,7 @@
             <v-divider />
           </v-list>
           <v-list subheader>
-            <v-subheader>Adresses et plages IP</v-subheader>
+            <v-subheader>{{ $t("institution.stats.ips") }}</v-subheader>
             <v-list-item v-for="item in ipStats" :key="item.index">
               <div v-for="(value, name) in item" :key="name">
                 {{ name }} : {{ value }}
@@ -113,19 +136,17 @@ const dateDebutRef = ref();
 const dateFinRef = ref();
 
 const formattedDateDebut = computed({
-  get: () =>
-    dateDebut.value ? moment(dateDebut.value).format("DD-MM-YYYY") : "",
+  get: () => (dateDebut.value ? moment(dateDebut.value).format("DD-MM-YYYY") : ""),
   set: value => {
     dateDebut.value = value ? moment(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
-  }
+  },
 });
 
 const formattedDateFin = computed({
-  get: () =>
-    dateFin.value ? moment(dateFin.value).format("DD-MM-YYYY") : "",
+  get: () => (dateFin.value ? moment(dateFin.value).format("DD-MM-YYYY") : ""),
   set: value => {
     dateFin.value = value ? moment(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
-  }
+  },
 });
 
 async function getStats() {
@@ -154,5 +175,4 @@ async function getStats() {
     snackbar.error(err);
   }
 }
-
 </script>

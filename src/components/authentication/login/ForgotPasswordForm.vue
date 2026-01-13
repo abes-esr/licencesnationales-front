@@ -1,30 +1,31 @@
 ﻿<template>
   <v-container elevation="0">
-    <h1 class="pb-1">Mot de passe oublie</h1>
+    <h1 class="pb-1">{{ $t("auth.forgotPassword.title") }}</h1>
     <h2 class="pa-1">
-      Choisir une option de réinitialisation
+      {{ $t("auth.forgotPassword.subtitle") }}
     </h2>
     <v-card class="pa-4">
       <v-radio-group id="radio" v-model="sirenRadio">
         <v-row>
           <v-col cols="1" />
           <v-col cols="10">
-            <v-radio label="Je connais le SIREN de mon etablissement" :value="true" />
+            <v-radio :label="$t('auth.forgotPassword.optionSiren')" :value="true" />
             <v-form ref="formSIREN">
-              <v-text-field variant="outlined" label="SIREN" placeholder="SIREN" v-model="siren" maxlength="9"
+              <v-text-field variant="outlined" :label="$t('auth.forgotPassword.sirenLabel')" :placeholder="$t('auth.forgotPassword.sirenPlaceholder')" v-model="siren" maxlength="9"
                 :rules="rulesForms.siren" required @keyup.enter="validate" :disabled="!sirenRadio" />
               <v-icon> mdi-information </v-icon>
-              <a href="https://annuaire-entreprises.data.gouv.fr/" target="_blank" class="siren-link">Trouver le
-                SIREN de votre établissement</a>
+              <a href="https://annuaire-entreprises.data.gouv.fr/" target="_blank" class="siren-link">
+                {{ $t("auth.forgotPassword.sirenHelp") }}
+              </a>
             </v-form>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="1" />
           <v-col cols="10">
-            <v-radio label="Je connais l'adresse de contact de mon etablissement :" :value="false" />
+            <v-radio :label="$t('auth.forgotPassword.optionEmail')" :value="false" />
             <v-form ref="formMail">
-              <v-text-field variant="outlined" label="Adresse mail de contact" placeholder="Adresse mail de contact"
+              <v-text-field variant="outlined" :label="$t('auth.forgotPassword.contactEmailLabel')" :placeholder="$t('auth.forgotPassword.contactEmailPlaceholder')"
                 type="mail" v-model="mail" :rules="rulesForms.email" required @keyup.enter="validate"
                 :disabled="sirenRadio" />
             </v-form>
@@ -36,7 +37,7 @@
     <v-row>
       <v-col>
         <v-btn color="button" class="submit-button" :loading="buttonLoading" @click="validate">
-          Envoyer
+          {{ $t("auth.forgotPassword.submit") }}
           <v-icon class="submit-button-icon">mdi-arrow-right-circle-outline</v-icon>
         </v-btn>
       </v-col>
@@ -51,11 +52,13 @@ import { useSnackbar } from "@/composables/useSnackbar";
 import { rulesForms } from "@/core/RulesForm";
 import { LicencesNationalesBadRequestApiError } from "@/exception/licencesnationales/LicencesNationalesBadRequestApiError";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 import type { VForm } from "vuetify/components";
 
 const snackbar = useSnackbar();
 const authService = useAuthService();
 const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
+const { t } = useI18n();
 
 const siren = ref("");
 const mail = ref("");
@@ -65,8 +68,7 @@ const buttonLoading = ref(false);
 const formSIREN = ref<VForm | null>(null);
 const formMail = ref<VForm | null>(null);
 
-const EMAIL_NOT_FOUND_MESSAGE =
-  "Si l'adresse e-mail est reconnue, vous recevrez un lien de reinitialisation du mot de passe";
+const emailNotFoundMessage = () => t("auth.forgotPassword.emailNotFound");
 
 const submitWithLoading = async (action: () => Promise<JsonMotDePasseOublieResponse>) => {
   buttonLoading.value = true;
@@ -76,7 +78,7 @@ const submitWithLoading = async (action: () => Promise<JsonMotDePasseOublieRespo
     snackbar.success(response.message);
   } catch (err: any) {
     if (err instanceof LicencesNationalesBadRequestApiError && !sirenRadio.value) {
-      snackbar.success(EMAIL_NOT_FOUND_MESSAGE);
+      snackbar.success(emailNotFoundMessage());
     } else {
       snackbar.error(err);
     }

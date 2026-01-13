@@ -3,8 +3,8 @@
     <v-card elevation="0">
       <v-form ref="formModuleSegmentsIpPlage">
         <v-app-bar elevation="0" density="compact" class="barIp w-100 pa-2 top-0">
-          <span v-if="typeAcces === 'ip'">Adresse IP</span>
-          <span v-else>Plage d'adresses IP</span>
+          <span v-if="typeAcces === 'ip'">{{ $t("ip.segments.single") }}</span>
+          <span v-else>{{ $t("ip.segments.range") }}</span>
           <span v-if="typeIp === 'IPV4'">v4</span>
           <span v-else>v6</span>
         </v-app-bar>
@@ -12,17 +12,12 @@
           <v-row class="ma-0">
             <v-col class="py-0">
               <p class="caption mb-0">
-                Possibilité de copier/coller directement les IP dans les champs
-                de saisie
+                {{ $t("ip.segments.pasteHint") }}
               </p>
               <v-row v-if="typeAcces === 'ip'">
                 <v-col class="pb-0">
-                  <!-- IP v4 -->
                   <v-row v-if="typeIp === 'IPV4'">
-                    <v-col class="pa-1"
-                      v-for="(value, index) in ipv4Segments"
-                      :key="index"
-                    >
+                    <v-col class="pa-1" v-for="(value, index) in ipv4Segments" :key="index">
                       <v-text-field
                         :data-length="value.length"
                         :data-index="index"
@@ -41,12 +36,8 @@
                       />
                     </v-col>
                   </v-row>
-                  <!-- IP v6 -->
                   <v-row v-else>
-                    <v-col class="pa-1"
-                      v-for="(value, index) in ipv6Segments"
-                      :key="index"
-                    >
+                    <v-col class="pa-1" v-for="(value, index) in ipv6Segments" :key="index">
                       <v-text-field
                         :data-length="value.length"
                         :data-index="index"
@@ -68,14 +59,10 @@
               </v-row>
               <v-row v-else>
                 <v-col>
-                  <!-- PLAGE IP v4 -->
                   <div v-if="typeIp === 'IPV4'">
-                    <label>IP de début</label>
+                    <label>{{ $t("ip.segments.startIp") }}</label>
                     <v-row>
-                      <v-col class="pa-1 pb-0"
-                        v-for="(value, index) in ipv4SegmentsPlageDebut"
-                        :key="index"
-                      >
+                      <v-col class="pa-1 pb-0" v-for="(value, index) in ipv4SegmentsPlageDebut" :key="index">
                         <v-text-field
                           :data-length="value.length"
                           :data-index="index"
@@ -83,13 +70,7 @@
                           ref="ipv4SegmentsPlageDebutRefs"
                           v-model="value.value"
                           :suffix="getSuffix(index)"
-                          @input="
-                            nextSegment(
-                              index,
-                              ipv4SegmentsPlageDebut,
-                              'ipv4SegmentsPlageDebutRefs'
-                            )
-                          "
+                          @input="nextSegment(index, ipv4SegmentsPlageDebut, 'ipv4SegmentsPlageDebutRefs')"
                           @paste="onPastePlageDebut"
                           @paste.prevent
                           @focus="$emit('focus')"
@@ -100,12 +81,9 @@
                         />
                       </v-col>
                     </v-row>
-                    <label>IP de fin</label>
+                    <label>{{ $t("ip.segments.endIp") }}</label>
                     <v-row>
-                      <v-col class="pa-1"
-                        v-for="(value, index) in ipv4SegmentsPlageFin"
-                        :key="index"
-                      >
+                      <v-col class="pa-1" v-for="(value, index) in ipv4SegmentsPlageFin" :key="index">
                         <v-text-field
                           :data-length="value.length"
                           :data-index="index"
@@ -113,13 +91,7 @@
                           ref="ipv4SegmentsPlageFinRefs"
                           v-model="value.value"
                           :suffix="getSuffix(index)"
-                          @input="
-                            nextSegment(
-                              index,
-                              ipv4SegmentsPlageFin,
-                              'ipv4SegmentsPlageFinRefs'
-                            )
-                          "
+                          @input="nextSegment(index, ipv4SegmentsPlageFin, 'ipv4SegmentsPlageFinRefs')"
                           @paste="onPastePlageFin"
                           @paste.prevent
                           @focus="$emit('focus')"
@@ -133,15 +105,10 @@
                     </v-row>
                   </div>
 
-                  <!-- PLAGE IP v6 -->
                   <div v-else>
-                    <label>IP de début</label>
+                    <label>{{ $t("ip.segments.startIp") }}</label>
                     <v-row>
-                      <v-col
-                        v-for="(value, index) in ipv6SegmentsPlageDebut"
-                        :key="index"
-                        class="pa-1 pb-0"
-                      >
+                      <v-col v-for="(value, index) in ipv6SegmentsPlageDebut" :key="index" class="pa-1 pb-0">
                         <v-text-field
                           :data-length="value.length"
                           :data-index="index"
@@ -149,13 +116,7 @@
                           ref="ipv6SegmentsPlageDebutRefs"
                           v-model="value.value"
                           :suffix="getSuffix(index)"
-                          @input="
-                            nextSegment(
-                              index,
-                              ipv6SegmentsPlageDebut,
-                              'ipv6SegmentsPlageDebutRefs'
-                            )
-                          "
+                          @input="nextSegment(index, ipv6SegmentsPlageDebut, 'ipv6SegmentsPlageDebutRefs')"
                           @paste="onPastePlageDebut"
                           @paste.prevent
                           @focus="$emit('focus')"
@@ -165,12 +126,9 @@
                         />
                       </v-col>
                     </v-row>
-                    <label>IP de fin</label>
+                    <label>{{ $t("ip.segments.endIp") }}</label>
                     <v-row>
-                      <v-col class="pa-1"
-                        v-for="(value, index) in ipv6SegmentsPlageFin"
-                        :key="index"
-                      >
+                      <v-col class="pa-1" v-for="(value, index) in ipv6SegmentsPlageFin" :key="index">
                         <v-text-field
                           :data-length="value.length"
                           :data-index="index"
@@ -178,13 +136,7 @@
                           ref="ipv6SegmentsPlageFinRefs"
                           v-model="value.value"
                           :suffix="getSuffix(index)"
-                          @input="
-                            nextSegment(
-                              index,
-                              ipv6SegmentsPlageFin,
-                              'ipv6SegmentsPlageFinRefs'
-                            )
-                          "
+                          @input="nextSegment(index, ipv6SegmentsPlageFin, 'ipv6SegmentsPlageFinRefs')"
                           @paste="onPastePlageFin"
                           @paste.prevent
                           @focus="$emit('focus')"
@@ -201,15 +153,14 @@
             <v-col cols="2">
               <v-row id="fillHeight"> </v-row>
               <v-row>
-                <a @click="clear(false)"
-                  >Vider les champs
-                  <FontAwesomeIcon :icon="faBackspace"
-                /></a>
+                <a @click="clear(false)">
+                  {{ $t("ip.segments.clearFields") }}
+                  <FontAwesomeIcon :icon="faBackspace" />
+                </a>
               </v-row>
             </v-col>
           </v-row>
 
-          <!-- COMMENTAIRES -->
           <v-row class="mx-0 mt-0">
             <v-col cols="10" lg="10" md="8" sm="8">
               <v-textarea
@@ -217,8 +168,8 @@
                 variant="outlined"
                 auto-grow
                 rows="2"
-                label="Commentaires"
-                hint="Apporter ici toute précision sur l'attribution de cette IP, surtout si elle n'appartient pas au réseau Renater."
+                :label="$t('ip.segments.commentsLabel')"
+                :hint="$t('ip.segments.commentsHint')"
                 :rules="rulesForm.commentaires"
                 v-model="commentaires"
                 @focus="$emit('focus')"
@@ -238,7 +189,7 @@
                     color="button"
                     variant="elevated"
                   >
-                    <span id="btnText">Enregistrer </span>
+                    <span id="btnText">{{ $t("ip.segments.save") }} </span>
                     <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
                   </v-btn>
                 </v-card-actions>
@@ -262,6 +213,7 @@ import { useSnackbar } from "@/composables/useSnackbar";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import type { VForm, VTextField } from "vuetify/components";
 import { faBackspace } from "@fortawesome/free-solid-svg-icons";
+import { useI18n } from "vue-i18n";
 
 interface SegmentPlage {
   length: number;
@@ -275,14 +227,11 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   typeIp: "IPV4",
-  typeAcces: "ip"
+  typeAcces: "ip",
 });
 
 const emit = defineEmits<{
-  (
-    e: "FormModuleSegmentsIpPlageEvent",
-    payload: { id: string; typeIp: string; ip: string; commentaires: string }
-  ): void;
+  (e: "FormModuleSegmentsIpPlageEvent", payload: { id: string; typeIp: string; ip: string; commentaires: string }): void;
   (e: "alertSuccess", message: string): void;
   (e: "alertError", message: string): void;
   (e: "focus"): void;
@@ -293,6 +242,7 @@ const authStore = useAuthStore();
 const snackbar = useSnackbar();
 const etablissementStore = useEtablissementStore();
 const iPService = useIpService();
+const { t } = useI18n();
 
 const formModuleSegmentsIpPlage = ref<VForm | null>(null);
 const ipv4SegmentsRefs = ref<InstanceType<typeof VTextField>[]>([]);
@@ -322,57 +272,51 @@ const resetSegments = () => {
     { length: 3, value: "" },
     { length: 3, value: "" },
     { length: 3, value: "" },
-    { length: 3, value: "" }
+    { length: 3, value: "" },
   ];
   ipv6Segments.value = Array.from({ length: 8 }).map(() => ({
     length: 5,
-    value: ""
+    value: "",
   }));
   ipv4SegmentsPlageDebut.value = [
     { length: 3, value: "" },
     { length: 3, value: "" },
     { length: 3, value: "" },
-    { length: 3, value: "" }
+    { length: 3, value: "" },
   ];
   ipv4SegmentsPlageFin.value = [
     { length: 3, value: "" },
     { length: 3, value: "" },
     { length: 3, value: "" },
-    { length: 3, value: "" }
+    { length: 3, value: "" },
   ];
   ipv6SegmentsPlageDebut.value = Array.from({ length: 8 }).map(() => ({
     length: 5,
-    value: ""
+    value: "",
   }));
   ipv6SegmentsPlageFin.value = Array.from({ length: 8 }).map(() => ({
     length: 5,
-    value: ""
+    value: "",
   }));
 };
 
-const refMap: Record<string, { value: Array<InstanceType<typeof VTextField>> }> =
-  {
-    ipv4SegmentsRefs,
-    ipv6SegmentsRefs,
-    ipv4SegmentsPlageDebutRefs,
-    ipv4SegmentsPlageFinRefs,
-    ipv6SegmentsPlageDebutRefs,
-    ipv6SegmentsPlageFinRefs
-  };
+const refMap: Record<string, { value: Array<InstanceType<typeof VTextField>> }> = {
+  ipv4SegmentsRefs,
+  ipv6SegmentsRefs,
+  ipv4SegmentsPlageDebutRefs,
+  ipv4SegmentsPlageFinRefs,
+  ipv6SegmentsPlageDebutRefs,
+  ipv6SegmentsPlageFinRefs,
+};
 
 const getSuffix = (index: number) => {
-  console.log(index)
   if (typeIp.value === "IPV4") {
     return index === 3 ? "" : ".";
   }
   return index === 7 ? "" : ":";
 };
 
-const nextSegment = (
-  index: number,
-  array: SegmentPlage[],
-  refArray: keyof typeof refMap
-) => {
+const nextSegment = (index: number, array: SegmentPlage[], refArray: keyof typeof refMap) => {
   const indexMax = array.length - 1;
 
   if (typeIp.value === "IPV4") {
@@ -404,8 +348,7 @@ const setIp = () => {
     if (typeIp.value === "IPV4") {
       ipv4SegmentsPlageDebut.value.forEach((content, index) => {
         if (index === 2 || index === 3) {
-          value +=
-            content.value + "-" + ipv4SegmentsPlageFin.value[index].value + ".";
+          value += content.value + "-" + ipv4SegmentsPlageFin.value[index].value + ".";
         } else {
           value += content.value + ".";
         }
@@ -442,14 +385,14 @@ const ajouterIp = async () => {
       .addIP(authStore.getToken, siren, {
         typeIp: typeIp.value,
         ip: ip.value,
-        commentaires: commentaires.value
+        commentaires: commentaires.value,
       })
       .then(response => {
         emit("FormModuleSegmentsIpPlageEvent", {
           id: response.data.id,
           typeIp: typeIp.value,
           ip: ip.value,
-          commentaires: commentaires.value
+          commentaires: commentaires.value,
         });
         formModuleSegmentsIpPlage.value?.resetValidation();
         clear(false);
@@ -457,7 +400,7 @@ const ajouterIp = async () => {
       })
       .catch(err => {
         Logger.error(err?.toString?.() ?? err);
-        emit("alertError", err?.response?.data?.message ?? "Erreur lors de l'enregistrement");
+        emit("alertError", err?.response?.data?.message ?? t("ip.segments.saveError"));
       })
       .finally(() => {
         buttonLoading.value = false;
@@ -562,7 +505,7 @@ onMounted(() => {
 });
 
 defineExpose({
-  clear
+  clear,
 });
 </script>
 

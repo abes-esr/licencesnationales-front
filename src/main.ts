@@ -20,6 +20,7 @@ import { createPinia } from "pinia";
 import piniaPersist from 'pinia-plugin-persistedstate'
 import moment from "moment";
 import "moment/locale/fr";
+import { i18n } from "@/i18n";
 
 // Handle all Vue errors
 /*Vue.config.errorHandler = error =>
@@ -38,6 +39,7 @@ app.use(pinia)
 // Router & plugins
 app.use(router)
 app.use(vuetify)
+app.use(i18n)
 
 // Vue.config.productionTip = false;
 

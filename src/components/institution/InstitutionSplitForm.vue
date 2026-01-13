@@ -6,26 +6,32 @@
           <v-row>
             <v-col cols="2" xs="0" />
             <v-col cols="8" xs="12">
-              <v-card-title>Scission d'établissements</v-card-title>
+              <v-card-title>{{ $t("institution.split.title") }}</v-card-title>
               <v-card>
                 <v-card-text>
-                  <v-card-title>
-                    Siren de l'établissement à scinder
-                  </v-card-title>
+                  <v-card-title>{{ $t("institution.split.sirenTitle") }}</v-card-title>
                   <v-col cols="12">
-                    <v-text-field variant="outlined" label="SIREN" placeholder="SIREN" v-model="sirenEtab"
-                      :rules="rulesForms.siren" class="pt-6 w-100" required @keyup.enter="validateForm" maxLength="9" />
-                    <h3>Nombre d'établissements : {{ etablissementNumber }}</h3>
-
+                    <v-text-field
+                      variant="outlined"
+                      :label="$t('institution.split.sirenLabel')"
+                      :placeholder="$t('institution.split.sirenLabel')"
+                      v-model="sirenEtab"
+                      :rules="rulesForms.siren"
+                      class="pt-6 w-100"
+                      required
+                      @keyup.enter="validateForm"
+                      maxLength="9"
+                    />
+                    <h3>{{ $t("institution.split.count", { count: etablissementNumber }) }}</h3>
                   </v-col>
 
                   <v-card-actions>
                     <v-row class="pa-0 ga-4">
                       <v-btn variant="elevated" @click="increaseEtablissementNumber">
-                        Ajouter un etablissement
+                        {{ $t("institution.split.addInstitution") }}
                       </v-btn>
                       <v-btn variant="elevated" @click="decreaseEtablissementNumber">
-                        Supprimer un etablissement
+                        {{ $t("institution.split.removeInstitution") }}
                       </v-btn>
                     </v-row>
                   </v-card-actions>
@@ -42,9 +48,8 @@
                 <v-row>
                   <v-spacer class="hidden-sm-and-down"></v-spacer>
                   <v-col cols="12" md="3" lg="3" xl="3" class="d-flex justify-space-around mr-16 flex-wrap">
-                    <v-btn @click="triggerChildrenForm" :loading="buttonLoading" size="large" color="button"
-                      variant="elevated">
-                      Enregistrer
+                    <v-btn @click="triggerChildrenForm" :loading="buttonLoading" size="large" color="button" variant="elevated">
+                      {{ $t("institution.split.save") }}
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -67,12 +72,14 @@ import { rulesForms } from "@/core/RulesForm";
 import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
 const etablissementService = useEtablissementService();
 const router = useRouter();
+const { t } = useI18n();
 
 const sirenEtab = ref("");
 const etablissementNumber = ref(2);
@@ -94,18 +101,17 @@ async function send(payload: any): Promise<void> {
   }
 
   const validation = await formRef.value?.validate();
-  const isValid =
-    typeof validation === "boolean" ? validation : validation?.valid;
+  const isValid = typeof validation === "boolean" ? validation : validation?.valid;
 
   if (isValid) {
     etablissementService
       .scission(authStore.getToken, {
         sirenScinde: sirenEtab.value.trim(),
-        nouveauxEtabs: etablissementDTOS.value
+        nouveauxEtabs: etablissementDTOS.value,
       })
       .then(() => {
-        snackbar.success("La scission a bien été effectuée.");
-        router.push({ name: RouteName.Institutions })
+        snackbar.success(t("institution.split.success"));
+        router.push({ name: RouteName.Institutions });
       })
       .catch((err: any) => {
         snackbar.error(err);

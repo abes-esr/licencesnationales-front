@@ -1,18 +1,22 @@
 <template>
   <v-container variant="flat">
-    <h1>Etablissement {{ etablissement.nom }}</h1>
+    <h1>{{ $t("institution.card.title", { name: etablissement.nom }) }}</h1>
     <v-col cols="12" md="6" lg="6" xl="6" class="pa-1">
       <ConfirmPopup ref="confirmRef" />
     </v-col>
-    <v-container class=" elevation-0 pt-0">
+    <v-container class="elevation-0 pt-0">
       <v-col cols="12" class="d-flex align-content-start justify-space-between flex-wrap mx-0 px-0 py-0">
         <v-card-title class="px-0">
-          Information du compte
-          <v-tooltip text="Exporter les infos du compte" location="top" open-delay="100" theme="dark"
-            content-class="text-white">
+          {{ $t("institution.card.accountInfo") }}
+          <v-tooltip
+            :text="$t('institution.card.exportAccountInfo')"
+            location="top"
+            open-delay="100"
+            theme="dark"
+            content-class="text-white"
+          >
             <template v-slot:activator="{ props }">
-              <v-btn icon @click="downloadEtablissement" class="bouton-simple" v-bind="props"
-                :loading="isExportLoading">
+              <v-btn icon @click="downloadEtablissement" class="bouton-simple" v-bind="props" :loading="isExportLoading">
                 <FontAwesomeIcon :icon="faDownload" class="mx-2 fa-lg" />
               </v-btn>
             </template>
@@ -20,60 +24,99 @@
         </v-card-title>
 
         <v-btn variant="tonal" class="mt-3" @click="allerAIPs">
-          Voir la liste des IPs
+          {{ $t("institution.card.viewIpList") }}
           <v-icon class="ml-2">mdi-ip-network</v-icon>
         </v-btn>
       </v-col>
       <span class="d-block">
-        Compte créé le :
+        {{ $t("institution.card.accountCreatedOn") }}
         {{ etablissement.dateCreation.toLocaleDateString() }}
       </span>
-      <v-btn v-if="modificationModeDisabled" class="mt-3" variant="tonal" style="margin-right: 1em"
-        @click="entrerEnModification">
-        Modifier le compte
+      <v-btn v-if="modificationModeDisabled" class="mt-3" variant="tonal" style="margin-right: 1em" @click="entrerEnModification">
+        {{ $t("institution.card.editAccount") }}
       </v-btn>
       <v-btn v-if="!modificationModeDisabled" class="mt-3" variant="tonal" @click="validerModifications"
         style="margin-right: 1em" color="success">
-        Valider les modifications du compte
+        {{ $t("institution.card.validateChanges") }}
       </v-btn>
       <v-btn v-if="!modificationModeDisabled" class="mt-3" variant="tonal" @click="annulerModifications">
-        Réinitialiser les champs d'origine
+        {{ $t("institution.card.resetFields") }}
       </v-btn>
-      <v-btn v-if="modificationModeDisabled && getEtablissement.statut !== 'Validé'" class="mt-3" variant="tonal"
-        style="margin-right: 1em" :loading="buttonValidationLoading" @click="validerEtablissement">
-        Valider le compte
+      <v-btn
+        v-if="modificationModeDisabled && getEtablissement.statut !== 'Valid�'"
+        class="mt-3"
+        variant="tonal"
+        style="margin-right: 1em"
+        :loading="buttonValidationLoading"
+        @click="validerEtablissement"
+      >
+        {{ $t("institution.card.validateAccount") }}
       </v-btn>
-      <v-btn v-if="modificationModeDisabled && getEtablissement.statut === 'Validé'" class="btn-5  mt-3"
-        :loading="buttonValidationLoading" @click="devaliderEtablissement">
-        Dévalider le compte
+      <v-btn
+        v-if="modificationModeDisabled && getEtablissement.statut === 'Valid�'"
+        class="btn-5 mt-3"
+        :loading="buttonValidationLoading"
+        @click="devaliderEtablissement"
+      >
+        {{ $t("institution.card.invalidateAccount") }}
       </v-btn>
       <v-row class="d-flex justify-space-between flex-wrap ma-0 pa-0">
         <v-col cols="12" md="6" lg="6" xl="6" class="d-flex align-content-start justify-center flex-wrap px-0 pr-2">
           <v-card class="d-flex justify-space-between flex-column w-100 pa-4">
             <div class="d-flex justify-space-between align-center">
-              <h2 class="mb-3">Etablissement</h2>
-              <v-tooltip text="Non modifiable par l'utilisateur" location="top" open-delay="100" theme="dark"
-                content-class="text-white" v-if="!isAdmin">
+              <h2 class="mb-3">{{ $t("institution.card.institutionSection") }}</h2>
+              <v-tooltip
+                :text="$t('institution.card.readonly')"
+                location="top"
+                open-delay="100"
+                theme="dark"
+                content-class="text-white"
+                v-if="!isAdmin"
+              >
                 <template v-slot:activator="{ props }">
                   <FontAwesomeIcon v-bind="props" :icon="faLock" class="fa-2x mx-2" />
                 </template>
               </v-tooltip>
             </div>
             <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-              <v-text-field label="Siren" placeholder="Siren" variant="outlined" v-model="etablissement.siren" disabled
-                class="mt-1" />
-              <v-text-field label="Nom de l'établissement" placeholder="Nom de l'établissement" variant="outlined"
-                v-model="etablissement.nom" :disabled="modificationModeDisabled" class="mt-1" />
-              <v-text-field label="ID Abes" placeholder="ID Abes" variant="outlined" v-model="etablissement.idAbes"
-                disabled class="mt-1" />
-              <v-select label="Type d'établissement" :items="typesEtab" variant="outlined"
-                v-model="etablissement.typeEtablissement" :disabled="modificationModeDisabled" class="mt-1" />
+              <v-text-field
+                :label="$t('institution.card.siren')"
+                :placeholder="$t('institution.card.siren')"
+                variant="outlined"
+                v-model="etablissement.siren"
+                disabled
+                class="mt-1"
+              />
+              <v-text-field
+                :label="$t('institution.card.institutionName')"
+                :placeholder="$t('institution.card.institutionName')"
+                variant="outlined"
+                v-model="etablissement.nom"
+                :disabled="modificationModeDisabled"
+                class="mt-1"
+              />
+              <v-text-field
+                :label="$t('institution.card.idAbes')"
+                :placeholder="$t('institution.card.idAbes')"
+                variant="outlined"
+                v-model="etablissement.idAbes"
+                disabled
+                class="mt-1"
+              />
+              <v-select
+                :label="$t('institution.card.institutionType')"
+                :items="typesEtab"
+                variant="outlined"
+                v-model="etablissement.typeEtablissement"
+                :disabled="modificationModeDisabled"
+                class="mt-1"
+              />
               <div class="mt-1">
-                <h3 class="d-inline">Statut de l'établissement:</h3>
+                <h3 class="d-inline">{{ $t("institution.card.institutionStatus") }}</h3>
                 {{ etablissement.statut }}
               </div>
               <div class="mt-1">
-                <h3 class="d-inline">Statut IP :</h3>
+                <h3 class="d-inline">{{ $t("institution.card.ipStatus") }}</h3>
                 {{ etablissement.statutIP }}
               </div>
             </div>
@@ -82,36 +125,89 @@
         <v-col cols="12" md="6" lg="6" xl="6" class="d-flex align-content-start justify-center flex-wrap px-0 pl-2">
           <v-card class="d-flex justify-space-between flex-column w-100 pa-4">
             <div class="d-flex justify-space-between align-center">
-              <h2 class="mb-3">Contact</h2>
+              <h2 class="mb-3">{{ $t("institution.card.contactSection") }}</h2>
             </div>
             <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-              <v-text-field label="Nom du contact" placeholder="Nom du contact" variant="outlined"
-                v-model="etablissement.contact.nom" :disabled="modificationModeDisabled" class="mt-1" />
-              <v-text-field label="Prénom du contact" placeholder="Prénom du contact" variant="outlined"
-                v-model="etablissement.contact.prenom" :disabled="modificationModeDisabled" class="mt-1" />
-              <v-text-field label="Téléphone du contact" placeholder="Téléphone du contact" variant="outlined"
-                v-model="etablissement.contact.telephone" :disabled="modificationModeDisabled" class="mt-1" />
-              <v-text-field label="Mail du contact" placeholder="Mail du contact" variant="outlined"
-                v-model="etablissement.contact.mail" :disabled="modificationModeDisabled" class="mt-1" />
-              <v-text-field label="Adresse du contact" placeholder="Adresse du contact" variant="outlined"
-                v-model="etablissement.contact.adresse" :disabled="modificationModeDisabled" class="mt-1" />
-              <v-text-field label="BP du contact" placeholder="BP du contact" variant="outlined"
-                v-model="etablissement.contact.boitePostale" :disabled="modificationModeDisabled" class="mt-1" />
-              <v-text-field label="Code Postal du contact" placeholder="Code Postal du contact" variant="outlined"
-                v-model="etablissement.contact.codePostal" :disabled="modificationModeDisabled" class="mt-1" />
-              <v-text-field label="Ville du contact" placeholder="Ville du contact" variant="outlined"
-                v-model="etablissement.contact.ville" :disabled="modificationModeDisabled" class="mt-1" />
-              <v-text-field label="Cedex du contact" placeholder="Cedex du contact" variant="outlined"
-                v-model="etablissement.contact.cedex" :disabled="modificationModeDisabled" class="mt-1" />
+              <v-text-field
+                :label="$t('institution.card.contactLastName')"
+                :placeholder="$t('institution.card.contactLastName')"
+                variant="outlined"
+                v-model="etablissement.contact.nom"
+                :disabled="modificationModeDisabled"
+                class="mt-1"
+              />
+              <v-text-field
+                :label="$t('institution.card.contactFirstName')"
+                :placeholder="$t('institution.card.contactFirstName')"
+                variant="outlined"
+                v-model="etablissement.contact.prenom"
+                :disabled="modificationModeDisabled"
+                class="mt-1"
+              />
+              <v-text-field
+                :label="$t('institution.card.contactPhone')"
+                :placeholder="$t('institution.card.contactPhone')"
+                variant="outlined"
+                v-model="etablissement.contact.telephone"
+                :disabled="modificationModeDisabled"
+                class="mt-1"
+              />
+              <v-text-field
+                :label="$t('institution.card.contactEmail')"
+                :placeholder="$t('institution.card.contactEmail')"
+                variant="outlined"
+                v-model="etablissement.contact.mail"
+                :disabled="modificationModeDisabled"
+                class="mt-1"
+              />
+              <v-text-field
+                :label="$t('institution.card.contactAddress')"
+                :placeholder="$t('institution.card.contactAddress')"
+                variant="outlined"
+                v-model="etablissement.contact.adresse"
+                :disabled="modificationModeDisabled"
+                class="mt-1"
+              />
+              <v-text-field
+                :label="$t('institution.card.contactPoBox')"
+                :placeholder="$t('institution.card.contactPoBox')"
+                variant="outlined"
+                v-model="etablissement.contact.boitePostale"
+                :disabled="modificationModeDisabled"
+                class="mt-1"
+              />
+              <v-text-field
+                :label="$t('institution.card.contactPostalCode')"
+                :placeholder="$t('institution.card.contactPostalCode')"
+                variant="outlined"
+                v-model="etablissement.contact.codePostal"
+                :disabled="modificationModeDisabled"
+                class="mt-1"
+              />
+              <v-text-field
+                :label="$t('institution.card.contactCity')"
+                :placeholder="$t('institution.card.contactCity')"
+                variant="outlined"
+                v-model="etablissement.contact.ville"
+                :disabled="modificationModeDisabled"
+                class="mt-1"
+              />
+              <v-text-field
+                :label="$t('institution.card.contactCedex')"
+                :placeholder="$t('institution.card.contactCedex')"
+                variant="outlined"
+                v-model="etablissement.contact.cedex"
+                :disabled="modificationModeDisabled"
+                class="mt-1"
+              />
             </div>
           </v-card>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <v-btn color="button" class="bouton-supprimer" :loading="buttonSuppresionLoading"
-            @click="supprimerEtablissement">
-            Supprimer le compte
+          <v-btn color="button" class="bouton-supprimer" :loading="buttonSuppresionLoading" @click="supprimerEtablissement">
+            {{ $t("institution.card.deleteAccount") }}
           </v-btn>
         </v-col>
       </v-row>
@@ -130,6 +226,7 @@ import { useEtablissementStore } from "@/stores/etablissementStore";
 import { faDownload, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
@@ -137,6 +234,7 @@ const snackbar = useSnackbar();
 const etablissementStore = useEtablissementStore();
 const router = useRouter();
 const etablissementService = useEtablissementService();
+const { t } = useI18n();
 
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
 const etablissement = ref<Etablissement>(etablissementStore.getCurrentEtablissement);
@@ -152,7 +250,7 @@ const getEtablissement = computed(() => etablissementStore.getCurrentEtablisseme
 onMounted(() => {
   fetchListeType();
   if (!isAdmin.value) {
-    snackbar.error("Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnt");
+    snackbar.error(t("institution.card.unauthorized"));
     router.push({ name: RouteName.Home });
   }
 });
@@ -161,7 +259,7 @@ async function fetchListeType() {
   try {
     typesEtab.value = await etablissementService.listeType();
   } catch (err: any) {
-    snackbar.error(err)
+    snackbar.error(err);
   }
 }
 
@@ -175,22 +273,18 @@ async function supprimerEtablissement() {
   snackbar.hide();
 
   const confirmed = await confirmRef.value?.open(
-    `ATTENTION : Vous êtes sur le point de supprimer définitivement le compte de l'établissement ${etablissement.value.nom} avec toutes les informations associées (les des IPs,...)
-
-
-      Etes-vous sûr de vouloir effectuer cette ation ?`
+    t("institution.card.confirmDelete", { name: etablissement.value.nom })
   );
   if (confirmed) {
     etablissementService
       .deleteEtab(etablissement.value.siren, authStore.getToken)
       .then(() => {
-        snackbar.success("Le compte a bien été supprimé", {
+        snackbar.success(t("institution.card.deleteSuccess"), {
           onHide: () => {
             router.push({ name: RouteName.Institutions });
           },
-          timeout: 4000
+          timeout: 4000,
         });
-
       })
       .catch(err => {
         snackbar.error(err);
@@ -208,12 +302,10 @@ async function validerEtablissement() {
   snackbar.hide();
 
   const confirmed = await confirmRef.value?.open(
-    `Vous êtes sur le point de valider le compte de l'établissement ${etablissement.value.nom}
-
-      Etes-vous sûr de vouloir effectuer cette ation ?`
+    t("institution.card.confirmValidate", { name: etablissement.value.nom })
   );
   if (confirmed) {
-    etablissement.value.statut = "Validé";
+    etablissement.value.statut = "Valid�";
     etablissementService
       .validerEtablissement(etablissement.value.siren, authStore.getToken)
       .then(response => {
@@ -236,9 +328,7 @@ async function devaliderEtablissement() {
   snackbar.hide();
 
   const confirmed = await confirmRef.value?.open(
-    `Vous êtes sur le point de dévalider le compte de l'établissement ${etablissement.value.nom}
-
-      Etes-vous sûr de vouloir effectuer cette ation ?`
+    t("institution.card.confirmInvalidate", { name: etablissement.value.nom })
   );
   if (confirmed) {
     etablissement.value.statut = "Nouveau";
@@ -260,17 +350,12 @@ async function devaliderEtablissement() {
 }
 
 function entrerEnModification(): void {
-  console.log("ENTRY");
   modificationModeDisabled.value = false;
 }
 
 function validerModifications(): void {
   etablissementService
-    .updateEtablissement(
-      etablissement.value,
-      authStore.getToken,
-      authStore.isAdmin
-    )
+    .updateEtablissement(etablissement.value, authStore.getToken, authStore.isAdmin)
     .then(() => {
       etablissementStore.updateCurrentEtablissement(etablissement.value);
     })
@@ -278,8 +363,6 @@ function validerModifications(): void {
       snackbar.error(err);
     })
     .finally(() => {
-      console.log("FINAL VALID");
-
       modificationModeDisabled.value = true;
     });
 }
@@ -287,11 +370,7 @@ function validerModifications(): void {
 function annulerModifications(): void {
   etablissement.value = etablissementStore.getCurrentEtablissement;
   modificationModeDisabled.value = true;
-  console.log("CANCEL");
-
 }
-
-console.log(modificationModeDisabled.value);
 
 function downloadEtablissement(): void {
   isExportLoading.value = true;

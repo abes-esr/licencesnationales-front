@@ -6,31 +6,32 @@
         <v-col lg="11" md="12" xs="12">
           <v-row>
             <v-card-title>
-              <h1>
-                Déclarer de nouvelles adresses ou plages IP
-              </h1>
+              <h1>{{ $t("ip.create.title") }}</h1>
             </v-card-title>
           </v-row>
           <v-row>
             <v-col>
               <a @click="allerListeAcces">
-                <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir à la
-                liste complète des IP
+                <FontAwesomeIcon :icon="faReply" />&nbsp;{{ $t("ip.create.backToList") }}
               </a>
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12" md="8" class="pa-0">
               <v-card-title class="pb-0">
-                Choisir le type d'IP à déclarer
+                {{ $t("ip.create.chooseType") }}
               </v-card-title>
             </v-col>
             <v-col cols="12" md="4" class="pa-3">
               <v-card-text class="fondGris">
                 <FontAwesomeIcon :icon="faCircleInfo" size="2x" style="color: #478dcb;" />
-                <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#TutoDeDeclarationDesIP"
-                  target="_blank" class="pl-3 pb-6 text-body-1 font-weight-bold">Consulter l'aide pour la déclaration
-                  des IP</a>
+                <a
+                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#TutoDeDeclarationDesIP"
+                  target="_blank"
+                  class="pl-3 pb-6 text-body-1 font-weight-bold"
+                >
+                  {{ $t("ip.create.helpLink") }}
+                </a>
               </v-card-text>
             </v-col>
           </v-row>
@@ -38,10 +39,14 @@
             <v-col cols="8" class="pb-0">
               <v-divider />
               <div id="radioIP">
-                <v-radio-group v-model="typeIp" inline @change="
-                  clearChild(true);
-                clearChild(false);
-                ">
+                <v-radio-group
+                  v-model="typeIp"
+                  inline
+                  @change="
+                    clearChild(true);
+                    clearChild(false);
+                  "
+                >
                   <v-radio v-for="n in 2" :key="n" :label="typesIp[n - 1]" :value="typesIp[n - 1]" />
                 </v-radio-group>
               </div>
@@ -49,21 +54,34 @@
           </v-row>
           <v-row class="mt-0">
             <v-col cols="8">
-              <IpRangeSegments :typeIp="typeIp" typeAcces="ip" ref="ip" @FormModuleSegmentsIpPlageEvent="validate"
-                @alertSuccess="alertSuccess" @alertError="alertError" @focus="clearChild(false)" />
+              <IpRangeSegments
+                :typeIp="typeIp"
+                typeAcces="ip"
+                ref="ip"
+                @FormModuleSegmentsIpPlageEvent="validate"
+                @alertSuccess="alertSuccess"
+                @alertError="alertError"
+                @focus="clearChild(false)"
+              />
               <br />
-              <IpRangeSegments :typeIp="typeIp" typeAcces="plage" ref="plage"
-                @FormModuleSegmentsIpPlageEvent="validate" @alertSuccess="alertSuccess" @alertError="alertError"
-                @focus="clearChild(true)" />
+              <IpRangeSegments
+                :typeIp="typeIp"
+                typeAcces="plage"
+                ref="plage"
+                @FormModuleSegmentsIpPlageEvent="validate"
+                @alertSuccess="alertSuccess"
+                @alertError="alertError"
+                @focus="clearChild(true)"
+              />
             </v-col>
             <v-col cols="4">
               <v-card-text class="overflow-auto fondGris">
-                <h2 class="pb-4">Nouvelles IP ou plages IP ajoutées</h2>
+                <h2 class="pb-4">{{ $t("ip.create.addedListTitle") }}</h2>
                 <v-table density="compact">
                   <thead>
                     <tr>
-                      <th style="width: 20%">Type</th>
-                      <th>Adresse</th>
+                      <th style="width: 20%">{{ $t("ip.create.table.type") }}</th>
+                      <th>{{ $t("ip.create.table.address") }}</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -72,8 +90,13 @@
                       <td>{{ item.typeIp }}</td>
                       <td>{{ item.ip }}</td>
                       <td>
-                        <v-btn class="ma-0 pa-0 bouton-simple" variant="text" icon title="Supprimer"
-                          @click="supprimerIP(item.id, index)">
+                        <v-btn
+                          class="ma-0 pa-0 bouton-simple"
+                          variant="text"
+                          icon
+                          :title="$t('ip.create.delete')"
+                          @click="supprimerIP(item.id, index)"
+                        >
                           <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
                         </v-btn>
                       </td>
@@ -100,6 +123,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { faCircleInfo, faReply, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import type { VForm } from "vuetify/components";
 
@@ -107,6 +131,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
 const iPService = useIpService();
+const { t } = useI18n();
 
 const typeIp = ref<string>("IPV4");
 const typesIp = ["IPV4", "IPV6"];
@@ -121,11 +146,10 @@ const metaInfo = {
   meta: [
     {
       name: "description",
-      content:
-        "Page de déclaration d'IP de l'application des Licences Nationales"
-    }
+      content: t("ip.create.meta.description"),
+    },
   ],
-  title: "Ajout d'IP - Licences Nationales"
+  title: t("ip.create.meta.title"),
 };
 
 const validate = (payloadFromModuleSegmentsIpPlage: any): void => {
@@ -138,11 +162,7 @@ const clear = () => {
 };
 
 const supprimerIP = async (idIP: string, index: number) => {
-  const confirmed = await confirm.value?.open(
-    `Vous êtes sur le point de supprimer définitivement une adresse IP ou une plage d'adresses IP.
-
-                Etes-vous sûr de vouloir effectuer cette action ?`
-  );
+  const confirmed = await confirm.value?.open(t("ip.create.deleteConfirm"));
   if (confirmed) {
     iPService
       .deleteIP(authStore.getToken, idIP)

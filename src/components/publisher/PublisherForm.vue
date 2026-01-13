@@ -1,59 +1,81 @@
 <template>
-  <v-card class="elevation-0">
+  <v-container class="elevation-0">
     <v-form ref="formEditeurRef" validate-on="lazy" class="elevation-0" :disabled="isDisableForm">
-      <h1 v-if="action === Action.CREATION">Créer un éditeur</h1>
-      <h1 v-else-if="action === Action.MODIFICATION">Modifier un éditeur</h1>
-      <v-card-text class="elevation-0">
-        <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
-        <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
+      <h1 v-if="action === Action.CREATION">{{ $t("publisher.form.createTitle") }}</h1>
+      <h1 v-else-if="action === Action.MODIFICATION">{{ $t("publisher.form.editTitle") }}</h1>
+      <v-card class="elevation-0">
         <div class="mx-9">
           <v-row>
-            <v-card-title>Information de l'éditeur</v-card-title>
+            <v-card-title>{{ $t("publisher.form.sectionTitle") }}</v-card-title>
           </v-row>
           <v-divider class="mb-4"></v-divider>
           <div class="mx-9">
             <v-row>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-text-field variant="outlined" label="NOM DE L'EDITEUR" placeholder="NOM DE L'EDITEUR"
-                  v-model="editeur.nom" :rules="rulesForms.nom" required @keyup.enter="validate" />
+                <v-text-field
+                  variant="outlined"
+                  :label="$t('publisher.form.nameLabel')"
+                  :placeholder="$t('publisher.form.namePlaceholder')"
+                  v-model="editeur.nom"
+                  :rules="rulesForms.nom"
+                  required
+                  @keyup.enter="validate"
+                />
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-text-field variant="outlined" label="Identifiant éditeur" placeholder="Identifiant éditeur"
-                  v-model="editeur.identifiantBis" />
+                <v-text-field
+                  variant="outlined"
+                  :label="$t('publisher.form.identifierLabel')"
+                  :placeholder="$t('publisher.form.identifierPlaceholder')"
+                  v-model="editeur.identifiantBis"
+                />
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-select v-model="editeur.groupesEtabRelies" :items="typesEtab" label="Groupes d'établissements reliés"
-                  placeholder="Groupes d'établissements reliés" persistent-placeholder multiple variant="outlined">
+                <v-select
+                  v-model="editeur.groupesEtabRelies"
+                  :items="typesEtab"
+                  :label="$t('publisher.form.relatedInstitutionsLabel')"
+                  :placeholder="$t('publisher.form.relatedInstitutionsPlaceholder')"
+                  persistent-placeholder
+                  multiple
+                  variant="outlined"
+                >
                   <template #prepend-item>
                     <v-list-item @click="toggle">
                       <template #prepend>
-                        <v-icon :color="editeur.groupesEtabRelies.length > 0
-                          ? 'indigo darken-4'
-                          : ''
-                          ">
+                        <v-icon
+                          :color="editeur.groupesEtabRelies.length > 0 ? 'indigo darken-4' : ''"
+                        >
                           {{ iconEtab }}
                         </v-icon>
                       </template>
-                      <v-list-item-title>Tout sélectionner</v-list-item-title>
+                      <v-list-item-title>{{ $t("publisher.form.selectAll") }}</v-list-item-title>
                     </v-list-item>
                     <v-divider class="mt-2"></v-divider>
                   </template>
                 </v-select>
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-text-field variant="outlined" label="Adresse postale" placeholder="Adresse postale"
-                  v-model="editeur.adresse" :rules="rulesForms.adresse" required @keyup.enter="validate" />
+                <v-text-field
+                  variant="outlined"
+                  :label="$t('publisher.form.addressLabel')"
+                  :placeholder="$t('publisher.form.addressPlaceholder')"
+                  v-model="editeur.adresse"
+                  :rules="rulesForms.adresse"
+                  required
+                  @keyup.enter="validate"
+                />
               </v-col>
             </v-row>
           </div>
         </div>
+      </v-card>
+      <v-card class="mt-6 mb-6 elevation-0">
         <div class="mx-9">
-          <v-card-title>
-            Information Contact
-          </v-card-title>
+          <v-card-title>{{ $t("publisher.form.contactSectionTitle") }}</v-card-title>
           <v-divider class="mb-4"></v-divider>
           <v-row>
-            <v-col cols="12" md="3" lg="3" xl="3" v-for="(contact, index) in editeur.contacts" :key="index">
+            <v-col cols="12" md="6" lg="4" xl="3" v-for="(contact, index) in editeur.contacts" :key="index">
               <PublisherContact
                 :ref="el => contactRefs[index] = el"
                 :contact="contact"
@@ -63,32 +85,40 @@
           </v-row>
         </div>
         <v-card variant="flat">
-          <v-card-title> {{ editeur.contacts.length }} contact(s)</v-card-title>
+          <v-card-title>
+            {{ $t("publisher.form.contactsCount", { count: editeur.contacts.length }) }}
+          </v-card-title>
           <v-card-text> </v-card-text>
 
           <v-card-actions class="v-card-actions">
             <v-btn class="ma-2" variant="tonal" @click="addContact">
               <FontAwesomeIcon :icon="faPlus" class="mx-2" />
-              Ajouter un contact
+              {{ $t("publisher.form.addContact") }}
             </v-btn>
           </v-card-actions>
         </v-card>
-      </v-card-text>
+      </v-card>
       <v-card-actions>
         <v-spacer class="hidden-sm-and-down"></v-spacer>
         <v-col cols="12" md="3" lg="3" xl="3" class="d-flex justify-space-around mr-16 flex-wrap">
           <v-btn size="large" @click="clear" variant="outlined" :disabled="isDisableForm">
-            Annuler
+            {{ $t("publisher.form.cancel") }}
           </v-btn>
-          <v-btn color="button" :loading="buttonLoading" :disabled="isDisableForm" size="large" @click="validate"
-            variant="elevated">
-            Enregistrer
+          <v-btn
+            color="button"
+            :loading="buttonLoading"
+            :disabled="isDisableForm"
+            size="large"
+            @click="validate"
+            variant="elevated"
+          >
+            {{ $t("publisher.form.save") }}
             <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
           </v-btn>
         </v-col>
       </v-card-actions>
     </v-form>
-  </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -96,10 +126,7 @@ import PublisherContact from "@/components/publisher/PublisherContact.vue";
 import { useEditeurService } from "@/composables/useEditeurService";
 import { useEtablissementService } from "@/composables/useEtablissementService";
 import { useSnackbar } from "@/composables/useSnackbar";
-import {
-  Action,
-  ContactType
-} from "@/core/CommonDefinition";
+import { Action, ContactType } from "@/core/CommonDefinition";
 import ContactEditeur from "@/core/ContactEditeur";
 import Editeur from "@/core/Editeur";
 import { rulesForms } from "@/core/RulesForm";
@@ -109,6 +136,7 @@ import { useEditeurStore } from "@/stores/editeurStore";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 
 const props = defineProps<{
@@ -121,6 +149,7 @@ const editeurStore = useEditeurStore();
 const router = useRouter();
 const editeurService = useEditeurService();
 const etablissementService = useEtablissementService();
+const { t } = useI18n();
 
 const editeur = ref<Editeur>(editeurStore.getCurrentEditeur);
 const typesEtab = ref<Array<string>>([]);
@@ -198,16 +227,17 @@ async function validate(): Promise<void> {
 
   if (countContactCommercial === 0 || countContactTechnique === 0) {
     isValide = false;
-
-    errorMessage =
-      "Vous devez saisir au moins un contact technique et un contact commercial";
+    errorMessage = t("publisher.form.contactTypeError");
   }
 
   if (isValide && isSubFormValide) {
     send();
   } else {
     buttonLoading.value = false;
-    snackbar.error("Des champs ne remplissent pas les conditions : " + errorMessage);
+    const message = errorMessage
+      ? t("publisher.form.invalidFieldsWithReason", { reason: errorMessage })
+      : t("publisher.form.invalidFields");
+    snackbar.error(message);
   }
 }
 
@@ -224,19 +254,19 @@ async function send(): Promise<void> {
   try {
     if (props.action === Action.CREATION) {
       await editeurService.createEditeur(editeur.value, authStore.getToken);
-      snackbar.success("L'?diteur a bien ?t? cr??", {
+      snackbar.success(t("publisher.form.createSuccess"), {
         onHide: () => {
           router.push({ name: RouteName.Publishers });
         },
-        timeout: 2000
+        timeout: 2000,
       });
     } else if (props.action === Action.MODIFICATION) {
       await editeurService.updateEditeur(editeur.value, authStore.getToken);
-      snackbar.success("L'?diteur a bien ?t? modifi?", {
+      snackbar.success(t("publisher.form.updateSuccess"), {
         onHide: () => {
           router.push({ name: RouteName.Publishers });
         },
-        timeout: 2000
+        timeout: 2000,
       });
     }
   } catch (err: any) {
@@ -245,7 +275,6 @@ async function send(): Promise<void> {
     buttonLoading.value = false;
   }
 }
-
 
 function clear() {
   buttonLoading.value = false;

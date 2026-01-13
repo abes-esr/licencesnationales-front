@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container class="pb-0">
-      <h1>History par établissement</h1>
+      <h1>{{ $t("institution.history.title") }}</h1>
       <v-alert v-if="message" type="error" density="compact" class="mt-2">
         {{ message }}
       </v-alert>
@@ -13,9 +13,18 @@
           <v-col cols="1" class="d-none d-md-flex"></v-col>
           <v-col cols="12" md="10">
             <v-card-text class="fondGris">
-              <v-autocomplete v-model="selectedSiren" :items="etabs" item-title="nom" item-value="siren"
-                label="Etablissement" placeholder="Sélectionner un établissement" persistent-placeholder
-                variant="outlined" density="comfortable" @update:model-value="getHistorique" />
+              <v-autocomplete
+                v-model="selectedSiren"
+                :items="etabs"
+                item-title="nom"
+                item-value="siren"
+                :label="$t('institution.history.institutionLabel')"
+                :placeholder="$t('institution.history.institutionPlaceholder')"
+                persistent-placeholder
+                variant="outlined"
+                density="comfortable"
+                @update:model-value="getHistorique"
+              />
             </v-card-text>
           </v-col>
         </v-row>
@@ -25,8 +34,8 @@
         <v-col cols="1" class="d-none d-md-flex"></v-col>
         <v-col cols="12" md="10">
           <v-tabs v-model="tab" color="primary">
-            <v-tab value="etabs">Etablissements</v-tab>
-            <v-tab value="ips">IPs</v-tab>
+            <v-tab value="etabs">{{ $t("institution.history.tabs.institutions") }}</v-tab>
+            <v-tab value="ips">{{ $t("institution.history.tabs.ips") }}</v-tab>
           </v-tabs>
 
           <v-window v-model="tab" class="mt-4">
@@ -34,9 +43,9 @@
               <v-table density="comfortable">
                 <thead>
                   <tr class="bg-primary">
-                    <th class="text-left" scope="col">Date</th>
-                    <th class="text-left" scope="col">Action</th>
-                    <th class="text-left" scope="col">Informations</th>
+                    <th class="text-left" scope="col">{{ $t("institution.history.table.date") }}</th>
+                    <th class="text-left" scope="col">{{ $t("institution.history.table.action") }}</th>
+                    <th class="text-left" scope="col">{{ $t("institution.history.table.information") }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -45,12 +54,9 @@
                     <td>{{ item.event }}</td>
                     <td>
                       <span v-for="(value, name) in item" :key="name">
-                        <span v-if="
-                          value !== null &&
-                          name != 'event' &&
-                          name != 'date' &&
-                          name != 'siren'
-                        ">
+                        <span
+                          v-if="value !== null && name != 'event' && name != 'date' && name != 'siren'"
+                        >
                           {{ name }} : {{ value }},&nbsp;
                         </span>
                       </span>
@@ -64,9 +70,9 @@
               <v-table density="comfortable">
                 <thead>
                   <tr>
-                    <th class="text-left bg-primary" scope="col">Date</th>
-                    <th class="text-left bg-primary" scope="col">Action</th>
-                    <th class="text-left bg-primary" scope="col">Informations</th>
+                    <th class="text-left bg-primary" scope="col">{{ $t("institution.history.table.date") }}</th>
+                    <th class="text-left bg-primary" scope="col">{{ $t("institution.history.table.action") }}</th>
+                    <th class="text-left bg-primary" scope="col">{{ $t("institution.history.table.information") }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -75,11 +81,7 @@
                     <td>{{ item.event }}</td>
                     <td>
                       <span v-for="(value, name) in item" :key="name">
-                        <span v-if="
-                          value !== null &&
-                          name != 'event' &&
-                          name != 'date'
-                        ">
+                        <span v-if="value !== null && name != 'event' && name != 'date'">
                           {{ name }} : {{ value }},&nbsp;
                         </span>
                       </span>

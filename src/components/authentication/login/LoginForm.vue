@@ -1,23 +1,42 @@
 ﻿<template>
   <v-card class="pa-8 w-100 login-card">
     <v-card-title class="text-center">
-      <h1>Connexion</h1>
+      <h1>{{ $t("auth.login.title") }}</h1>
     </v-card-title>
     <v-card-text class="pa-0">
       <v-form ref="form">
         <v-row>
           <v-col cols="12" class="pa-2">
-            <v-text-field v-model="siren" label="SIREN" placeholder="SIREN" :rules="rulesForms.siren" variant="outlined"
-              maxLength="9" required @keyup.enter="validate"></v-text-field>
+            <v-text-field
+              v-model="siren"
+              :label="$t('auth.login.sirenLabel')"
+              :placeholder="$t('auth.login.sirenPlaceholder')"
+              :rules="rulesForms.siren"
+              variant="outlined"
+              maxLength="9"
+              autocomplete="username"
+              required
+              @keyup.enter="validate"
+            ></v-text-field>
           </v-col>
           <v-col cols="12" class="pa-2">
-            <v-text-field v-model="password" :append-inner-icon="appendIcon" :type="inputType" label="Mot de passe"
-              placeholder="Mot de passe" :rules="rulesForms.motDePasse" variant="outlined" required
-              @click:append-inner="toggleShow" @keyup.enter="validate" autocomplete="current-password"></v-text-field>
+            <v-text-field
+              v-model="password"
+              :append-inner-icon="appendIcon"
+              :type="inputType"
+              :label="$t('auth.login.passwordLabel')"
+              :placeholder="$t('auth.login.passwordPlaceholder')"
+              :rules="rulesForms.motDePasse"
+              variant="outlined"
+              required
+              @click:append-inner="toggleShow"
+              @keyup.enter="validate"
+              autocomplete="current-password"
+            ></v-text-field>
           </v-col>
           <v-col cols="12" class="pa-2 d-flex justify-end">
             <v-btn :loading="buttonLoading" size="x-large" class="bouton-connexion" @click="validate">
-              Se connecter
+              {{ $t("auth.login.submit") }}
               <v-icon class="pl-2">mdi-arrow-right-circle-outline</v-icon>
             </v-btn>
           </v-col>
@@ -26,7 +45,7 @@
     </v-card-text>
     <v-card-text class="pa-0 pt-4">
       <v-btn variant="text" class="text-none" :to="{ name: RouteName.ForgotPassword }">
-        Mot de passe oublie ?
+        {{ $t("auth.login.forgotPassword") }}
       </v-btn>
     </v-card-text>
   </v-card>

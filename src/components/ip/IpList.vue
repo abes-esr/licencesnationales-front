@@ -3,16 +3,15 @@
     <ConfirmPopup ref="confirmRef" />
 
     <v-container class="pb-0">
-      <h1>Liste des IP déclarées par {{ currentEtabNom }}</h1>
+      <h1>{{ $t("ip.list.title", { name: currentEtabNom }) }}</h1>
       <div class="d-flex flex-wrap align-center justify-space-between">
         <div class="my-2">
           <a v-if="isAdmin" @click="revenirInfosEtab">
-            <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir
-            aux informations de l'établissement
+            <FontAwesomeIcon :icon="faReply" />&nbsp;{{ $t("ip.list.backToInstitution") }}
           </a>
         </div>
         <v-btn id="addIpButton" class="my-2" @click="router.push({ name: RouteName.IpCreate })">
-          <span class="btnText">Ajouter une IP ou une plage IP</span>
+          <span class="btnText">{{ $t("ip.list.addIp") }}</span>
           <FontAwesomeIcon :icon="faCirclePlus" style="font-size:1.1rem" />
         </v-btn>
       </div>
@@ -25,15 +24,23 @@
           {{ notification }}
         </v-alert>
 
-        <VDataTable id="mytable" :key="refreshKey" :headers="headers" :items="filteredAccesByStatut"
-          :items-per-page="10" :items-per-page-options="[10, 25, 50, 75, { value: -1, title: 'Tous' }]"
-          :item-class="RowClasses" :search="rechercher" :loading="dataLoading"
-          no-data-text="Aucune IP déclarée pour l’instant. Déclarez une adresse ou une plage IP." class="row-height-50"
-          density="comfortable">
+        <VDataTable
+          id="mytable"
+          :key="refreshKey"
+          :headers="headers"
+          :items="filteredAccesByStatut"
+          :items-per-page="10"
+          :items-per-page-options="[10, 25, 50, 75, { value: -1, title: $t('ip.list.all') }]"
+          :item-class="RowClasses"
+          :search="rechercher"
+          :loading="dataLoading"
+          :no-data-text="$t('ip.list.noData')"
+          class="row-height-50"
+          density="comfortable"
+        >
           <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
             <tr>
-              <th v-for="column in columns" :key="column.key" class="text-left"
-                @click="column.sortable ? toggleSort(column) : ''">
+              <th v-for="column in columns" :key="column.key" class="text-left" @click="column.sortable ? toggleSort(column) : ''">
                 <div style="display: flex; align-items: center; white-space: nowrap;">
                   <span>{{ column.title }}</span>
 
@@ -44,28 +51,28 @@
                     {{ getSortIcon(column) }}
                   </v-icon>
 
-                  <v-menu v-if="column.key === 'statut' || column.key === 'typeIp'" offset-y
-                    :close-on-content-click="false">
+                  <v-menu v-if="column.key === 'statut' || column.key === 'typeIp'" offset-y :close-on-content-click="false">
                     <template #activator="{ props }">
-                      <v-btn :aria-label="column.key" icon size="x-small" v-bind="props" variant="text"
-                        class="pa-0 ma-0">
-                        <v-icon :color="column.key === 'statut' ? (statut ? 'primary' : '') : (type ? 'primary' : '')"
-                          size="small">
+                      <v-btn :aria-label="column.key" icon size="x-small" v-bind="props" variant="text" class="pa-0 ma-0">
+                        <v-icon
+                          :color="column.key === 'statut' ? (statut ? 'primary' : '') : (type ? 'primary' : '')"
+                          size="small"
+                        >
                           mdi-filter
                         </v-icon>
                       </v-btn>
                     </template>
                     <div v-if="column.key === 'statut'" style="background-color: white" class="pl-4 pr-8">
                       <ul>
-                        <li v-for="item in selectStatut" :key="item" @click="eventStatutChoice(item)">
-                          <a>{{ item }}</a>
+                        <li v-for="item in selectStatut" :key="item.value" @click="eventStatutChoice(item.value)">
+                          <a>{{ item.title }}</a>
                         </li>
                       </ul>
                     </div>
                     <div v-if="column.key === 'typeIp'" style="background-color: white;" class="pl-4 pr-8">
                       <ul>
-                        <li v-for="item in selectType" :key="item" @click="eventTypeChoice(item)">
-                          <a>{{ item }}</a>
+                        <li v-for="item in selectType" :key="item.value" @click="eventTypeChoice(item.value)">
+                          <a>{{ item.title }}</a>
                         </li>
                       </ul>
                     </div>
@@ -78,12 +85,16 @@
           <template #top>
             <v-row>
               <v-col cols="12" sm="6" class="px-0">
-                <v-tooltip text="Le téléchargement correspond à la vue filtrée" location="top" open-delay="100"
-                  theme="dark" content-class="text-white">
+                <v-tooltip
+                  :text="$t('ip.list.downloadTooltip')"
+                  location="top"
+                  open-delay="100"
+                  theme="dark"
+                  content-class="text-white"
+                >
                   <template #activator="{ props }">
-                    <v-btn variant="text" @click="downloadIPs" class="bouton-simple pl-0" v-bind="props"
-                      :loading="isExportLoading">
-                      <h2>Télécharger la liste des IP</h2>
+                    <v-btn variant="text" @click="downloadIPs" class="bouton-simple pl-0" v-bind="props" :loading="isExportLoading">
+                      <h2>{{ $t("ip.list.downloadTitle") }}</h2>
                       <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
                     </v-btn>
                   </template>
@@ -91,8 +102,13 @@
               </v-col>
               <v-col cols="0" sm="3"></v-col>
               <v-col cols="12" sm="3" class="px-0">
-                <v-text-field v-model="rechercher" label="Chercher dans les colonnes" prepend-inner-icon="mdi-magnify"
-                  variant="outlined" clearable />
+                <v-text-field
+                  v-model="rechercher"
+                  :label="$t('ip.list.searchLabel')"
+                  prepend-inner-icon="mdi-magnify"
+                  variant="outlined"
+                  clearable
+                />
               </v-col>
             </v-row>
           </template>
@@ -100,8 +116,7 @@
           <template #item.commentaires="{ item }">
             <v-tooltip location="bottom" theme="dark" content-class="text-white">
               <template #activator="{ props }">
-                <span v-bind="props" class="text-truncate d-block" :style="{ width: '100px' }">{{ item.commentaires
-                }}</span>
+                <span v-bind="props" class="text-truncate d-block" :style="{ width: '100px' }">{{ item.commentaires }}</span>
               </template>
               <span>{{ item.commentaires }}</span>
             </v-tooltip>
@@ -115,19 +130,30 @@
                   <FontAwesomeIcon :icon="faCircleInfo" />
                 </span>
               </template>
-              <span v-if="item.statut.includes('Validé')">{{ infobulleValid }}</span>
+              <span v-if="item.statut.includes('Valid�')">{{ infobulleValid }}</span>
               <span v-if="item.statut.includes('Attestation')">{{ infobulleAttestation }}</span>
               <span v-if="item.statut.includes('attente')">{{ infobulleAttente }}</span>
             </v-tooltip>
           </template>
 
           <template #item.action="{ item }">
-            <v-btn v-if="isAdmin && getCurrentEtab.statut == 'Validé'" class="ma-0 pa-0 bouton-simple " variant="flat"
-              title="Examiner" @click.stop="openDialog(item)">
+            <v-btn
+              v-if="isAdmin && getCurrentEtab.statut == 'Valid�'"
+              class="ma-0 pa-0 bouton-simple"
+              variant="flat"
+              :title="$t('ip.list.review')"
+              @click.stop="openDialog(item)"
+            >
               <FontAwesomeIcon :icon="faMagnifyingGlass" />
             </v-btn>
-            <v-btn v-if="!isAdmin" class="ma-0 pa-0 bouton-simple " icon :loading="buttlonLoading" title="Supprimer"
-              @click="supprimerIP(item.id, item.ip)">
+            <v-btn
+              v-if="!isAdmin"
+              class="ma-0 pa-0 bouton-simple"
+              icon
+              :loading="buttlonLoading"
+              :title="$t('ip.list.delete')"
+              @click="supprimerIP(item.id, item.ip)"
+            >
               <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
             </v-btn>
           </template>
@@ -137,10 +163,10 @@
           <v-col>
             <div style="float: right;" class="actions" v-if="isAdmin">
               <v-btn @click="clearActions" class="btn-6" variant="outlined">
-                <span class="btnText">Annuler</span>
+                <span class="btnText">{{ $t("ip.list.cancel") }}</span>
               </v-btn>
               <v-btn @click="dispatchAllAction" :loading="buttlonLoading" variant="elevated">
-                <span class="btnText">Enregistrer mes actions</span>
+                <span class="btnText">{{ $t("ip.list.saveActions") }}</span>
                 <FontAwesomeIcon :icon="faCircleArrowRight" />
               </v-btn>
             </div>
@@ -161,24 +187,29 @@
     <v-dialog v-model="dialog" max-width="800px">
       <v-card>
         <v-card-title>
-          Analyse de l'adresse IP
+          {{ $t("ip.list.dialog.title") }}
         </v-card-title>
         <v-card-text>
-          <h3>Commentaire</h3>
+          <h3>{{ $t("ip.list.dialog.comment") }}</h3>
           <span>{{ currentIP.commentaires }}</span>
-          <span v-if="currentIP.commentaires === null">Aucun commentaire</span>
+          <span v-if="currentIP.commentaires === null">{{ $t("ip.list.dialog.noComment") }}</span>
           <br />
-          <h3>Whois</h3>
+          <h3>{{ $t("ip.list.dialog.whois") }}</h3>
           <v-expansion-panels focusable accordion>
             <v-expansion-panel>
               <v-expansion-panel-title>
-                <span v-if="checkIfWhoIsRenater(whoIs)">L'adresse <span v-if="whoIs2 !== ''">de début </span>fait
-                  partie du réseau RENATER
+                <span v-if="checkIfWhoIsRenater(whoIs)">
+                  {{ $t("ip.list.dialog.whoisStartIn") }}
+                  <span v-if="whoIs2 !== ''">{{ $t("ip.list.dialog.rangeStart") }}</span>
+                  {{ $t("ip.list.dialog.renater") }}
                   <span style="padding: 5px;" />
                   <FontAwesomeIcon :icon="faCheck" />
                 </span>
-                <span v-else>L'adresse <span v-if="whoIs2 !== ''">de début </span> ne fait
-                  pas partie du réseau RENATER<span style="padding: 5px;" />
+                <span v-else>
+                  {{ $t("ip.list.dialog.whoisStartNot") }}
+                  <span v-if="whoIs2 !== ''">{{ $t("ip.list.dialog.rangeStart") }}</span>
+                  {{ $t("ip.list.dialog.renaterNot") }}
+                  <span style="padding: 5px;" />
                   <FontAwesomeIcon :icon="faXmark" />
                 </span>
               </v-expansion-panel-title>
@@ -188,11 +219,14 @@
             </v-expansion-panel>
             <v-expansion-panel v-if="whoIs2 !== ''">
               <v-expansion-panel-title>
-                <span v-if="checkIfWhoIsRenater(whoIs2)">L'adresse de fin fait partie du réseau RENATER
+                <span v-if="checkIfWhoIsRenater(whoIs2)">
+                  {{ $t("ip.list.dialog.whoisEndIn") }}
                   <span style="padding: 5px;" />
                   <FontAwesomeIcon :icon="faCheck" />
                 </span>
-                <span v-else>L'adresse de fin ne fait pas partie du réseau RENATER<span style="padding: 5px;" />
+                <span v-else>
+                  {{ $t("ip.list.dialog.whoisEndNot") }}
+                  <span style="padding: 5px;" />
                   <FontAwesomeIcon :icon="faXmark" />
                 </span>
               </v-expansion-panel-title>
@@ -202,29 +236,41 @@
             </v-expansion-panel>
           </v-expansion-panels>
           <br />
-          <h3>Commentaire admin</h3>
-          <v-textarea variant="outlined" auto-grow counter="4000" :rules="rulesForm.commentaireAdmin" rows="2"
-            label="Raisons de la suppression" v-model="commentaires" clearable />
+          <h3>{{ $t("ip.list.dialog.adminComment") }}</h3>
+          <v-textarea
+            variant="outlined"
+            auto-grow
+            counter="4000"
+            :rules="rulesForm.commentaireAdmin"
+            rows="2"
+            :label="$t('ip.list.dialog.deleteReason')"
+            v-model="commentaires"
+            clearable
+          />
         </v-card-text>
         <v-card-actions>
           <v-row>
             <v-col>
               <div style="float: right" class="actions ga-4 d-flex">
-                <v-btn @click="
-                  dialog = false;
-                currentIPid = '';
-                commentaires = '';
-                " class="btn-6" variant="outlined">
-                  Annuler
+                <v-btn
+                  @click="
+                    dialog = false;
+                    currentIPid = '';
+                    commentaires = '';
+                  "
+                  class="btn-6"
+                  variant="outlined"
+                >
+                  {{ $t("ip.list.cancel") }}
                 </v-btn>
                 <v-btn @click="addActionToBuffer('SUPPRIMER')" color="error" variant="flat">
-                  Supprimer
+                  {{ $t("ip.list.delete") }}
                 </v-btn>
                 <v-btn @click="addActionToBuffer('REJETER')" color="primary" variant="tonal">
-                  Rejeter
+                  {{ $t("ip.list.reject") }}
                 </v-btn>
                 <v-btn @click="addActionToBuffer('VALIDER')" color="success" variant="flat">
-                  Valider
+                  {{ $t("ip.list.validate") }}
                 </v-btn>
               </div>
             </v-col>
@@ -253,12 +299,13 @@ import {
   faDownload,
   faMagnifyingGlass,
   faReply,
-  faXmark
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { AxiosResponse } from "axios";
 import moment from "moment";
 import { computed, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 import { VDataTable } from "vuetify/components";
@@ -273,23 +320,24 @@ const etablissementStore = useEtablissementStore();
 const router = useRouter();
 const { mdAndDown } = useDisplay();
 const iPService = useIpService();
+const { t } = useI18n();
 
 const rulesForm = rulesForms;
 const refreshKey = ref(0);
 const statut = ref("");
 const type = ref("");
-const selectStatut = ref<Array<string>>([
-  "En attente d'attestation",
-  "IP Validée par l'Abes",
-  "En attente d'examen par l'Abes",
-  "Tous"
+const selectStatut = computed(() => [
+  { value: "En attente d'attestation", title: t("ip.list.status.attestationPending") },
+  { value: "IP Valid�e par l'Abes", title: t("ip.list.status.validatedByAbes") },
+  { value: "En attente d'examen par l'Abes", title: t("ip.list.status.reviewPending") },
+  { value: "Tous", title: t("ip.list.all") },
 ]);
-const selectType = ref<Array<string>>([
-  "IPV4",
-  "IPV6",
-  "Plage IPV4",
-  "Plage IPV6",
-  "Tous"
+const selectType = computed(() => [
+  { value: "IPV4", title: t("ip.list.types.ipv4") },
+  { value: "IPV6", title: t("ip.list.types.ipv6") },
+  { value: "Plage IPV4", title: t("ip.list.types.rangeIpv4") },
+  { value: "Plage IPV6", title: t("ip.list.types.rangeIpv6") },
+  { value: "Tous", title: t("ip.list.all") },
 ]);
 const rechercher = ref("");
 const acces = ref<Array<any>>([]);
@@ -303,21 +351,80 @@ const isExportLoading = ref(false);
 const buttlonLoading = ref(false);
 const notification = ref("");
 const commentaires = ref("");
-const headers = ref<any[]>([]);
+const headers = computed(() => {
+  if (isAdmin.value) {
+    return [
+      {
+        title: t("ip.list.headers.createdAt"),
+        align: "start",
+        key: "dateCreation",
+        sortable: true,
+        width: "9%",
+      },
+      {
+        title: t("ip.list.headers.type"),
+        key: "typeIp",
+        sortable: true,
+        width: "9%",
+      },
+      { title: t("ip.list.headers.value"), key: "ip", sortable: true, width: "20%" },
+      { title: t("ip.list.headers.status"), key: "statut", sortable: true, width: "13%" },
+      { title: t("ip.list.headers.action"), key: "buffer", sortable: false, width: "13%" },
+      {
+        title: t("ip.list.headers.lastAction"),
+        key: "dateModification",
+        sortable: true,
+        width: "10%",
+      },
+      {
+        title: t("ip.list.headers.precision"),
+        key: "commentaires",
+        sortable: true,
+        width: "17%",
+      },
+      { title: t("ip.list.headers.review"), key: "action", sortable: false, width: "9%" },
+    ];
+  }
+  return [
+    {
+      title: t("ip.list.headers.createdAt"),
+      align: "start",
+      key: "dateCreation",
+      sortable: true,
+      width: "9%",
+    },
+    {
+      title: t("ip.list.headers.type"),
+      key: "typeIp",
+      sortable: true,
+      width: "20%",
+    },
+    { title: t("ip.list.headers.value"), key: "ip", sortable: true, width: "15%" },
+    { title: t("ip.list.headers.status"), key: "statut", sortable: true, width: "15%" },
+    {
+      title: t("ip.list.headers.lastAction"),
+      key: "dateModification",
+      sortable: true,
+      width: "15%",
+    },
+    {
+      title: t("ip.list.headers.precision"),
+      key: "commentaires",
+      sortable: true,
+      width: "17%",
+    },
+    { title: t("ip.list.headers.delete"), key: "action", sortable: false, width: "10%" },
+  ];
+});
 const dataLoading = ref(true);
 const currentIPid = ref("");
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
 
-const infobulleAttente =
-  "IP transmise aux éditeurs et à l'Inist si validée par l'Abes";
-const infobulleAttestation =
-  "IP transmise aux éditeurs et à l'Inist après réception de l'attestation";
-const infobulleValid =
-  "IP transmise aux éditeurs et à l’Inist à chaque fin de mois";
+const infobulleAttente = t("ip.list.info.waiting");
+const infobulleAttestation = t("ip.list.info.attestation");
+const infobulleValid = t("ip.list.info.valid");
 
-const currentEtabNom = computed(
-  () => etablissementStore.getCurrentEtablissement.nom
-);
+const currentEtabNom = computed(() => etablissementStore.getCurrentEtablissement.nom);
 const isAdmin = computed(() => authStore.isAdmin);
 const breakpointMdAndDown = computed(() => mdAndDown.value);
 const getCurrentEtab = computed(() => etablissementStore.getCurrentEtablissement);
@@ -328,9 +435,7 @@ const filteredAccesByType = computed(() => {
     conditions.push(filterType);
   }
   if (conditions.length > 0) {
-    return acces.value.filter(accesItem =>
-      conditions.every(condition => condition(accesItem))
-    );
+    return acces.value.filter(accesItem => conditions.every(condition => condition(accesItem)));
   }
   return acces.value;
 });
@@ -341,9 +446,7 @@ const filteredAccesByStatut = computed(() => {
     conditions.push(filterStatut);
   }
   if (conditions.length > 0) {
-    return filteredAccesByType.value.filter(accesItem =>
-      conditions.every(condition => condition(accesItem))
-    );
+    return filteredAccesByType.value.filter(accesItem => conditions.every(condition => condition(accesItem)));
   }
   return filteredAccesByType.value;
 });
@@ -351,76 +454,7 @@ const filteredAccesByStatut = computed(() => {
 onMounted(() => {
   moment.locale("fr");
   collecterAcces();
-  setHeaders();
 });
-
-function setHeaders() {
-  if (isAdmin.value) {
-    headers.value = [
-      {
-        title: "Date de saisie",
-        align: "start",
-        key: "dateCreation",
-        sortable: true,
-        width: "9%"
-      },
-      {
-        title: "Type d'IP",
-        key: "typeIp",
-        sortable: true,
-        width: "9%"
-      },
-      { title: "Valeur", key: "ip", sortable: true, width: "20%" },
-      { title: "Statut", key: "statut", sortable: true, width: "13%" },
-      { title: "Action", key: "buffer", sortable: false, width: "13%" },
-      {
-        title: "Dernière action de l’Abes",
-        key: "dateModification",
-        sortable: true,
-        width: "10%"
-      },
-      {
-        title: "Précision sur l’IP",
-        key: "commentaires",
-        sortable: true,
-        width: "17%",
-
-      },
-      { title: "Examiner", key: "action", sortable: false, width: "9%" }
-    ];
-  } else {
-    headers.value = [
-      {
-        title: "Date de saisie",
-        align: "start",
-        key: "dateCreation",
-        sortable: true,
-        width: "9%"
-      },
-      {
-        title: "Type d'IP",
-        key: "typeIp",
-        sortable: true,
-        width: "20%"
-      },
-      { title: "Valeur", key: "ip", sortable: true, width: "15%" },
-      { title: "Statut", key: "statut", sortable: true, width: "15%" },
-      {
-        title: "Dernière action de l’Abes",
-        key: "dateModification",
-        sortable: true,
-        width: "15%"
-      },
-      {
-        title: "Précision sur l’IP",
-        key: "commentaires",
-        sortable: true,
-        width: "17%"
-      },
-      { title: "Supprimer", key: "action", sortable: false, width: "10%" }
-    ];
-  }
-}
 
 function filterStatut(statutRecherche: any) {
   return statutRecherche.statut.toString().includes(statut.value);
@@ -456,7 +490,7 @@ function collecterAcces(): void {
 
 function affichageAcces(accesItem: any) {
   let typeAcces = "";
-  if (accesItem.typeAcces === "range") typeAcces = "Plage ";
+  if (accesItem.typeAcces === "range") typeAcces = t("ip.list.types.rangePrefix");
   return {
     id: accesItem.id,
     dateCreation: moment(accesItem.dateCreation).format("L"),
@@ -465,7 +499,7 @@ function affichageAcces(accesItem: any) {
     typeAcces: accesItem.typeAcces,
     ip: accesItem.ip,
     statut: accesItem.statut,
-    commentaires: accesItem.commentaires
+    commentaires: accesItem.commentaires,
   };
 }
 
@@ -492,7 +526,7 @@ function fetchwhoIs(item: any): void {
         whoIs.value = res.data;
       })
       .catch(() => {
-        Logger.error("Impossible d'exécuter le WhoIS");
+        Logger.error(t("ip.list.whoisError"));
       });
   } else {
     const ips = splitRangeIntoIPs(item.typeIp, item.ip);
@@ -502,7 +536,7 @@ function fetchwhoIs(item: any): void {
         whoIs.value = res.data;
       })
       .catch(() => {
-        Logger.error("Impossible d'exécuter le WhoIS");
+        Logger.error(t("ip.list.whoisError"));
       });
     iPService
       .getWhoIs(authStore.getToken, ips[1])
@@ -510,7 +544,7 @@ function fetchwhoIs(item: any): void {
         whoIs2.value = res.data;
       })
       .catch(() => {
-        Logger.error("Impossible d'exécuter le WhoIS");
+        Logger.error(t("ip.list.whoisError"));
       });
   }
 }
@@ -553,15 +587,13 @@ function checkIfWhoIsRenater(whoIsValue: string): boolean {
 }
 
 function highlightRenater(whoIsValue: string) {
-  return whoIsValue
-    .replaceAll("renater", "<mark>renater</mark>")
-    .replaceAll("RENATER", "<mark>RENATER</mark>");
+  return whoIsValue.replaceAll("renater", "<mark>renater</mark>").replaceAll("RENATER", "<mark>RENATER</mark>");
 }
 
 function dispatchAllAction(): void {
   updateIP()
     .then(() => {
-      notification.value = "Actions effectuées";
+      notification.value = t("ip.list.actionsDone");
     })
     .catch(err => {
       Logger.debug(err);
@@ -588,7 +620,7 @@ function addActionToBuffer(action: string): void {
     idIp: currentIP.value.id,
     action: action,
     ip: currentIP.value.ip,
-    commentaire: commentaires.value
+    commentaire: commentaires.value,
   });
   addActionToDatatable(action, currentIP.value.id);
   commentaires.value = "";
@@ -605,11 +637,7 @@ function addActionToDatatable(action: string, id: number) {
 }
 
 async function supprimerIP(IDip: string, ip: string) {
-  const confirmed = await confirmRef.value?.open(
-    `Vous êtes sur le point de supprimer définitivement l'adresse IP ou plage d'adresses IP ${ip}
-
-                Etes-vous sûr de vouloir effectuer cette action ?`
-  );
+  const confirmed = await confirmRef.value?.open(t("ip.list.deleteConfirm", { ip }));
   if (confirmed) {
     buttlonLoading.value = true;
     clearAlerts();
@@ -617,7 +645,7 @@ async function supprimerIP(IDip: string, ip: string) {
     iPService
       .deleteIP(authStore.getToken, IDip)
       .then(() => {
-        notification.value = "IP supprimée.";
+        notification.value = t("ip.list.deleteSuccess");
       })
       .catch(err => {
         Logger.error(err);
@@ -676,9 +704,7 @@ function downloadIPs(): void {
   iPService
     .downloadIps(ids, authStore.user.token)
     .then(response => {
-      const fileURL = window.URL.createObjectURL(
-        new Blob([response.data], { type: "application/csv" })
-      );
+      const fileURL = window.URL.createObjectURL(new Blob([response.data], { type: "application/csv" }));
       const fileLink = document.createElement("a");
 
       fileLink.href = fileURL;

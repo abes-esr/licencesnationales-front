@@ -1,61 +1,37 @@
 <template>
   <v-card witdh="50%" outlined>
     <v-form ref="formRef" :outline="true" lazy-validation>
+      <v-card-actions class="pa-0">
+        <v-spacer></v-spacer>
+        <v-btn class="ma-0 pa-0 bouton-simple" icon x-large @click="remove()">
+          <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
+        </v-btn>
+      </v-card-actions>
       <v-card-text class="mb-0 pb-0">
         <v-radio-group row v-model="contact.type" class="d-flex justify-center">
-          <v-radio
-            v-for="type in typeContactCandidates"
-            :key="type"
-            :label="`Contact ${typeContactCandidatesLabel[type]}`"
-            :value="type"
-          ></v-radio>
+          <v-radio v-for="type in typeContactCandidates" :key="type"
+            :label="`Contact ${typeContactCandidatesLabel[type]}`" :value="type"></v-radio>
         </v-radio-group>
 
-        <v-text-field
-          outlined
-          label="Nom"
-          placeholder="Nom"
-          v-model="contact.nom"
-          :rules="rulesForms.nom"
-          required
-          @keyup.enter="validate()"
-        ></v-text-field>
-        <v-text-field
-          outlined
-          label="Prénom"
-          placeholder="Prénom"
-          v-model="contact.prenom"
-          :rules="rulesForms.prenom"
-          required
-          @keyup.enter="validate()"
-        ></v-text-field>
-        <v-text-field
-          outlined
-          label="Adresse e-mail"
-          placeholder="Adresse e-mail"
-          v-model="contact.mail"
-          :rules="rulesForms.email"
-          required
-  @keyup.enter="validate()"
-        ></v-text-field>
+        <v-text-field outlined label="Nom" placeholder="Nom" v-model="contact.nom" :rules="rulesForms.nom" required
+          @keyup.enter="validate()"></v-text-field>
+        <v-text-field outlined label="Prénom" placeholder="Prénom" v-model="contact.prenom" :rules="rulesForms.prenom"
+          required @keyup.enter="validate()"></v-text-field>
+        <v-text-field outlined label="Adresse e-mail" placeholder="Adresse e-mail" v-model="contact.mail"
+          :rules="rulesForms.email" required @keyup.enter="validate()"></v-text-field>
       </v-card-text>
-      <v-card-actions class="pa-0">
-        <v-btn class="ma-0 pa-0 bouton-simple" icon x-large @click="remove()">
-        <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
-        </v-btn>
-        <v-spacer></v-spacer>
-      </v-card-actions>
+
     </v-form>
   </v-card>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
 import { ContactType } from "@/core/CommonDefinition";
 import ContactEditeur from "@/core/ContactEditeur";
 import { rulesForms } from "@/core/RulesForm";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { onMounted, ref } from "vue";
 
 // Props
 const props = defineProps<{

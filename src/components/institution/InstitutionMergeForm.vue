@@ -6,18 +6,16 @@
           <v-row>
             <v-col cols="2" />
             <v-col cols="8" class="pa-0">
-              <v-card-title>Fusion d'établissements</v-card-title>
+              <v-card-title>{{ $t("institution.merge.title") }}</v-card-title>
               <v-card>
                 <v-card-text>
-                  <v-card-title>
-                    Siren des établissements à fusionner
-                  </v-card-title>
+                  <v-card-title>{{ $t("institution.merge.sirenTitle") }}</v-card-title>
                   <v-row>
                     <v-col cols="4" xs="12" v-for="n in sirenNumber" :key="n">
                       <v-text-field
                         variant="outlined"
-                        label="SIREN"
-                        placeholder="SIREN"
+                        :label="$t('institution.merge.sirenLabel')"
+                        :placeholder="$t('institution.merge.sirenLabel')"
                         v-model="sirenEtab[n - 1]"
                         :rules="rulesForms.siren"
                         maxlength="9"
@@ -27,18 +25,15 @@
                   </v-row>
                   <v-card-actions>
                     <v-btn variant="elevated" @click="increaseSirenNumber">
-                      Ajouter un siren
+                      {{ $t("institution.merge.addSiren") }}
                     </v-btn>
                     <v-btn variant="elevated" @click="decreaseSirenNumber">
-                      Supprimer un siren
+                      {{ $t("institution.merge.removeSiren") }}
                     </v-btn>
                   </v-card-actions>
                 </v-card-text>
               </v-card>
-              <InstitutionForm
-                :listeSirenFusion="sirenEtab"
-                :action="Action.FUSION"
-              />
+              <InstitutionForm :listeSirenFusion="sirenEtab" :action="Action.FUSION" />
             </v-col>
           </v-row>
         </v-col>

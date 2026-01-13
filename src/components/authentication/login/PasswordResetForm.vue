@@ -6,22 +6,23 @@
           <v-card class="elevation-0">
             <v-form ref="formReinitialisationPass" class="elevation-0" :disabled="status !== 'valid'">
               <v-card-title class="pa-3">
-                <h1>Reinitialiser le mot de passe</h1>
+                <h1>{{ $t("auth.resetPassword.title") }}</h1>
               </v-card-title>
               <v-card-text>
-                <PasswordFields ref="motDePasse" :action="Action.CREATION" v-model:nouveauMotDePasse="formState.newPassword"
-                  class="ma-3" :link-is-expired="status !== 'valid'" :is-disable-form="status !== 'valid'" />
+                <PasswordFields ref="motDePasse" :action="Action.CREATION"
+                  v-model:nouveauMotDePasse="formState.newPassword" class="ma-3" :link-is-expired="status !== 'valid'"
+                  :is-disable-form="status !== 'valid'" />
               </v-card-text>
               <v-card-actions>
                 <v-spacer class="hidden-sm-and-down"></v-spacer>
                 <v-col cols="12" md="8" lg="8" xl="8" class="d-flex justify-space-around">
                   <v-btn v-if="!linkExpired" size="x-large" @click="clear" class="bouton-annuler"
                     :disabled="isDisableForm" variant="outlined">
-                    Annuler
+                    {{ $t("auth.resetPassword.cancel") }}
                   </v-btn>
                   <v-btn v-if="!linkExpired" :loading="buttonLoading" :disabled="isDisableForm" size="x-large"
                     @click="handleRecaptcha" variant="elevated">
-                    Enregistrer
+                    {{ $t("auth.resetPassword.save") }}
                     <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
                   </v-btn>
                 </v-col>
@@ -29,7 +30,7 @@
               <v-card-actions>
                 <v-col cols="8"> </v-col>
                 <router-link :to="{ name: RouteName.Login }">
-                  <FontAwesomeIcon :icon="faReply" />&nbsp;Revenir a la page d'accueil
+                  <FontAwesomeIcon :icon="faReply" />&nbsp;{{ $t("auth.resetPassword.backHome") }}
                 </router-link>
               </v-card-actions>
             </v-form>
@@ -50,12 +51,14 @@ import { RouteName } from "@/router";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import type { VForm } from "vuetify/components";
 
 const route = useRoute();
 const router = useRouter();
 const snackbar = useSnackbar();
+const { t } = useI18n();
 const authService = useAuthService();
 const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
 
@@ -97,7 +100,7 @@ const handleRecaptcha = async () => {
   if (isValid) {
     reinitialisationPass();
   } else {
-    snackbar.error("Des champs ne remplissent pas les conditions");
+    snackbar.error(t("auth.resetPassword.invalidFields"));
   }
 };
 

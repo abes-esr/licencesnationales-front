@@ -2,31 +2,29 @@
   <v-form ref="form" :disabled="isDisableForm" class="d-flex flex-column">
     <v-alert variant="outlined" class="pa-2 mb-4" v-if="linkIsExpired === false">
       <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 mt-2 icone-information" />
-      Le mot de passe doit contenir au moins 8 caractères, dont au moins un
-      chiffre, une lettre majuscule, une lettre minuscule et un des caractères
-      spéciaux suivants : @ $ ! % * ? &
+      {{ $t("auth.passwordFields.rules") }}
     </v-alert>
     <v-alert variant="outlined" class="pa-2 mb-4" v-if="linkIsExpired === true">
-      <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 icone-information" />
-      Ce lien n'est plus valide (expiration après 24 heures). Pour réinitialiser
-      votre mot de passe : <a @click="allerPasswordReset">cliquez ici.</a>
+      <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 mt-2 icone-information" />
+      {{ $t("auth.passwordFields.expiredMessage") }}
+      <a @click="allerPasswordReset">{{ $t("auth.passwordFields.expiredLink") }}</a>
     </v-alert>
     <v-text-field v-if="action === Action.MODIFICATION && linkIsExpired === false" variant="outlined"
-      label="Ancien mot de passe" placeholder="Ancien mot de passe" :type="inputType"
+      :label="$t('auth.passwordFields.oldPasswordLabel')" :placeholder="$t('auth.passwordFields.oldPasswordPlaceholder')" :type="inputType"
       :append-inner-icon="appendIcon" v-model="ancienMotDePasseModel"
       :rules="regleFormulaire.motDePasse.concat(regleConfirmationMotDePasse)" required
       @click:append-inner="toggleShow" autocomplete="new-password" @keyup.enter="validate" />
-    <v-text-field v-if="linkIsExpired === false" variant="outlined" :label="action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
-      " :placeholder="action === Action.CREATION ? 'Mot de passe' : 'Nouveau mot de passe'
+    <v-text-field v-if="linkIsExpired === false" variant="outlined" :label="action === Action.CREATION ? $t('auth.passwordFields.createPasswordLabel') : $t('auth.passwordFields.updatePasswordLabel')
+      " :placeholder="action === Action.CREATION ? $t('auth.passwordFields.createPasswordPlaceholder') : $t('auth.passwordFields.updatePasswordPlaceholder')
         " :type="inputType" :append-inner-icon="appendIcon"
       v-model="nouveauMotDePasseModel" :rules="regleFormulaire.motDePasse.concat(regleMotDePasse)" required
       @click:append-inner="toggleShow" autocomplete="new-password" @keyup.enter="validate" />
     <v-text-field v-if="linkIsExpired === false" variant="outlined" :label="action === Action.CREATION
-      ? 'Confirmation du mot de passe'
-      : 'Confirmation du nouveau mot de passe'
+      ? $t('auth.passwordFields.createConfirmLabel')
+      : $t('auth.passwordFields.updateConfirmLabel')
       " :placeholder="action === Action.CREATION
-        ? 'Confirmation du mot de passe'
-        : 'Confirmation du nouveau mot de passe'
+        ? $t('auth.passwordFields.createConfirmPlaceholder')
+        : $t('auth.passwordFields.updateConfirmPlaceholder')
         " :type="inputType" :append-inner-icon="appendIcon"
       v-model="confirmationNouveauMotDePasse" :rules="regleFormulaire.motDePasse.concat(regleConfirmationMotDePasse)"
       required @click:append-inner="toggleShow" autocomplete="new-password" @keyup.enter="validate" />
@@ -41,6 +39,7 @@ import { RouteName } from "@/router";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import type { VForm } from "vuetify/components";
 
@@ -63,6 +62,7 @@ const emit = defineEmits<{
 }>();
 
 const router = useRouter();
+const { t } = useI18n();
 const ActionRef = Action;
 const regleFormulaire: any = rulesForms;
 
@@ -85,12 +85,12 @@ const nouveauMotDePasseModel = computed({
 const regleMotDePasse = () => () =>
   confirmationNouveauMotDePasse.value === "" ||
   nouveauMotDePasseModel.value === confirmationNouveauMotDePasse.value ||
-  "La confirmation du mot de passe ne correspond pas au mot de passe saisi";
+  t("auth.passwordFields.confirmMismatch");
 
 const regleConfirmationMotDePasse = () => () =>
   nouveauMotDePasseModel.value === confirmationNouveauMotDePasse.value ||
   confirmationNouveauMotDePasse.value === "" ||
-  "La confirmation du mot de passe ne correspond pas au mot de passe saisi";
+  t("auth.passwordFields.confirmMismatch");
 
 watch(
   () => nouveauMotDePasseModel.value,

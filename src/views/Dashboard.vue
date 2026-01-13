@@ -1,54 +1,77 @@
 <template>
   <v-container>
     <h1>
-      Tableau de bord <span v-if="!isAdmin">{{ etablissement.nom }}</span>
+      {{ $t("dashboard.title") }} <span v-if="!isAdmin">{{ etablissement.nom }}</span>
     </h1>
     <ConfirmPopup ref="confirmRef"></ConfirmPopup>
     <v-card class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
       <v-card-text class="fondGris pa-0 px-6 pb-6">
-        <v-card-title class="px-0 pb-2">Information du compte
-          <v-tooltip text="Exporter les infos du compte" location="top" open-delay="100" theme="dark"
-            content-class="text-white">
+        <v-card-title class="px-0 pb-2">
+          {{ $t("dashboard.accountInfo") }}
+          <v-tooltip
+            :text="$t('dashboard.exportAccountInfo')"
+            location="top"
+            open-delay="100"
+            theme="dark"
+            content-class="text-white"
+          >
             <template v-slot:activator="{ props }">
-              <v-btn icon="icon" class="bouton-simple" @click="downloadEtablissement()" v-bind="props"
-                :loading="isExportLoading">
+              <v-btn
+                icon="icon"
+                class="bouton-simple"
+                @click="downloadEtablissement()"
+                v-bind="props"
+                :loading="isExportLoading"
+              >
                 <FontAwesomeIcon :icon="faDownload" class="mx-2 fa-lg" />
               </v-btn>
             </template>
           </v-tooltip>
         </v-card-title>
-        <span>Compte créé le :
-          {{ etablissement.dateCreation.toLocaleDateString() }}</span>
+        <span>{{ $t("dashboard.accountCreatedOn") }} {{ etablissement.dateCreation.toLocaleDateString() }}</span>
         <v-row class="d-flex justify-space-between flex-wrap pt-3">
           <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
-            <div style="height: 100%; position:relative;" class="borderCol fondBlanc"
-              :class="[display.mdAndDown.value ? 'compact-form' : '']">
+            <div
+              style="height: 100%; position:relative;"
+              class="borderCol fondBlanc"
+              :class="[display.mdAndDown.value ? 'compact-form' : '']"
+            >
               <div class="d-flex">
-                <h2 class="my-3 pl-4 mb-0">Etablissement</h2>
-                <v-tooltip text="Non modifiable par l'utilisateur" location="top" open-delay="100" theme="dark"
-                  content-class="text-white" v-if="!isAdmin">
+                <h2 class="my-3 pl-4 mb-0">{{ $t("dashboard.institution.title") }}</h2>
+                <v-tooltip
+                  :text="$t('dashboard.institution.readonly')"
+                  location="top"
+                  open-delay="100"
+                  theme="dark"
+                  content-class="text-white"
+                  v-if="!isAdmin"
+                >
                   <template v-slot:activator="{ props }">
-                    <FontAwesomeIcon v-bind="props" :icon="faLock" class="fa-2x mx-2"
-                      style="margin-top: 10px; position: absolute; right: 0;" />
+                    <FontAwesomeIcon
+                      v-bind="props"
+                      :icon="faLock"
+                      class="fa-2x mx-2"
+                      style="margin-top: 10px; position: absolute; right: 0;"
+                    />
                   </template>
                 </v-tooltip>
               </div>
               <v-card-text class="d-flex align-content-start flex-wrap pt-0 no-border">
-                <div class="d-flex flex-column justify-start mx-3  mb-3 mt-0 bloc-info">
+                <div class="d-flex flex-column justify-start mx-3 mb-3 mt-0 bloc-info">
                   <div class="mt-2">
-                    <h3 class="d-inline">Siren :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.institution.siren") }}</h3>
                     {{ etablissement.siren }}
                   </div>
                   <div class="mt-2">
-                    <h3 class="d-inline">ID Abes :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.institution.idAbes") }}</h3>
                     {{ etablissement.idAbes }}
                   </div>
                   <div class="mt-2">
-                    <h3 class="d-inline">Nom :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.institution.name") }}</h3>
                     {{ etablissement.nom }}
                   </div>
                   <div class="mt-2">
-                    <h3 class="d-inline">Type :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.institution.type") }}</h3>
                     {{ etablissement.typeEtablissement }}
                   </div>
                 </div>
@@ -56,10 +79,8 @@
               <v-alert outlined class="ma-2 pt-1 pb-0" style="position: absolute; bottom: 0; font-size: 14px;">
                 <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 icone-information" />
                 <p class="mb-0 pl-12">
-                  Pour toute demande de modification des infos de
-                  l'établissement, nous contacter via le guichet d'assistance
-                  <a href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank">ABESstp
-                  </a>
+                  {{ $t("dashboard.institution.contactSupport") }}
+                  <a href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank">ABESstp</a>
                 </p>
               </v-alert>
             </div>
@@ -67,55 +88,57 @@
           <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
             <div style="height: 100%; position: relative;" class="borderCol fondBlanc">
               <div class="d-flex justify-space-between align-center">
-                <h2 class="my-3 pl-4 mb-0">
-                  Contact
-                </h2>
+                <h2 class="my-3 pl-4 mb-0">{{ $t("dashboard.contact.title") }}</h2>
               </div>
               <v-card-text class="d-flex align-content-start flex-wrap pt-0 no-border">
                 <div class="d-flex flex-column justify-start mx-3 mb-3 mt-0 bloc-info">
                   <div class="mt-2">
-                    <h3 class="d-inline">Nom :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.contact.lastName") }}</h3>
                     {{ etablissement.contact.nom }}
                   </div>
                   <div class="mt-2">
-                    <h3 class="d-inline">Prénom :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.contact.firstName") }}</h3>
                     {{ etablissement.contact.prenom }}
                   </div>
                   <div class="mt-2">
-                    <h3 class="d-inline">Tél :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.contact.phone") }}</h3>
                     {{ etablissement.contact.telephone }}
                   </div>
                   <div class="mt-2">
-                    <h3 class="d-inline">Email :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.contact.email") }}</h3>
                     {{ etablissement.contact.mail }}
                   </div>
                   <div class="mt-2">
-                    <h3 class="d-inline">Adresse :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.contact.address") }}</h3>
                     {{ etablissement.contact.adresse }}
                   </div>
                   <div class="mt-2">
-                    <h3 class="d-inline">BP :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.contact.poBox") }}</h3>
                     {{ etablissement.contact.boitePostale }}
                   </div>
                   <div class="mt-2">
-                    <h3 class="d-inline">Code postal :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.contact.postalCode") }}</h3>
                     {{ etablissement.contact.codePostal }}
                   </div>
                   <div class="mt-2">
-                    <h3 class="d-inline">Ville :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.contact.city") }}</h3>
                     {{ etablissement.contact.ville }}
                   </div>
                   <div class="mt-2">
-                    <h3 class="d-inline">Cedex :</h3>
+                    <h3 class="d-inline">{{ $t("dashboard.contact.cedex") }}</h3>
                     {{ etablissement.contact.cedex }}
                   </div>
                 </div>
                 <v-row style="position: absolute; bottom: 0; right: 0;" class="text-right pb-4 pr-4">
                   <v-col cols="12">
-                    <v-btn variant="tonal" @click="allerAMonProfil()">Modifier contact</v-btn>
+                    <v-btn variant="tonal" @click="allerAMonProfil()">
+                      {{ $t("dashboard.contact.editContact") }}
+                    </v-btn>
                   </v-col>
                   <v-col cols="12">
-                    <v-btn variant="tonal" @click="allerAModifierMotDePasse()">Modifier mot de passe</v-btn>
+                    <v-btn variant="tonal" @click="allerAModifierMotDePasse()">
+                      {{ $t("dashboard.contact.editPassword") }}
+                    </v-btn>
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -125,21 +148,21 @@
             <div style="height: 100%" class="borderCol fondBlanc">
               <v-card-title class="d-block titre-block" style="margin-bottom:-4px;">
                 <FontAwesomeIcon :icon="faBell" class="fa-lg mx-2 icone-standard" />
-                <span v-if="isAdmin">Dernières actions des utilisateurs</span>
-                <span v-else>Actions à faire</span>
+                <span v-if="isAdmin">{{ $t("dashboard.notifications.adminTitle") }}</span>
+                <span v-else>{{ $t("dashboard.notifications.userTitle") }}</span>
               </v-card-title>
               <v-card-text class="d-flex align-content-start flex-wrap notifs no-border">
-                <div class="d-flex flex-column justify-start mx-3 my-3  bloc-info">
+                <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
                   <div v-if="notifsLoading">
                     <v-progress-circular indeterminate color="primary"></v-progress-circular>
                   </div>
                   <ul>
                     <li style="margin-bottom: 1em" v-for="item in notificationsAdmin" :key="item.index">
-                      Siren: {{ item.siren }}<br />Nom établissement:
-                      <a @click="allerPageEtablissement(item.siren)">{{
-                        item.nomEtab
-                      }}</a><br />Evenement: {{ item.typeNotif }}<br />Date:
-                      {{ dateFormatted(item.dateEvent) }}
+                      {{ $t("dashboard.notifications.siren") }} {{ item.siren }}<br />
+                      {{ $t("dashboard.notifications.institutionName") }}
+                      <a @click="allerPageEtablissement(item.siren)">{{ item.nomEtab }}</a><br />
+                      {{ $t("dashboard.notifications.event") }} {{ item.typeNotif }}<br />
+                      {{ $t("dashboard.notifications.date") }} {{ dateFormatted(item.dateEvent) }}
                     </li>
                     <li style="margin-bottom: 1em" v-for="item in notificationsUser" :key="item.index">
                       <span class="notifUserMsg" v-html="item.message"></span>
@@ -155,10 +178,10 @@
             <div class="borderCol fondBlanc" style="height: 100%; position: relative;">
               <v-card-title class="d-block titre-block" style="margin-bottom:-4px;">
                 <FontAwesomeIcon :icon="faPaperPlane" class="fa-lg mx-2" />
-                Envoi aux éditeurs
+                {{ $t("dashboard.publishers.title") }}
               </v-card-title>
               <v-card-text class="no-border">
-                <div class="d-flex flex-column justify-start mx-3 my-3  bloc-info">
+                <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
                   <div v-if="datesLoading">
                     <v-progress-circular indeterminate color="primary"></v-progress-circular>
                   </div>
@@ -169,7 +192,7 @@
                   </ul>
                 </div>
                 <div class="w-100 d-flex justify-end">
-                  <v-btn @click="envoiEditeurs()" class="ma-4">Envoi aux éditeurs</v-btn>
+                  <v-btn @click="envoiEditeurs()" class="ma-4">{{ $t("dashboard.publishers.send") }}</v-btn>
                 </div>
               </v-card-text>
             </div>
@@ -182,24 +205,28 @@
 
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
+import { useEditeurService } from "@/composables/useEditeurService";
+import { useEtablissementService } from "@/composables/useEtablissementService";
+import { useSnackbar } from "@/composables/useSnackbar";
+import Etablissement from "@/core/Etablissement";
+import { Notification } from "@/core/Notification";
+import { RouteName } from "@/router";
+import { useAuthStore } from "@/stores/authStore";
+import { useEtablissementStore } from "@/stores/etablissementStore";
+import { Logger } from "@/utils/Logger";
+import {
+  faBell,
+  faCircleInfo,
+  faDownload,
+  faLock,
+  faPaperPlane,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import moment from "moment/moment";
 import { computed, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
-
-import Etablissement from "@/core/Etablissement";
-import { Notification } from "@/core/Notification";
-
-import { useSnackbar } from "@/composables/useSnackbar";
-import { useAuthStore } from "@/stores/authStore";
-import { useEtablissementStore } from "@/stores/etablissementStore";
-
-import { useEditeurService } from "@/composables/useEditeurService";
-import { useEtablissementService } from "@/composables/useEtablissementService";
-import { RouteName } from "@/router";
-import { Logger } from "@/utils/Logger";
-import { faBell, faCircleInfo, faDownload, faLock, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 interface NotificationUser {
   index: number;
@@ -207,7 +234,6 @@ interface NotificationUser {
   description: string;
 }
 
-// Composables
 const router = useRouter();
 const display = useDisplay();
 const authStore = useAuthStore();
@@ -215,6 +241,7 @@ const etablissementStore = useEtablissementStore();
 const snackbar = useSnackbar();
 const editeurService = useEditeurService();
 const etablissementService = useEtablissementService();
+const { t } = useI18n();
 
 const etablissement = ref<Etablissement>(etablissementStore.getCurrentEtablissement);
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
@@ -231,13 +258,11 @@ const metaInfo = () => ({
   meta: [
     {
       name: "description",
-      content:
-        "Tableau de bord utilisateur de l'application des Licences Nationales",
-
+      content: t("dashboard.meta.description"),
     },
-    { name: "keywords", content: "tableau de bord licences nationales" }
+    { name: "keywords", content: t("dashboard.meta.keywords") },
   ],
-  title: "Tableau de bord - Licences Nationales"
+  title: t("dashboard.meta.title"),
 });
 
 onMounted(() => {
@@ -279,7 +304,7 @@ const downloadEtablissement = (): void => {
       isExportLoading.value = false;
     })
     .catch(err => {
-      snackbar.error(err)
+      snackbar.error(err);
       isExportLoading.value = false;
     });
 };
@@ -298,10 +323,7 @@ const collecterDates = (): void => {
       .then(result => {
         result.data.forEach(element => {
           datesEnvoi.value.push(
-            "<strong>Envoyé le " +
-            moment(element).format("DD/MM/YYYY HH:MM") +
-            "</strong> - " +
-            moment(element).fromNow()
+            `${t("dashboard.publishers.sentOn")} ${moment(element).format("DD/MM/YYYY HH:MM")} ${t("dashboard.publishers.sentAgo")} ${moment(element).fromNow()}`
           );
         });
       })
@@ -329,10 +351,7 @@ const collecterNotifs = (): void => {
       });
   } else {
     etablissementService
-      .getNotificationsEtab(
-        authStore.userSiren,
-        authStore.getToken
-      )
+      .getNotificationsEtab(authStore.userSiren, authStore.getToken)
       .then(response => {
         notificationsUser.value = response;
       })
@@ -358,11 +377,7 @@ const allerAAfficherEtab = (item: Etablissement): void => {
 };
 
 const envoiEditeurs = async () => {
-  const confirmed = await confirmRef.value?.open(
-    `Vous êtes sur le point de lancer le traitement d'envoi aux éditeurs.
-
-                Etes-vous sûr de vouloir continuer ?`
-  );
+  const confirmed = await confirmRef.value?.open(t("dashboard.publishers.confirm"));
   if (confirmed) {
     buttonLoading.value = true;
     editeurService

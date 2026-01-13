@@ -2,7 +2,7 @@
   <v-container elevation="0" class="pa-0">
     <v-form ref="formCreationCompte" class="elevation-0" :disabled="isDisableForm" autocomplete="on">
       <h1 v-if="action === Action.CREATION" class="pl-3">
-        Créer le compte de votre établissement
+        {{ $t("institution.form.createTitle") }}
       </h1>
       <h1 v-if="action === Action.MODIFICATION" class="pl-3">
         {{ etablissement.nom }}
@@ -10,19 +10,17 @@
       <v-container class="pa-0">
         <div v-if="action === Action.CREATION" class="d-flex flex-row align-center">
           <h2 @click="allerAConnexion" class="pl-3">
-            Votre établissement a déjà un compte ?
-            <a class="bouton-simple elevation-0 large">S'authentifier</a>
+            {{ $t("institution.form.hasAccount") }}
+            <a class="bouton-simple elevation-0 large">{{ $t("institution.form.authenticate") }}</a>
           </h2>
-          <v-icon small>mdi-arrow-right-circle-outline </v-icon>
+          <v-icon small>mdi-arrow-right-circle-outline</v-icon>
         </div>
-        <v-col cols="12" md="6" lg="6" xl="6">
-        </v-col>
+        <v-col cols="12" md="6" lg="6" xl="6"> </v-col>
         <v-col cols="12" md="6" lg="6" xl="6" v-if="returnLink">
           <v-alert variant="outlined">
             <div>
               <a @click="allerPageAccueil()">
-                <FontAwesomeIcon :icon="faReply" /> Revenir à la page
-                d'accueil
+                <FontAwesomeIcon :icon="faReply" /> {{ $t("institution.form.backHome") }}
               </a>
             </div>
           </v-alert>
@@ -31,80 +29,119 @@
           <v-col cols="12" md="6" lg="6" xl="6">
             <v-alert variant="outlined" density="compact">
               <FontAwesomeIcon :icon="faTriangleExclamation" class="mx-2 icone-attention" />
-              <h4 class="mb-1">
-                Avant de créer votre compte, vérifier l'éligibilité de votre
-                établissement
-              </h4>
+              <h4 class="mb-1">{{ $t("institution.form.eligibilityTitle") }}</h4>
               <p>
-                <strong>Attention : </strong>L'accès aux corpus sous licences
-                nationales est réservé aux établissements bénéficiaires selon
-                les conditions spécifiques négociées avec chaque éditeur. Pour
-                permettre la déclaration des adresses IP autorisées, l'Abes met
-                à la disposition des professionnels de la documentation cette
-                application dédiée à la gestion des accès.
-                <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
-                  target="_blank">Vérifier l'éligibilité de votre établissement.</a>
+                <strong>{{ $t("institution.form.attention") }}</strong>{{
+                  $t("institution.form.eligibilityText")
+                }}
+                <a
+                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+                  target="_blank"
+                >
+                  {{ $t("institution.form.eligibilityLink") }}
+                </a>
               </p>
-              <v-checkbox required :rules="rulesForms.checkboxRules"
-                label="Je confirme que mon établissement est éligible" />
+              <v-checkbox
+                required
+                :rules="rulesForms.checkboxRules"
+                :label="$t('institution.form.eligibilityConfirm')"
+              />
             </v-alert>
           </v-col>
         </v-row>
         <v-card>
-
-          <div class="mx-9" v-if="
-            (action === Action.MODIFICATION && isAdmin) ||
-            action === Action.CREATION ||
-            action === Action.FUSION ||
-            action === Action.SCISSION
-          ">
+          <div
+            class="mx-9"
+            v-if="
+              (action === Action.MODIFICATION && isAdmin) ||
+              action === Action.CREATION ||
+              action === Action.FUSION ||
+              action === Action.SCISSION
+            "
+          >
             <v-row>
-              <v-card-title>Informations de l'établissement</v-card-title>
+              <v-card-title>{{ $t("institution.form.institutionSection") }}</v-card-title>
             </v-row>
             <v-divider class="mb-4"></v-divider>
             <div class="mx-9">
               <v-row>
                 <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
                   <v-row>
-                    <v-text-field variant="outlined" label="Nom de l'établissement" placeholder="Nom de l'établissement"
-                      name="organization" autocomplete="organization" v-model="etablissement.nom"
-                      :rules="rulesForms.nomEtabRules" :disabled="action === Action.MODIFICATION && !isAdmin" required
-                      @keyup.enter="validate" />
+                    <v-text-field
+                      variant="outlined"
+                      :label="$t('institution.form.institutionName')"
+                      :placeholder="$t('institution.form.institutionName')"
+                      name="organization"
+                      autocomplete="organization"
+                      v-model="etablissement.nom"
+                      :rules="rulesForms.nomEtabRules"
+                      :disabled="action === Action.MODIFICATION && !isAdmin"
+                      required
+                      @keyup.enter="validate"
+                    />
                   </v-row>
                   <v-row>
                     <v-col :cols="12" class="pa-0">
-                      <v-text-field variant="outlined" label="SIREN" placeholder="SIREN" maxlength="9" name="siren"
-                        autocomplete="on" v-model="etablissement.siren" :rules="rulesForms.siren" required
-                        @input="checkSiren" @keyup.enter="validate" :disabled="action === Action.MODIFICATION" />
+                      <v-text-field
+                        variant="outlined"
+                        :label="$t('institution.form.siren')"
+                        :placeholder="$t('institution.form.siren')"
+                        maxlength="9"
+                        name="siren"
+                        autocomplete="on"
+                        v-model="etablissement.siren"
+                        :rules="rulesForms.siren"
+                        required
+                        @input="checkSiren"
+                        @keyup.enter="validate"
+                        :disabled="action === Action.MODIFICATION"
+                      />
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-chip class="ma-2" :class="checkSirenColor" label v-if="
-                      action == Action.CREATION ||
-                      action == Action.FUSION ||
-                      action == Action.SCISSION
-                    ">
-                      SIREN : {{ checkSirenAPI }}
+                    <v-chip
+                      class="ma-2"
+                      :class="checkSirenColor"
+                      label
+                      v-if="action == Action.CREATION || action == Action.FUSION || action == Action.SCISSION"
+                    >
+                      {{ $t("institution.form.sirenStatus", { status: checkSirenAPI }) }}
                     </v-chip>
                   </v-row>
                   <v-row v-if="action == Action.MODIFICATION">
-                    <v-text-field variant="outlined" label="ID Abes" placeholder="ID Abes"
-                      v-model="etablissement.idAbes" disabled />
+                    <v-text-field
+                      variant="outlined"
+                      :label="$t('institution.form.idAbes')"
+                      :placeholder="$t('institution.form.idAbes')"
+                      v-model="etablissement.idAbes"
+                      disabled
+                    />
                   </v-row>
                 </v-col>
                 <v-col cols="0" md="1" lg="1" xl="1" class="pa-0"></v-col>
                 <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
                   <v-row>
-                    <v-select variant="outlined" v-model="etablissement.typeEtablissement" :items="typesEtab"
-                      label="Type d'établissement" placeholder="Type d'établissement"
-                      :disabled="action === Action.MODIFICATION && !isAdmin" :rules="rulesForms.typeEtabRules"
-                      required />
+                    <v-select
+                      variant="outlined"
+                      v-model="etablissement.typeEtablissement"
+                      :items="typesEtab"
+                      :label="$t('institution.form.institutionType')"
+                      :placeholder="$t('institution.form.institutionType')"
+                      :disabled="action === Action.MODIFICATION && !isAdmin"
+                      :rules="rulesForms.typeEtabRules"
+                      required
+                    />
                   </v-row>
                   <v-row>
                     <v-alert variant="outlined" v-if="action == Action.CREATION" style="width: 100%">
                       <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 icone-information" />
-                      <a class="noUnderlineLink" href="https://annuaire-entreprises.data.gouv.fr/"
-                        target="_blank">Trouver le SIREN de votre établissement</a>
+                      <a
+                        class="noUnderlineLink"
+                        href="https://annuaire-entreprises.data.gouv.fr/"
+                        target="_blank"
+                      >
+                        {{ $t("institution.form.findSiren") }}
+                      </a>
                     </v-alert>
                   </v-row>
                 </v-col>
@@ -112,9 +149,7 @@
             </div>
           </div>
           <div class="mx-9">
-            <v-card-title>
-              Information Contact
-            </v-card-title>
+            <v-card-title>{{ $t("institution.form.contactSection") }}</v-card-title>
             <v-divider class="mb-4"></v-divider>
             <InstitutionContact
               ref="formContact"
@@ -130,11 +165,11 @@
           <v-col cols="12" md="6" lg="4" xl="4" class="d-flex justify-space-around flex-wrap" style="float: right;">
             <v-row>
               <v-btn @click="clear" :disabled="isDisableForm" variant="outlined">
-                Annuler</v-btn>
+                {{ $t("institution.form.cancel") }}
+              </v-btn>
 
-              <v-btn class="ml-4" :loading="buttonLoading" :disabled="isDisableForm" @click="validate"
-                variant="elevated">
-                Enregistrer
+              <v-btn class="ml-4" :loading="buttonLoading" :disabled="isDisableForm" @click="validate" variant="elevated">
+                {{ $t("institution.form.save") }}
                 <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
               </v-btn>
             </v-row>
@@ -150,9 +185,7 @@ import InstitutionContact from "@/components/institution/InstitutionContact.vue"
 import { useDataGouvService } from "@/composables/useDataGouvService";
 import { useEtablissementService } from "@/composables/useEtablissementService";
 import { useSnackbar } from "@/composables/useSnackbar";
-import {
-  Action as ActionEnum
-} from "@/core/CommonDefinition";
+import { Action as ActionEnum } from "@/core/CommonDefinition";
 import Etablissement from "@/core/Etablissement";
 import { rulesForms } from "@/core/RulesForm";
 import { DataGouvApiError } from "@/exception/data.gouv/DataGouvApiError";
@@ -164,6 +197,7 @@ import { Logger } from "@/utils/Logger";
 import { faCircleInfo, faReply, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed, onMounted, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import type { VForm } from "vuetify/components";
 
@@ -175,7 +209,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   listeSirenFusion: () => [],
-  triggerScission: false
+  triggerScission: false,
 });
 const emit = defineEmits<{
   (e: "send", value: Etablissement): void;
@@ -187,6 +221,7 @@ const snackbar = useSnackbar();
 const dataGouvService = useDataGouvService();
 const etablissementService = useEtablissementService();
 const etablissementStore = useEtablissementStore();
+const { t } = useI18n();
 
 const action = computed<ActionEnum>(() =>
   typeof props.action === "string"
@@ -217,7 +252,7 @@ const Action = ActionEnum;
 const isAdmin = computed(() => authStore.isAdmin);
 const tokenrecaptcha = ref("");
 const typesEtab = ref<Array<string>>([]);
-const checkSirenAPI = ref("En attente de vérification");
+const checkSirenAPI = ref(t("institution.form.sirenPending"));
 const checkSirenColor = ref("grey");
 const buttonLoading = ref(false);
 const isDisableForm = ref(false);
@@ -229,17 +264,16 @@ const formContact = ref<InstanceType<typeof InstitutionContact> | null>(null);
 const metaInfo = () => {
   const titre =
     action.value === ActionEnum.CREATION
-      ? "Inscription"
-      : "Modification du compte";
+      ? t("institution.form.meta.createTitle")
+      : t("institution.form.meta.editTitle");
   return {
     meta: [
       {
         name: "description",
-        content:
-          "Création de compte sur l'application des Licences Nationales"
-      }
+        content: t("institution.form.meta.description"),
+      },
     ],
-    title: `${titre} - Licences Nationales`
+    title: `${titre} - Licences Nationales`,
   };
 };
 
@@ -277,7 +311,7 @@ const allerAConnexion = () => {
 };
 
 const allerPageAccueil = () => {
-  router.push({ name: RouteName.Login })
+  router.push({ name: RouteName.Login });
 };
 
 const recaptcha = async () => {
@@ -300,13 +334,10 @@ const validate = async () => {
     if (isFormValide && isSubFormValide) {
       await send();
     } else {
-      if (
-        checkSirenAPI.value === "inconnu" ||
-        checkSirenAPI.value === "Inconnu"
-      ) {
-        snackbar.error("Le SIREN de l'établissement est inconnu");
+      if (checkSirenAPI.value === "inconnu" || checkSirenAPI.value === "Inconnu") {
+        snackbar.error(t("institution.form.unknownSiren"));
       } else {
-        snackbar.error("Certains champs du formulaire sont invalides");
+        snackbar.error(t("institution.form.invalidFields"));
       }
     }
   }
@@ -321,7 +352,7 @@ const send = async () => {
     etablissementService
       .creerEtablissement(etablissement.value, tokenrecaptcha.value)
       .then(() => {
-        snackbar.success("Le compte a été enregistré. Pour y accéder, merci de vous authentifier");
+        snackbar.success(t("institution.form.createSuccess"));
         router.push({ name: RouteName.Home });
       })
       .catch(err => {
@@ -332,18 +363,11 @@ const send = async () => {
       });
   } else if (action.value == ActionEnum.MODIFICATION) {
     etablissementService
-      .updateEtablissement(
-        etablissement.value,
-        authStore.getToken,
-        authStore.isAdmin
-      )
+      .updateEtablissement(etablissement.value, authStore.getToken, authStore.isAdmin)
       .then(() => {
-        snackbar.success("Votre compte a bien été modifié.");
+        snackbar.success(t("institution.form.updateSuccess"));
 
-        if (
-          etablissement.value.siren ===
-          authStore.getEtablissementConnecte.siren
-        ) {
+        if (etablissement.value.siren === authStore.getEtablissementConnecte.siren) {
           etablissementStore.setEtablissementConnecte(etablissement.value);
         }
       })
@@ -357,12 +381,12 @@ const send = async () => {
     etablissementService
       .fusion(authStore.getToken, {
         nouveauEtab: etablissement.value,
-        sirenFusionnes: props.listeSirenFusion
+        sirenFusionnes: props.listeSirenFusion,
       })
       .then(() => {
         clear();
-        snackbar.success("La fusion a bien été effectuée.");
-        router.push({ name: RouteName.Institutions })
+        snackbar.success(t("institution.form.mergeSuccess"));
+        router.push({ name: RouteName.Institutions });
       })
       .catch(err => {
         snackbar.error(err);
@@ -378,9 +402,9 @@ const send = async () => {
 
 const checkSiren = async () => {
   snackbar.hide();
-  checkSirenAPI.value = "En attente de vérification";
+  checkSirenAPI.value = t("institution.form.sirenPending");
   if (etablissement.value.siren) {
-    checkSirenAPI.value = "Vérification du SIREN en cours...";
+    checkSirenAPI.value = t("institution.form.sirenChecking");
     checkSirenColor.value = "siren-default";
     if (etablissement.value.siren.length === 9) {
       try {
@@ -390,14 +414,15 @@ const checkSiren = async () => {
       } catch (err: any) {
         Logger.error(err);
         if (err instanceof SirenNotFoundError) {
-          checkSirenAPI.value = "Inconnu";
+          checkSirenAPI.value = t("institution.form.sirenUnknown");
           checkSirenColor.value = "siren-erreur";
         } else if (err instanceof DataGouvApiError) {
-          checkSirenAPI.value =
-            "Impossible de contacter le service de vérification du numéro SIREN";
+          checkSirenAPI.value = t("institution.form.sirenServiceError");
           checkSirenColor.value = "siren-erreur";
         } else {
-          checkSirenAPI.value = "Erreur interne : " + (err?.message ?? "");
+          checkSirenAPI.value = t("institution.form.sirenInternalError", {
+            message: err?.message ?? "",
+          });
           checkSirenColor.value = "red";
         }
       }
@@ -423,7 +448,7 @@ const clear = () => {
 
 watch(
   () => props.triggerScission,
-  (value) => {
+  value => {
     if (action.value === ActionEnum.SCISSION && value) {
       validate();
     }

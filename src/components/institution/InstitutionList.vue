@@ -1,36 +1,54 @@
 <template>
   <v-container variant="flat" :disabled="disableForm">
-    <h1>Gestion des comptes établissements</h1>
+    <h1>{{ $t("institution.list.title") }}</h1>
     <div class="pr-0">
       <v-row class="d-flex flex-row-reverse ma-0">
         <v-btn @click="allerAScionnerEtab" class="btn-1 ml-2">
-          Scission
+          {{ $t("institution.list.split") }}
           <FontAwesomeIcon :icon="faObjectUngroup" class="mx-2" />
         </v-btn>
         <v-btn @click="allerAFusionnerEtab" class="btn-1 mx-2">
-          Fusion
+          {{ $t("institution.list.merge") }}
           <FontAwesomeIcon :icon="faObjectGroup" class="mx-2" />
         </v-btn>
         <v-btn @click="ajouterEtablissement" class="btn-1 mx-2">
-          Créer un établissement
+          {{ $t("institution.list.create") }}
           <FontAwesomeIcon :icon="faPlus" class="mx-2" />
         </v-btn>
       </v-row>
     </div>
     <v-card class="mt-3 fondGris">
-      <VDataTable density="compact" :headers="headers" :header-props="{ class: 'bg-primary' }"
-        :items="filteredEtabByStatut" :items-per-page="25"
-        :items-per-page-options="[25, 50, 100, { value: -1, title: 'Tous' }]" class="elevation-0 pa-0"
-        :search="rechercher" :loading="dataLoading" id="mytable">
+      <VDataTable
+        density="compact"
+        :headers="headers"
+        :header-props="{ class: 'bg-primary' }"
+        :items="filteredEtabByStatut"
+        :items-per-page="25"
+        :items-per-page-options="[25, 50, 100, { value: -1, title: $t('institution.list.all') }]"
+        class="elevation-0 pa-0"
+        :search="rechercher"
+        :loading="dataLoading"
+        id="mytable"
+      >
         <template #top>
           <v-row class="ma-3">
             <v-col cols="12" sm="6" class="px-0">
-              <v-tooltip text="Le téléchargement correspond à la vue filtrée" location="top" open-delay="100"
-                theme="dark" content-class="text-white">
+              <v-tooltip
+                :text="$t('institution.list.downloadTooltip')"
+                location="top"
+                open-delay="100"
+                theme="dark"
+                content-class="text-white"
+              >
                 <template #activator="{ props }">
-                  <v-btn variant="text" @click="downloadEtablissements" class="pl-0 bouton-simple" v-bind="props"
-                    :loading="isExportLoading">
-                    <h2>Télécharger la liste des établissements</h2>
+                  <v-btn
+                    variant="text"
+                    @click="downloadEtablissements"
+                    class="pl-0 bouton-simple"
+                    v-bind="props"
+                    :loading="isExportLoading"
+                  >
+                    <h2>{{ $t("institution.list.downloadTitle") }}</h2>
                     <FontAwesomeIcon :icon="faDownload" size="2x" class="mx-2" />
                   </v-btn>
                 </template>
@@ -39,8 +57,14 @@
             <v-col cols="0" sm="3" class="px-0"></v-col>
             <v-col cols="12" sm="3" class="px-0">
               <div class="d-flex align-content-end justify-end">
-                <v-text-field v-model="rechercher" label="Chercher dans les colonnes" prepend-inner-icon="mdi-magnify"
-                  variant="outlined" density="compact" clearable />
+                <v-text-field
+                  v-model="rechercher"
+                  :label="$t('institution.list.searchLabel')"
+                  prepend-inner-icon="mdi-magnify"
+                  variant="outlined"
+                  density="compact"
+                  clearable
+                />
               </div>
             </v-col>
           </v-row>
@@ -48,8 +72,12 @@
 
         <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
           <tr>
-            <th v-for="column in columns" :key="column.key" class="text-left"
-              @click="column.sortable ? toggleSort(column) : ''">
+            <th
+              v-for="column in columns"
+              :key="column.key"
+              class="text-left"
+              @click="column.sortable ? toggleSort(column) : ''"
+            >
               <div style="display: flex; align-items: center; white-space: nowrap;">
                 <span>{{ column.title }}</span>
 
@@ -60,12 +88,13 @@
                   {{ getSortIcon(column) }}
                 </v-icon>
 
-                <v-menu v-if="column.key === 'typeEtablissement' || column.key === 'statutIP'"
-                  :close-on-content-click="false">
+                <v-menu v-if="column.key === 'typeEtablissement' || column.key === 'statutIP'" :close-on-content-click="false">
                   <template #activator="{ props }">
                     <v-btn :aria-label="column.key" icon variant="text" class="ml-1" v-bind="props">
-                      <v-icon small
-                        :color="column.key === 'typeEtablissement' ? (selectedType ? 'primary' : '') : (statut ? 'primary' : '')">
+                      <v-icon
+                        small
+                        :color="column.key === 'typeEtablissement' ? (selectedType ? 'primary' : '') : (statut ? 'primary' : '')"
+                      >
                         mdi-filter
                       </v-icon>
                     </v-btn>
@@ -79,8 +108,8 @@
                   </div>
                   <div v-if="column.key === 'statutIP'" style="background-color: white;" class="pl-4 pr-8">
                     <ul>
-                      <li v-for="item in selectStatut" :key="item" @click="eventStatutChoice(item)">
-                        <a>{{ item }}</a>
+                      <li v-for="item in selectStatutOptions" :key="item.value" @click="eventStatutChoice(item.value)">
+                        <a>{{ item.title }}</a>
                       </li>
                     </ul>
                   </div>
@@ -118,10 +147,16 @@ import { RouteName } from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useEtablissementStore } from "@/stores/etablissementStore";
 import { Logger } from "@/utils/Logger";
-import { faDownload, faObjectGroup, faObjectUngroup, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faDownload,
+  faObjectGroup,
+  faObjectUngroup,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import moment from "moment";
 import { computed, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { DataTableHeader } from "vuetify";
 import { VDataTable } from "vuetify/components";
@@ -131,16 +166,17 @@ const snackbar = useSnackbar();
 const etablissementStore = useEtablissementStore();
 const router = useRouter();
 const etablissementService = useEtablissementService();
+const { t } = useI18n();
 
 const disableForm = ref(false);
 const statut = ref("");
 const dataLoading = ref(true);
-const selectStatut = ref<Array<string>>([
-  "Tous",
-  "Sans IP",
-  "Examiner IP",
-  "Attestation à envoyer",
-  "IP Ok"
+const selectStatutOptions = computed(() => [
+  { value: "Tous", title: t("institution.list.status.all") },
+  { value: "Sans IP", title: t("institution.list.status.noIp") },
+  { value: "Examiner IP", title: t("institution.list.status.reviewIp") },
+  { value: "Attestation � envoyer", title: t("institution.list.status.attestation") },
+  { value: "IP Ok", title: t("institution.list.status.ipOk") },
 ]);
 const rechercher = ref("");
 const etabs = ref<Array<Etablissement>>([]);
@@ -149,30 +185,29 @@ const selectedType = ref("");
 const typesEtab = ref<Array<string>>([]);
 const isDisableForm = ref(false);
 const isExportLoading = ref(false);
-const headers: DataTableHeader[] = [
+const headers = computed<DataTableHeader[]>(() => [
   {
-    title: "Date de création",
+    title: t("institution.list.headers.createdAt"),
     align: "start",
     key: "dateCreationFormattedInString",
     sortable: true,
-
   },
-  { title: "Identifiant Abes", key: "idAbes", sortable: true },
-  { title: "SIREN", key: "siren", sortable: true },
-  { title: "Nom de l'établissement", key: "nom", sortable: true },
+  { title: t("institution.list.headers.idAbes"), key: "idAbes", sortable: true },
+  { title: t("institution.list.headers.siren"), key: "siren", sortable: true },
+  { title: t("institution.list.headers.name"), key: "nom", sortable: true },
   {
-    title: "Type d'établissement",
+    title: t("institution.list.headers.type"),
     key: "typeEtablissement",
-    sortable: true
+    sortable: true,
   },
   {
-    title: "Dernière date de modification des IPs",
+    title: t("institution.list.headers.ipLastUpdate"),
     key: "dateModificationDerniereIp",
-    sortable: true
+    sortable: true,
   },
-  { title: "Statut", key: "statutIP", sortable: true },
-  { title: "Liste des IPs", key: "action", sortable: false }
-];
+  { title: t("institution.list.headers.status"), key: "statutIP", sortable: true },
+  { title: t("institution.list.headers.ipList"), key: "action", sortable: false },
+]);
 
 const isAdmin = computed(() => authStore.isAdmin);
 
@@ -181,10 +216,9 @@ onMounted(() => {
     collecterEtab();
     fetchListeType();
   } else {
-    snackbar.error("Vous n'êtes pas autorisé à exécuter l'action AfficherEtablissemnts");
-    router.push({ name: RouteName.Home })
+    snackbar.error(t("institution.list.unauthorized"));
+    router.push({ name: RouteName.Home });
   }
-
 });
 
 const filteredEtabByStatut = computed((): Array<Etablissement> => {
@@ -199,22 +233,16 @@ const filteredEtabByStatut = computed((): Array<Etablissement> => {
   if (conditions.length > 0) {
     etabsFiltered.value = etabs.value.filter(acces =>
       conditions.every(
-        condition =>
-          acces.typeEtablissement == condition || acces.statutIP == condition
+        condition => acces.typeEtablissement == condition || acces.statutIP == condition
       )
     );
     return etabsFiltered.value;
   }
 
   etabs.value.forEach(element => {
-    element.dateCreationFormattedInString = moment(
-      element.dateCreation
-    ).format("YYYY-MM-DD");
+    element.dateCreationFormattedInString = moment(element.dateCreation).format("YYYY-MM-DD");
     if (element.dateModificationDerniereIp) {
-      element.dateModificationDerniereIp = element.dateModificationDerniereIp.replace(
-        /-/g,
-        "/"
-      );
+      element.dateModificationDerniereIp = element.dateModificationDerniereIp.replace(/-/g, "/");
     }
   });
   overrideStatuts();
@@ -244,14 +272,9 @@ async function fetchListeType() {
     .listeType()
     .then(result => {
       isDisableForm.value = false;
-      typesEtab.value = [...result, "Tous"].sort((n1, n2) =>
-        n1 > n2 ? 1 : n1 < n2 ? -1 : 0
-      );
+      typesEtab.value = [...result, "Tous"].sort((n1, n2) => (n1 > n2 ? 1 : n1 < n2 ? -1 : 0));
       typesEtab.value.unshift(
-        typesEtab.value.splice(
-          typesEtab.value.findIndex(item => item === "Tous"),
-          1
-        )[0]
+        typesEtab.value.splice(typesEtab.value.findIndex(item => item === "Tous"), 1)[0]
       );
     })
     .catch(err => {
@@ -275,12 +298,12 @@ function ajouterEtablissement(): void {
 
 function allerAFusionnerEtab(): void {
   snackbar.hide();
-  router.push({ name: RouteName.InstitutionMerge })
+  router.push({ name: RouteName.InstitutionMerge });
 }
 
 function allerAScionnerEtab(): void {
   snackbar.hide();
-  router.push({ name: RouteName.InstitutionSplit })
+  router.push({ name: RouteName.InstitutionSplit });
 }
 
 function collecterEtab(): void {
@@ -293,15 +316,14 @@ function collecterEtab(): void {
     .catch(err => {
       if (err instanceof LicencesNationalesUnauthorizedApiError) {
         disableForm.value = true;
-        snackbar.error("Vous n'êtes pas autorisé à effectuer cette opération", {
+        snackbar.error(t("institution.list.unauthorizedOperation"), {
           onHide: () => {
             router.push({ name: RouteName.Home });
-          }
+          },
         });
       } else {
         snackbar.error(err);
       }
-
     })
     .finally(() => {
       dataLoading.value = false;
