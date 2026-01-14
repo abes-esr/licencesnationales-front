@@ -5,8 +5,8 @@
 </template>
 
 <script setup lang="ts">
-import Institution from "@/entity/Institution";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import Institution from "@/entity/Institution";
 
 const props = defineProps<{
   institution: Institution;
@@ -16,9 +16,7 @@ const props = defineProps<{
 const institutionStore = useInstitutionStore();
 
 const reset = () => {
-  Object.assign(props.institution, institutionStore.getCurrentInstitution);
+  Object.assign(props.institution, institutionStore.currentInstitution);
   props.editState.disabled = true;
 };
 </script>
-
-

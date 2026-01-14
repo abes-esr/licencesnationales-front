@@ -100,7 +100,7 @@
             <v-tooltip location="bottom" theme="dark" content-class="text-white">
               <template #activator="{ props }">
                 <span v-bind="props" class="text-truncate d-block" :style="{ width: '100px' }">{{ item.commentaires
-                  }}</span>
+                }}</span>
               </template>
               <span>{{ item.commentaires }}</span>
             </v-tooltip>
@@ -121,8 +121,8 @@
           </template>
 
           <template #item.action="{ item }">
-            <v-btn v-if="isAdmin && currentInstitution.status == 'Valid�'" class="ma-0 pa-0 bouton-simple" variant="flat"
-              :title="$t('ip.list.review')" @click.stop="openDialog(item)">
+            <v-btn v-if="isAdmin && currentInstitution.status == 'Valid�'" class="ma-0 pa-0 bouton-simple"
+              variant="flat" :title="$t('ip.list.review')" @click.stop="openDialog(item)">
               <FontAwesomeIcon :icon="faMagnifyingGlass" />
             </v-btn>
             <v-btn v-if="!isAdmin" class="ma-0 pa-0 bouton-simple" icon :loading="buttonLoading"
@@ -245,12 +245,11 @@
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { useIpService } from "@/composables/service/useIpService";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { Logger } from "@/utils/Logger";
 import {
   faCheck,
@@ -385,10 +384,10 @@ const infobulleAttente = t("ip.list.info.waiting");
 const infobulleAttestation = t("ip.list.info.attestation");
 const infobulleValid = t("ip.list.info.valid");
 
-const currentInstitutionName = computed(() => institutionStore.getCurrentInstitution.name);
+const currentInstitutionName = computed(() => institutionStore.currentInstitution.name);
 const isAdmin = computed(() => authStore.isAdmin);
 const breakpointMdAndDown = computed(() => mdAndDown.value);
-const currentInstitution = computed(() => institutionStore.getCurrentInstitution);
+const currentInstitution = computed(() => institutionStore.currentInstitution);
 
 const filteredAccessByType = computed(() => {
   const conditions: Array<(value: any) => boolean> = [];
@@ -428,11 +427,11 @@ function filterIpType(typeSearch: any) {
 function getAll() {
   if (isAdmin.value) {
     return ipService.getInstitutionIpList(
-      authStore.getToken,
-      institutionStore.getCurrentInstitution.siren
+      authStore.token,
+      institutionStore.currentInstitution.siren
     );
   }
-  return ipService.getListIP(authStore.getToken, authStore.user.siren);
+  return ipService.getListIP(authStore.token, authStore.user.siren);
 }
 
 function fetchAccessList(): void {
@@ -482,7 +481,7 @@ function fetchwhoIs(item: any): void {
 
   if (item.typeAcces === "ip") {
     ipService
-      .getWhoIs(authStore.getToken, item.ip)
+      .getWhoIs(authStore.token, item.ip)
       .then(res => {
         whoIs.value = res.data;
       })
@@ -492,7 +491,7 @@ function fetchwhoIs(item: any): void {
   } else {
     const ips = splitRangeIntoIPs(item.typeIp, item.ip);
     ipService
-      .getWhoIs(authStore.getToken, ips[0])
+      .getWhoIs(authStore.token, ips[0])
       .then(res => {
         whoIs.value = res.data;
       })
@@ -500,7 +499,7 @@ function fetchwhoIs(item: any): void {
         Logger.error(t("ip.list.whoisError"));
       });
     ipService
-      .getWhoIs(authStore.getToken, ips[1])
+      .getWhoIs(authStore.token, ips[1])
       .then(res => {
         whoIs2.value = res.data;
       })
@@ -570,8 +569,8 @@ function dispatchAllAction(): void {
 function updateIP(): Promise<AxiosResponse> {
   buttonLoading.value = true;
   return ipService.updateIP(
-    authStore.getToken,
-    institutionStore.getCurrentInstitution.siren,
+    authStore.token,
+    institutionStore.currentInstitution.siren,
     bufferActions.value
   );
 }
@@ -604,7 +603,7 @@ async function supprimerIP(IDip: string, ip: string) {
     clearAlerts();
 
     ipService
-      .deleteIP(authStore.getToken, IDip)
+      .deleteIP(authStore.token, IDip)
       .then(() => {
         notification.value = t("ip.list.deleteSuccess");
       })
@@ -646,7 +645,7 @@ function clearAlerts() {
 
 function getSubjectInstitutionSiren() {
   if (isAdmin.value && props.adminInstitutionSiren) {
-    return institutionStore.getCurrentInstitution.siren;
+    return institutionStore.currentInstitution.siren;
   }
   return authStore.user.siren;
 }
@@ -688,7 +687,3 @@ function goBackToInstitution(): void {
 </script>
 
 <style src="./style.css"></style>
-
-
-
-

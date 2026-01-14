@@ -1,6 +1,5 @@
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import Institution from "@/entity/Institution";
-import InstitutionContact from "@/entity/InstitutionContact";
 import { defineStore } from "pinia";
 import { useAuthStore } from "./useAuthStore";
 
@@ -12,17 +11,7 @@ export const useInstitutionStore = defineStore("institution", {
   }),
 
   getters: {
-    getCurrentInstitution(state) {
-      const et = new Institution();
-      Object.assign(et, state.currentInstitution);
-      et.createdAt = new Date(et.createdAt);
-
-      const contact = new InstitutionContact();
-      Object.assign(contact, et.contact);
-      et.contact = contact;
-
-      return et;
-    }
+    currentInstitution: (state) => state.currentInstitution
   },
 
   actions: {
@@ -31,16 +20,14 @@ export const useInstitutionStore = defineStore("institution", {
 
       if (value.id === -999) {
         this.currentInstitution = value;
-        return true;
+      } else {
+        this.currentInstitution = await institutionService.getInstitution(
+          value.siren,
+          auth.user.token
+        );
       }
 
-      try {
-        const et = await institutionService.getInstitution(value.siren, auth.user.token);
-        this.currentInstitution = et;
-        return true;
-      } catch (err) {
-        throw err;
-      }
+      return true;
     },
 
     updateCurrentInstitution(value: Institution) {
@@ -49,17 +36,13 @@ export const useInstitutionStore = defineStore("institution", {
 
     async setConnectedInstitution(value: Institution): Promise<boolean> {
       const auth = useAuthStore();
-
-      try {
-        const et = await institutionService.getInstitution(value.siren, auth.user.token);
-        this.currentInstitution = et;
-        return true;
-      } catch (err) {
-        throw err;
-      }
+      this.currentInstitution = await institutionService.getInstitution(
+        value.siren,
+        auth.user.token
+      );
+      return true;
     }
   },
 
   persist: true
 });
-

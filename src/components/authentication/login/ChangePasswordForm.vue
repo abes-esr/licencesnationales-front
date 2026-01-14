@@ -63,7 +63,7 @@ const submit = async () => {
     await authService.changePassword(
       oldPassword.value,
       newPassword.value,
-      authStore.getToken
+      authStore.token
     );
 
     snackbar.success(t("auth.changePassword.success"), {

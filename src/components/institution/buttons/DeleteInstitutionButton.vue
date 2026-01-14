@@ -7,12 +7,11 @@
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
+import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useLoading } from "@/composables/useLoading";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Institution from "@/entity/Institution";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 
@@ -35,7 +34,7 @@ const deleteInstitution = async () => {
   );
   if (confirmed) {
     institutionService
-      .deleteInstitution(props.institution.siren, authStore.getToken)
+      .deleteInstitution(props.institution.siren, authStore.token)
       .then(() => {
         snackbar.success(t("institution.card.deleteSuccess"), {
           onHide: () => {
@@ -55,7 +54,3 @@ const deleteInstitution = async () => {
   }
 };
 </script>
-
-
-
-

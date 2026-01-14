@@ -93,7 +93,7 @@ async function send(payload: any): Promise<void> {
 
   if (isValid) {
     institutionService
-      .splitInstitution(authStore.getToken, {
+      .splitInstitution(authStore.token, {
         sirenScinde: institutionSiren.value.trim(),
         nouveauxEtabs: institutionPayloads.value,
       })

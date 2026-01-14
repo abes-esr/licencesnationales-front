@@ -38,7 +38,7 @@ const validate = async () => {
   if (confirmed) {
     props.institution.status = props.validatedStatus;
     institutionService
-      .validateInstitution(props.institution.siren, authStore.getToken)
+      .validateInstitution(props.institution.siren, authStore.token)
       .then(response => {
         institutionStore.updateCurrentInstitution(props.institution);
         snackbar.success(response.data.message);
@@ -54,4 +54,3 @@ const validate = async () => {
   }
 };
 </script>
-

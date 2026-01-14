@@ -231,7 +231,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.meta.requiresAuth) {
     try {
-      const isValid = await authService.verifyToken(auth.getToken);
+      const isValid = await authService.verifyToken(auth.token);
 
       if (!isValid) {
         snackbar.error("Votre session a expiré", { sticky: true });

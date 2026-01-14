@@ -1,6 +1,6 @@
-import { defineStore } from "pinia";
-import Publisher from "@/entity/Publisher";
 import { usePublisherService } from "@/composables/service/usePublisherService";
+import Publisher from "@/entity/Publisher";
+import { defineStore } from "pinia";
 import { useAuthStore } from "./useAuthStore";
 
 const publisherService = usePublisherService();
@@ -11,11 +11,7 @@ export const usePublisherStore = defineStore("publisher", {
   }),
 
   getters: {
-    getCurrentPublisher(state) {
-      const e = new Publisher();
-      Object.assign(e, state.currentPublisher);
-      return e;
-    }
+    currentPublisher: (state) => state.currentPublisher
   },
 
   actions: {
@@ -24,20 +20,13 @@ export const usePublisherStore = defineStore("publisher", {
 
       if (value.id === -999) {
         this.currentPublisher = value;
-        return true;
+      } else {
+        this.currentPublisher = await publisherService.getPublisher(value.id, auth.user.token);
       }
 
-      try {
-        const ed = await publisherService.getPublisher(value.id, auth.user.token);
-        this.currentPublisher = ed;
-        return true;
-      } catch (err) {
-        throw err;
-      }
+      return true;
     }
   },
 
   persist: true
 });
-
-

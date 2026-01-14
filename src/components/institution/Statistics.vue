@@ -13,11 +13,12 @@
       <v-form ref="formRef" class="mt-4">
         <v-row>
           <v-col cols="12" sm="4" md="3" lg="2">
-            <v-menu v-model="isStartDateMenuOpen" :close-on-content-click="false" transition="scale-transition" offset-y>
+            <v-menu v-model="isStartDateMenuOpen" :close-on-content-click="false" transition="scale-transition"
+              offset-y>
               <template #activator="{ props }">
                 <v-text-field v-bind="props" ref="startDateRef" v-model="formattedStartDate"
-                  :label="$t('institution.stats.startDate')" prepend-icon="mdi-calendar"
-                  :rules="dateRules" readonly variant="outlined" />
+                  :label="$t('institution.stats.startDate')" prepend-icon="mdi-calendar" :rules="dateRules" readonly
+                  variant="outlined" />
               </template>
               <v-date-picker v-model="startDate" :show-current="false" color="primary"
                 @update:model-value="isStartDateMenuOpen = false">
@@ -34,8 +35,8 @@
             <v-menu v-model="isEndDateMenuOpen" :close-on-content-click="false" transition="scale-transition" offset-y>
               <template #activator="{ props }">
                 <v-text-field v-bind="props" ref="endDateRef" v-model="formattedEndDate"
-                  :label="$t('institution.stats.endDate')" prepend-icon="mdi-calendar"
-                  :rules="dateRules" readonly variant="outlined" />
+                  :label="$t('institution.stats.endDate')" prepend-icon="mdi-calendar" :rules="dateRules" readonly
+                  variant="outlined" />
               </template>
               <v-date-picker v-model="endDate" :show-current="false" color="primary"
                 @update:model-value="isEndDateMenuOpen = false">
@@ -89,10 +90,9 @@
 <script setup lang="ts">
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useIpService } from "@/composables/service/useIpService";
+import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
-import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import moment from "moment";
 import { computed, ref } from "vue";
 import { VDatePicker } from "vuetify/components";
@@ -140,14 +140,14 @@ async function getStats() {
     const institutionsResponse = await institutionService.getStats(
       formattedStartDate.value,
       formattedEndDate.value,
-      authStore.getToken
+      authStore.token
     );
     institutionStats.value = institutionsResponse.data.stats;
 
     const ipResponse = await ipService.getStats(
       formattedStartDate.value,
       formattedEndDate.value,
-      authStore.getToken
+      authStore.token
     );
     ipStats.value = ipResponse.data.stats;
   } catch (err: any) {
@@ -155,6 +155,3 @@ async function getStats() {
   }
 }
 </script>
-
-
-

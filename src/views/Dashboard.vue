@@ -157,12 +157,12 @@
                 <FontAwesomeIcon :icon="faPaperPlane" class="fa-lg mx-2" />
                 {{ $t("dashboard.publishers.title") }}
               </v-card-title>
-              <v-card-text class="no-border">
+              <v-card-text class="no-border dates">
                 <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
                   <div v-if="datesLoading">
                     <v-progress-circular indeterminate color="primary"></v-progress-circular>
                   </div>
-                  <ul>
+                  <ul class="datesList">
                     <li style="margin-bottom: 0.5em" v-for="item in sendDates" :key="item">
                       <span v-html="item"></span>
                     </li>
@@ -220,7 +220,7 @@ const publisherService = usePublisherService();
 const institutionService = useInstitutionService();
 const { t } = useI18n();
 
-const institution = ref<Institution>(institutionStore.getCurrentInstitution);
+const institution = ref<Institution>(institutionStore.currentInstitution);
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
 const isAdmin = computed(() => authStore.isAdmin);
 const isExportLoading = ref(false);
@@ -292,7 +292,7 @@ const goToInstitutionPage = (siren: string): void => {
 const collectSendDates = (): void => {
   if (authStore.isAdmin) {
     publisherService
-      .getPublisherSendDates(authStore.getToken)
+      .getPublisherSendDates(authStore.token)
       .then(result => {
         result.data.forEach(element => {
           sendDates.value.push(
@@ -312,7 +312,7 @@ const collectSendDates = (): void => {
 const collectNotifications = (): void => {
   if (authStore.isAdmin) {
     institutionService
-      .getAdminNotifications(authStore.getToken)
+      .getAdminNotifications(authStore.token)
       .then(response => {
         notificationsAdmin.value = response;
       })
@@ -324,7 +324,7 @@ const collectNotifications = (): void => {
       });
   } else {
     institutionService
-      .getInstitutionNotifications(authStore.userSiren, authStore.getToken)
+      .getInstitutionNotifications(authStore.userSiren, authStore.token)
       .then(response => {
         notificationsUser.value = response;
       })
@@ -353,7 +353,7 @@ const sendPublishers = async () => {
   if (confirmed) {
     isSending.value = true;
     publisherService
-      .sendPublishers(authStore.getToken)
+      .sendPublishers(authStore.token)
       .then(response => {
         snackbar.success(response.data.message);
       })
@@ -430,6 +430,15 @@ ul li::before {
   overflow: auto;
 }
 
+.dates {
+  max-height: 500px;
+}
+
+.datesList {
+  max-height: 400px;
+  overflow: auto;
+}
+
 .large-container {
   max-width: 150% !important;
 }
@@ -446,4 +455,3 @@ p {
   font-size: 1rem !important;
 }
 </style>
-

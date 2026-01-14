@@ -79,13 +79,12 @@
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { usePublisherService } from "@/composables/service/usePublisherService";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { usePublisherStore } from "@/composables/store/usePublisherStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Publisher from "@/entity/Publisher";
 import { LicencesNationalesUnauthorizedApiError } from "@/exception/licencesnationales/LicencesNationalesUnauthorizedApiError";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
-import { usePublisherStore } from "@/composables/store/usePublisherStore";
 import { formatApiError } from "@/utils/formatApiError";
 import {
   faCirclePlus,
@@ -142,7 +141,7 @@ onMounted(() => {
 
 async function fetchPublishers() {
   try {
-    publishers.value = await publisherService.getPublishers(authStore.getToken);
+    publishers.value = await publisherService.getPublishers(authStore.token);
   } catch (err: any) {
     if (err instanceof LicencesNationalesUnauthorizedApiError) {
       disableForm.value = true;
@@ -211,7 +210,7 @@ async function deletePublisher(item: Publisher) {
   }
 
   try {
-    await publisherService.deletePublisher(item.id, authStore.getToken);
+    await publisherService.deletePublisher(item.id, authStore.token);
     snackbar.success(t("publisher.list.deleteSuccess", { name: item.name }));
     fetchPublishers();
   } catch (err: any) {
@@ -232,7 +231,3 @@ async function deletePublisher(item: Publisher) {
   background-color: transparent !important;
 }
 </style>
-
-
-
-

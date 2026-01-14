@@ -7,9 +7,9 @@
 
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
+import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
-import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useLoading } from "@/composables/useLoading";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Institution from "@/entity/Institution";
@@ -38,7 +38,7 @@ const invalidate = async () => {
   if (confirmed) {
     props.institution.status = "Nouveau";
     institutionService
-      .invalidateInstitution(props.institution.siren, authStore.getToken)
+      .invalidateInstitution(props.institution.siren, authStore.token)
       .then(response => {
         institutionStore.updateCurrentInstitution(props.institution);
         snackbar.success(response.data.message);
@@ -54,5 +54,3 @@ const invalidate = async () => {
   }
 };
 </script>
-
-

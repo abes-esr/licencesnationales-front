@@ -165,7 +165,7 @@ const search = async () => {
   results.value = [];
 
   try {
-    const res = await service.search(criteriaList, authStore.getToken);
+    const res = await service.search(criteriaList, authStore.token);
     showResults.value = true;
     results.value = res.data;
   } catch (err: any) {

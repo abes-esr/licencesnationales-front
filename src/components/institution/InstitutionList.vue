@@ -146,7 +146,7 @@ const statusOptions = computed(() => [
   { value: "Tous", title: t("institution.list.status.all") },
   { value: "Sans IP", title: t("institution.list.status.noIp") },
   { value: "Examiner IP", title: t("institution.list.status.reviewIp") },
-  { value: "Attestation � envoyer", title: t("institution.list.status.attestation") },
+  { value: "Attestation à envoyer", title: t("institution.list.status.attestation") },
   { value: "IP Ok", title: t("institution.list.status.ipOk") },
 ]);
 const searchQuery = ref("");
@@ -212,7 +212,7 @@ const filteredInstitutionsByStatus = computed((): Array<Institution> => {
   institutions.value.forEach(element => {
     element.createdAtFormatted = moment(element.createdAt).format("YYYY-MM-DD");
     if (element.lastIpUpdateDate) {
-      element.lastIpUpdateDate = element.lastIpUpdateDate.replace(/-/g, "/");
+      element.lastIpUpdateDate = element.lastIpUpdateDate.replaceAll("-", "/");
     }
   });
   overrideStatuts();
@@ -240,12 +240,19 @@ async function fetchInstitutionTypes() {
   await institutionService
     .listInstitutionTypes()
     .then(result => {
-      institutionTypes.value = [...result, "Tous"].sort((n1, n2) =>
-        n1 > n2 ? 1 : n1 < n2 ? -1 : 0
+      institutionTypes.value = [...result, "Tous"].sort((n1, n2) => {
+        if (n1 > n2) {
+          return 1;
+        }
+        if (n1 < n2) {
+          return -1;
+        }
+        return 0;
+      }
       );
       institutionTypes.value.unshift(
         institutionTypes.value.splice(
-          institutionTypes.value.findIndex(item => item === "Tous"),
+          institutionTypes.value.indexOf("Tous"),
           1
         )[0]
       );
@@ -278,7 +285,7 @@ function goToInstitutionSplit(): void {
 
 function fetchInstitutions(): void {
   institutionService
-    .getInstitutions(authStore.getToken)
+    .getInstitutions(authStore.token)
     .then(response => {
       institutions.value = response;
     })

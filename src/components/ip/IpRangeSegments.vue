@@ -40,9 +40,8 @@
                     <label>{{ $t("ip.segments.startIp") }}</label>
                     <v-row>
                       <v-col class="pa-1 pb-0" v-for="(value, index) in ipv4SegmentsPlageDebut" :key="index">
-                        <v-text-field :data-length="value.length" :data-index="index"
-                          :rules="ipv4SegmentRules" ref="ipv4SegmentsPlageDebutRefs" v-model="value.value"
-                          :suffix="getSuffix(index)"
+                        <v-text-field :data-length="value.length" :data-index="index" :rules="ipv4SegmentRules"
+                          ref="ipv4SegmentsPlageDebutRefs" v-model="value.value" :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv4SegmentsPlageDebut, 'ipv4SegmentsPlageDebutRefs')"
                           @paste="onPastePlageDebut" @paste.prevent @focus="$emit('focus')" maxlength="3"
                           variant="outlined" density="compact" required />
@@ -51,9 +50,8 @@
                     <label>{{ $t("ip.segments.endIp") }}</label>
                     <v-row>
                       <v-col class="pa-1" v-for="(value, index) in ipv4SegmentsPlageFin" :key="index">
-                        <v-text-field :data-length="value.length" :data-index="index"
-                          :rules="ipv4SegmentRules" ref="ipv4SegmentsPlageFinRefs" v-model="value.value"
-                          :suffix="getSuffix(index)"
+                        <v-text-field :data-length="value.length" :data-index="index" :rules="ipv4SegmentRules"
+                          ref="ipv4SegmentsPlageFinRefs" v-model="value.value" :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv4SegmentsPlageFin, 'ipv4SegmentsPlageFinRefs')"
                           @paste="onPastePlageFin" @paste.prevent @focus="$emit('focus')" :disabled="index <= 1"
                           maxlength="3" variant="outlined" density="compact" required />
@@ -65,9 +63,8 @@
                     <label>{{ $t("ip.segments.startIp") }}</label>
                     <v-row>
                       <v-col v-for="(value, index) in ipv6SegmentsPlageDebut" :key="index" class="pa-1 pb-0">
-                        <v-text-field :data-length="value.length" :data-index="index"
-                          :rules="ipv6SegmentRules" ref="ipv6SegmentsPlageDebutRefs" v-model="value.value"
-                          :suffix="getSuffix(index)"
+                        <v-text-field :data-length="value.length" :data-index="index" :rules="ipv6SegmentRules"
+                          ref="ipv6SegmentsPlageDebutRefs" v-model="value.value" :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv6SegmentsPlageDebut, 'ipv6SegmentsPlageDebutRefs')"
                           @paste="onPastePlageDebut" @paste.prevent @focus="$emit('focus')" variant="outlined"
                           density="compact" required />
@@ -76,9 +73,8 @@
                     <label>{{ $t("ip.segments.endIp") }}</label>
                     <v-row>
                       <v-col class="pa-1" v-for="(value, index) in ipv6SegmentsPlageFin" :key="index">
-                        <v-text-field :data-length="value.length" :data-index="index"
-                          :rules="ipv6SegmentRules" ref="ipv6SegmentsPlageFinRefs" v-model="value.value"
-                          :suffix="getSuffix(index)"
+                        <v-text-field :data-length="value.length" :data-index="index" :rules="ipv6SegmentRules"
+                          ref="ipv6SegmentsPlageFinRefs" v-model="value.value" :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv6SegmentsPlageFin, 'ipv6SegmentsPlageFinRefs')"
                           @paste="onPastePlageFin" @paste.prevent @focus="$emit('focus')" variant="outlined"
                           density="compact" required />
@@ -126,10 +122,9 @@
 
 <script setup lang="ts">
 import { useIpService } from "@/composables/service/useIpService";
-import { useValidationRules } from "@/composables/useValidationRules";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { useValidationRules } from "@/composables/useValidationRules";
 import { Logger } from "@/utils/Logger";
 import { faBackspace } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -297,13 +292,13 @@ const ajouterIp = async () => {
 
     let siren = "";
     if (isAdmin.value) {
-      siren = institutionStore.getCurrentInstitution.siren;
+      siren = institutionStore.currentInstitution.siren;
     } else {
       siren = authStore.userSiren;
     }
 
     iPService
-      .addIP(authStore.getToken, siren, {
+      .addIP(authStore.token, siren, {
         typeIp: typeIp.value,
         ip: ip.value,
         commentaires: commentaires.value,
@@ -453,6 +448,3 @@ button {
   background: #b0b4c4 !important;
 }
 </style>
-
-
-

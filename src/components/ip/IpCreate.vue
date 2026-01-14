@@ -25,11 +25,8 @@
             <v-col cols="12" md="4" class="pa-3">
               <v-card-text class="fondGris">
                 <FontAwesomeIcon :icon="faCircleInfo" size="2x" style="color: #478dcb;" />
-                <a
-                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#TutoDeDeclarationDesIP"
-                  target="_blank"
-                  class="pl-3 pb-6 text-body-1 font-weight-bold"
-                >
+                <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#TutoDeDeclarationDesIP"
+                  target="_blank" class="pl-3 pb-6 text-body-1 font-weight-bold">
                   {{ $t("ip.create.helpLink") }}
                 </a>
               </v-card-text>
@@ -39,14 +36,10 @@
             <v-col cols="8" class="pb-0">
               <v-divider />
               <div id="radioIP">
-                <v-radio-group
-                  v-model="typeIp"
-                  inline
-                  @change="
-                    clearChild(true);
-                    clearChild(false);
-                  "
-                >
+                <v-radio-group v-model="typeIp" inline @change="
+                  clearChild(true);
+                clearChild(false);
+                ">
                   <v-radio v-for="n in 2" :key="n" :label="typesIp[n - 1]" :value="typesIp[n - 1]" />
                 </v-radio-group>
               </div>
@@ -54,25 +47,11 @@
           </v-row>
           <v-row class="mt-0">
             <v-col cols="8">
-              <IpRangeSegments
-                :typeIp="typeIp"
-                typeAcces="ip"
-                ref="ip"
-                @FormModuleSegmentsIpPlageEvent="validate"
-                @alertSuccess="alertSuccess"
-                @alertError="alertError"
-                @focus="clearChild(false)"
-              />
+              <IpRangeSegments :typeIp="typeIp" typeAcces="ip" ref="ip" @FormModuleSegmentsIpPlageEvent="validate"
+                @alertSuccess="alertSuccess" @alertError="alertError" @focus="clearChild(false)" />
               <br />
-              <IpRangeSegments
-                :typeIp="typeIp"
-                typeAcces="plage"
-                ref="plage"
-                @FormModuleSegmentsIpPlageEvent="validate"
-                @alertSuccess="alertSuccess"
-                @alertError="alertError"
-                @focus="clearChild(true)"
-              />
+              <IpRangeSegments :typeIp="typeIp" typeAcces="plage" ref="plage" @FormModuleSegmentsIpPlageEvent="validate"
+                @alertSuccess="alertSuccess" @alertError="alertError" @focus="clearChild(true)" />
             </v-col>
             <v-col cols="4">
               <v-card-text class="overflow-auto fondGris">
@@ -90,13 +69,8 @@
                       <td>{{ item.typeIp }}</td>
                       <td>{{ item.ip }}</td>
                       <td>
-                        <v-btn
-                          class="ma-0 pa-0 bouton-simple"
-                          variant="text"
-                          icon
-                          :title="$t('ip.create.delete')"
-                          @click="supprimerIP(item.id, index)"
-                        >
+                        <v-btn class="ma-0 pa-0 bouton-simple" variant="text" icon :title="$t('ip.create.delete')"
+                          @click="supprimerIP(item.id, index)">
                           <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
                         </v-btn>
                       </td>
@@ -117,10 +91,9 @@
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import IpRangeSegments from "@/components/ip/IpRangeSegments.vue";
 import { useIpService } from "@/composables/service/useIpService";
+import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { faCircleInfo, faReply, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
@@ -166,7 +139,7 @@ const supprimerIP = async (idIP: string, index: number) => {
   const confirmed = await confirm.value?.open(t("ip.create.deleteConfirm"));
   if (confirmed) {
     iPService
-      .deleteIP(authStore.getToken, idIP)
+      .deleteIP(authStore.token, idIP)
       .then(response => {
         snackbar.success(response.data.message);
         arrayAjouterIp.value.splice(index, 1);
@@ -217,6 +190,3 @@ h1 {
   height: 80%;
 }
 </style>
-
-
-

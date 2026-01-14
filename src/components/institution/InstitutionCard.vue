@@ -56,7 +56,7 @@ const institutionService = useInstitutionService();
 const { t } = useI18n();
 
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
-const institution = ref<Institution>(institutionStore.getCurrentInstitution);
+const institution = ref<Institution>(institutionStore.currentInstitution);
 const institutionTypes = ref<Array<string>>([]);
 const editState = reactive({ disabled: true });
 const { isAdmin } = storeToRefs(authStore);
@@ -85,4 +85,3 @@ async function fetchInstitutionTypes() {
 
 
 </script>
-

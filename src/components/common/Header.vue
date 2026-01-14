@@ -84,10 +84,9 @@
 </template>
 
 <script setup lang="ts">
-import { RouteName } from "@/router";
 import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useUiStore } from "@/composables/store/useUiStore";
+import { RouteName } from "@/router";
 import {
   faCircleQuestion,
   faComments,
@@ -102,7 +101,6 @@ import { useDisplay } from "vuetify";
 const authStore = useAuthStore();
 const uiStore = useUiStore();
 const { smAndDown } = useDisplay();
-
 const { isLoggedIn, isAdmin, userInstitutionName: username } = storeToRefs(authStore);
 const { isDark } = storeToRefs(uiStore);
 </script>
@@ -112,5 +110,3 @@ const { isDark } = storeToRefs(uiStore);
   max-width: 420px;
 }
 </style>
-
-

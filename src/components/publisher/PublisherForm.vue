@@ -119,7 +119,7 @@ const institutionService = useInstitutionService();
 const { t } = useI18n();
 const { addressRules, lastNameRules } = useValidationRules();
 
-const publisher = ref<Publisher>(publisherStore.getCurrentPublisher);
+const publisher = ref<Publisher>(publisherStore.currentPublisher);
 const institutionTypes = ref<Array<string>>([]);
 const buttonLoading = ref(false);
 const isFormDisabled = ref(false);
@@ -219,7 +219,7 @@ function removeContact(item: PublisherContact): void {
 async function send(): Promise<void> {
   try {
     if (props.action === RouteAction.CREATION) {
-      await publisherService.createPublisher(publisher.value, authStore.getToken);
+      await publisherService.createPublisher(publisher.value, authStore.token);
       snackbar.success(t("publisher.form.createSuccess"), {
         onHide: () => {
           router.push({ name: RouteName.Publishers });
@@ -227,7 +227,7 @@ async function send(): Promise<void> {
         timeout: 2000,
       });
     } else if (props.action === RouteAction.MODIFICATION) {
-      await publisherService.updatePublisher(publisher.value, authStore.getToken);
+      await publisherService.updatePublisher(publisher.value, authStore.token);
       snackbar.success(t("publisher.form.updateSuccess"), {
         onHide: () => {
           router.push({ name: RouteName.Publishers });
@@ -246,7 +246,7 @@ function clear() {
   buttonLoading.value = false;
   contactRefs.value.forEach(refItem => refItem?.clear?.());
   publisherFormRef.value?.resetValidation?.();
-  publisher.value = publisherStore.getCurrentPublisher;
+  publisher.value = publisherStore.currentPublisher;
   window.scrollTo(0, 0);
 }
 </script>

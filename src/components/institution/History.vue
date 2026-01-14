@@ -88,10 +88,9 @@
 <script setup lang="ts">
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useIpService } from "@/composables/service/useIpService";
+import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Institution from "@/entity/Institution";
-import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { onMounted, ref } from "vue";
 
 const authStore = useAuthStore();
@@ -112,7 +111,7 @@ onMounted(() => {
 
 const loadInstitutions = async () => {
   try {
-    institutions.value = await institutionService.getInstitutions(authStore.getToken);
+    institutions.value = await institutionService.getInstitutions(authStore.token);
   } catch (err: any) {
     snackbar.error(err);
   }
@@ -127,8 +126,8 @@ const loadHistory = async (siren: string) => {
 
   try {
     const [institutionResponse, ipResponse] = await Promise.all([
-      institutionService.getHistory(siren, authStore.getToken),
-      ipService.getHistory(siren, authStore.getToken)
+      institutionService.getHistory(siren, authStore.token),
+      ipService.getHistory(siren, authStore.token)
     ]);
     institutionHistory.value = institutionResponse.data;
     ipHistory.value = ipResponse.data;
@@ -137,7 +136,3 @@ const loadHistory = async (siren: string) => {
   }
 };
 </script>
-
-
-
-

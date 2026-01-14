@@ -27,7 +27,7 @@ const { loading: isSaving, startLoading, stopLoading } = useLoading();
 const save = () => {
   startLoading();
   institutionService
-    .updateInstitution(props.institution, authStore.getToken, authStore.isAdmin)
+    .updateInstitution(props.institution, authStore.token, authStore.isAdmin)
     .then(() => {
       institutionStore.updateCurrentInstitution(props.institution);
     })
@@ -40,4 +40,3 @@ const save = () => {
     });
 };
 </script>
-

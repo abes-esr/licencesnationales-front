@@ -26,48 +26,27 @@ export const useAuthStore = defineStore("auth", {
     isAdmin: (state) => state.user.isAdmin,
     userSiren: (state) => state.user.siren,
     userInstitutionName: (state) => state.user.institutionName,
-    getToken: (state) => state.user.token,
-
-    getConnectedInstitution: (state) => {
-      const et = new Institution();
-      Object.assign(et, state.connectedInstitution);
-      et.createdAt = new Date(et.createdAt);
-      return et;
-    },
-
+    token: (state) => state.user.token,
+    connectedInstitution: (state) => state.connectedInstitution,
     adminInstitutionSirenValue: (state) => state.adminInstitutionSiren
   },
 
   actions: {
     async login(data: { login: string; password: string }): Promise<boolean> {
-      try {
-        const result = await authService.login(data.login, data.password);
-
-        this.user = result;
-
-        const institution = await institutionService.getInstitution(
-          this.user.siren,
-          this.user.token
-        );
-
-        this.connectedInstitution = institution;
-
-        router.push({ name: RouteName.Home });
-
-        return true;
-      } catch (err) {
-        throw err;
-      }
+      this.user = await authService.login(data.login, data.password);
+      this.connectedInstitution = await institutionService.getInstitution(
+        this.user.siren,
+        this.user.token
+      );
+      router.push({ name: RouteName.Home });
+      return true;
     },
 
     logout() {
-      this.user.token = "";
-      this.user.siren = "";
-      this.user.institutionName = "";
-      this.user.isLoggedIn = false;
-      this.user.isAdmin = false;
-
+      this.user = new User();
+      this.connectedInstitution = new Institution();
       router.push({ name: RouteName.Login });
+      return true;
     },
 
     setAdminInstitutionSiren(value: string) {
@@ -77,5 +56,3 @@ export const useAuthStore = defineStore("auth", {
 
   persist: true
 });
-
-

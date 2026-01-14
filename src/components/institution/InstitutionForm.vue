@@ -185,19 +185,19 @@ const action = computed<RouteAction>(() =>
 
 const institution = ref<Institution>(new Institution());
 
-institution.value = institutionStore.getCurrentInstitution;
+institution.value = institutionStore.currentInstitution;
 watch(
   () => institutionStore.currentInstitution,
   () => {
-    institution.value = institutionStore.getCurrentInstitution;
+    institution.value = institutionStore.currentInstitution;
   },
   { immediate: true }
 );
 
 watch(
-  () => authStore.getConnectedInstitution,
+  () => authStore.connectedInstitution,
   () => {
-    institutionStore.setCurrentInstitution(authStore.getConnectedInstitution);
+    institutionStore.setCurrentInstitution(authStore.connectedInstitution);
   },
   { immediate: true }
 );
@@ -310,11 +310,11 @@ const send = async () => {
       });
   } else if (action.value == RouteAction.MODIFICATION) {
     institutionService
-      .updateInstitution(institution.value, authStore.getToken, authStore.isAdmin)
+      .updateInstitution(institution.value, authStore.token, authStore.isAdmin)
       .then(() => {
         snackbar.success(t("institution.form.updateSuccess"));
 
-        if (institution.value.siren === authStore.getConnectedInstitution.siren) {
+        if (institution.value.siren === authStore.connectedInstitution.siren) {
           institutionStore.setConnectedInstitution(institution.value);
         }
       })
@@ -326,7 +326,7 @@ const send = async () => {
       });
   } else if (action.value === RouteAction.FUSION) {
     institutionService
-      .mergeInstitutions(authStore.getToken, {
+      .mergeInstitutions(authStore.token, {
         nouveauEtab: institution.value,
         sirenFusionnes: props.listeSirenFusion,
       })
