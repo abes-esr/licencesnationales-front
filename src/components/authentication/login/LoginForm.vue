@@ -8,14 +8,14 @@
         <v-row>
           <v-col cols="12" class="pa-2">
             <v-text-field v-model="sirenValue" :label="$t('auth.login.sirenLabel')"
-              :placeholder="$t('auth.login.sirenPlaceholder')" :rules="sirenRules" variant="outlined"
-              maxLength="9" autocomplete="username" required @keyup.enter="validate"></v-text-field>
+              :placeholder="$t('auth.login.sirenPlaceholder')" :rules="sirenRules" variant="outlined" maxLength="9"
+              autocomplete="username" required @keyup.enter="validate"></v-text-field>
           </v-col>
           <v-col cols="12" class="pa-2">
             <v-text-field v-model="passwordValue" :append-inner-icon="isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
               :type="isPasswordVisible ? 'text' : 'password'" :label="$t('auth.login.passwordLabel')"
-              :placeholder="$t('auth.login.passwordPlaceholder')" :rules="passwordRules" variant="outlined"
-              required @click:append-inner="togglePasswordVisibility" @keyup.enter="validate"
+              :placeholder="$t('auth.login.passwordPlaceholder')" :rules="passwordRules" variant="outlined" required
+              @click:append-inner="togglePasswordVisibility" @keyup.enter="validate"
               autocomplete="current-password"></v-text-field>
           </v-col>
           <v-col cols="12" class="pa-2 d-flex justify-end">
@@ -36,13 +36,12 @@
 </template>
 
 <script setup lang="ts">
-import { useLoading } from "@/utils/useLoading";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useLoading } from "@/composables/useLoading";
 import { useSnackbar } from "@/composables/useSnackbar";
-import { useToggle } from "@/utils/useToggle";
+import { useToggle } from "@/composables/useToggle";
 import { useValidationRules } from "@/composables/useValidationRules";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { ref } from "vue";
 import type { VForm } from "vuetify/components";
 
@@ -93,5 +92,3 @@ h1 {
   width: 100%;
 }
 </style>
-
-

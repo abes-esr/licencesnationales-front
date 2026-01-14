@@ -33,10 +33,10 @@ const { loading: isLoading, startLoading, stopLoading } = useLoading();
 const validate = async () => {
   startLoading();
   const confirmed = await props.confirmRef?.open(
-    t("institution.card.confirmValidate", { name: props.institution.nom })
+    t("institution.card.confirmValidate", { name: props.institution.name })
   );
   if (confirmed) {
-    props.institution.statut = props.validatedStatus;
+    props.institution.status = props.validatedStatus;
     institutionService
       .validateInstitution(props.institution.siren, authStore.getToken)
       .then(response => {

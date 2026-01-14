@@ -1,8 +1,8 @@
 <template>
   <v-container class="elevation-0">
     <v-form ref="publisherFormRef" validate-on="lazy" class="elevation-0" :disabled="isFormDisabled">
-      <h1 v-if="action === Action.CREATION">{{ $t("publisher.form.createTitle") }}</h1>
-      <h1 v-else-if="action === Action.MODIFICATION">{{ $t("publisher.form.editTitle") }}</h1>
+      <h1 v-if="action === RouteAction.CREATION">{{ $t("publisher.form.createTitle") }}</h1>
+      <h1 v-else-if="action === RouteAction.MODIFICATION">{{ $t("publisher.form.editTitle") }}</h1>
       <v-card class="elevation-0">
         <div class="mx-9">
           <v-row>
@@ -13,22 +13,22 @@
             <v-row>
               <v-col cols="12" md="6" lg="6" xl="6">
                 <v-text-field variant="outlined" :label="$t('publisher.form.nameLabel')"
-                  :placeholder="$t('publisher.form.namePlaceholder')" v-model="publisher.nom" :rules="lastNameRules"
+                  :placeholder="$t('publisher.form.namePlaceholder')" v-model="publisher.name" :rules="lastNameRules"
                   required @keyup.enter="validate" />
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
                 <v-text-field variant="outlined" :label="$t('publisher.form.identifierLabel')"
-                  :placeholder="$t('publisher.form.identifierPlaceholder')" v-model="publisher.identifiantBis" />
+                  :placeholder="$t('publisher.form.identifierPlaceholder')" v-model="publisher.secondaryId" />
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-select v-model="publisher.groupesEtabRelies" :items="institutionTypes"
+                <v-select v-model="publisher.relatedInstitutionTypes" :items="institutionTypes"
                   :label="$t('publisher.form.relatedInstitutionsLabel')"
                   :placeholder="$t('publisher.form.relatedInstitutionsPlaceholder')" persistent-placeholder multiple
                   variant="outlined">
                   <template #prepend-item>
                     <v-list-item @click="toggleAllInstitutionTypes">
                       <template #prepend>
-                        <v-icon :color="publisher.groupesEtabRelies.length > 0 ? 'indigo darken-4' : ''">
+                        <v-icon :color="publisher.relatedInstitutionTypes.length > 0 ? 'indigo darken-4' : ''">
                           {{ institutionTypeIcon }}
                         </v-icon>
                       </template>
@@ -40,7 +40,7 @@
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
                 <v-text-field variant="outlined" :label="$t('publisher.form.addressLabel')"
-                  :placeholder="$t('publisher.form.addressPlaceholder')" v-model="publisher.adresse"
+                  :placeholder="$t('publisher.form.addressPlaceholder')" v-model="publisher.address"
                   :rules="addressRules" required @keyup.enter="validate" />
               </v-col>
             </v-row>
@@ -97,10 +97,9 @@ import { useAuthStore } from "@/composables/store/useAuthStore";
 import { usePublisherStore } from "@/composables/store/usePublisherStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
-import { Action } from "@/entity/CommonDefinition";
 import Publisher from "@/entity/Publisher";
 import PublisherContact, { ContactType } from "@/entity/PublisherContact";
-import { RouteName } from "@/router";
+import { RouteAction, RouteName } from "@/router";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed, onMounted, ref } from "vue";
@@ -108,7 +107,7 @@ import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 
 const props = defineProps<{
-  action: Action;
+  action: RouteAction;
 }>();
 
 const authStore = useAuthStore();
@@ -134,10 +133,10 @@ const institutionTypeIcon = computed(() => {
 });
 
 const allInstitutionTypesSelected = computed(
-  () => publisher.value.groupesEtabRelies.length === institutionTypes.value.length
+  () => publisher.value.relatedInstitutionTypes.length === institutionTypes.value.length
 );
 const someInstitutionTypesSelected = computed(
-  () => publisher.value.groupesEtabRelies.length > 0 && !allInstitutionTypesSelected.value
+  () => publisher.value.relatedInstitutionTypes.length > 0 && !allInstitutionTypesSelected.value
 );
 
 onMounted(() => {
@@ -157,9 +156,9 @@ async function fetchInstitutionTypes() {
 function toggleAllInstitutionTypes(): void {
   requestAnimationFrame(() => {
     if (allInstitutionTypesSelected.value) {
-      publisher.value.groupesEtabRelies = [];
+      publisher.value.relatedInstitutionTypes = [];
     } else {
-      publisher.value.groupesEtabRelies = institutionTypes.value.slice();
+      publisher.value.relatedInstitutionTypes = institutionTypes.value.slice();
     }
   });
 }
@@ -219,7 +218,7 @@ function removeContact(item: PublisherContact): void {
 
 async function send(): Promise<void> {
   try {
-    if (props.action === Action.CREATION) {
+    if (props.action === RouteAction.CREATION) {
       await publisherService.createPublisher(publisher.value, authStore.getToken);
       snackbar.success(t("publisher.form.createSuccess"), {
         onHide: () => {
@@ -227,7 +226,7 @@ async function send(): Promise<void> {
         },
         timeout: 2000,
       });
-    } else if (props.action === Action.MODIFICATION) {
+    } else if (props.action === RouteAction.MODIFICATION) {
       await publisherService.updatePublisher(publisher.value, authStore.getToken);
       snackbar.success(t("publisher.form.updateSuccess"), {
         onHide: () => {

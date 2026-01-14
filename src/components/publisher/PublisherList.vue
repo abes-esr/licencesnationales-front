@@ -58,8 +58,8 @@
             </v-row>
           </template>
 
-          <template #item.dateCreation="{ item }">
-            <span>{{ item.dateCreation.toLocaleDateString() }}</span>
+          <template #item.createdAt="{ item }">
+            <span>{{ item.createdAt.toLocaleDateString() }}</span>
           </template>
 
           <template #item.action="{ item }">
@@ -118,10 +118,10 @@ const headers = computed<DataTableHeader[]>(() => [
   {
     title: t("publisher.list.createdAt"),
     align: "start",
-    key: "dateCreation",
+    key: "createdAt",
     sortable: true,
   },
-  { title: t("publisher.list.name"), key: "nom", sortable: true },
+  { title: t("publisher.list.name"), key: "name", sortable: true },
   { title: t("publisher.list.action"), key: "action", sortable: false },
 ]);
 
@@ -203,7 +203,7 @@ async function downloadPublishers(): Promise<void> {
 async function deletePublisher(item: Publisher) {
 
   const confirmed = await confirmRef.value?.open(
-    t("publisher.list.deleteConfirm", { name: item.nom })
+    t("publisher.list.deleteConfirm", { name: item.name })
   );
 
   if (!confirmed) {
@@ -212,7 +212,7 @@ async function deletePublisher(item: Publisher) {
 
   try {
     await publisherService.deletePublisher(item.id, authStore.getToken);
-    snackbar.success(t("publisher.list.deleteSuccess", { name: item.nom }));
+    snackbar.success(t("publisher.list.deleteSuccess", { name: item.name }));
     fetchPublishers();
   } catch (err: any) {
     snackbar.error(formatApiError(err));

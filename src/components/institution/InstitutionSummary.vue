@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>{{ $t("institution.card.title", { name: institution.nom }) }}</h1>
+    <h1>{{ $t("institution.card.title", { name: institution.name }) }}</h1>
     <v-col cols="12" class="d-flex align-content-start justify-space-between flex-wrap mx-0 px-0 py-0">
       <v-card-title class="px-0">
         {{ $t("institution.card.accountInfo") }}
@@ -21,7 +21,7 @@
     </v-col>
     <span class="d-block">
       {{ $t("institution.card.accountCreatedOn") }}
-      {{ institution.dateCreation.toLocaleDateString() }}
+      {{ institution.createdAt.toLocaleDateString() }}
     </span>
   </div>
 </template>

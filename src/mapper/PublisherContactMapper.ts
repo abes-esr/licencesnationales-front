@@ -24,27 +24,27 @@ export class PublisherContactMapper {
   static toDomain(response: JsonPublisherContactResponse, type: ContactType): PublisherContact {
     const contact = new PublisherContact();
     contact.id = response.id;
-    contact.nom = response.nom;
+    contact.lastName = response.nom;
     contact.type = type;
-    contact.prenom = response.prenom;
-    contact.mail = response.mail;
+    contact.firstName = response.prenom;
+    contact.email = response.mail;
     return contact;
   }
 
   static toCreatePayload(contact: PublisherContact): JsonCreatePublisherContactRequest {
     return {
-      nom: contact.nom,
-      prenom: contact.prenom,
-      mail: contact.mail
+      nom: contact.lastName,
+      prenom: contact.firstName,
+      mail: contact.email
     };
   }
 
   static toUpdatePayload(contact: PublisherContact): JsonUpdatePublisherContactRequest {
     return {
       id: contact.id,
-      nom: contact.nom,
-      prenom: contact.prenom,
-      mail: contact.mail
+      nom: contact.lastName,
+      prenom: contact.firstName,
+      mail: contact.email
     };
   }
 }

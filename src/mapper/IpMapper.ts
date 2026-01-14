@@ -14,10 +14,10 @@ export class IpMapper {
     const ip = new Ip();
     ip.id = response.id;
     ip.ip = response.ip;
-    ip.dateCreation = new Date(response.dateCreation);
-    ip.dateModification = response.dateModification ? new Date(response.dateModification) : new Date();
-    ip.commentaires = response.commentaires;
-    ip.statut = response.statut;
+    ip.createdAt = new Date(response.dateCreation);
+    ip.updatedAt = response.dateModification ? new Date(response.dateModification) : new Date();
+    ip.comments = response.commentaires;
+    ip.status = response.statut;
     return ip;
   }
 }

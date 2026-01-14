@@ -97,16 +97,15 @@
 </template>
 
 <script setup lang="ts">
-import { usePublisherService } from "@/composables/service/usePublisherService";
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useIpService } from "@/composables/service/useIpService";
-import { useValidationRules } from "@/composables/useValidationRules";
-import { useLoading } from "@/utils/useLoading";
-import { RouteName } from "@/router";
+import { usePublisherService } from "@/composables/service/usePublisherService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { usePublisherStore } from "@/composables/store/usePublisherStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { useLoading } from "@/composables/useLoading";
+import { useValidationRules } from "@/composables/useValidationRules";
+import { RouteName } from "@/router";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -207,6 +206,3 @@ const handlePublisherClick = async (item: any) => {
   }
 };
 </script>
-
-
-

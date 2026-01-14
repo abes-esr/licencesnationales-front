@@ -25,13 +25,13 @@ export const useAuthStore = defineStore("auth", {
     isLoggedIn: (state) => state.user.isLoggedIn,
     isAdmin: (state) => state.user.isAdmin,
     userSiren: (state) => state.user.siren,
-    userInstitutionName: (state) => state.user.nameEtab,
+    userInstitutionName: (state) => state.user.institutionName,
     getToken: (state) => state.user.token,
 
     getConnectedInstitution: (state) => {
       const et = new Institution();
       Object.assign(et, state.connectedInstitution);
-      et.dateCreation = new Date(et.dateCreation);
+      et.createdAt = new Date(et.createdAt);
       return et;
     },
 
@@ -63,7 +63,7 @@ export const useAuthStore = defineStore("auth", {
     logout() {
       this.user.token = "";
       this.user.siren = "";
-      this.user.nameEtab = "";
+      this.user.institutionName = "";
       this.user.isLoggedIn = false;
       this.user.isAdmin = false;
 

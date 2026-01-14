@@ -29,7 +29,7 @@
                   </v-card-actions>
                 </v-card-text>
               </v-card>
-              <InstitutionForm :action="Action.SCISSION" :trigger-scission="triggerSplit" @send="send"
+              <InstitutionForm :action="RouteAction.SCISSION" :trigger-scission="triggerSplit" @send="send"
                 v-for="n in institutionCount" :key="n" />
               <v-card-actions class="v-card-actions">
                 <v-row>
@@ -54,12 +54,10 @@
 <script setup lang="ts">
 import InstitutionForm from "@/components/institution/InstitutionForm.vue";
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
+import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
-import { Action } from "@/entity/CommonDefinition";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -132,7 +130,3 @@ function decreaseInstitutionCount() {
 
 defineExpose({ formRef });
 </script>
-
-
-
-

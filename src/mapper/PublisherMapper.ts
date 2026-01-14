@@ -51,19 +51,19 @@ export class PublisherMapper {
   static toSimpleDomain(response: JsonSimplePublisherResponse): Publisher {
     const publisher = new Publisher();
     publisher.id = response.id;
-    publisher.nom = response.nom;
-    publisher.dateCreation = new Date(response.dateCreation);
+    publisher.name = response.nom;
+    publisher.createdAt = new Date(response.dateCreation);
     return publisher;
   }
 
   static toDomain(response: JsonPublisherResponse): Publisher {
     const publisher = new Publisher();
     publisher.id = response.id;
-    publisher.nom = response.nom;
-    publisher.dateCreation = new Date(response.dateCreation);
-    publisher.groupesEtabRelies = response.typesEtablissements;
-    publisher.identifiantBis = response.identifiantBis;
-    publisher.adresse = response.adresse;
+    publisher.name = response.nom;
+    publisher.createdAt = new Date(response.dateCreation);
+    publisher.relatedInstitutionTypes = response.typesEtablissements;
+    publisher.secondaryId = response.identifiantBis;
+    publisher.address = response.adresse;
 
     response.contactsCommerciaux.forEach((element) => {
       publisher.addContact(PublisherContactMapper.toDomain(element, ContactType.COMMERCIAL));
@@ -79,10 +79,10 @@ export class PublisherMapper {
   static toCreatePayload(publisher: Publisher): JsonCreatePublisherRequest {
     const { commercial, technical } = this.splitContacts(publisher);
     return {
-      nom: publisher.nom,
-      identifiantBis: publisher.identifiantBis,
-      typesEtablissements: publisher.groupesEtabRelies,
-      adresse: publisher.adresse,
+      nom: publisher.name,
+      identifiantBis: publisher.secondaryId,
+      typesEtablissements: publisher.relatedInstitutionTypes,
+      adresse: publisher.address,
       contactsCommerciaux: commercial.map(PublisherContactMapper.toCreatePayload),
       contactsTechniques: technical.map(PublisherContactMapper.toCreatePayload)
     };
@@ -92,10 +92,10 @@ export class PublisherMapper {
     const { commercial, technical } = this.splitContacts(publisher);
     return {
       id: publisher.id,
-      nom: publisher.nom,
-      identifiantBis: publisher.identifiantBis,
-      typesEtablissements: publisher.groupesEtabRelies,
-      adresse: publisher.adresse,
+      nom: publisher.name,
+      identifiantBis: publisher.secondaryId,
+      typesEtablissements: publisher.relatedInstitutionTypes,
+      adresse: publisher.address,
       contactsCommerciaux: commercial.map(PublisherContactMapper.toUpdatePayload),
       contactsTechniques: technical.map(PublisherContactMapper.toUpdatePayload)
     };

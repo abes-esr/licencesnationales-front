@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import Publisher from "@/entity/Publisher";
 import { usePublisherService } from "@/composables/service/usePublisherService";
-import { useAuthStore } from "./authStore";
+import { useAuthStore } from "./useAuthStore";
 
 const publisherService = usePublisherService();
 

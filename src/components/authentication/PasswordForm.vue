@@ -11,35 +11,34 @@
         {{ $t("auth.passwordForm.expiredLink") }}
       </router-link>
     </v-alert>
-    <v-text-field v-if="action === Action.MODIFICATION && !linkIsExpired" variant="outlined"
+    <v-text-field v-if="action === RouteAction.MODIFICATION && !linkIsExpired" variant="outlined"
       :label="$t('auth.passwordForm.oldPasswordLabel')" :placeholder="$t('auth.passwordForm.oldPasswordPlaceholder')"
       :type="isPasswordVisible ? 'text' : 'password'" :append-inner-icon="isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
-      v-model="oldPasswordModel" :rules="passwordRules.concat(confirmPasswordRule)" required
+      v-model="oldPasswordModel" :rules="passwordRules.concat(confirmPasswordRules)" required
       @click:append-inner="togglePasswordVisibility" autocomplete="new-password" @keyup.enter="validate" />
-    <v-text-field v-if="!linkIsExpired" variant="outlined" :label="action === Action.CREATION ? $t('auth.passwordForm.createPasswordLabel') : $t('auth.passwordForm.updatePasswordLabel')
-      " :placeholder="action === Action.CREATION ? $t('auth.passwordForm.createPasswordPlaceholder') : $t('auth.passwordForm.updatePasswordPlaceholder')
+    <v-text-field v-if="!linkIsExpired" variant="outlined" :label="action === RouteAction.CREATION ? $t('auth.passwordForm.createPasswordLabel') : $t('auth.passwordForm.updatePasswordLabel')
+      " :placeholder="action === RouteAction.CREATION ? $t('auth.passwordForm.createPasswordPlaceholder') : $t('auth.passwordForm.updatePasswordPlaceholder')
         " :type="isPasswordVisible ? 'text' : 'password'"
       :append-inner-icon="isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'" v-model="newPasswordModel"
       :rules="passwordRules.concat(passwordRule)" required @click:append-inner="togglePasswordVisibility"
       autocomplete="new-password" @keyup.enter="validate" />
-    <v-text-field v-if="!linkIsExpired" variant="outlined" :label="action === Action.CREATION
+    <v-text-field v-if="!linkIsExpired" variant="outlined" :label="action === RouteAction.CREATION
       ? $t('auth.passwordForm.createConfirmLabel')
       : $t('auth.passwordForm.updateConfirmLabel')
-      " :placeholder="action === Action.CREATION
+      " :placeholder="action === RouteAction.CREATION
         ? $t('auth.passwordForm.createConfirmPlaceholder')
         : $t('auth.passwordForm.updateConfirmPlaceholder')
         " :type="isPasswordVisible ? 'text' : 'password'"
       :append-inner-icon="isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'" v-model="confirmPassword"
-      :rules="passwordRules.concat(confirmPasswordRule)" required @click:append-inner="togglePasswordVisibility"
+      :rules="passwordRules.concat(confirmPasswordRules)" required @click:append-inner="togglePasswordVisibility"
       autocomplete="new-password" @keyup.enter="validate" />
   </v-form>
 </template>
 
 <script setup lang="ts">
-import { useToggle } from "@/utils/useToggle";
-import { Action } from "@/entity/CommonDefinition";
+import { useToggle } from "@/composables/useToggle";
 import { useValidationRules } from "@/composables/useValidationRules";
-import { RouteName } from "@/router";
+import { RouteAction, RouteName } from "@/router";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed, ref, watch } from "vue";
@@ -48,7 +47,7 @@ import type { VForm } from "vuetify/components";
 
 const props = withDefaults(
   defineProps<{
-    action: Action;
+    action: RouteAction;
     oldPassword?: string;
     newPassword: string;
     isDisableForm?: boolean;
@@ -83,12 +82,12 @@ const newPasswordModel = computed({
   set: value => emit("update:newPassword", value)
 });
 
-const passwordRule = () => () =>
+const passwordRule = () =>
   confirmPassword.value === "" ||
   newPasswordModel.value === confirmPassword.value ||
   t("auth.passwordForm.confirmMismatch");
 
-const confirmPasswordRule = () => () =>
+const confirmPasswordRules = () =>
   newPasswordModel.value === confirmPassword.value ||
   confirmPassword.value === "" ||
   t("auth.passwordForm.confirmMismatch");
@@ -112,6 +111,5 @@ const clear = () => {
   confirmPassword.value = "";
 };
 
-defineExpose({ validate, clear, Action });
+defineExpose({ validate, clear });
 </script>
-

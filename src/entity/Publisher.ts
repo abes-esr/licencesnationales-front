@@ -3,11 +3,11 @@ import { ValueError } from "@/exception/ValueError";
 
 export default class Publisher {
   id: number = -999;
-  nom: string = "";
-  identifiantBis: string = "";
-  dateCreation: Date = new Date();
-  groupesEtabRelies: Array<string> = [];
-  adresse: string = "";
+  name: string = "";
+  secondaryId: string = "";
+  createdAt: Date = new Date();
+  relatedInstitutionTypes: Array<string> = [];
+  address: string = "";
   contacts: Array<PublisherContact> = [];
 
   addContact(item: PublisherContact): void {
@@ -25,7 +25,7 @@ export default class Publisher {
 
   removeContact(item: PublisherContact): void {
     const index = this.contacts.findIndex(
-      x => x.id === item.id && x.nom === item.nom
+      x => x.id === item.id && x.lastName === item.lastName
     );
     if (index == -1) {
       throw new ValueError("Contact " + item + " not found");
@@ -36,11 +36,11 @@ export default class Publisher {
 
   clear(): void {
     this.id = -999;
-    this.nom = "";
-    this.identifiantBis = "";
-    this.dateCreation = new Date();
-    this.groupesEtabRelies = [];
-    this.adresse = "";
+    this.name = "";
+    this.secondaryId = "";
+    this.createdAt = new Date();
+    this.relatedInstitutionTypes = [];
+    this.address = "";
     this.contacts = [];
   }
 }

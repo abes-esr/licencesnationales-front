@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <h1>
-      {{ $t("dashboard.title") }} <span v-if="!isAdmin">{{ institution.nom }}</span>
+      {{ $t("dashboard.title") }} <span v-if="!isAdmin">{{ institution.name }}</span>
     </h1>
     <ConfirmPopup ref="confirmRef"></ConfirmPopup>
     <v-card class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
@@ -18,7 +18,7 @@
             </template>
           </v-tooltip>
         </v-card-title>
-        <span>{{ $t("dashboard.accountCreatedOn") }} {{ institution.dateCreation.toLocaleDateString() }}</span>
+        <span>{{ $t("dashboard.accountCreatedOn") }} {{ institution.createdAt.toLocaleDateString() }}</span>
         <v-row class="d-flex justify-space-between flex-wrap pt-3">
           <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
             <div style="height: 100%; position:relative;" class="borderCol fondBlanc"
@@ -41,15 +41,15 @@
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.institution.idAbes") }}</h3>
-                    {{ institution.idAbes }}
+                    {{ institution.abesId }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.institution.name") }}</h3>
-                    {{ institution.nom }}
+                    {{ institution.name }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.institution.type") }}</h3>
-                    {{ institution.typeEtablissement }}
+                    {{ institution.institutionType }}
                   </div>
                 </div>
               </v-card-text>
@@ -71,35 +71,35 @@
                 <div class="d-flex flex-column justify-start mx-3 mb-3 mt-0 bloc-info">
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.lastName") }}</h3>
-                    {{ institution.contact.nom }}
+                    {{ institution.contact.lastName }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.firstName") }}</h3>
-                    {{ institution.contact.prenom }}
+                    {{ institution.contact.firstName }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.phone") }}</h3>
-                    {{ institution.contact.telephone }}
+                    {{ institution.contact.phone }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.email") }}</h3>
-                    {{ institution.contact.mail }}
+                    {{ institution.contact.email }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.address") }}</h3>
-                    {{ institution.contact.adresse }}
+                    {{ institution.contact.address }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.poBox") }}</h3>
-                    {{ institution.contact.boitePostale }}
+                    {{ institution.contact.poBox }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.postalCode") }}</h3>
-                    {{ institution.contact.codePostal }}
+                    {{ institution.contact.postalCode }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.city") }}</h3>
-                    {{ institution.contact.ville }}
+                    {{ institution.contact.city }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.cedex") }}</h3>
@@ -137,9 +137,9 @@
                     <li style="margin-bottom: 1em" v-for="item in notificationsAdmin" :key="item.index">
                       {{ $t("dashboard.notifications.siren") }} {{ item.siren }}<br />
                       {{ $t("dashboard.notifications.institutionName") }}
-                      <a @click="goToInstitutionPage(item.siren)">{{ item.nomEtab }}</a><br />
-                      {{ $t("dashboard.notifications.event") }} {{ item.typeNotif }}<br />
-                      {{ $t("dashboard.notifications.date") }} {{ dateFormatted(item.dateEvent) }}
+                      <a @click="goToInstitutionPage(item.siren)">{{ item.institutionName }}</a><br />
+                      {{ $t("dashboard.notifications.event") }} {{ item.notificationType }}<br />
+                      {{ $t("dashboard.notifications.date") }} {{ dateFormatted(item.eventDate) }}
                     </li>
                     <li style="margin-bottom: 1em" v-for="item in notificationsUser" :key="item.index">
                       <span class="notifUserMsg" v-html="item.message"></span>
@@ -182,15 +182,14 @@
 
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import { usePublisherService } from "@/composables/service/usePublisherService";
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
+import { usePublisherService } from "@/composables/service/usePublisherService";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Institution from "@/entity/Institution";
 import { Notification } from "@/entity/Notification";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { Logger } from "@/utils/Logger";
 import {
   faBell,
@@ -447,7 +446,4 @@ p {
   font-size: 1rem !important;
 }
 </style>
-
-
-
 

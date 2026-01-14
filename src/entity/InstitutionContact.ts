@@ -1,56 +1,56 @@
 export class InstitutionContact {
   id: number = -999;
-  nom: string = "";
-  prenom: string = "";
-  adresse: string = "";
-  boitePostale: string = "";
-  codePostal: string = "";
-  ville: string = "";
+  lastName: string = "";
+  firstName: string = "";
+  address: string = "";
+  poBox: string = "";
+  postalCode: string = "";
+  city: string = "";
   cedex: string = "";
-  telephone: string = "";
-  mail: string = "";
-  motDePasse: string = "";
+  phone: string = "";
+  email: string = "";
+  password: string = "";
   role: string = "";
 
   constructor({
     id,
-    nom,
-    prenom,
-    adresse,
-    boitePostale,
-    codePostal,
-    ville,
+    lastName,
+    firstName,
+    address,
+    poBox,
+    postalCode,
+    city,
     cedex,
-    telephone,
-    mail,
-    motDePasse,
+    phone,
+    email,
+    password,
     role
   }: Partial<InstitutionContact> = {}) {
     this.id = id ?? this.id;
-    this.nom = nom ?? this.nom;
-    this.prenom = prenom ?? this.prenom;
-    this.adresse = adresse ?? this.adresse;
-    this.boitePostale = boitePostale ?? this.boitePostale;
-    this.codePostal = codePostal ?? this.codePostal;
-    this.ville = ville ?? this.ville;
+    this.lastName = lastName ?? this.lastName;
+    this.firstName = firstName ?? this.firstName;
+    this.address = address ?? this.address;
+    this.poBox = poBox ?? this.poBox;
+    this.postalCode = postalCode ?? this.postalCode;
+    this.city = city ?? this.city;
     this.cedex = cedex ?? this.cedex;
-    this.telephone = telephone ?? this.telephone;
-    this.mail = mail ?? this.mail;
-    this.motDePasse = motDePasse ?? this.motDePasse;
+    this.phone = phone ?? this.phone;
+    this.email = email ?? this.email;
+    this.password = password ?? this.password;
     this.role = role ?? this.role;
   }
 
   reset(): void {
-    this.nom = "";
-    this.prenom = "";
-    this.adresse = "";
-    this.boitePostale = "";
-    this.codePostal = "";
-    this.ville = "";
+    this.lastName = "";
+    this.firstName = "";
+    this.address = "";
+    this.poBox = "";
+    this.postalCode = "";
+    this.city = "";
     this.cedex = "";
-    this.telephone = "";
-    this.mail = "";
-    this.motDePasse = "";
+    this.phone = "";
+    this.email = "";
+    this.password = "";
   }
 }
 export default InstitutionContact;

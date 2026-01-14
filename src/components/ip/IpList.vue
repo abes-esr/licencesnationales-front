@@ -121,7 +121,7 @@
           </template>
 
           <template #item.action="{ item }">
-            <v-btn v-if="isAdmin && currentInstitution.statut == 'Valid�'" class="ma-0 pa-0 bouton-simple" variant="flat"
+            <v-btn v-if="isAdmin && currentInstitution.status == 'Valid�'" class="ma-0 pa-0 bouton-simple" variant="flat"
               :title="$t('ip.list.review')" @click.stop="openDialog(item)">
               <FontAwesomeIcon :icon="faMagnifyingGlass" />
             </v-btn>
@@ -385,7 +385,7 @@ const infobulleAttente = t("ip.list.info.waiting");
 const infobulleAttestation = t("ip.list.info.attestation");
 const infobulleValid = t("ip.list.info.valid");
 
-const currentInstitutionName = computed(() => institutionStore.getCurrentInstitution.nom);
+const currentInstitutionName = computed(() => institutionStore.getCurrentInstitution.name);
 const isAdmin = computed(() => authStore.isAdmin);
 const breakpointMdAndDown = computed(() => mdAndDown.value);
 const currentInstitution = computed(() => institutionStore.getCurrentInstitution);
@@ -688,6 +688,7 @@ function goBackToInstitution(): void {
 </script>
 
 <style src="./style.css"></style>
+
 
 
 

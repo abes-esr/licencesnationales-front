@@ -12,7 +12,7 @@
         <v-col cols="1" class="d-none d-md-flex"></v-col>
         <v-col cols="12" md="10">
           <v-card-text class="fondGris">
-            <v-autocomplete v-model="selectedSiren" :items="institutions" item-title="nom" item-value="siren"
+            <v-autocomplete v-model="selectedSiren" :items="institutions" item-title="name" item-value="siren"
               :label="$t('institution.history.institutionLabel')"
               :placeholder="$t('institution.history.institutionPlaceholder')" persistent-placeholder variant="outlined"
               density="comfortable" @update:model-value="loadHistory" />

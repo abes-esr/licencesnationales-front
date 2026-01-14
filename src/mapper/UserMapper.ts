@@ -15,7 +15,7 @@ export class UserMapper {
     const user = new User();
     user.id = response.id;
     user.token = response.accessToken;
-    user.nameEtab = response.userNameEtab;
+    user.institutionName = response.userNameEtab;
     user.siren = response.userSiren;
     user.isAdmin = response.role === "admin";
     user.isLoggedIn = true;

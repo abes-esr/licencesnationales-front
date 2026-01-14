@@ -27,7 +27,7 @@
                   </v-card-actions>
                 </v-card-text>
               </v-card>
-              <InstitutionForm :listeSirenFusion="institutionSirens" :action="Action.FUSION" />
+              <InstitutionForm :listeSirenFusion="institutionSirens" :action="RouteAction.FUSION" />
             </v-col>
           </v-row>
         </v-col>
@@ -39,7 +39,7 @@
 <script setup lang="ts">
 import InstitutionForm from "@/components/institution/InstitutionForm.vue";
 import { useValidationRules } from "@/composables/useValidationRules";
-import { Action } from "@/entity/CommonDefinition";
+import { RouteAction } from "@/router";
 import { ref } from "vue";
 
 const institutionSirens = ref<Array<string>>(["", ""]);
@@ -60,4 +60,3 @@ function decreaseSirenNumber() {
 
 defineExpose({ formRef, institutionSirens });
 </script>
-

@@ -4,32 +4,32 @@
       <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
         <v-row>
           <v-text-field outlined :label="$t('institution.contactForm.lastName')"
-            :placeholder="$t('institution.contactForm.lastName')" v-model="contact.nom" :rules="lastNameRules" required
+            :placeholder="$t('institution.contactForm.lastName')" v-model="contact.lastName" :rules="lastNameRules" required
             @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
           <v-text-field outlined :label="$t('institution.contactForm.firstName')"
-            :placeholder="$t('institution.contactForm.firstName')" v-model="contact.prenom" :rules="firstNameRules"
+            :placeholder="$t('institution.contactForm.firstName')" v-model="contact.firstName" :rules="firstNameRules"
             required @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
           <v-text-field outlined :label="$t('institution.contactForm.address')"
-            :placeholder="$t('institution.contactForm.address')" maxlength="80" v-model="contact.adresse"
+            :placeholder="$t('institution.contactForm.address')" maxlength="80" v-model="contact.address"
             :rules="addressRules" required @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
           <v-text-field outlined :label="$t('institution.contactForm.poBox')"
-            :placeholder="$t('institution.contactForm.poBox')" v-model="contact.boitePostale" required
+            :placeholder="$t('institution.contactForm.poBox')" v-model="contact.poBox" required
             @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
           <v-text-field outlined :label="$t('institution.contactForm.postalCode')"
-            :placeholder="$t('institution.contactForm.postalCode')" maxlength="5" v-model="contact.codePostal"
+            :placeholder="$t('institution.contactForm.postalCode')" maxlength="5" v-model="contact.postalCode"
             :rules="postalCodeRules" required @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
           <v-text-field outlined :label="$t('institution.contactForm.city')"
-            :placeholder="$t('institution.contactForm.city')" v-model="contact.ville" :rules="cityRules" required
+            :placeholder="$t('institution.contactForm.city')" v-model="contact.city" :rules="cityRules" required
             @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
@@ -42,17 +42,17 @@
       <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
         <v-row>
           <v-text-field outlined :label="$t('institution.contactForm.phone')"
-            :placeholder="$t('institution.contactForm.phone')" maxlength="10" v-model.trim="contact.telephone"
+            :placeholder="$t('institution.contactForm.phone')" maxlength="10" v-model.trim="contact.phone"
             :rules="phoneRules" required @paste.prevent="pastePhone" @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
           <v-form ref="mailRef" :disabled="isDisableForm" style="width: 100%">
-            <v-alert variant="outlined" class="pa-2 mb-4" v-if="action === Action.CREATION">
+            <v-alert variant="outlined" class="pa-2 mb-4" v-if="action === RouteAction.CREATION">
               <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 mt-2 icone-information" />
               {{ $t("institution.contactForm.emailNotice") }}
             </v-alert>
             <v-text-field outlined :label="$t('institution.contactForm.email')"
-              :placeholder="$t('institution.contactForm.email')" v-model="contact.mail" :rules="emailRules" required
+              :placeholder="$t('institution.contactForm.email')" v-model="contact.email" :rules="emailRules" required
               @keyup="checkConfirmationMail()" @keyup.enter="validate()" autocomplete="new-mail"></v-text-field>
             <v-text-field outlined :label="$t('institution.contactForm.confirmEmail')"
               :placeholder="$t('institution.contactForm.confirmEmail')" v-model="emailConfirmation" :rules="emailRules"
@@ -62,12 +62,12 @@
         </v-row>
         <v-row>
           <PasswordForm ref="passwordFormRef"
-            v-if="action === Action.CREATION || action === Action.FUSION || action === Action.SCISSION"
-            :action="Action.CREATION" :linkIsExpired="false" :new-password="contact.motDePasse"
+            v-if="action === RouteAction.CREATION || action === RouteAction.FUSION || action === RouteAction.SCISSION"
+            :action="RouteAction.CREATION" :linkIsExpired="false" :new-password="contact.password"
             @update:newPassword="updatePassword" :isDisableForm="isDisableForm"></PasswordForm>
         </v-row>
         <v-row>
-          <div v-if="action === Action.CREATION">
+          <div v-if="action === RouteAction.CREATION">
             <v-checkbox required :rules="privacyAcceptanceRules"
               :label="$t('institution.contactForm.privacyConsent')"></v-checkbox>
             <div>
@@ -94,8 +94,8 @@
 <script lang="ts" setup>
 import PasswordForm from "@/components/authentication/PasswordForm.vue";
 import { useValidationRules } from "@/composables/useValidationRules";
-import { Action } from "@/entity/CommonDefinition";
 import InstitutionContact from "@/entity/InstitutionContact";
+import { RouteAction } from "@/router";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed, onMounted, ref } from "vue";
@@ -104,7 +104,7 @@ import { useRouter } from "vue-router";
 
 interface Props {
   contact: InstitutionContact;
-  action: Action;
+  action: RouteAction;
   isDisableForm: boolean;
 }
 
@@ -130,12 +130,12 @@ const mailRef = ref();
 const passwordFormRef = ref();
 
 onMounted(() => {
-  ancienMail.value = props.contact.mail;
+  ancienMail.value = props.contact.email;
 });
 
 const rulesMailConfirmation = computed(() => {
   return (value: string) =>
-    value === props.contact.mail ||
+    value === props.contact.email ||
     value === "" ||
     t("institution.contactForm.confirmEmailError");
 });
@@ -146,7 +146,7 @@ const emailRules = computed(() => {
 });
 
 const shouldValidateMail = computed(() => {
-  return props.action === Action.CREATION || ancienMail.value !== props.contact.mail;
+  return props.action === RouteAction.CREATION || ancienMail.value !== props.contact.email;
 });
 
 function gotoDonneesPersonnellesInNewPage() {
@@ -184,11 +184,11 @@ function clear() {
 }
 
 function updatePassword(value: string) {
-  props.contact.motDePasse = value;
+  props.contact.password = value;
 }
 
 function pastePhone(evt: ClipboardEvent) {
-  props.contact.telephone = evt.clipboardData
+  props.contact.phone = evt.clipboardData
     ?.getData("text")
     .replaceAll(" ", "")
     .replaceAll(".", "") ?? "";

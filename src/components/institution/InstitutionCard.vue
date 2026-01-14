@@ -9,9 +9,9 @@
       <SaveInstitutionButton :edit-state="editState" :institution="institution" />
       <ResetInstitutionButton :edit-state="editState" :institution="institution" />
       <ValidateInstitutionButton :institution="institution" :is-edit-mode-disabled="editState.disabled"
-        :status="currentInstitution.statut" :validated-status="validatedStatus" :confirm-ref="confirmRef" />
+        :status="currentInstitution.status" :validated-status="validatedStatus" :confirm-ref="confirmRef" />
       <InvalidateInstitutionButton :institution="institution" :is-edit-mode-disabled="editState.disabled"
-        :status="currentInstitution.statut" :validated-status="validatedStatus" :confirm-ref="confirmRef" />
+        :status="currentInstitution.status" :validated-status="validatedStatus" :confirm-ref="confirmRef" />
       <DeleteInstitutionButton :institution="institution" :confirm-ref="confirmRef" />
       <v-row class="d-flex justify-space-between flex-wrap ma-0 pa-0">
         <v-col cols="12" md="6" lg="6" xl="6" class="d-flex align-content-start justify-center flex-wrap px-0 pr-2">

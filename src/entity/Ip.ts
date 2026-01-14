@@ -1,9 +1,9 @@
 export class Ip {
   id: number = -999;
   ip: string = "";
-  dateCreation: Date = new Date();
-  dateModification: Date = new Date();
-  commentaires: string = "";
-  statut: string = "";
+  createdAt: Date = new Date();
+  updatedAt: Date = new Date();
+  comments: string = "";
+  status: string = "";
 }
 export default Ip;

@@ -3,20 +3,21 @@ export class Notification {
     n = 0,
     s = "",
     date = new Date(),
-    typeNotif = "Non spécifié",
-    nomEtablissement = "Défaut"
+    notificationType = "Non spécifié",
+    institutionName = "Défaut"
   ) {
     this.index = n;
     this.siren = s;
-    this.dateEvent = date;
-    this.typeNotif = typeNotif;
-    this.nomEtab = nomEtablissement;
+    this.eventDate = date;
+    this.notificationType = notificationType;
+    this.institutionName = institutionName;
   }
 
   index: number;
   siren: string = "";
-  dateEvent: Date = new Date();
-  typeNotif: string = "";
-  nomEtab: string = "";
+  eventDate: Date = new Date();
+  notificationType: string = "";
+  institutionName: string = "";
 }
 export default Notification;
+

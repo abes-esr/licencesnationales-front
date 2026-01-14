@@ -13,14 +13,14 @@ export class NotificationMapper {
       const notification = new Notification();
       notification.index = index;
       notification.siren = element.siren;
-      notification.dateEvent = element.dateEvent;
-      notification.typeNotif = element.typeNotif;
-      notification.nomEtab = element.nomEtab;
+      notification.eventDate = element.dateEvent;
+      notification.notificationType = element.typeNotif;
+      notification.institutionName = element.nomEtab;
       return notification;
     });
 
     notifications.sort((a, b) => {
-      return new Date(b.dateEvent).getTime() - new Date(a.dateEvent).getTime();
+      return new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime();
     });
 
     return notifications;

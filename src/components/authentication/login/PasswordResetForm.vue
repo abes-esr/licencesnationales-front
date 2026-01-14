@@ -8,8 +8,8 @@
               <h1>{{ $t("auth.resetPassword.title") }}</h1>
             </v-card-title>
             <v-card-text>
-              <PasswordForm ref="passwordForm" :action="Action.CREATION" v-model:newPassword="newPassword" class="ma-3"
-                :link-is-expired="status !== 'valid'" :is-disable-form="status !== 'valid'" />
+              <PasswordForm ref="passwordForm" :action="RouteAction.CREATION" v-model:newPassword="newPassword"
+                class="ma-3" :link-is-expired="status !== 'valid'" :is-disable-form="status !== 'valid'" />
             </v-card-text>
             <v-card-actions>
               <v-spacer class="hidden-sm-and-down"></v-spacer>
@@ -40,10 +40,9 @@
 <script setup lang="ts">
 import PasswordForm from "@/components/authentication/PasswordForm.vue";
 import { useAuthService } from "@/composables/service/useAuthService";
-import { useLoading } from "@/utils/useLoading";
+import { useLoading } from "@/composables/useLoading";
 import { useRecaptcha } from "@/composables/useRecaptcha";
 import { useSnackbar } from "@/composables/useSnackbar";
-import { Action } from "@/entity/CommonDefinition";
 import { RouteName } from "@/router";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -128,5 +127,3 @@ const clear = () => {
 };
 
 </script>
-
-

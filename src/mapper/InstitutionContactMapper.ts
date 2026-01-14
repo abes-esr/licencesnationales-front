@@ -43,44 +43,44 @@ export class InstitutionContactMapper {
   static toDomain(response: JsonInstitutionContactResponse): InstitutionContact {
     const contact = new InstitutionContact();
     contact.id = response.id;
-    contact.nom = response.nom;
-    contact.prenom = response.prenom;
-    contact.adresse = response.adresse;
-    contact.boitePostale = response.boitePostale;
-    contact.codePostal = response.codePostal;
-    contact.ville = response.ville;
+    contact.lastName = response.nom;
+    contact.firstName = response.prenom;
+    contact.address = response.adresse;
+    contact.poBox = response.boitePostale;
+    contact.postalCode = response.codePostal;
+    contact.city = response.ville;
     contact.cedex = response.cedex;
-    contact.telephone = response.telephone;
-    contact.mail = response.mail;
+    contact.phone = response.telephone;
+    contact.email = response.mail;
     return contact;
   }
 
   static toCreatePayload(contact: InstitutionContact): JsonCreateInstitutionContact {
     return {
-      nom: contact.nom,
-      prenom: contact.prenom,
-      adresse: contact.adresse,
-      boitePostale: contact.boitePostale,
-      codePostal: contact.codePostal,
-      ville: contact.ville,
+      nom: contact.lastName,
+      prenom: contact.firstName,
+      adresse: contact.address,
+      boitePostale: contact.poBox,
+      codePostal: contact.postalCode,
+      ville: contact.city,
       cedex: contact.cedex,
-      telephone: contact.telephone,
-      mail: contact.mail,
-      motDePasse: contact.motDePasse
+      telephone: contact.phone,
+      mail: contact.email,
+      motDePasse: contact.password
     };
   }
 
   static toUpdatePayload(contact: InstitutionContact): JsonUpdateInstitutionContact {
     return {
-      nom: contact.nom,
-      prenom: contact.prenom,
-      adresse: contact.adresse,
-      boitePostale: contact.boitePostale,
-      codePostal: contact.codePostal,
-      ville: contact.ville,
+      nom: contact.lastName,
+      prenom: contact.firstName,
+      adresse: contact.address,
+      boitePostale: contact.poBox,
+      codePostal: contact.postalCode,
+      ville: contact.city,
       cedex: contact.cedex,
-      telephone: contact.telephone,
-      mail: contact.mail,
+      telephone: contact.phone,
+      mail: contact.email,
       role: contact.role
     };
   }

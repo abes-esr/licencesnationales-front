@@ -13,11 +13,11 @@
             :label="`Contact ${typeContactCandidatesLabel[type]}`" :value="type"></v-radio>
         </v-radio-group>
 
-        <v-text-field outlined label="Nom" placeholder="Nom" v-model="contact.nom" :rules="lastNameRules" required
+        <v-text-field outlined label="Nom" placeholder="Nom" v-model="contact.lastName" :rules="lastNameRules" required
           @keyup.enter="validate()"></v-text-field>
-        <v-text-field outlined label="Prénom" placeholder="Prénom" v-model="contact.prenom" :rules="firstNameRules"
+        <v-text-field outlined label="Prénom" placeholder="Prénom" v-model="contact.firstName" :rules="firstNameRules"
           required @keyup.enter="validate()"></v-text-field>
-        <v-text-field outlined label="Adresse e-mail" placeholder="Adresse e-mail" v-model="contact.mail"
+        <v-text-field outlined label="Adresse e-mail" placeholder="Adresse e-mail" v-model="contact.email"
           :rules="emailRules" required @keyup.enter="validate()"></v-text-field>
       </v-card-text>
 
@@ -98,3 +98,4 @@ defineExpose({ validate, clear });
   justify-content: center;
 }
 </style>
+

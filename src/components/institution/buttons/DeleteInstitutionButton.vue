@@ -31,7 +31,7 @@ const { loading: isLoading, startLoading, stopLoading } = useLoading();
 const deleteInstitution = async () => {
   startLoading();
   const confirmed = await props.confirmRef?.open(
-    t("institution.card.confirmDelete", { name: props.institution.nom })
+    t("institution.card.confirmDelete", { name: props.institution.name })
   );
   if (confirmed) {
     institutionService

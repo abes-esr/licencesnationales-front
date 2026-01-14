@@ -7,7 +7,7 @@
             <h1 class="pb-4">{{ $t("auth.changePassword.title") }}</h1>
             <v-card-text class="fondGris">
               <div class="pt-4 px-4">
-                <PasswordForm ref="passwordForm" :action="Action.MODIFICATION" v-model:oldPassword="oldPassword"
+                <PasswordForm ref="passwordForm" :action="RouteAction.MODIFICATION" v-model:oldPassword="oldPassword"
                   v-model:newPassword="newPassword" :linkIsExpired="false" />
               </div>
               <v-spacer class="hidden-sm-and-down"></v-spacer>
@@ -28,12 +28,10 @@
 <script setup lang="ts">
 import PasswordForm from "@/components/authentication/PasswordForm.vue";
 import { useAuthService } from "@/composables/service/useAuthService";
-import { useLoading } from "@/utils/useLoading";
-import { useSnackbar } from "@/composables/useSnackbar";
-import { Action } from "@/entity/CommonDefinition";
-import { RouteName } from "@/router";
 import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { useLoading } from "@/composables/useLoading";
+import { useSnackbar } from "@/composables/useSnackbar";
+import { RouteName } from "@/router";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -79,7 +77,3 @@ const submit = async () => {
   }
 };
 </script>
-
-
-
-

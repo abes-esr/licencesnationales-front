@@ -5,9 +5,9 @@ export enum ContactType {
 
 export class PublisherContact {
   id: number = -999;
-  nom: string = "";
-  prenom: string = "";
-  mail: string = "";
+  lastName: string = "";
+  firstName: string = "";
+  email: string = "";
   type: ContactType = ContactType.COMMERCIAL;
 }
 export default PublisherContact;

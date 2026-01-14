@@ -1,9 +1,16 @@
 import { useAuthService } from "@/composables/service/useAuthService";
-import { useSnackbar } from "@/composables/useSnackbar";
 import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+
+export enum RouteAction {
+  CREATION = "CREATION",
+  MODIFICATION = "MODIFICATION",
+  VISUALISER = "VISUALISER",
+  FUSION = "FUSION",
+  SCISSION = "SCISSION"
+}
 
 export enum RouteName {
   Home = "Home",
@@ -64,57 +71,63 @@ const routes: RouteRecordRaw[] = [
     path: "/institutions/create",
     name: RouteName.InstitutionCreate,
     component: () => import("../components/institution/InstitutionForm.vue"),
-    props: { action: "CREATION" }
+    props: { action: RouteAction.CREATION }
   },
   {
     path: "/profile",
     name: RouteName.Profile,
     component: () => import("../components/institution/InstitutionForm.vue"),
-    props: { action: "MODIFICATION" },
+    props: { action: RouteAction.MODIFICATION },
     meta: { requiresAuth: true }
   },
   {
     path: "/institutions/view",
     name: RouteName.InstitutionView,
-    component: () => import("../components/institution/InstitutionCard.vue")
+    component: () => import("../components/institution/InstitutionCard.vue"),
+    props: { actions: RouteAction.VISUALISER }
   },
   {
     path: "/institutions/edit",
     name: RouteName.InstitutionEdit,
     component: () => import("../components/institution/InstitutionForm.vue"),
-    props: { action: "MODIFICATION" },
+    props: { action: RouteAction.MODIFICATION },
     meta: { requiresAuth: true }
   },
   {
     path: "/institutions",
     name: RouteName.Institutions,
-    component: () => import("../components/institution/InstitutionList.vue")
+    component: () => import("../components/institution/InstitutionList.vue"),
+    props: { actions: RouteAction.VISUALISER }
   },
 
   {
     path: "/institutions/merge",
     name: RouteName.InstitutionMerge,
     component: () => import("../components/institution/InstitutionMergeForm.vue"),
-    meta: { requiresAuth: true, isAdmin: true }
+    meta: { requiresAuth: true, isAdmin: true },
+    props: { action: RouteAction.FUSION }
   },
   {
     path: "/institutions/split",
     name: RouteName.InstitutionSplit,
     component: () => import("../components/institution/InstitutionSplitForm.vue"),
-    meta: { requiresAuth: true, isAdmin: true }
+    meta: { requiresAuth: true, isAdmin: true },
+    props: { action: RouteAction.SCISSION }
   },
 
   {
     path: "/ip",
     name: RouteName.IpList,
     component: () => import("../components/ip/IpList.vue"),
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
+    props: { actions: RouteAction.VISUALISER }
   },
   {
     path: "/ip/create",
     name: RouteName.IpCreate,
     component: () => import("../components/ip/IpCreate.vue"),
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
+    props: { action: RouteAction.CREATION }
   },
 
   // Publishers
@@ -122,21 +135,22 @@ const routes: RouteRecordRaw[] = [
     path: "/publishers",
     name: RouteName.Publishers,
     component: () => import("../components/publisher/PublisherList.vue"),
-    meta: { requiresAuth: true, isAdmin: true }
+    meta: { requiresAuth: true, isAdmin: true },
+    props: { actions: "VISUALISER" }
   },
   {
     path: "/publishers/create",
     name: RouteName.PublisherCreate,
     component: () => import("../components/publisher/PublisherForm.vue"),
-    props: { action: "CREATION" },
-    meta: { requiresAuth: true, isAdmin: true }
+    meta: { requiresAuth: true, isAdmin: true },
+    props: { action: "CREATION" }
   },
   {
     path: "/publishers/edit",
     name: RouteName.PublisherEdit,
     component: () => import("../components/publisher/PublisherForm.vue"),
-    props: { action: "MODIFICATION" },
-    meta: { requiresAuth: true, isAdmin: true }
+    meta: { requiresAuth: true, isAdmin: true },
+    props: { action: "MODIFICATION" }
   },
   {
     path: "/search",
@@ -239,6 +253,3 @@ router.beforeEach(async (to, from, next) => {
 });
 
 export default router;
-
-
-

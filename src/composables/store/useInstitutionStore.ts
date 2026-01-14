@@ -15,7 +15,7 @@ export const useInstitutionStore = defineStore("institution", {
     getCurrentInstitution(state) {
       const et = new Institution();
       Object.assign(et, state.currentInstitution);
-      et.dateCreation = new Date(et.dateCreation);
+      et.createdAt = new Date(et.createdAt);
 
       const contact = new InstitutionContact();
       Object.assign(contact, et.contact);

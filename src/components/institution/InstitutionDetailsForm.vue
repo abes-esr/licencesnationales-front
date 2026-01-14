@@ -13,19 +13,19 @@
       <v-text-field :label="$t('institution.card.siren')" :placeholder="$t('institution.card.siren')"
         variant="outlined" v-model="institution.siren" disabled class="mt-1" />
       <v-text-field :label="$t('institution.card.institutionName')"
-        :placeholder="$t('institution.card.institutionName')" variant="outlined" v-model="institution.nom"
+        :placeholder="$t('institution.card.institutionName')" variant="outlined" v-model="institution.name"
         :disabled="isEditModeDisabled" class="mt-1" />
       <v-text-field :label="$t('institution.card.idAbes')" :placeholder="$t('institution.card.idAbes')"
-        variant="outlined" v-model="institution.idAbes" disabled class="mt-1" />
+        variant="outlined" v-model="institution.abesId" disabled class="mt-1" />
       <v-select :label="$t('institution.card.institutionType')" :items="institutionTypes" variant="outlined"
-        v-model="institution.typeEtablissement" :disabled="isEditModeDisabled" class="mt-1" />
+        v-model="institution.institutionType" :disabled="isEditModeDisabled" class="mt-1" />
       <div class="mt-1">
         <h3 class="d-inline">{{ $t("institution.card.institutionStatus") }}</h3>
-        {{ institution.statut }}
+        {{ institution.status }}
       </div>
       <div class="mt-1">
         <h3 class="d-inline">{{ $t("institution.card.ipStatus") }}</h3>
-        {{ institution.statutIP }}
+        {{ institution.ipStatus }}
       </div>
     </div>
   </v-card>

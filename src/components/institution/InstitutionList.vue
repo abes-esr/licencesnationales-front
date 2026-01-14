@@ -60,24 +60,24 @@
                   {{ getSortIcon(column) }}
                 </v-icon>
 
-                <v-menu v-if="column.key === 'typeEtablissement' || column.key === 'statutIP'"
+                <v-menu v-if="column.key === 'institutionType' || column.key === 'ipStatus'"
                   :close-on-content-click="false">
                   <template #activator="{ props }">
                     <v-btn :aria-label="column.key" icon variant="text" class="ml-1" v-bind="props">
                       <v-icon small
-                        :color="column.key === 'typeEtablissement' ? (selectedType ? 'primary' : '') : (statusFilter ? 'primary' : '')">
+                        :color="column.key === 'institutionType' ? (selectedType ? 'primary' : '') : (statusFilter ? 'primary' : '')">
                         mdi-filter
                       </v-icon>
                     </v-btn>
                   </template>
-                  <div v-if="column.key === 'typeEtablissement'" style="background-color: white;" class="pl-4 pr-8">
+                  <div v-if="column.key === 'institutionType'" style="background-color: white;" class="pl-4 pr-8">
                     <ul>
                       <li v-for="item in institutionTypes" :key="item" @click="onInstitutionTypeSelect(item)">
                         <a>{{ item }}</a>
                       </li>
                     </ul>
                   </div>
-                  <div v-if="column.key === 'statutIP'" style="background-color: white;" class="pl-4 pr-8">
+                  <div v-if="column.key === 'ipStatus'" style="background-color: white;" class="pl-4 pr-8">
                     <ul>
                       <li v-for="item in statusOptions" :key="item.value" @click="onStatusSelect(item.value)">
                         <a>{{ item.title }}</a>
@@ -90,13 +90,13 @@
           </tr>
         </template>
 
-        <template #item.dateCreationFormattedInString="{ item }">
-          <span>{{ item.dateCreation.toLocaleDateString() }}</span>
+        <template #item.createdAtFormatted="{ item }">
+          <span>{{ item.createdAt.toLocaleDateString() }}</span>
         </template>
 
-        <template #item.nom="{ item }">
+        <template #item.name="{ item }">
           <a class="bouton-simple" @click="goToInstitution(item)">
-            <strong>{{ item.nom }}</strong>
+            <strong>{{ item.name }}</strong>
           </a>
         </template>
 
@@ -111,13 +111,12 @@
 </template>
 <script setup lang="ts">
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Institution from "@/entity/Institution";
 import { LicencesNationalesUnauthorizedApiError } from "@/exception/licencesnationales/LicencesNationalesUnauthorizedApiError";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { Logger } from "@/utils/Logger";
 import {
   faDownload,
@@ -160,23 +159,23 @@ const headers = computed<DataTableHeader[]>(() => [
   {
     title: t("institution.list.headers.createdAt"),
     align: "start",
-    key: "dateCreationFormattedInString",
+    key: "createdAtFormatted",
     sortable: true,
   },
-  { title: t("institution.list.headers.idAbes"), key: "idAbes", sortable: true },
+  { title: t("institution.list.headers.idAbes"), key: "abesId", sortable: true },
   { title: t("institution.list.headers.siren"), key: "siren", sortable: true },
-  { title: t("institution.list.headers.name"), key: "nom", sortable: true },
+  { title: t("institution.list.headers.name"), key: "name", sortable: true },
   {
     title: t("institution.list.headers.type"),
-    key: "typeEtablissement",
+    key: "institutionType",
     sortable: true,
   },
   {
     title: t("institution.list.headers.ipLastUpdate"),
-    key: "dateModificationDerniereIp",
+    key: "lastIpUpdateDate",
     sortable: true,
   },
-  { title: t("institution.list.headers.status"), key: "statutIP", sortable: true },
+  { title: t("institution.list.headers.status"), key: "ipStatus", sortable: true },
   { title: t("institution.list.headers.ipList"), key: "action", sortable: false },
 ]);
 
@@ -204,16 +203,16 @@ const filteredInstitutionsByStatus = computed((): Array<Institution> => {
   if (conditions.length > 0) {
     filteredInstitutions.value = institutions.value.filter(access =>
       conditions.every(
-        condition => access.typeEtablissement == condition || access.statutIP == condition
+        condition => access.institutionType == condition || access.ipStatus == condition
       )
     );
     return filteredInstitutions.value;
   }
 
   institutions.value.forEach(element => {
-    element.dateCreationFormattedInString = moment(element.dateCreation).format("YYYY-MM-DD");
-    if (element.dateModificationDerniereIp) {
-      element.dateModificationDerniereIp = element.dateModificationDerniereIp.replace(/-/g, "/");
+    element.createdAtFormatted = moment(element.createdAt).format("YYYY-MM-DD");
+    if (element.lastIpUpdateDate) {
+      element.lastIpUpdateDate = element.lastIpUpdateDate.replace(/-/g, "/");
     }
   });
   overrideStatuts();
@@ -223,8 +222,8 @@ const filteredInstitutionsByStatus = computed((): Array<Institution> => {
 
 function overrideStatuts(): void {
   institutions.value.forEach(element => {
-    if (element.statut === "Nouveau") {
-      element.statutIP = "Nouveau";
+    if (element.status === "Nouveau") {
+      element.ipStatus = "Nouveau";
     }
   });
 }
@@ -362,7 +361,3 @@ function goToInstitution(item: Institution): void {
   background-color: transparent !important;
 }
 </style>
-
-
-
-

@@ -51,17 +51,17 @@ export class InstitutionMapper {
   static toDomain(response: JsonInstitutionResponse): Institution {
     const institution = new Institution();
     institution.id = response.id;
-    institution.nom = response.nom;
+    institution.name = response.nom;
     institution.siren = response.siren;
-    institution.dateCreation = DateUtils.stringToDate(
+    institution.createdAt = DateUtils.stringToDate(
       response.dateCreation,
       "dd-MM-yyyy",
       "-"
     );
-    institution.typeEtablissement = response.typeEtablissement;
-    institution.statut = response.statut;
-    institution.statutIP = response.statutIps;
-    institution.idAbes = response.idAbes;
+    institution.institutionType = response.typeEtablissement;
+    institution.status = response.statut;
+    institution.ipStatus = response.statutIps;
+    institution.abesId = response.idAbes;
     institution.contact = InstitutionContactMapper.toDomain(response.contact);
     return institution;
   }
@@ -73,26 +73,26 @@ export class InstitutionMapper {
   static toSimpleDomain(response: JsonSimpleInstitutionResponse): Institution {
     const institution = new Institution();
     institution.id = response.id;
-    institution.nom = response.nom;
+    institution.name = response.nom;
     institution.siren = response.siren;
-    institution.dateCreation = DateUtils.stringToDate(
+    institution.createdAt = DateUtils.stringToDate(
       response.dateCreation,
       "dd-MM-yyyy",
       "-"
     );
-    institution.dateModificationDerniereIp = response.dateModificationDerniereIp;
-    institution.typeEtablissement = response.typeEtablissement;
-    institution.statut = response.statut;
-    institution.statutIP = response.statutIps;
-    institution.idAbes = response.idAbes;
+    institution.lastIpUpdateDate = response.dateModificationDerniereIp;
+    institution.institutionType = response.typeEtablissement;
+    institution.status = response.statut;
+    institution.ipStatus = response.statutIps;
+    institution.abesId = response.idAbes;
     return institution;
   }
 
   static toCreatePayload(institution: Institution, recaptchaToken: string): JsonCreateInstitution {
     return {
-      nom: institution.nom,
+      nom: institution.name,
       siren: institution.siren,
-      typeEtablissement: institution.typeEtablissement.toString(),
+      typeEtablissement: institution.institutionType.toString(),
       contact: InstitutionContactMapper.toCreatePayload(institution.contact),
       recaptcha: recaptchaToken
     };
@@ -100,9 +100,9 @@ export class InstitutionMapper {
 
   static toUpdatePayload(institution: Institution, isAdmin: boolean): JsonUpdateInstitution {
     return {
-      nom: institution.nom,
+      nom: institution.name,
       siren: institution.siren,
-      typeEtablissement: institution.typeEtablissement,
+      typeEtablissement: institution.institutionType,
       contact: InstitutionContactMapper.toUpdatePayload(institution.contact),
       role: isAdmin ? "admin" : "etab"
     };

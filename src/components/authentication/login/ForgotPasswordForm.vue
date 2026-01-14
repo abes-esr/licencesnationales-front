@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { ForgotPasswordResponse, useAuthService } from "@/composables/service/useAuthService";
-import { useLoading } from "@/utils/useLoading";
+import { useLoading } from "@/composables/useLoading";
 import { useRecaptcha } from "@/composables/useRecaptcha";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
@@ -141,4 +141,3 @@ h1 {
   padding-left: 5px;
 }
 </style>
-

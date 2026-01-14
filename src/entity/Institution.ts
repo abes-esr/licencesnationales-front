@@ -4,17 +4,17 @@ import { ValueError } from "@/exception/ValueError";
 
 export class Institution {
   id: number = -999;
-  nom: string = "";
+  name: string = "";
   siren: string = "";
-  dateCreation: Date = new Date();
-  dateCreationFormattedInString: string = "";
-  dateModificationDerniereIp: string = "";
-  typeEtablissement: string = "";
-  statut: string = "";
-  idAbes: string = "";
+  createdAt: Date = new Date();
+  createdAtFormatted: string = "";
+  lastIpUpdateDate: string = "";
+  institutionType: string = "";
+  status: string = "";
+  abesId: string = "";
   contact: InstitutionContact = new InstitutionContact();
   ips: Array<Ip> = [];
-  statutIP: string = "";
+  ipStatus: string = "";
 
   addIp(item: Ip): void {
     this.ips.push(item);
@@ -39,9 +39,9 @@ export class Institution {
   }
 
   reset(): void {
-    this.nom = "";
+    this.name = "";
     this.siren = "";
-    this.typeEtablissement = "";
+    this.institutionType = "";
     this.contact.reset();
   }
 }
