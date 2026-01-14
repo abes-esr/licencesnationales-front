@@ -11,16 +11,10 @@
                 <v-card-text>
                   <v-card-title>{{ $t("institution.merge.sirenTitle") }}</v-card-title>
                   <v-row>
-                    <v-col cols="4" xs="12" v-for="n in sirenNumber" :key="n">
-                      <v-text-field
-                        variant="outlined"
-                        :label="$t('institution.merge.sirenLabel')"
-                        :placeholder="$t('institution.merge.sirenLabel')"
-                        v-model="sirenEtab[n - 1]"
-                        :rules="rulesForms.siren"
-                        maxlength="9"
-                        required
-                      />
+                    <v-col cols="4" xs="12" v-for="n in sirenCount" :key="n">
+                      <v-text-field variant="outlined" :label="$t('institution.merge.sirenLabel')"
+                        :placeholder="$t('institution.merge.sirenLabel')" v-model="institutionSirens[n - 1]"
+                        :rules="sirenRules" maxlength="9" required />
                     </v-col>
                   </v-row>
                   <v-card-actions>
@@ -33,7 +27,7 @@
                   </v-card-actions>
                 </v-card-text>
               </v-card>
-              <InstitutionForm :listeSirenFusion="sirenEtab" :action="Action.FUSION" />
+              <InstitutionForm :listeSirenFusion="institutionSirens" :action="Action.FUSION" />
             </v-col>
           </v-row>
         </v-col>
@@ -43,25 +37,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import InstitutionForm from "@/components/institution/InstitutionForm.vue";
-import { rulesForms } from "@/core/RulesForm";
-import { Action } from "@/core/CommonDefinition";
+import { useValidationRules } from "@/composables/useValidationRules";
+import { Action } from "@/entity/CommonDefinition";
+import { ref } from "vue";
 
-const sirenEtab = ref<Array<string>>(["", ""]);
-const sirenNumber = ref(2);
+const institutionSirens = ref<Array<string>>(["", ""]);
+const sirenCount = ref(2);
 const formRef = ref();
+const { sirenRules } = useValidationRules();
 
 function increaseSirenNumber() {
-  sirenNumber.value++;
+  sirenCount.value++;
 }
 
 function decreaseSirenNumber() {
-  if (sirenNumber.value > 2) {
-    sirenNumber.value--;
-    sirenEtab.value.pop();
+  if (sirenCount.value > 2) {
+    sirenCount.value--;
+    institutionSirens.value.pop();
   }
 }
 
-defineExpose({ formRef, sirenEtab });
+defineExpose({ formRef, institutionSirens });
 </script>
+

@@ -18,41 +18,18 @@
                 <v-col class="pb-0">
                   <v-row v-if="typeIp === 'IPV4'">
                     <v-col class="pa-1" v-for="(value, index) in ipv4Segments" :key="index">
-                      <v-text-field
-                        :data-length="value.length"
-                        :data-index="index"
-                        :rules="rulesForm.ipv4SegmentsRules"
-                        ref="ipv4SegmentsRefs"
-                        v-model="ipv4Segments[index].value"
-                        :suffix="getSuffix(index)"
-                        @input="nextSegment(index, ipv4Segments, 'ipv4SegmentsRefs')"
-                        @paste="onPasteIp"
-                        @paste.prevent
-                        @focus="$emit('focus')"
-                        maxlength="3"
-                        variant="outlined"
-                        density="compact"
-                        required
-                      />
+                      <v-text-field :data-length="value.length" :data-index="index" :rules="ipv4SegmentRules"
+                        ref="ipv4SegmentsRefs" v-model="ipv4Segments[index].value" :suffix="getSuffix(index)"
+                        @input="nextSegment(index, ipv4Segments, 'ipv4SegmentsRefs')" @paste="onPasteIp" @paste.prevent
+                        @focus="$emit('focus')" maxlength="3" variant="outlined" density="compact" required />
                     </v-col>
                   </v-row>
                   <v-row v-else>
                     <v-col class="pa-1" v-for="(value, index) in ipv6Segments" :key="index">
-                      <v-text-field
-                        :data-length="value.length"
-                        :data-index="index"
-                        :rules="rulesForm.ipv6SegmentsRules"
-                        ref="ipv6SegmentsRefs"
-                        v-model="value.value"
-                        :suffix="getSuffix(index)"
-                        @input="nextSegment(index, ipv6Segments, 'ipv6SegmentsRefs')"
-                        @paste="onPasteIp"
-                        @paste.prevent
-                        @focus="$emit('focus')"
-                        variant="outlined"
-                        density="compact"
-                        required
-                      />
+                      <v-text-field :data-length="value.length" :data-index="index" :rules="ipv6SegmentRules"
+                        ref="ipv6SegmentsRefs" v-model="value.value" :suffix="getSuffix(index)"
+                        @input="nextSegment(index, ipv6Segments, 'ipv6SegmentsRefs')" @paste="onPasteIp" @paste.prevent
+                        @focus="$emit('focus')" variant="outlined" density="compact" required />
                     </v-col>
                   </v-row>
                 </v-col>
@@ -63,44 +40,23 @@
                     <label>{{ $t("ip.segments.startIp") }}</label>
                     <v-row>
                       <v-col class="pa-1 pb-0" v-for="(value, index) in ipv4SegmentsPlageDebut" :key="index">
-                        <v-text-field
-                          :data-length="value.length"
-                          :data-index="index"
-                          :rules="rulesForm.ipv4SegmentsRules"
-                          ref="ipv4SegmentsPlageDebutRefs"
-                          v-model="value.value"
+                        <v-text-field :data-length="value.length" :data-index="index"
+                          :rules="ipv4SegmentRules" ref="ipv4SegmentsPlageDebutRefs" v-model="value.value"
                           :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv4SegmentsPlageDebut, 'ipv4SegmentsPlageDebutRefs')"
-                          @paste="onPastePlageDebut"
-                          @paste.prevent
-                          @focus="$emit('focus')"
-                          maxlength="3"
-                          variant="outlined"
-                          density="compact"
-                          required
-                        />
+                          @paste="onPastePlageDebut" @paste.prevent @focus="$emit('focus')" maxlength="3"
+                          variant="outlined" density="compact" required />
                       </v-col>
                     </v-row>
                     <label>{{ $t("ip.segments.endIp") }}</label>
                     <v-row>
                       <v-col class="pa-1" v-for="(value, index) in ipv4SegmentsPlageFin" :key="index">
-                        <v-text-field
-                          :data-length="value.length"
-                          :data-index="index"
-                          :rules="rulesForm.ipv4SegmentsRules"
-                          ref="ipv4SegmentsPlageFinRefs"
-                          v-model="value.value"
+                        <v-text-field :data-length="value.length" :data-index="index"
+                          :rules="ipv4SegmentRules" ref="ipv4SegmentsPlageFinRefs" v-model="value.value"
                           :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv4SegmentsPlageFin, 'ipv4SegmentsPlageFinRefs')"
-                          @paste="onPastePlageFin"
-                          @paste.prevent
-                          @focus="$emit('focus')"
-                          :disabled="index <= 1"
-                          maxlength="3"
-                          variant="outlined"
-                          density="compact"
-                          required
-                        />
+                          @paste="onPastePlageFin" @paste.prevent @focus="$emit('focus')" :disabled="index <= 1"
+                          maxlength="3" variant="outlined" density="compact" required />
                       </v-col>
                     </v-row>
                   </div>
@@ -109,41 +65,23 @@
                     <label>{{ $t("ip.segments.startIp") }}</label>
                     <v-row>
                       <v-col v-for="(value, index) in ipv6SegmentsPlageDebut" :key="index" class="pa-1 pb-0">
-                        <v-text-field
-                          :data-length="value.length"
-                          :data-index="index"
-                          :rules="rulesForm.ipv6SegmentsRules"
-                          ref="ipv6SegmentsPlageDebutRefs"
-                          v-model="value.value"
+                        <v-text-field :data-length="value.length" :data-index="index"
+                          :rules="ipv6SegmentRules" ref="ipv6SegmentsPlageDebutRefs" v-model="value.value"
                           :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv6SegmentsPlageDebut, 'ipv6SegmentsPlageDebutRefs')"
-                          @paste="onPastePlageDebut"
-                          @paste.prevent
-                          @focus="$emit('focus')"
-                          variant="outlined"
-                          density="compact"
-                          required
-                        />
+                          @paste="onPastePlageDebut" @paste.prevent @focus="$emit('focus')" variant="outlined"
+                          density="compact" required />
                       </v-col>
                     </v-row>
                     <label>{{ $t("ip.segments.endIp") }}</label>
                     <v-row>
                       <v-col class="pa-1" v-for="(value, index) in ipv6SegmentsPlageFin" :key="index">
-                        <v-text-field
-                          :data-length="value.length"
-                          :data-index="index"
-                          :rules="rulesForm.ipv6SegmentsRules"
-                          ref="ipv6SegmentsPlageFinRefs"
-                          v-model="value.value"
+                        <v-text-field :data-length="value.length" :data-index="index"
+                          :rules="ipv6SegmentRules" ref="ipv6SegmentsPlageFinRefs" v-model="value.value"
                           :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv6SegmentsPlageFin, 'ipv6SegmentsPlageFinRefs')"
-                          @paste="onPastePlageFin"
-                          @paste.prevent
-                          @focus="$emit('focus')"
-                          variant="outlined"
-                          density="compact"
-                          required
-                        />
+                          @paste="onPastePlageFin" @paste.prevent @focus="$emit('focus')" variant="outlined"
+                          density="compact" required />
                       </v-col>
                     </v-row>
                   </div>
@@ -163,32 +101,16 @@
 
           <v-row class="mx-0 mt-0">
             <v-col cols="10" lg="10" md="8" sm="8">
-              <v-textarea
-                counter="255"
-                variant="outlined"
-                auto-grow
-                rows="2"
-                :label="$t('ip.segments.commentsLabel')"
-                :hint="$t('ip.segments.commentsHint')"
-                :rules="rulesForm.commentaires"
-                v-model="commentaires"
-                @focus="$emit('focus')"
-                clearable
-                persistent-hint
-              />
+              <v-textarea counter="255" variant="outlined" auto-grow rows="2" :label="$t('ip.segments.commentsLabel')"
+                :hint="$t('ip.segments.commentsHint')" :rules="commentRules" v-model="commentaires"
+                @focus="$emit('focus')" clearable persistent-hint />
             </v-col>
             <v-col cols="2">
               <v-row id="btnToBtm"></v-row>
               <v-row>
                 <v-card-actions>
-                  <v-btn
-                    @click="ajouterIp"
-                    :loading="buttonLoading"
-                    id="btnSave"
-                    size="large"
-                    color="button"
-                    variant="elevated"
-                  >
+                  <v-btn @click="ajouterIp" :loading="buttonLoading" id="btnSave" size="large" color="button"
+                    variant="elevated">
                     <span id="btnText">{{ $t("ip.segments.save") }} </span>
                     <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
                   </v-btn>
@@ -203,17 +125,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
-import { rulesForms } from "@/core/RulesForm";
-import { useIpService } from "@/composables/useIpService";
+import { useIpService } from "@/composables/service/useIpService";
+import { useValidationRules } from "@/composables/useValidationRules";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { Logger } from "@/utils/Logger";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useAuthStore } from "@/stores/authStore";
-import { useSnackbar } from "@/composables/useSnackbar";
-import { useEtablissementStore } from "@/stores/etablissementStore";
-import type { VForm, VTextField } from "vuetify/components";
 import { faBackspace } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import type { VForm, VTextField } from "vuetify/components";
 
 interface SegmentPlage {
   length: number;
@@ -237,12 +159,11 @@ const emit = defineEmits<{
   (e: "focus"): void;
 }>();
 
-const rulesForm = rulesForms;
 const authStore = useAuthStore();
-const snackbar = useSnackbar();
-const etablissementStore = useEtablissementStore();
+const institutionStore = useInstitutionStore();
 const iPService = useIpService();
 const { t } = useI18n();
+const { commentRules, ipv4SegmentRules, ipv6SegmentRules } = useValidationRules();
 
 const formModuleSegmentsIpPlage = ref<VForm | null>(null);
 const ipv4SegmentsRefs = ref<InstanceType<typeof VTextField>[]>([]);
@@ -376,7 +297,7 @@ const ajouterIp = async () => {
 
     let siren = "";
     if (isAdmin.value) {
-      siren = etablissementStore.getCurrentEtablissement.siren;
+      siren = institutionStore.getCurrentInstitution.siren;
     } else {
       siren = authStore.userSiren;
     }
@@ -415,7 +336,7 @@ const clear = (dontClearComments: boolean) => {
   if (!dontClearComments) commentaires.value = "";
   resetSegments();
   formModuleSegmentsIpPlage.value?.resetValidation();
-  snackbar.hide();
+  ;
 };
 
 const onPasteIp = (evt: ClipboardEvent) => {
@@ -513,19 +434,25 @@ defineExpose({
 button {
   font-size: 12px !important;
 }
+
 #btnText {
   padding-right: 5px;
 }
+
 #btnToBtm {
   height: 58%;
 }
+
 #fillHeight {
   height: 70%;
 }
 </style>
 
 <style>
-.v-input--is-disabled > .v-input__control > .v-input__slot {
+.v-input--is-disabled>.v-input__control>.v-input__slot {
   background: #b0b4c4 !important;
 }
 </style>
+
+
+

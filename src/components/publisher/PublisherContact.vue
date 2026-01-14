@@ -13,12 +13,12 @@
             :label="`Contact ${typeContactCandidatesLabel[type]}`" :value="type"></v-radio>
         </v-radio-group>
 
-        <v-text-field outlined label="Nom" placeholder="Nom" v-model="contact.nom" :rules="rulesForms.nom" required
+        <v-text-field outlined label="Nom" placeholder="Nom" v-model="contact.nom" :rules="lastNameRules" required
           @keyup.enter="validate()"></v-text-field>
-        <v-text-field outlined label="Prénom" placeholder="Prénom" v-model="contact.prenom" :rules="rulesForms.prenom"
+        <v-text-field outlined label="Prénom" placeholder="Prénom" v-model="contact.prenom" :rules="firstNameRules"
           required @keyup.enter="validate()"></v-text-field>
         <v-text-field outlined label="Adresse e-mail" placeholder="Adresse e-mail" v-model="contact.mail"
-          :rules="rulesForms.email" required @keyup.enter="validate()"></v-text-field>
+          :rules="emailRules" required @keyup.enter="validate()"></v-text-field>
       </v-card-text>
 
     </v-form>
@@ -26,16 +26,15 @@
 </template>
 
 <script setup lang="ts">
-import { ContactType } from "@/core/CommonDefinition";
-import ContactEditeur from "@/core/ContactEditeur";
-import { rulesForms } from "@/core/RulesForm";
+import { useValidationRules } from "@/composables/useValidationRules";
+import PublisherContact, { ContactType } from "@/entity/PublisherContact";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { onMounted, ref } from "vue";
 
 // Props
 const props = defineProps<{
-  contact: ContactEditeur;
+  contact: PublisherContact;
 }>();
 
 // Emits
@@ -43,8 +42,7 @@ const emit = defineEmits<{
   (e: "onChange"): void;
 }>();
 
-// rulesForms
-const rules = rulesForms;
+const { emailRules, firstNameRules, lastNameRules } = useValidationRules();
 
 // Candidates
 const typeContactCandidates = [

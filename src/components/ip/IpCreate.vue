@@ -116,10 +116,11 @@
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import IpRangeSegments from "@/components/ip/IpRangeSegments.vue";
-import { useIpService } from "@/composables/useIpService";
+import { useIpService } from "@/composables/service/useIpService";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/stores/authStore";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { faCircleInfo, faReply, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
@@ -216,3 +217,6 @@ h1 {
   height: 80%;
 }
 </style>
+
+
+

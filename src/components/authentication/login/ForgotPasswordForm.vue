@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <v-container elevation="0">
     <h1 class="pb-1">{{ $t("auth.forgotPassword.title") }}</h1>
     <h2 class="pa-1">
@@ -10,9 +10,10 @@
           <v-col cols="1" />
           <v-col cols="10">
             <v-radio :label="$t('auth.forgotPassword.optionSiren')" :value="true" />
-            <v-form ref="formSIREN">
-              <v-text-field variant="outlined" :label="$t('auth.forgotPassword.sirenLabel')" :placeholder="$t('auth.forgotPassword.sirenPlaceholder')" v-model="siren" maxlength="9"
-                :rules="rulesForms.siren" required @keyup.enter="validate" :disabled="!sirenRadio" />
+            <v-form ref="sirenForm">
+              <v-text-field variant="outlined" :label="$t('auth.forgotPassword.sirenLabel')"
+                :placeholder="$t('auth.forgotPassword.sirenPlaceholder')" v-model="siren" maxlength="9"
+                :rules="sirenRules" required @keyup.enter="validate" :disabled="!sirenRadio" />
               <v-icon> mdi-information </v-icon>
               <a href="https://annuaire-entreprises.data.gouv.fr/" target="_blank" class="siren-link">
                 {{ $t("auth.forgotPassword.sirenHelp") }}
@@ -24,10 +25,10 @@
           <v-col cols="1" />
           <v-col cols="10">
             <v-radio :label="$t('auth.forgotPassword.optionEmail')" :value="false" />
-            <v-form ref="formMail">
-              <v-text-field variant="outlined" :label="$t('auth.forgotPassword.contactEmailLabel')" :placeholder="$t('auth.forgotPassword.contactEmailPlaceholder')"
-                type="mail" v-model="mail" :rules="rulesForms.email" required @keyup.enter="validate"
-                :disabled="sirenRadio" />
+            <v-form ref="mailForm">
+              <v-text-field variant="outlined" :label="$t('auth.forgotPassword.contactEmailLabel')"
+                :placeholder="$t('auth.forgotPassword.contactEmailPlaceholder')" type="mail" v-model="mail"
+                :rules="emailRules" required @keyup.enter="validate" :disabled="sirenRadio" />
             </v-form>
           </v-col>
         </v-row>
@@ -36,7 +37,7 @@
 
     <v-row>
       <v-col>
-        <v-btn color="button" class="submit-button" :loading="buttonLoading" @click="validate">
+        <v-btn color="button" class="submit-button" :loading="loading" @click="validate">
           {{ $t("auth.forgotPassword.submit") }}
           <v-icon class="submit-button-icon">mdi-arrow-right-circle-outline</v-icon>
         </v-btn>
@@ -46,10 +47,11 @@
 </template>
 
 <script setup lang="ts">
-import { JsonMotDePasseOublieResponse, useAuthService } from "@/composables/useAuthService";
+import { ForgotPasswordResponse, useAuthService } from "@/composables/service/useAuthService";
+import { useLoading } from "@/utils/useLoading";
 import { useRecaptcha } from "@/composables/useRecaptcha";
 import { useSnackbar } from "@/composables/useSnackbar";
-import { rulesForms } from "@/core/RulesForm";
+import { useValidationRules } from "@/composables/useValidationRules";
 import { LicencesNationalesBadRequestApiError } from "@/exception/licencesnationales/LicencesNationalesBadRequestApiError";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -59,37 +61,35 @@ const snackbar = useSnackbar();
 const authService = useAuthService();
 const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
 const { t } = useI18n();
+const { emailRules, sirenRules } = useValidationRules();
 
 const siren = ref("");
 const mail = ref("");
 const sirenRadio = ref(true);
-const buttonLoading = ref(false);
+const { loading, startLoading, stopLoading } = useLoading();
 
-const formSIREN = ref<VForm | null>(null);
-const formMail = ref<VForm | null>(null);
+const sirenForm = ref<VForm | null>(null);
+const mailForm = ref<VForm | null>(null);
 
-const emailNotFoundMessage = () => t("auth.forgotPassword.emailNotFound");
-
-const submitWithLoading = async (action: () => Promise<JsonMotDePasseOublieResponse>) => {
-  buttonLoading.value = true;
-  snackbar.hide();
+const submitWithLoading = async (action: () => Promise<ForgotPasswordResponse>) => {
+  startLoading();
   try {
     const response = await action();
     snackbar.success(response.message);
   } catch (err: any) {
     if (err instanceof LicencesNationalesBadRequestApiError && !sirenRadio.value) {
-      snackbar.success(emailNotFoundMessage());
+      snackbar.success(t("auth.forgotPassword.emailNotFound"));
     } else {
       snackbar.error(err);
     }
   } finally {
-    buttonLoading.value = false;
+    stopLoading();
   }
 };
 
 const submitSiren = async (recaptcha: string) =>
   submitWithLoading(() =>
-    authService.motDePasseOublieSiren({
+    authService.forgotPasswordBySiren({
       siren: siren.value,
       recaptcha
     })
@@ -97,7 +97,7 @@ const submitSiren = async (recaptcha: string) =>
 
 const submitEmail = async (recaptcha: string) =>
   submitWithLoading(() =>
-    authService.motDePasseOublieEmail({
+    authService.forgotPasswordByEmail({
       email: mail.value,
       recaptcha
     })
@@ -106,7 +106,7 @@ const submitEmail = async (recaptcha: string) =>
 const validate = async () => {
   await loadRecaptcha();
   const token = await executeRecaptcha("forgotPassword");
-  const form = sirenRadio.value ? formSIREN.value : formMail.value;
+  const form = sirenRadio.value ? sirenForm.value : mailForm.value;
   const validation = await form?.validate();
   if (!validation?.valid) {
     return;
@@ -141,3 +141,4 @@ h1 {
   padding-left: 5px;
 }
 </style>
+

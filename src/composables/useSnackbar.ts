@@ -1,7 +1,13 @@
-import { MessageType } from "@/core/CommonDefinition";
 import { formatApiError } from "@/utils/formatApiError";
 import { Logger } from "@/utils/Logger";
 import { reactive } from "vue";
+
+export enum MessageType {
+  ERREUR,
+  INFORMATION,
+  AVERTISSEMENT,
+  VALIDATION
+}
 
 export type SnackbarState = {
   isDisplayed: boolean;

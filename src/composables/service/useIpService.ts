@@ -1,4 +1,4 @@
-import { useApiService } from "@/composables/useApiService";
+import { useApiService } from "@/composables/service/useApiService";
 
 export const useIpService = () => {
   const api = useApiService();
@@ -6,7 +6,7 @@ export const useIpService = () => {
   const getListIP = (token: string, siren: string) =>
     api.get(`/ip/${siren}`, token);
 
-  const getListIPEtab = (token: string, siren: string) =>
+  const getInstitutionIpList = (token: string, siren: string) =>
     api.get(`/ip/ipsEtab/${siren}`, token);
 
   const getIPInfos = (token: string, data: any) =>
@@ -27,7 +27,7 @@ export const useIpService = () => {
   const search = (criteres: Array<string>, token: string) =>
     api.post("/ip/search/", criteres, token);
 
-  const getHisto = (siren: string, token: string) =>
+  const getHistory = (siren: string, token: string) =>
     api.get(`/ip/histo/${siren}`, token);
 
   const getStats = (dateDebut: string, dateFin: string, token: string) =>
@@ -38,15 +38,16 @@ export const useIpService = () => {
 
   return {
     getListIP,
-    getListIPEtab,
+    getInstitutionIpList,
     getIPInfos,
     addIP,
     updateIP,
     deleteIP,
     getWhoIs,
     search,
-    getHisto,
+    getHistory,
     getStats,
     downloadIPs
   };
 };
+

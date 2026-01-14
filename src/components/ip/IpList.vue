@@ -3,10 +3,10 @@
     <ConfirmPopup ref="confirmRef" />
 
     <v-container class="pb-0">
-      <h1>{{ $t("ip.list.title", { name: currentEtabNom }) }}</h1>
+      <h1>{{ $t("ip.list.title", { name: currentInstitutionName }) }}</h1>
       <div class="d-flex flex-wrap align-center justify-space-between">
         <div class="my-2">
-          <a v-if="isAdmin" @click="revenirInfosEtab">
+          <a v-if="isAdmin" @click="goBackToInstitution">
             <FontAwesomeIcon :icon="faReply" />&nbsp;{{ $t("ip.list.backToInstitution") }}
           </a>
         </div>
@@ -24,23 +24,14 @@
           {{ notification }}
         </v-alert>
 
-        <VDataTable
-          id="mytable"
-          :key="refreshKey"
-          :headers="headers"
-          :items="filteredAccesByStatut"
-          :items-per-page="10"
-          :items-per-page-options="[10, 25, 50, 75, { value: -1, title: $t('ip.list.all') }]"
-          :item-class="RowClasses"
-          :search="rechercher"
-          :loading="dataLoading"
-          :no-data-text="$t('ip.list.noData')"
-          class="row-height-50"
-          density="comfortable"
-        >
+        <VDataTable id="mytable" :key="refreshKey" :headers="headers" :items="filteredAccessByStatus"
+          :items-per-page="10" :items-per-page-options="[10, 25, 50, 75, { value: -1, title: $t('ip.list.all') }]"
+          :item-class="RowClasses" :search="searchQuery" :loading="dataLoading" :no-data-text="$t('ip.list.noData')"
+          class="row-height-50" density="comfortable">
           <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
             <tr>
-              <th v-for="column in columns" :key="column.key" class="text-left" @click="column.sortable ? toggleSort(column) : ''">
+              <th v-for="column in columns" :key="column.key" class="text-left"
+                @click="column.sortable ? toggleSort(column) : ''">
                 <div style="display: flex; align-items: center; white-space: nowrap;">
                   <span>{{ column.title }}</span>
 
@@ -51,27 +42,28 @@
                     {{ getSortIcon(column) }}
                   </v-icon>
 
-                  <v-menu v-if="column.key === 'statut' || column.key === 'typeIp'" offset-y :close-on-content-click="false">
+                  <v-menu v-if="column.key === 'statut' || column.key === 'typeIp'" offset-y
+                    :close-on-content-click="false">
                     <template #activator="{ props }">
-                      <v-btn :aria-label="column.key" icon size="x-small" v-bind="props" variant="text" class="pa-0 ma-0">
+                      <v-btn :aria-label="column.key" icon size="x-small" v-bind="props" variant="text"
+                        class="pa-0 ma-0">
                         <v-icon
-                          :color="column.key === 'statut' ? (statut ? 'primary' : '') : (type ? 'primary' : '')"
-                          size="small"
-                        >
+                          :color="column.key === 'statut' ? (statusFilter ? 'primary' : '') : (typeFilter ? 'primary' : '')"
+                          size="small">
                           mdi-filter
                         </v-icon>
                       </v-btn>
                     </template>
                     <div v-if="column.key === 'statut'" style="background-color: white" class="pl-4 pr-8">
                       <ul>
-                        <li v-for="item in selectStatut" :key="item.value" @click="eventStatutChoice(item.value)">
+                        <li v-for="item in statusOptions" :key="item.value" @click="onStatusSelect(item.value)">
                           <a>{{ item.title }}</a>
                         </li>
                       </ul>
                     </div>
                     <div v-if="column.key === 'typeIp'" style="background-color: white;" class="pl-4 pr-8">
                       <ul>
-                        <li v-for="item in selectType" :key="item.value" @click="eventTypeChoice(item.value)">
+                        <li v-for="item in typeOptions" :key="item.value" @click="onTypeSelect(item.value)">
                           <a>{{ item.title }}</a>
                         </li>
                       </ul>
@@ -85,15 +77,11 @@
           <template #top>
             <v-row>
               <v-col cols="12" sm="6" class="px-0">
-                <v-tooltip
-                  :text="$t('ip.list.downloadTooltip')"
-                  location="top"
-                  open-delay="100"
-                  theme="dark"
-                  content-class="text-white"
-                >
+                <v-tooltip :text="$t('ip.list.downloadTooltip')" location="top" open-delay="100" theme="dark"
+                  content-class="text-white">
                   <template #activator="{ props }">
-                    <v-btn variant="text" @click="downloadIPs" class="bouton-simple pl-0" v-bind="props" :loading="isExportLoading">
+                    <v-btn variant="text" @click="downloadIPs" class="bouton-simple pl-0" v-bind="props"
+                      :loading="isExportLoading">
                       <h2>{{ $t("ip.list.downloadTitle") }}</h2>
                       <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
                     </v-btn>
@@ -102,13 +90,8 @@
               </v-col>
               <v-col cols="0" sm="3"></v-col>
               <v-col cols="12" sm="3" class="px-0">
-                <v-text-field
-                  v-model="rechercher"
-                  :label="$t('ip.list.searchLabel')"
-                  prepend-inner-icon="mdi-magnify"
-                  variant="outlined"
-                  clearable
-                />
+                <v-text-field v-model="searchQuery" :label="$t('ip.list.searchLabel')" prepend-inner-icon="mdi-magnify"
+                  variant="outlined" clearable />
               </v-col>
             </v-row>
           </template>
@@ -116,7 +99,8 @@
           <template #item.commentaires="{ item }">
             <v-tooltip location="bottom" theme="dark" content-class="text-white">
               <template #activator="{ props }">
-                <span v-bind="props" class="text-truncate d-block" :style="{ width: '100px' }">{{ item.commentaires }}</span>
+                <span v-bind="props" class="text-truncate d-block" :style="{ width: '100px' }">{{ item.commentaires
+                  }}</span>
               </template>
               <span>{{ item.commentaires }}</span>
             </v-tooltip>
@@ -130,30 +114,19 @@
                   <FontAwesomeIcon :icon="faCircleInfo" />
                 </span>
               </template>
-              <span v-if="item.statut.includes('Validé')">{{ infobulleValid }}</span>
+              <span v-if="item.statut.includes('Validï¿½')">{{ infobulleValid }}</span>
               <span v-if="item.statut.includes('Attestation')">{{ infobulleAttestation }}</span>
               <span v-if="item.statut.includes('attente')">{{ infobulleAttente }}</span>
             </v-tooltip>
           </template>
 
           <template #item.action="{ item }">
-            <v-btn
-              v-if="isAdmin && getCurrentEtab.statut == 'Validé'"
-              class="ma-0 pa-0 bouton-simple"
-              variant="flat"
-              :title="$t('ip.list.review')"
-              @click.stop="openDialog(item)"
-            >
+            <v-btn v-if="isAdmin && currentInstitution.statut == 'Validï¿½'" class="ma-0 pa-0 bouton-simple" variant="flat"
+              :title="$t('ip.list.review')" @click.stop="openDialog(item)">
               <FontAwesomeIcon :icon="faMagnifyingGlass" />
             </v-btn>
-            <v-btn
-              v-if="!isAdmin"
-              class="ma-0 pa-0 bouton-simple"
-              icon
-              :loading="buttlonLoading"
-              :title="$t('ip.list.delete')"
-              @click="supprimerIP(item.id, item.ip)"
-            >
+            <v-btn v-if="!isAdmin" class="ma-0 pa-0 bouton-simple" icon :loading="buttonLoading"
+              :title="$t('ip.list.delete')" @click="supprimerIP(item.id, item.ip)">
               <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
             </v-btn>
           </template>
@@ -165,7 +138,7 @@
               <v-btn @click="clearActions" class="btn-6" variant="outlined">
                 <span class="btnText">{{ $t("ip.list.cancel") }}</span>
               </v-btn>
-              <v-btn @click="dispatchAllAction" :loading="buttlonLoading" variant="elevated">
+              <v-btn @click="dispatchAllAction" :loading="buttonLoading" variant="elevated">
                 <span class="btnText">{{ $t("ip.list.saveActions") }}</span>
                 <FontAwesomeIcon :icon="faCircleArrowRight" />
               </v-btn>
@@ -237,30 +210,18 @@
           </v-expansion-panels>
           <br />
           <h3>{{ $t("ip.list.dialog.adminComment") }}</h3>
-          <v-textarea
-            variant="outlined"
-            auto-grow
-            counter="4000"
-            :rules="rulesForm.commentaireAdmin"
-            rows="2"
-            :label="$t('ip.list.dialog.deleteReason')"
-            v-model="commentaires"
-            clearable
-          />
+          <v-textarea variant="outlined" auto-grow counter="4000" :rules="adminCommentRules" rows="2"
+            :label="$t('ip.list.dialog.deleteReason')" v-model="comments" clearable />
         </v-card-text>
         <v-card-actions>
           <v-row>
             <v-col>
               <div style="float: right" class="actions ga-4 d-flex">
-                <v-btn
-                  @click="
-                    dialog = false;
-                    currentIPid = '';
-                    commentaires = '';
-                  "
-                  class="btn-6"
-                  variant="outlined"
-                >
+                <v-btn @click="
+                  dialog = false;
+                currentIPid = '';
+                comments = '';
+                " class="btn-6" variant="outlined">
                   {{ $t("ip.list.cancel") }}
                 </v-btn>
                 <v-btn @click="addActionToBuffer('SUPPRIMER')" color="error" variant="flat">
@@ -283,13 +244,13 @@
 
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import IpInfo from "@/components/ip/IpInfo.vue";
-import { useIpService } from "@/composables/useIpService";
+import { useIpService } from "@/composables/service/useIpService";
 import { useSnackbar } from "@/composables/useSnackbar";
-import { rulesForms } from "@/core/RulesForm";
+import { useValidationRules } from "@/composables/useValidationRules";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/stores/authStore";
-import { useEtablissementStore } from "@/stores/etablissementStore";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { Logger } from "@/utils/Logger";
 import {
   faCheck,
@@ -311,36 +272,36 @@ import { useDisplay } from "vuetify";
 import { VDataTable } from "vuetify/components";
 
 const props = defineProps<{
-  sirenEtabSiAdmin?: string;
+  adminInstitutionSiren?: string;
 }>();
 
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
-const etablissementStore = useEtablissementStore();
+const institutionStore = useInstitutionStore();
 const router = useRouter();
 const { mdAndDown } = useDisplay();
-const iPService = useIpService();
+const ipService = useIpService();
 const { t } = useI18n();
 
-const rulesForm = rulesForms;
+const { adminCommentRules } = useValidationRules();
 const refreshKey = ref(0);
-const statut = ref("");
-const type = ref("");
-const selectStatut = computed(() => [
+const statusFilter = ref("");
+const typeFilter = ref("");
+const statusOptions = computed(() => [
   { value: "En attente d'attestation", title: t("ip.list.status.attestationPending") },
-  { value: "IP Validée par l'Abes", title: t("ip.list.status.validatedByAbes") },
+  { value: "IP Validï¿½e par l'Abes", title: t("ip.list.status.validatedByAbes") },
   { value: "En attente d'examen par l'Abes", title: t("ip.list.status.reviewPending") },
   { value: "Tous", title: t("ip.list.all") },
 ]);
-const selectType = computed(() => [
+const typeOptions = computed(() => [
   { value: "IPV4", title: t("ip.list.types.ipv4") },
   { value: "IPV6", title: t("ip.list.types.ipv6") },
   { value: "Plage IPV4", title: t("ip.list.types.rangeIpv4") },
   { value: "Plage IPV6", title: t("ip.list.types.rangeIpv6") },
   { value: "Tous", title: t("ip.list.all") },
 ]);
-const rechercher = ref("");
-const acces = ref<Array<any>>([]);
+const searchQuery = ref("");
+const accessList = ref<Array<any>>([]);
 const whoIs = ref("");
 const whoIs2 = ref("");
 const currentIP = ref<any>({});
@@ -348,9 +309,9 @@ const bufferActions = ref<Array<any>>([]);
 const error = ref("");
 const dialog = ref(false);
 const isExportLoading = ref(false);
-const buttlonLoading = ref(false);
+const buttonLoading = ref(false);
 const notification = ref("");
-const commentaires = ref("");
+const comments = ref("");
 const headers = computed(() => {
   if (isAdmin.value) {
     return [
@@ -424,60 +385,60 @@ const infobulleAttente = t("ip.list.info.waiting");
 const infobulleAttestation = t("ip.list.info.attestation");
 const infobulleValid = t("ip.list.info.valid");
 
-const currentEtabNom = computed(() => etablissementStore.getCurrentEtablissement.nom);
+const currentInstitutionName = computed(() => institutionStore.getCurrentInstitution.nom);
 const isAdmin = computed(() => authStore.isAdmin);
 const breakpointMdAndDown = computed(() => mdAndDown.value);
-const getCurrentEtab = computed(() => etablissementStore.getCurrentEtablissement);
+const currentInstitution = computed(() => institutionStore.getCurrentInstitution);
 
-const filteredAccesByType = computed(() => {
+const filteredAccessByType = computed(() => {
   const conditions: Array<(value: any) => boolean> = [];
-  if (type.value) {
-    conditions.push(filterType);
+  if (typeFilter.value) {
+    conditions.push(filterIpType);
   }
   if (conditions.length > 0) {
-    return acces.value.filter(accesItem => conditions.every(condition => condition(accesItem)));
+    return accessList.value.filter(accessItem => conditions.every(condition => condition(accessItem)));
   }
-  return acces.value;
+  return accessList.value;
 });
 
-const filteredAccesByStatut = computed(() => {
+const filteredAccessByStatus = computed(() => {
   const conditions: Array<(value: any) => boolean> = [];
-  if (statut.value) {
-    conditions.push(filterStatut);
+  if (statusFilter.value) {
+    conditions.push(filterStatus);
   }
   if (conditions.length > 0) {
-    return filteredAccesByType.value.filter(accesItem => conditions.every(condition => condition(accesItem)));
+    return filteredAccessByType.value.filter(accessItem => conditions.every(condition => condition(accessItem)));
   }
-  return filteredAccesByType.value;
+  return filteredAccessByType.value;
 });
 
 onMounted(() => {
   moment.locale("fr");
-  collecterAcces();
+  fetchAccessList();
 });
 
-function filterStatut(statutRecherche: any) {
-  return statutRecherche.statut.toString().includes(statut.value);
+function filterStatus(statusItem: any) {
+  return statusItem.statut.toString().includes(statusFilter.value);
 }
 
-function filterType(typeRecherche: any) {
-  return typeRecherche.typeIp.toString() === type.value;
+function filterIpType(typeSearch: any) {
+  return typeSearch.typeIp.toString() === typeFilter.value;
 }
 
 function getAll() {
   if (isAdmin.value) {
-    return iPService.getListIPEtab(
+    return ipService.getInstitutionIpList(
       authStore.getToken,
-      etablissementStore.getCurrentEtablissement.siren
+      institutionStore.getCurrentInstitution.siren
     );
   }
-  return iPService.getListIP(authStore.getToken, authStore.user.siren);
+  return ipService.getListIP(authStore.getToken, authStore.user.siren);
 }
 
-function collecterAcces(): void {
+function fetchAccessList(): void {
   getAll()
     .then(response => {
-      acces.value = response.data.map(affichageAcces);
+      accessList.value = response.data.map(formatAccessEntry);
     })
     .catch(err => {
       Logger.error(err);
@@ -488,24 +449,24 @@ function collecterAcces(): void {
     });
 }
 
-function affichageAcces(accesItem: any) {
-  let typeAcces = "";
-  if (accesItem.typeAcces === "range") typeAcces = t("ip.list.types.rangePrefix");
+function formatAccessEntry(accessItem: any) {
+  let accessType = "";
+  if (accessItem.typeAcces === "range") accessType = t("ip.list.types.rangePrefix");
   return {
-    id: accesItem.id,
-    dateCreation: moment(accesItem.dateCreation).format("L"),
-    dateModification: getDateModification(accesItem),
-    typeIp: typeAcces + accesItem.typeIp,
-    typeAcces: accesItem.typeAcces,
-    ip: accesItem.ip,
-    statut: accesItem.statut,
-    commentaires: accesItem.commentaires,
+    id: accessItem.id,
+    dateCreation: moment(accessItem.dateCreation).format("L"),
+    dateModification: getDateModification(accessItem),
+    typeIp: accessType + accessItem.typeIp,
+    typeAcces: accessItem.typeAcces,
+    ip: accessItem.ip,
+    statut: accessItem.statut,
+    commentaires: accessItem.commentaires,
   };
 }
 
-function getDateModification(accesItem: any) {
-  if (accesItem.dateModification === null) return accesItem.dateModification;
-  return moment(accesItem.dateModification).format("L");
+function getDateModification(accessItem: any) {
+  if (accessItem.dateModification === null) return accessItem.dateModification;
+  return moment(accessItem.dateModification).format("L");
 }
 
 function openDialog(item: any): void {
@@ -520,7 +481,7 @@ function fetchwhoIs(item: any): void {
   whoIs2.value = "";
 
   if (item.typeAcces === "ip") {
-    iPService
+    ipService
       .getWhoIs(authStore.getToken, item.ip)
       .then(res => {
         whoIs.value = res.data;
@@ -530,7 +491,7 @@ function fetchwhoIs(item: any): void {
       });
   } else {
     const ips = splitRangeIntoIPs(item.typeIp, item.ip);
-    iPService
+    ipService
       .getWhoIs(authStore.getToken, ips[0])
       .then(res => {
         whoIs.value = res.data;
@@ -538,7 +499,7 @@ function fetchwhoIs(item: any): void {
       .catch(() => {
         Logger.error(t("ip.list.whoisError"));
       });
-    iPService
+    ipService
       .getWhoIs(authStore.getToken, ips[1])
       .then(res => {
         whoIs2.value = res.data;
@@ -600,17 +561,17 @@ function dispatchAllAction(): void {
       error.value = err.response?.data?.message ?? err.message;
     })
     .finally(() => {
-      collecterAcces();
+      fetchAccessList();
       clearActions();
-      buttlonLoading.value = false;
+      buttonLoading.value = false;
     });
 }
 
 function updateIP(): Promise<AxiosResponse> {
-  buttlonLoading.value = true;
-  return iPService.updateIP(
+  buttonLoading.value = true;
+  return ipService.updateIP(
     authStore.getToken,
-    etablissementStore.getCurrentEtablissement.siren,
+    institutionStore.getCurrentInstitution.siren,
     bufferActions.value
   );
 }
@@ -620,16 +581,16 @@ function addActionToBuffer(action: string): void {
     idIp: currentIP.value.id,
     action: action,
     ip: currentIP.value.ip,
-    commentaire: commentaires.value,
+    commentaire: comments.value,
   });
   addActionToDatatable(action, currentIP.value.id);
-  commentaires.value = "";
+  comments.value = "";
   dialog.value = false;
   refreshKey.value++;
 }
 
 function addActionToDatatable(action: string, id: number) {
-  acces.value.forEach(element => {
+  accessList.value.forEach(element => {
     if (element.id === id) {
       element.buffer = action;
     }
@@ -639,10 +600,10 @@ function addActionToDatatable(action: string, id: number) {
 async function supprimerIP(IDip: string, ip: string) {
   const confirmed = await confirmRef.value?.open(t("ip.list.deleteConfirm", { ip }));
   if (confirmed) {
-    buttlonLoading.value = true;
+    buttonLoading.value = true;
     clearAlerts();
 
-    iPService
+    ipService
       .deleteIP(authStore.getToken, IDip)
       .then(() => {
         notification.value = t("ip.list.deleteSuccess");
@@ -652,8 +613,8 @@ async function supprimerIP(IDip: string, ip: string) {
         error.value = err.message;
       })
       .finally(() => {
-        buttlonLoading.value = false;
-        collecterAcces();
+        buttonLoading.value = false;
+        fetchAccessList();
       });
   }
 }
@@ -671,7 +632,7 @@ function RowClasses(item: any) {
 function clearActions() {
   bufferActions.value = [];
   refreshKey.value++;
-  acces.value.forEach(element => {
+  accessList.value.forEach(element => {
     if (element.buffer !== undefined) {
       delete element.buffer;
     }
@@ -683,28 +644,28 @@ function clearAlerts() {
   error.value = "";
 }
 
-function getSirenEtabSujet() {
-  if (isAdmin.value && props.sirenEtabSiAdmin) {
-    return etablissementStore.getCurrentEtablissement.siren;
+function getSubjectInstitutionSiren() {
+  if (isAdmin.value && props.adminInstitutionSiren) {
+    return institutionStore.getCurrentInstitution.siren;
   }
   return authStore.user.siren;
 }
 
-function eventStatutChoice(element: string): void {
-  statut.value = element === "Tous" ? "" : element;
+function onStatusSelect(element: string): void {
+  statusFilter.value = element === "Tous" ? "" : element;
 }
 
-function eventTypeChoice(element: string): void {
-  type.value = element === "Tous" ? "" : element;
+function onTypeSelect(element: string): void {
+  typeFilter.value = element === "Tous" ? "" : element;
 }
 
 function downloadIPs(): void {
   isExportLoading.value = true;
-  const ids = acces.value.map(element => element.id);
-  iPService
+  const ids = accessList.value.map(element => element.id);
+  ipService
     .downloadIps(ids, authStore.user.token)
     .then(response => {
-      const fileURL = window.URL.createObjectURL(new Blob([response.data], { type: "application/csv" }));
+      const fileURL = URL.createObjectURL(new Blob([response.data], { type: "application/csv" }));
       const fileLink = document.createElement("a");
 
       fileLink.href = fileURL;
@@ -721,9 +682,12 @@ function downloadIPs(): void {
     });
 }
 
-function revenirInfosEtab(): void {
+function goBackToInstitution(): void {
   router.push({ name: RouteName.InstitutionView });
 }
 </script>
 
 <style src="./style.css"></style>
+
+
+

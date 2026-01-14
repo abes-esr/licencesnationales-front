@@ -1,41 +1,25 @@
-﻿<template>
+<template>
   <v-card class="pa-8 w-100 login-card">
     <v-card-title class="text-center">
       <h1>{{ $t("auth.login.title") }}</h1>
     </v-card-title>
     <v-card-text class="pa-0">
-      <v-form ref="form">
+      <v-form ref="formRef">
         <v-row>
           <v-col cols="12" class="pa-2">
-            <v-text-field
-              v-model="siren"
-              :label="$t('auth.login.sirenLabel')"
-              :placeholder="$t('auth.login.sirenPlaceholder')"
-              :rules="rulesForms.siren"
-              variant="outlined"
-              maxLength="9"
-              autocomplete="username"
-              required
-              @keyup.enter="validate"
-            ></v-text-field>
+            <v-text-field v-model="sirenValue" :label="$t('auth.login.sirenLabel')"
+              :placeholder="$t('auth.login.sirenPlaceholder')" :rules="sirenRules" variant="outlined"
+              maxLength="9" autocomplete="username" required @keyup.enter="validate"></v-text-field>
           </v-col>
           <v-col cols="12" class="pa-2">
-            <v-text-field
-              v-model="password"
-              :append-inner-icon="appendIcon"
-              :type="inputType"
-              :label="$t('auth.login.passwordLabel')"
-              :placeholder="$t('auth.login.passwordPlaceholder')"
-              :rules="rulesForms.motDePasse"
-              variant="outlined"
-              required
-              @click:append-inner="toggleShow"
-              @keyup.enter="validate"
-              autocomplete="current-password"
-            ></v-text-field>
+            <v-text-field v-model="passwordValue" :append-inner-icon="isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="isPasswordVisible ? 'text' : 'password'" :label="$t('auth.login.passwordLabel')"
+              :placeholder="$t('auth.login.passwordPlaceholder')" :rules="passwordRules" variant="outlined"
+              required @click:append-inner="togglePasswordVisibility" @keyup.enter="validate"
+              autocomplete="current-password"></v-text-field>
           </v-col>
           <v-col cols="12" class="pa-2 d-flex justify-end">
-            <v-btn :loading="buttonLoading" size="x-large" class="bouton-connexion" @click="validate">
+            <v-btn :loading="loading" size="x-large" class="bouton-connexion" @click="validate">
               {{ $t("auth.login.submit") }}
               <v-icon class="pl-2">mdi-arrow-right-circle-outline</v-icon>
             </v-btn>
@@ -52,30 +36,27 @@
 </template>
 
 <script setup lang="ts">
+import { useLoading } from "@/utils/useLoading";
 import { useSnackbar } from "@/composables/useSnackbar";
-import { rulesForms } from "@/core/RulesForm";
-import { RouteName } from "@/router";
-import { useAuthStore } from "@/stores/authStore";
 import { useToggle } from "@/utils/useToggle";
-import { computed, ref } from "vue";
+import { useValidationRules } from "@/composables/useValidationRules";
+import { RouteName } from "@/router";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { ref } from "vue";
 import type { VForm } from "vuetify/components";
 
 const snackbar = useSnackbar();
 const authStore = useAuthStore();
-
-const siren = ref("");
-const password = ref("");
-
-const buttonLoading = ref(false);
-
-const form = ref<VForm | null>(null);
-const { value: show, toggle: toggleShow } = useToggle(false);
-const inputType = computed(() => (show.value ? "text" : "password"));
-const appendIcon = computed(() => (show.value ? "mdi-eye" : "mdi-eye-off"));
+const { sirenRules, passwordRules } = useValidationRules();
+const sirenValue = ref("");
+const passwordValue = ref("");
+const formRef = ref<VForm | null>(null);
+const { loading, startLoading, stopLoading } = useLoading();
+const { value: isPasswordVisible, toggle: togglePasswordVisibility } = useToggle(false);
 
 const validate = async () => {
-  snackbar.hide();
-  const validation = await form.value?.validate();
+  const validation = await formRef.value?.validate();
   if (!validation?.valid) {
     return;
   }
@@ -83,17 +64,16 @@ const validate = async () => {
 };
 
 const login = async () => {
-  buttonLoading.value = true;
-
+  startLoading();
   try {
     await authStore.login({
-      login: siren.value,
-      password: password.value
+      login: sirenValue.value,
+      password: passwordValue.value
     });
   } catch (err: any) {
     snackbar.error(err);
   } finally {
-    buttonLoading.value = false;
+    stopLoading();
   }
 };
 
@@ -113,3 +93,5 @@ h1 {
   width: 100%;
 }
 </style>
+
+

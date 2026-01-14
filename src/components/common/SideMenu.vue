@@ -1,10 +1,10 @@
 <template>
-  <v-navigation-drawer app flat hide-overlay permanent :model-value="displayMenu">
+  <v-navigation-drawer app flat hide-overlay permanent :model-value="isLoggedIn">
     <v-list dense color="transparent">
       <v-row class="mb-15"> </v-row>
 
       <v-row class="mb-5">
-        <v-list-item class="d-flex align-center justify-center flex-column menu-slot" v-on:click="goToDashboard()">
+        <v-list-item class="d-flex align-center justify-center flex-column menu-slot" :to="{ name: RouteName.Home }">
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faGaugeHigh" size="2x" />
           </v-list-item-action>
@@ -13,7 +13,8 @@
       </v-row>
 
       <v-row v-if="isAdmin" class="mb-5">
-        <v-list-item class="d-flex align-center justify-center flex-column menu-slot" v-on:click="goToInstitutions()">
+        <v-list-item class="d-flex align-center justify-center flex-column menu-slot"
+          :to="{ name: RouteName.Institutions }">
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faBuildingColumns" size="2x" />
           </v-list-item-action>
@@ -22,7 +23,8 @@
       </v-row>
 
       <v-row v-if="isAdmin" class="mb-5">
-        <v-list-item class="d-flex align-center justify-center flex-column menu-slot" v-on:click="goToPublishers()">
+        <v-list-item class="d-flex align-center justify-center flex-column menu-slot"
+          :to="{ name: RouteName.Publishers }">
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faList" size="2x" />
           </v-list-item-action>
@@ -31,7 +33,8 @@
       </v-row>
 
       <v-row v-if="isAdmin" class="mb-5">
-        <v-list-item class="d-flex align-center justify-center flex-column menu-slot" v-on:click="goToStatistics()">
+        <v-list-item class="d-flex align-center justify-center flex-column menu-slot"
+          :to="{ name: RouteName.Statistics }">
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faChartBar" size="2x" />
           </v-list-item-action>
@@ -40,7 +43,7 @@
       </v-row>
 
       <v-row v-if="isAdmin" class="mb-5">
-        <v-list-item class="d-flex align-center justify-center flex-column menu-slot" v-on:click="goToHistory()">
+        <v-list-item class="d-flex align-center justify-center flex-column menu-slot" :to="{ name: RouteName.History }">
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faClockRotateLeft" size="2x" />
           </v-list-item-action>
@@ -49,7 +52,7 @@
       </v-row>
 
       <v-row v-if="isAdmin" class="mb-5">
-        <v-list-item class="d-flex align-center justify-center flex-column menu-slot" v-on:click="goToSearch()">
+        <v-list-item class="d-flex align-center justify-center flex-column menu-slot" :to="{ name: RouteName.Search }">
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faMagnifyingGlass" size="2x" />
           </v-list-item-action>
@@ -58,7 +61,7 @@
       </v-row>
 
       <v-row v-if="!isAdmin" class="mb-5">
-        <v-list-item class="d-flex align-center justify-center flex-column menu-slot" v-on:click="goToIpList()">
+        <v-list-item class="d-flex align-center justify-center flex-column menu-slot" :to="{ name: RouteName.IpList }">
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <v-icon xLarge class="mr-2">mdi-ip-network</v-icon>
           </v-list-item-action>
@@ -71,52 +74,21 @@
 
 <script setup lang="ts">
 import { RouteName } from "@/router";
-import { Logger } from "@/utils/Logger";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import {
   faBuildingColumns,
   faChartBar,
   faClockRotateLeft,
   faGaugeHigh,
   faList,
-  faMagnifyingGlass,
+  faMagnifyingGlass
 } from "@fortawesome/free-solid-svg-icons";
-import { useRouter } from "vue-router";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { storeToRefs } from "pinia";
 
-defineProps<{
-  displayMenu: boolean;
-  isAdmin: boolean;
-}>();
-
-const router = useRouter();
-
-function goToPublishers() {
-  router.push({ name: RouteName.Publishers }).catch(err => Logger.error(err));
-}
-
-function goToInstitutions() {
-  router.push({ name: RouteName.Institutions }).catch(err => Logger.error(err));
-}
-
-function goToDashboard() {
-  router.push({ name: RouteName.Home }).catch(err => Logger.error(err));
-}
-
-function goToStatistics() {
-  router.push({ name: RouteName.Statistics }).catch(err => Logger.error(err));
-}
-
-function goToHistory() {
-  router.push({ name: RouteName.History }).catch(err => Logger.error(err));
-}
-
-function goToSearch() {
-  router.push({ name: RouteName.Search }).catch(err => Logger.error(err));
-}
-
-function goToIpList() {
-  router.push({ name: RouteName.IpList }).catch(err => Logger.error(err));
-}
+const authStore = useAuthStore();
+const { isAdmin, isLoggedIn } = storeToRefs(authStore);
 </script>
 <style scoped lang="scss">
 .v-navigation-drawer {
@@ -130,3 +102,5 @@ function goToIpList() {
   transform: unset !important;
 }
 </style>
+
+

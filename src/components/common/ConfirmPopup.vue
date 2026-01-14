@@ -1,29 +1,16 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    class="elevation-0 popup"
-    :max-width="options.width"
-    @keydown.esc="cancel"
-  >
+  <v-dialog v-model="isOpen" class="elevation-0 popup" :max-width="popupOptions.width" @keydown.esc="cancel">
     <v-card flat class="confirmPopup">
       <v-card-text class="pa-4 popup-texte">
-        <FontAwesomeIcon
-          :icon="faTriangleExclamation"
-          class="mx-2 fa-2x icone-attention"
-        />
-        <div v-if="message" class="popup-message" v-html="message"></div>
+        <FontAwesomeIcon :icon="faTriangleExclamation" class="mx-2 fa-2x icone-attention" />
+        <div v-if="htmlMessage" class="popup-message" v-html="htmlMessage"></div>
       </v-card-text>
       <v-card-actions class="pt-0 ma-3">
         <v-spacer></v-spacer>
         <v-btn variant="outlined" class="bouton-annuler" @click="cancel">
           {{ $t("common.confirm.cancel") }}
         </v-btn>
-        <v-btn
-          variant="flat"
-          class="bouton-valider"
-          :color="options.color"
-          @click="agree"
-        >
+        <v-btn variant="flat" class="bouton-valider" :color="popupOptions.color" @click="agree">
           {{ $t("common.confirm.confirm") }}
         </v-btn>
       </v-card-actions>
@@ -32,42 +19,44 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-import { ConfirmPopupOptions } from "@/core/CommonDefinition";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { reactive, ref } from "vue";
+
+interface ConfirmPopupOptions {
+  color: string;
+  width: string;
+}
 
 type Resolver = (value: boolean) => void;
 
-const dialog = ref(false);
-const message = ref("");
-const options = reactive<ConfirmPopupOptions>({
+const isOpen = ref(false);
+const htmlMessage = ref("");
+const popupOptions = reactive<ConfirmPopupOptions>({
   color: "success",
   width: "40vw"
 });
 
-const resolver = ref<Resolver | null>(null);
-const rejecter = ref<Resolver | null>(null);
+const resolveRef = ref<Resolver | null>(null);
 
-const open = (newMessage: string, newOptions?: Partial<ConfirmPopupOptions>) => {
-  dialog.value = true;
-  message.value = newMessage;
-  Object.assign(options, { color: "success", width: "40vw" }, newOptions);
+const open = (message: string, options?: Partial<ConfirmPopupOptions>) => {
+  isOpen.value = true;
+  htmlMessage.value = message;
+  Object.assign(popupOptions, { color: "success", width: "40vw" }, options);
 
-  return new Promise<boolean>((resolve, reject) => {
-    resolver.value = resolve;
-    rejecter.value = reject;
+  return new Promise<boolean>(resolve => {
+    resolveRef.value = resolve;
   });
 };
 
 const agree = () => {
-  resolver.value?.(true);
-  dialog.value = false;
+  resolveRef.value?.(true);
+  isOpen.value = false;
 };
 
 const cancel = () => {
-  resolver.value?.(false);
-  dialog.value = false;
+  resolveRef.value?.(false);
+  isOpen.value = false;
 };
 
 defineExpose({ open });

@@ -26,7 +26,7 @@ const router = useRouter();
 const snackbar = useSnackbar();
 
 function goToLogin(): void {
-  snackbar.hide();
+  ;
   router.push({ name: RouteName.Login });
 }
 </script>

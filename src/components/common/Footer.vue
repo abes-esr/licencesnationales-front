@@ -2,7 +2,6 @@
   <v-footer id="footer" color="primary" class="pa-0 text-white">
     <v-card class="flex w-100 footer-card" flat>
       <v-card-title class="teal footer-top align-center pa-0 d-md-flex pa-4 text-white">
-        <!-- Col gauche -->
         <v-col cols="12" md="4" lg="3" xl="3">
           <div class="left-container d-flex flex-column justify-space-between">
             <div class="raccourci">
@@ -46,7 +45,6 @@
         <v-divider class="mx-4 hidden-sm-and-down" vertical style="height: auto" />
         <v-divider class="mx-4 hidden-md-and-up" style="height: auto" />
 
-        <!-- Col droite -->
         <v-col cols="12" md="6" lg="4" xl="4" class="d-flex justify-space-around align-center">
           <div class="d-flex flex-column justify-space-between text-right mr-3 right-container text-white">
             <h4 class="mb-2 text-wrap text-break">{{ $t("common.footer.agencyName") }}</h4>
@@ -68,7 +66,6 @@
         </v-col>
       </v-card-title>
 
-      <!-- Bas du footer -->
       <v-card-text class="py-2 text-white footer-bottom bg-secondary">
         <strong>{{ $t("common.footer.licencesNationales") }} </strong>
 
@@ -84,21 +81,21 @@
         </v-tooltip>
 
         <div id="mentions">
-          <a class="text-white" @click="router.push({ name: RouteName.Privacy })">
+          <router-link class="text-white" :to="{ name: RouteName.Privacy }">
             {{ $t("common.footer.personalData") }}
-          </a>
+          </router-link>
           |
-          <a class="text-white" @click="router.push({ name: RouteName.Terms })">
+          <router-link class="text-white" :to="{ name: RouteName.Terms }">
             {{ $t("common.footer.terms") }}
-          </a>
+          </router-link>
           |
-          <a class="text-white" @click="router.push({ name: RouteName.Legal })">
+          <router-link class="text-white" :to="{ name: RouteName.Legal }">
             {{ $t("common.footer.legal") }}
-          </a>
+          </router-link>
           |
-          <a class="text-white" @click="router.push({ name: RouteName.Accessibility })">
+          <router-link class="text-white" :to="{ name: RouteName.Accessibility }">
             {{ $t("common.footer.accessibility") }}
-          </a>
+          </router-link>
         </div>
       </v-card-text>
     </v-card>
@@ -106,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthService } from "@/composables/useAuthService";
+import { useAuthService } from "@/composables/service/useAuthService";
 import { RouteName } from "@/router";
 import { Logger } from "@/utils/Logger";
 import {
@@ -118,9 +115,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
 
-const router = useRouter();
 const authService = useAuthService();
 const { t } = useI18n();
 
@@ -187,3 +182,4 @@ onMounted(async () => {
   width: 30%;
 }
 </style>
+

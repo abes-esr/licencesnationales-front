@@ -1,6 +1,7 @@
-import { useAuthService } from "@/composables/useAuthService";
+import { useAuthService } from "@/composables/service/useAuthService";
 import { useSnackbar } from "@/composables/useSnackbar";
-import { useAuthStore } from "@/stores/authStore";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
@@ -58,7 +59,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import("../components/authentication/login/PasswordResetForm.vue")
   },
 
-  // Etablissement
+  // Institution
   {
     path: "/institutions/create",
     name: RouteName.InstitutionCreate,
@@ -116,7 +117,7 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true }
   },
 
-  // Editeurs
+  // Publishers
   {
     path: "/publishers",
     name: RouteName.Publishers,
@@ -216,7 +217,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.meta.requiresAuth) {
     try {
-      const isValid = await authService.verifierValiditeToken(auth.getToken);
+      const isValid = await authService.verifyToken(auth.getToken);
 
       if (!isValid) {
         snackbar.error("Votre session a expiré", { sticky: true });
@@ -238,3 +239,6 @@ router.beforeEach(async (to, from, next) => {
 });
 
 export default router;
+
+
+

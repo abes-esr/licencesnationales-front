@@ -1,20 +1,20 @@
-import ContactEditeur from "@/core/ContactEditeur";
+import PublisherContact from "@/entity/PublisherContact";
 import { ValueError } from "@/exception/ValueError";
 
-export default class Editeur {
+export default class Publisher {
   id: number = -999;
   nom: string = "";
   identifiantBis: string = "";
   dateCreation: Date = new Date();
   groupesEtabRelies: Array<string> = [];
   adresse: string = "";
-  contacts: Array<ContactEditeur> = [];
+  contacts: Array<PublisherContact> = [];
 
-  addContact(item: ContactEditeur): void {
+  addContact(item: PublisherContact): void {
     this.contacts.push(item);
   }
 
-  findContactById(id: number): ContactEditeur {
+  findContactById(id: number): PublisherContact {
     const index = this.contacts.findIndex(x => x.id === id);
     if (index == -1) {
       throw new ValueError("Contact width id " + id + " not found");
@@ -23,7 +23,7 @@ export default class Editeur {
     }
   }
 
-  removeContact(item: ContactEditeur): void {
+  removeContact(item: PublisherContact): void {
     const index = this.contacts.findIndex(
       x => x.id === item.id && x.nom === item.nom
     );
@@ -44,3 +44,4 @@ export default class Editeur {
     this.contacts = [];
   }
 }
+

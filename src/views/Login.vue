@@ -32,26 +32,16 @@
 </template>
 <script setup lang="ts">
 import LoginForm from "@/components/authentication/login/LoginForm.vue";
-import { useSnackbar } from "@/composables/useSnackbar";
-import Etablissement from "@/core/Etablissement";
+import Institution from "@/entity/Institution";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/stores/authStore";
-import { useEtablissementStore } from "@/stores/etablissementStore";
-import { Logger } from "@/utils/Logger";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { faCirclePlus, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 // Store & Router
-const authStore = useAuthStore();
-const etablissementStore = useEtablissementStore();
-const snackbar = useSnackbar();
+const institutionStore = useInstitutionStore();
 const router = useRouter();
-
-// États locaux
-const forgotPasswordVisible = ref(false);
-
 // Méta (si tu utilises vue-meta ou vite-plugin-vue-meta)
 const metaInfo = {
   title: "Connexion - Licences Nationales",
@@ -65,21 +55,12 @@ const metaInfo = {
 
 // Fonctions
 async function createAccount() {
-  try {
-    await etablissementStore.setCurrentEtablissement(new Etablissement());
-    router.push({ name: RouteName.InstitutionCreate });
-  } catch (err) {
-    Logger.error(err);
-  }
+  await institutionStore.setCurrentInstitution(new Institution());
+  router.push({ name: RouteName.InstitutionCreate });
 }
 
 async function showForgotPassword() {
-  try {
-    await snackbar.hide();
-    router.push({ name: RouteName.ForgotPassword });
-  } catch (err) {
-    Logger.error(err);
-  }
+  router.push({ name: RouteName.ForgotPassword });
 }
 </script>
 
@@ -111,3 +92,5 @@ h4 {
   font-size: 18px;
 }
 </style>
+
+

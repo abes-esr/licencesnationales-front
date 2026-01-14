@@ -1,41 +1,41 @@
-import { useAuthService } from "@/composables/useAuthService";
-import { useEtablissementService } from "@/composables/useEtablissementService";
-import Etablissement from "@/core/Etablissement";
-import User from "@/core/User";
+import { useAuthService } from "@/composables/service/useAuthService";
+import { useInstitutionService } from "@/composables/service/useInstitutionService";
+import Institution from "@/entity/Institution";
+import User from "@/entity/User";
 import router, { RouteName } from "@/router";
 import { defineStore } from "pinia";
 
 const authService = useAuthService();
-const etablissementService = useEtablissementService();
+const institutionService = useInstitutionService();
 
 interface AuthState {
   user: User;
-  etablissementConnecte: Etablissement;
-  sirenEtabSiAdmin: string;
+  connectedInstitution: Institution;
+  adminInstitutionSiren: string;
 }
 
 export const useAuthStore = defineStore("auth", {
   state: (): AuthState => ({
     user: new User(),
-    etablissementConnecte: new Etablissement(),
-    sirenEtabSiAdmin: ""
+    connectedInstitution: new Institution(),
+    adminInstitutionSiren: ""
   }),
 
   getters: {
     isLoggedIn: (state) => state.user.isLoggedIn,
     isAdmin: (state) => state.user.isAdmin,
     userSiren: (state) => state.user.siren,
-    userEtab: (state) => state.user.nameEtab,
+    userInstitutionName: (state) => state.user.nameEtab,
     getToken: (state) => state.user.token,
 
-    getEtablissementConnecte: (state) => {
-      const et = new Etablissement();
-      Object.assign(et, state.etablissementConnecte);
+    getConnectedInstitution: (state) => {
+      const et = new Institution();
+      Object.assign(et, state.connectedInstitution);
       et.dateCreation = new Date(et.dateCreation);
       return et;
     },
 
-    sirenEtabSiAdminValue: (state) => state.sirenEtabSiAdmin
+    adminInstitutionSirenValue: (state) => state.adminInstitutionSiren
   },
 
   actions: {
@@ -45,12 +45,12 @@ export const useAuthStore = defineStore("auth", {
 
         this.user = result;
 
-        const etablissement = await etablissementService.getEtablissement(
+        const institution = await institutionService.getInstitution(
           this.user.siren,
           this.user.token
         );
 
-        this.etablissementConnecte = etablissement;
+        this.connectedInstitution = institution;
 
         router.push({ name: RouteName.Home });
 
@@ -70,10 +70,12 @@ export const useAuthStore = defineStore("auth", {
       router.push({ name: RouteName.Login });
     },
 
-    setSirenEtabSiAdmin(value: string) {
-      this.sirenEtabSiAdmin = value;
+    setAdminInstitutionSiren(value: string) {
+      this.adminInstitutionSiren = value;
     }
   },
 
   persist: true
 });
+
+

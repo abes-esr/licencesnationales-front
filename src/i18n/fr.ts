@@ -29,7 +29,7 @@ export const fr = {
         "Si l'adresse e-mail est reconnue, vous recevrez un lien de réinitialisation du mot de passe",
       backHome: "Revenir à la page d'accueil"
     },
-    passwordFields: {
+    passwordForm: {
       rules:
         "Le mot de passe doit contenir au moins 8 caractères, dont au moins un chiffre, une lettre majuscule, une lettre minuscule et un des caractères spéciaux suivants : @ $ ! % * ? &",
       expiredMessage:
@@ -334,7 +334,7 @@ export const fr = {
       invalidFields: "Certains champs du formulaire sont invalides",
       createSuccess: "Le compte a été enregistré. Pour y accéder, merci de vous authentifier",
       updateSuccess: "Votre compte a bien été modifié.",
-      mergeSuccess: "La fusion a bien été effectuée.",
+      mergeSuccess: "La mergeInstitutions a bien été effectuée.",
       meta: {
         createTitle: "Inscription",
         editTitle: "Modification du compte",
@@ -381,7 +381,7 @@ export const fr = {
       addInstitution: "Ajouter un établissement",
       removeInstitution: "Supprimer un établissement",
       save: "Enregistrer",
-      success: "La scission a bien été effectuée."
+      success: "La splitInstitution a bien été effectuée."
     }
   },
   ip: {
@@ -653,6 +653,81 @@ export const fr = {
       section5Title: "5. Loi applicable et juridiction compétente",
       section5P1:
         "Les présentes Conditions Générales d'Utilisation sont régies par la loi française. En cas de différend et à défaut d'accord amiable, le litige sera porté devant les tribunaux français conformément aux règles de compétence en vigueur."
+    }
+  },
+  validation: {
+    establishmentNameRules: {
+      required: "Le nom de l'établissement est obligatoire"
+    },
+    sirenRules: {
+      required: "SIREN obligatoire",
+      format: "Le SIREN doit comporter 9 chiffres"
+    },
+    establishmentTypeRules: {
+      required: "Le type de l'établissement est obligatoire"
+    },
+    lastNameRules: {
+      required: "Le nom est obligatoire"
+    },
+    firstNameRules: {
+      required: "Le prénom est obligatoire"
+    },
+    addressRules: {
+      required: "L'adresse postale est obligatoire"
+    },
+    postalCodeRules: {
+      required: "Le code postal est obligatoire",
+      format: "Le code postal doit comporter 5 chiffres"
+    },
+    cityRules: {
+      required: "La ville de l'établissement est obligatoire"
+    },
+    phoneRules: {
+      required: "Le téléphone du contact est obligatoire",
+      format: "Le numéro de téléphone doit comporter 10 chiffres sans espace et sans point"
+    },
+    emailRules: {
+      required: "Champ obligatoire",
+      invalid: "Adresse mail invalide"
+    },
+    passwordRules: {
+      required: "Le mot de passe est obligatoire",
+      minLength: "Le mot de passe doit contenir au moins 8 caractères",
+      lowercase: "Le mot de passe doit contenir au moins une minuscule",
+      uppercase: "Le mot de passe doit contenir au moins une majuscule",
+      digit: "Le mot de passe doit contenir au moins un chiffre",
+      special: "Le mot de passe doit contenir au moins un caractère spécial parmi @ $ ! % * ? &"
+    },
+    privacyAcceptanceRules: {
+      required:
+        "L'acceptation des conditions générales liées à la politique de confidentialité est obligatoire pour créer un compte"
+    },
+    searchDomainRules: {
+      required: "Le domaine de recherche est obligatoire"
+    },
+    searchCriteriaRules: {
+      required: "Veuillez saisir un ou des critères de recherche"
+    },
+    dateRules: {
+      required: "Les dates sont obligatoires"
+    },
+    ipSegmentRules: {
+      required: "Le segment d'IP est obligatoire",
+      invalid: "Le segment d'IP fourni n'est pas valide"
+    },
+    ipRules: {
+      required: "L'IP est obligatoire",
+      invalid: "L'IP fournie n'est pas valide"
+    },
+    ipRangeRules: {
+      required: "La plage d'Ips est obligatoire",
+      invalid: "La plage d'Ips fournie n'est pas valide"
+    },
+    commentRules: {
+      max255: "Le commentaire ne doit pas excéder 255 caractères"
+    },
+    adminCommentRules: {
+      max4000: "Le commentaire ne doit pas excéder 4000 caractères"
     }
   }
 };

@@ -4,7 +4,7 @@
       <Header />
       <AppSnackbar />
       <v-layout class="flex-shrink-0">
-        <side-menu :display-menu="isLoggedIn" :is-admin="isAdmin" />
+        <SideMenu />
         <v-main class="ma-0 pa-3" id="main">
           <router-view v-slot="{ Component }">
             <transition name="fade">
@@ -24,22 +24,14 @@ import AppSnackbar from "@/components/common/AppSnackbar.vue";
 import Footer from "@/components/common/Footer.vue";
 import Header from "@/components/common/Header.vue";
 import SideMenu from "@/components/common/SideMenu.vue";
-import { useAuthStore } from "@/stores/authStore"; // Ton store Pinia
-import { useUiStore } from "@/stores/uiStore"; // Exemple si tu as un themeStore
-import { computed, onMounted } from "vue";
+import { useUiStore } from "@/composables/store/useUiStore";
+import { storeToRefs } from "pinia";
+import { onMounted } from "vue";
 
-// Stores
-const authStore = useAuthStore();
 const uiStore = useUiStore();
+const { isDark } = storeToRefs(uiStore);
 
-// Computed
-const isDark = computed(() => uiStore.isDark);
-const isLoggedIn = computed(() => authStore.isLoggedIn);
-const isAdmin = computed(() => authStore.isAdmin);
-
-// Mounted
 onMounted(() => {
-  // Adapter les breakpoints (comme l'ancien code)
   const meta = document.querySelector("meta[name=viewport]");
   if (meta) {
     meta.setAttribute(
@@ -54,3 +46,4 @@ onMounted(() => {
 <style lang="scss">
 @use "./theme/main.scss";
 </style>
+

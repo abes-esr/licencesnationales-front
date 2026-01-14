@@ -20,8 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { snackbarState, useSnackbar } from "@/composables/useSnackbar";
-import { MessageType } from "@/core/CommonDefinition";
+import { MessageType, snackbarState, useSnackbar } from "@/composables/useSnackbar";
 import {
   faBan,
   faCircleCheck,

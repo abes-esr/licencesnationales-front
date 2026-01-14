@@ -2,14 +2,14 @@
   <v-container class="d-flex justify-center">
     <v-row align="center" justify="center">
       <v-col lg="9" md="10" xs="12">
-        <ChangePassword />
+        <ChangePasswordForm />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import ChangePassword from "@/components/authentication/login/ChangePassword.vue";
+import ChangePasswordForm from "@/components/authentication/login/ChangePassword.vue";
 
 const metaInfo = {
   meta: [

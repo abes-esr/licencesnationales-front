@@ -11,44 +11,32 @@
                 <v-card-text>
                   <v-card-title>{{ $t("institution.split.sirenTitle") }}</v-card-title>
                   <v-col cols="12">
-                    <v-text-field
-                      variant="outlined"
-                      :label="$t('institution.split.sirenLabel')"
-                      :placeholder="$t('institution.split.sirenLabel')"
-                      v-model="sirenEtab"
-                      :rules="rulesForms.siren"
-                      class="pt-6 w-100"
-                      required
-                      @keyup.enter="validateForm"
-                      maxLength="9"
-                    />
-                    <h3>{{ $t("institution.split.count", { count: etablissementNumber }) }}</h3>
+                    <v-text-field variant="outlined" :label="$t('institution.split.sirenLabel')"
+                      :placeholder="$t('institution.split.sirenLabel')" v-model="institutionSiren" :rules="sirenRules"
+                      class="pt-6 w-100" required @keyup.enter="validateForm" maxLength="9" />
+                    <h3>{{ $t("institution.split.count", { count: institutionCount }) }}</h3>
                   </v-col>
 
                   <v-card-actions>
                     <v-row class="pa-0 ga-4">
-                      <v-btn variant="elevated" @click="increaseEtablissementNumber">
+                      <v-btn variant="elevated" @click="increaseInstitutionCount">
                         {{ $t("institution.split.addInstitution") }}
                       </v-btn>
-                      <v-btn variant="elevated" @click="decreaseEtablissementNumber">
+                      <v-btn variant="elevated" @click="decreaseInstitutionCount">
                         {{ $t("institution.split.removeInstitution") }}
                       </v-btn>
                     </v-row>
                   </v-card-actions>
                 </v-card-text>
               </v-card>
-              <InstitutionForm
-                :action="Action.SCISSION"
-                :trigger-scission="triggerScission"
-                @send="send"
-                v-for="n in etablissementNumber"
-                :key="n"
-              />
+              <InstitutionForm :action="Action.SCISSION" :trigger-scission="triggerSplit" @send="send"
+                v-for="n in institutionCount" :key="n" />
               <v-card-actions class="v-card-actions">
                 <v-row>
                   <v-spacer class="hidden-sm-and-down"></v-spacer>
                   <v-col cols="12" md="3" lg="3" xl="3" class="d-flex justify-space-around mr-16 flex-wrap">
-                    <v-btn @click="triggerChildrenForm" :loading="buttonLoading" size="large" color="button" variant="elevated">
+                    <v-btn @click="triggerChildrenForm" :loading="buttonLoading" size="large" color="button"
+                      variant="elevated">
                       {{ $t("institution.split.save") }}
                     </v-btn>
                   </v-col>
@@ -65,38 +53,40 @@
 <style src="./style.css"></style>
 <script setup lang="ts">
 import InstitutionForm from "@/components/institution/InstitutionForm.vue";
-import { useEtablissementService } from "@/composables/useEtablissementService";
+import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useSnackbar } from "@/composables/useSnackbar";
-import { Action } from "@/core/CommonDefinition";
-import { rulesForms } from "@/core/RulesForm";
+import { useValidationRules } from "@/composables/useValidationRules";
+import { Action } from "@/entity/CommonDefinition";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/stores/authStore";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
-const etablissementService = useEtablissementService();
+const institutionService = useInstitutionService();
 const router = useRouter();
 const { t } = useI18n();
+const { sirenRules } = useValidationRules();
 
-const sirenEtab = ref("");
-const etablissementNumber = ref(2);
-const etablissementDTOS = ref<Array<any>>([]);
+const institutionSiren = ref("");
+const institutionCount = ref(2);
+const institutionPayloads = ref<Array<any>>([]);
 const buttonLoading = ref(false);
-const triggerScission = ref(false);
+const triggerSplit = ref(false);
 const formRef = ref();
 
 function triggerChildrenForm(): void {
-  triggerScission.value = true;
+  triggerSplit.value = true;
 }
 
 async function send(payload: any): Promise<void> {
   buttonLoading.value = true;
-  etablissementDTOS.value.push(payload);
+  institutionPayloads.value.push(payload);
 
-  if (etablissementDTOS.value.length !== etablissementNumber.value) {
+  if (institutionPayloads.value.length !== institutionCount.value) {
     return;
   }
 
@@ -104,10 +94,10 @@ async function send(payload: any): Promise<void> {
   const isValid = typeof validation === "boolean" ? validation : validation?.valid;
 
   if (isValid) {
-    etablissementService
-      .scission(authStore.getToken, {
-        sirenScinde: sirenEtab.value.trim(),
-        nouveauxEtabs: etablissementDTOS.value,
+    institutionService
+      .splitInstitution(authStore.getToken, {
+        sirenScinde: institutionSiren.value.trim(),
+        nouveauxEtabs: institutionPayloads.value,
       })
       .then(() => {
         snackbar.success(t("institution.split.success"));
@@ -118,13 +108,13 @@ async function send(payload: any): Promise<void> {
       })
       .finally(() => {
         buttonLoading.value = false;
-        triggerScission.value = false;
-        etablissementDTOS.value = [];
+        triggerSplit.value = false;
+        institutionPayloads.value = [];
       });
   } else {
     buttonLoading.value = false;
-    triggerScission.value = false;
-    etablissementDTOS.value = [];
+    triggerSplit.value = false;
+    institutionPayloads.value = [];
   }
 }
 
@@ -132,13 +122,17 @@ function validateForm() {
   formRef.value?.validate();
 }
 
-function increaseEtablissementNumber() {
-  etablissementNumber.value++;
+function increaseInstitutionCount() {
+  institutionCount.value++;
 }
 
-function decreaseEtablissementNumber() {
-  if (etablissementNumber.value > 2) etablissementNumber.value--;
+function decreaseInstitutionCount() {
+  if (institutionCount.value > 2) institutionCount.value--;
 }
 
 defineExpose({ formRef });
 </script>
+
+
+
+

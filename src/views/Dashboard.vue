@@ -1,58 +1,35 @@
 <template>
   <v-container>
     <h1>
-      {{ $t("dashboard.title") }} <span v-if="!isAdmin">{{ etablissement.nom }}</span>
+      {{ $t("dashboard.title") }} <span v-if="!isAdmin">{{ institution.nom }}</span>
     </h1>
     <ConfirmPopup ref="confirmRef"></ConfirmPopup>
     <v-card class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
       <v-card-text class="fondGris pa-0 px-6 pb-6">
         <v-card-title class="px-0 pb-2">
           {{ $t("dashboard.accountInfo") }}
-          <v-tooltip
-            :text="$t('dashboard.exportAccountInfo')"
-            location="top"
-            open-delay="100"
-            theme="dark"
-            content-class="text-white"
-          >
+          <v-tooltip :text="$t('dashboard.exportAccountInfo')" location="top" open-delay="100" theme="dark"
+            content-class="text-white">
             <template v-slot:activator="{ props }">
-              <v-btn
-                icon="icon"
-                class="bouton-simple"
-                @click="downloadEtablissement()"
-                v-bind="props"
-                :loading="isExportLoading"
-              >
+              <v-btn icon="icon" class="bouton-simple" @click="downloadInstitution()" v-bind="props"
+                :loading="isExportLoading">
                 <FontAwesomeIcon :icon="faDownload" class="mx-2 fa-lg" />
               </v-btn>
             </template>
           </v-tooltip>
         </v-card-title>
-        <span>{{ $t("dashboard.accountCreatedOn") }} {{ etablissement.dateCreation.toLocaleDateString() }}</span>
+        <span>{{ $t("dashboard.accountCreatedOn") }} {{ institution.dateCreation.toLocaleDateString() }}</span>
         <v-row class="d-flex justify-space-between flex-wrap pt-3">
           <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
-            <div
-              style="height: 100%; position:relative;"
-              class="borderCol fondBlanc"
-              :class="[display.mdAndDown.value ? 'compact-form' : '']"
-            >
+            <div style="height: 100%; position:relative;" class="borderCol fondBlanc"
+              :class="[display.mdAndDown.value ? 'compact-form' : '']">
               <div class="d-flex">
                 <h2 class="my-3 pl-4 mb-0">{{ $t("dashboard.institution.title") }}</h2>
-                <v-tooltip
-                  :text="$t('dashboard.institution.readonly')"
-                  location="top"
-                  open-delay="100"
-                  theme="dark"
-                  content-class="text-white"
-                  v-if="!isAdmin"
-                >
+                <v-tooltip :text="$t('dashboard.institution.readonly')" location="top" open-delay="100" theme="dark"
+                  content-class="text-white" v-if="!isAdmin">
                   <template v-slot:activator="{ props }">
-                    <FontAwesomeIcon
-                      v-bind="props"
-                      :icon="faLock"
-                      class="fa-2x mx-2"
-                      style="margin-top: 10px; position: absolute; right: 0;"
-                    />
+                    <FontAwesomeIcon v-bind="props" :icon="faLock" class="fa-2x mx-2"
+                      style="margin-top: 10px; position: absolute; right: 0;" />
                   </template>
                 </v-tooltip>
               </div>
@@ -60,19 +37,19 @@
                 <div class="d-flex flex-column justify-start mx-3 mb-3 mt-0 bloc-info">
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.institution.siren") }}</h3>
-                    {{ etablissement.siren }}
+                    {{ institution.siren }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.institution.idAbes") }}</h3>
-                    {{ etablissement.idAbes }}
+                    {{ institution.idAbes }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.institution.name") }}</h3>
-                    {{ etablissement.nom }}
+                    {{ institution.nom }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.institution.type") }}</h3>
-                    {{ etablissement.typeEtablissement }}
+                    {{ institution.typeEtablissement }}
                   </div>
                 </div>
               </v-card-text>
@@ -94,49 +71,49 @@
                 <div class="d-flex flex-column justify-start mx-3 mb-3 mt-0 bloc-info">
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.lastName") }}</h3>
-                    {{ etablissement.contact.nom }}
+                    {{ institution.contact.nom }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.firstName") }}</h3>
-                    {{ etablissement.contact.prenom }}
+                    {{ institution.contact.prenom }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.phone") }}</h3>
-                    {{ etablissement.contact.telephone }}
+                    {{ institution.contact.telephone }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.email") }}</h3>
-                    {{ etablissement.contact.mail }}
+                    {{ institution.contact.mail }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.address") }}</h3>
-                    {{ etablissement.contact.adresse }}
+                    {{ institution.contact.adresse }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.poBox") }}</h3>
-                    {{ etablissement.contact.boitePostale }}
+                    {{ institution.contact.boitePostale }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.postalCode") }}</h3>
-                    {{ etablissement.contact.codePostal }}
+                    {{ institution.contact.codePostal }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.city") }}</h3>
-                    {{ etablissement.contact.ville }}
+                    {{ institution.contact.ville }}
                   </div>
                   <div class="mt-2">
                     <h3 class="d-inline">{{ $t("dashboard.contact.cedex") }}</h3>
-                    {{ etablissement.contact.cedex }}
+                    {{ institution.contact.cedex }}
                   </div>
                 </div>
                 <v-row style="position: absolute; bottom: 0; right: 0;" class="text-right pb-4 pr-4">
                   <v-col cols="12">
-                    <v-btn variant="tonal" @click="allerAMonProfil()">
+                    <v-btn variant="tonal" @click="goToProfile()">
                       {{ $t("dashboard.contact.editContact") }}
                     </v-btn>
                   </v-col>
                   <v-col cols="12">
-                    <v-btn variant="tonal" @click="allerAModifierMotDePasse()">
+                    <v-btn variant="tonal" @click="goToPasswordUpdate()">
                       {{ $t("dashboard.contact.editPassword") }}
                     </v-btn>
                   </v-col>
@@ -153,14 +130,14 @@
               </v-card-title>
               <v-card-text class="d-flex align-content-start flex-wrap notifs no-border">
                 <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
-                  <div v-if="notifsLoading">
+                  <div v-if="notificationsLoading">
                     <v-progress-circular indeterminate color="primary"></v-progress-circular>
                   </div>
                   <ul>
                     <li style="margin-bottom: 1em" v-for="item in notificationsAdmin" :key="item.index">
                       {{ $t("dashboard.notifications.siren") }} {{ item.siren }}<br />
                       {{ $t("dashboard.notifications.institutionName") }}
-                      <a @click="allerPageEtablissement(item.siren)">{{ item.nomEtab }}</a><br />
+                      <a @click="goToInstitutionPage(item.siren)">{{ item.nomEtab }}</a><br />
                       {{ $t("dashboard.notifications.event") }} {{ item.typeNotif }}<br />
                       {{ $t("dashboard.notifications.date") }} {{ dateFormatted(item.dateEvent) }}
                     </li>
@@ -186,13 +163,13 @@
                     <v-progress-circular indeterminate color="primary"></v-progress-circular>
                   </div>
                   <ul>
-                    <li style="margin-bottom: 0.5em" v-for="item in datesEnvoi" :key="item">
+                    <li style="margin-bottom: 0.5em" v-for="item in sendDates" :key="item">
                       <span v-html="item"></span>
                     </li>
                   </ul>
                 </div>
                 <div class="w-100 d-flex justify-end">
-                  <v-btn @click="envoiEditeurs()" class="ma-4">{{ $t("dashboard.publishers.send") }}</v-btn>
+                  <v-btn @click="sendPublishers()" class="ma-4">{{ $t("dashboard.publishers.send") }}</v-btn>
                 </div>
               </v-card-text>
             </div>
@@ -205,14 +182,15 @@
 
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import { useEditeurService } from "@/composables/useEditeurService";
-import { useEtablissementService } from "@/composables/useEtablissementService";
+import { usePublisherService } from "@/composables/service/usePublisherService";
+import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useSnackbar } from "@/composables/useSnackbar";
-import Etablissement from "@/core/Etablissement";
-import { Notification } from "@/core/Notification";
+import Institution from "@/entity/Institution";
+import { Notification } from "@/entity/Notification";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/stores/authStore";
-import { useEtablissementStore } from "@/stores/etablissementStore";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { Logger } from "@/utils/Logger";
 import {
   faBell,
@@ -237,21 +215,21 @@ interface NotificationUser {
 const router = useRouter();
 const display = useDisplay();
 const authStore = useAuthStore();
-const etablissementStore = useEtablissementStore();
+const institutionStore = useInstitutionStore();
 const snackbar = useSnackbar();
-const editeurService = useEditeurService();
-const etablissementService = useEtablissementService();
+const publisherService = usePublisherService();
+const institutionService = useInstitutionService();
 const { t } = useI18n();
 
-const etablissement = ref<Etablissement>(etablissementStore.getCurrentEtablissement);
+const institution = ref<Institution>(institutionStore.getCurrentInstitution);
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
 const isAdmin = computed(() => authStore.isAdmin);
 const isExportLoading = ref(false);
 const notificationsAdmin = ref<Array<Notification>>([]);
 const notificationsUser = ref<Array<NotificationUser>>([]);
-const datesEnvoi = ref<Array<string>>([]);
-const buttonLoading = ref(false);
-const notifsLoading = ref(true);
+const sendDates = ref<Array<string>>([]);
+const isSending = ref(false);
+const notificationsLoading = ref(true);
 const datesLoading = ref(true);
 
 const metaInfo = () => ({
@@ -266,32 +244,28 @@ const metaInfo = () => ({
 });
 
 onMounted(() => {
-  snackbar.hide();
 });
 
-const dateFormatted = (d: Date): string => {
-  return moment(d).format("DD/MM/YYYY");
-};
+const dateFormatted = (d: Date): string => moment(d).format("DD/MM/YYYY");
 
-const allerAMonProfil = (): void => {
+const goToProfile = (): void => {
   router.push({ name: RouteName.Profile });
 };
 
-const allerAModifierMotDePasse = (): void => {
+const goToPasswordUpdate = (): void => {
   router.push({ name: RouteName.Password }).catch(err => {
     Logger.error(err);
   });
 };
 
-const downloadEtablissement = (): void => {
+const downloadInstitution = (): void => {
   isExportLoading.value = true;
-  snackbar.hide();
   const siren = new Array<string>();
   siren.push(authStore.user.siren);
-  etablissementService
-    .downloadEtablissements(siren, authStore.user.token)
+  institutionService
+    .downloadInstitutions(siren, authStore.user.token)
     .then(response => {
-      const fileURL = window.URL.createObjectURL(
+      const fileURL = URL.createObjectURL(
         new Blob([response.data], { type: "application/csv" })
       );
       const fileLink = document.createElement("a");
@@ -309,20 +283,20 @@ const downloadEtablissement = (): void => {
     });
 };
 
-const allerPageEtablissement = (siren: string): void => {
-  const etablissementCible = new Etablissement();
-  etablissementCible.siren = siren;
-  etablissementCible.id = 0;
-  allerAAfficherEtab(etablissementCible);
+const goToInstitutionPage = (siren: string): void => {
+  const targetInstitution = new Institution();
+  targetInstitution.siren = siren;
+  targetInstitution.id = 0;
+  goToInstitutionDetails(targetInstitution);
 };
 
-const collecterDates = (): void => {
+const collectSendDates = (): void => {
   if (authStore.isAdmin) {
-    editeurService
-      .getDatesEnvoiEditeurs(authStore.getToken)
+    publisherService
+      .getPublisherSendDates(authStore.getToken)
       .then(result => {
         result.data.forEach(element => {
-          datesEnvoi.value.push(
+          sendDates.value.push(
             `${t("dashboard.publishers.sentOn")} ${moment(element).format("DD/MM/YYYY HH:MM")} ${t("dashboard.publishers.sentAgo")} ${moment(element).fromNow()}`
           );
         });
@@ -336,10 +310,10 @@ const collecterDates = (): void => {
   }
 };
 
-const collecterNotifs = (): void => {
+const collectNotifications = (): void => {
   if (authStore.isAdmin) {
-    etablissementService
-      .getNotificationsAdmin(authStore.getToken)
+    institutionService
+      .getAdminNotifications(authStore.getToken)
       .then(response => {
         notificationsAdmin.value = response;
       })
@@ -347,11 +321,11 @@ const collecterNotifs = (): void => {
         snackbar.error(err);
       })
       .finally(() => {
-        notifsLoading.value = false;
+        notificationsLoading.value = false;
       });
   } else {
-    etablissementService
-      .getNotificationsEtab(authStore.userSiren, authStore.getToken)
+    institutionService
+      .getInstitutionNotifications(authStore.userSiren, authStore.getToken)
       .then(response => {
         notificationsUser.value = response;
       })
@@ -359,15 +333,14 @@ const collecterNotifs = (): void => {
         snackbar.error(err);
       })
       .finally(() => {
-        notifsLoading.value = false;
+        notificationsLoading.value = false;
       });
   }
 };
 
-const allerAAfficherEtab = (item: Etablissement): void => {
-  snackbar.hide();
-  etablissementStore
-    .setCurrentEtablissement(item)
+const goToInstitutionDetails = (item: Institution): void => {
+  institutionStore
+    .setCurrentInstitution(item)
     .then(() => {
       router.push({ name: RouteName.InstitutionView });
     })
@@ -376,12 +349,12 @@ const allerAAfficherEtab = (item: Etablissement): void => {
     });
 };
 
-const envoiEditeurs = async () => {
+const sendPublishers = async () => {
   const confirmed = await confirmRef.value?.open(t("dashboard.publishers.confirm"));
   if (confirmed) {
-    buttonLoading.value = true;
-    editeurService
-      .envoiEditeurs(authStore.getToken)
+    isSending.value = true;
+    publisherService
+      .sendPublishers(authStore.getToken)
       .then(response => {
         snackbar.success(response.data.message);
       })
@@ -389,13 +362,13 @@ const envoiEditeurs = async () => {
         snackbar.error(err);
       })
       .finally(() => {
-        buttonLoading.value = false;
+        isSending.value = false;
       });
   }
 };
 
-collecterNotifs();
-collecterDates();
+collectNotifications();
+collectSendDates();
 </script>
 <style scoped lang="scss">
 .container {
@@ -474,3 +447,7 @@ p {
   font-size: 1rem !important;
 }
 </style>
+
+
+
+

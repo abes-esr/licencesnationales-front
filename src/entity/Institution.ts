@@ -1,8 +1,8 @@
-import ContactEtablissement from "@/core/ContactEtablissement";
-import Ip from "@/core/Ip";
+import InstitutionContact from "@/entity/InstitutionContact";
+import Ip from "@/entity/Ip";
 import { ValueError } from "@/exception/ValueError";
 
-export class Etablissement {
+export class Institution {
   id: number = -999;
   nom: string = "";
   siren: string = "";
@@ -12,7 +12,7 @@ export class Etablissement {
   typeEtablissement: string = "";
   statut: string = "";
   idAbes: string = "";
-  contact: ContactEtablissement = new ContactEtablissement();
+  contact: InstitutionContact = new InstitutionContact();
   ips: Array<Ip> = [];
   statutIP: string = "";
 
@@ -21,7 +21,7 @@ export class Etablissement {
   }
 
   findIpById(id: number): Ip {
-    const index = this.ips.findIndex(x => x.id === id);
+    const index = this.ips.findIndex((x) => x.id === id);
     if (index == -1) {
       throw new ValueError("ip with id " + id + " not found");
     } else {
@@ -30,7 +30,7 @@ export class Etablissement {
   }
 
   removeIp(item: Ip): void {
-    const index = this.ips.findIndex(x => x.id === item.id && x.ip === item.ip);
+    const index = this.ips.findIndex((x) => x.id === item.id && x.ip === item.ip);
     if (index == -1) {
       throw new ValueError("Ip " + item + " not found");
     }
@@ -45,4 +45,5 @@ export class Etablissement {
     this.contact.reset();
   }
 }
-export default Etablissement;
+export default Institution;
+

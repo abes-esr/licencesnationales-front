@@ -8,7 +8,7 @@
         </v-col>
       </v-row>
       <div class="d-flex flex-row-reverse flex-wrap">
-        <v-btn @click="ajouterEditeur" class="btn-1 mx-2 mr-0 my-2">
+        <v-btn @click="addPublisher" class="btn-1 mx-2 mr-0 my-2">
           {{ $t("publisher.list.create") }}
           <FontAwesomeIcon :icon="faCirclePlus" class="mx-2" />
         </v-btn>
@@ -17,26 +17,13 @@
 
     <v-card variant="flat" class="mt-2" :disabled="disableForm">
       <v-card-text class="fondGris">
-        <VDataTable
-          :headers="headers"
-          :header-props="{ class: 'bg-primary' }"
-          :items="editeurs"
-          :items-per-page="25"
+        <VDataTable :headers="headers" :header-props="{ class: 'bg-primary' }" :items="publishers" :items-per-page="25"
           :items-per-page-options="[25, 50, 100, { value: -1, title: $t('publisher.list.all') }]"
-          class="elevation-0 ma-3"
-          :search="rechercher"
-          density="compact"
-          :loading="dataLoading"
-          id="mytable"
-        >
+          class="elevation-0 ma-3" :search="searchQuery" density="compact" :loading="dataLoading" id="mytable">
           <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
             <tr>
-              <th
-                v-for="column in columns"
-                :key="column.key"
-                class="text-left"
-                @click="column.sortable ? toggleSort(column) : ''"
-              >
+              <th v-for="column in columns" :key="column.key" class="text-left"
+                @click="column.sortable ? toggleSort(column) : ''">
                 <div style="display: flex; align-items: center; white-space: nowrap;">
                   <span>{{ column.title }}</span>
                   <v-icon v-if="column.sortable && !isSorted(column)" class="pl-2" size="small">
@@ -52,21 +39,11 @@
           <template #top>
             <v-row class="ma-0">
               <v-col cols="12" sm="6" class="px-0">
-                <v-tooltip
-                  :text="$t('publisher.list.downloadTooltip')"
-                  location="top"
-                  open-delay="100"
-                  theme="dark"
-                  content-class="text-white"
-                >
+                <v-tooltip :text="$t('publisher.list.downloadTooltip')" location="top" open-delay="100" theme="dark"
+                  content-class="text-white">
                   <template #activator="{ props }">
-                    <v-btn
-                      variant="text"
-                      @click="downloadEditeurs"
-                      class="bouton-simple pl-0"
-                      v-bind="props"
-                      :loading="isExportLoading"
-                    >
+                    <v-btn variant="text" @click="downloadPublishers" class="bouton-simple pl-0" v-bind="props"
+                      :loading="isExportLoading">
                       <h2>{{ $t("publisher.list.downloadTitle") }}</h2>
                       <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
                     </v-btn>
@@ -75,14 +52,8 @@
               </v-col>
               <v-col cols="0" sm="3" class="px-0"></v-col>
               <v-col cols="12" sm="3" class="px-0">
-                <v-text-field
-                  v-model="rechercher"
-                  :label="$t('publisher.list.searchLabel')"
-                  prepend-inner-icon="mdi-magnify"
-                  variant="outlined"
-                  density="compact"
-                  clearable
-                />
+                <v-text-field v-model="searchQuery" :label="$t('publisher.list.searchLabel')"
+                  prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" clearable />
               </v-col>
             </v-row>
           </template>
@@ -92,10 +63,10 @@
           </template>
 
           <template #item.action="{ item }">
-            <v-btn class="ma-0 pa-0" variant="plain" @click="modifierEditeur(item)">
+            <v-btn class="ma-0 pa-0" variant="plain" @click="editPublisher(item)">
               <FontAwesomeIcon color="#1f3f5f" :icon="faPenToSquare" />
             </v-btn>
-            <v-btn class="ma-0 pa-0 bouton-simple" variant="plain" @click="supprimerEditeur(item)">
+            <v-btn class="ma-0 pa-0 bouton-simple" variant="plain" @click="deletePublisher(item)">
               <FontAwesomeIcon :icon="faXmark" color="red" />
             </v-btn>
           </template>
@@ -107,13 +78,14 @@
 
 <script setup lang="ts">
 import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
-import { useEditeurService } from "@/composables/useEditeurService";
+import { usePublisherService } from "@/composables/service/usePublisherService";
 import { useSnackbar } from "@/composables/useSnackbar";
-import Editeur from "@/core/Editeur";
+import Publisher from "@/entity/Publisher";
 import { LicencesNationalesUnauthorizedApiError } from "@/exception/licencesnationales/LicencesNationalesUnauthorizedApiError";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/stores/authStore";
-import { useEditeurStore } from "@/stores/editeurStore";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { usePublisherStore } from "@/composables/store/usePublisherStore";
 import { formatApiError } from "@/utils/formatApiError";
 import {
   faCirclePlus,
@@ -130,15 +102,15 @@ import { VDataTable } from "vuetify/components";
 
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
-const editeurStore = useEditeurStore();
+const publisherStore = usePublisherStore();
 const router = useRouter();
-const editeurService = useEditeurService();
+const publisherService = usePublisherService();
 const { t } = useI18n();
 
 const disableForm = ref(false);
 const isExportLoading = ref(false);
-const rechercher = ref("");
-const editeurs = ref<Array<Editeur>>([]);
+const searchQuery = ref("");
+const publishers = ref<Array<Publisher>>([]);
 const dataLoading = ref(true);
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
 
@@ -162,14 +134,15 @@ onMounted(() => {
         router.push({ name: RouteName.Home });
       },
     });
-  } else {
-    fetchEditeurs();
+    return;
   }
+
+  fetchPublishers();
 });
 
-async function fetchEditeurs() {
+async function fetchPublishers() {
   try {
-    editeurs.value = await editeurService.getEditeurs(authStore.getToken);
+    publishers.value = await publisherService.getPublishers(authStore.getToken);
   } catch (err: any) {
     if (err instanceof LicencesNationalesUnauthorizedApiError) {
       disableForm.value = true;
@@ -186,34 +159,31 @@ async function fetchEditeurs() {
   }
 }
 
-async function ajouterEditeur() {
-  snackbar.hide();
+async function addPublisher() {
   try {
-    await editeurStore.setCurrentEditeur(new Editeur());
+    await publisherStore.setCurrentPublisher(new Publisher());
     router.push({ name: RouteName.PublisherCreate });
   } catch (err: any) {
     snackbar.error(err);
   }
 }
 
-async function modifierEditeur(item: Editeur) {
-  snackbar.hide();
+async function editPublisher(item: Publisher) {
   try {
-    await editeurStore.setCurrentEditeur(item);
+    await publisherStore.setCurrentPublisher(item);
     router.push({ name: RouteName.PublisherEdit });
   } catch (err: any) {
     snackbar.error(err);
   }
 }
 
-async function downloadEditeurs(): Promise<void> {
+async function downloadPublishers(): Promise<void> {
   isExportLoading.value = true;
-  snackbar.hide();
-  const ids = editeurs.value.map(element => element.id);
+  const ids = publishers.value.map(element => element.id);
 
   try {
-    const response = await editeurService.downloadEditeurs(ids, authStore.user.token);
-    const fileURL = window.URL.createObjectURL(
+    const response = await publisherService.downloadPublishers(ids, authStore.user.token);
+    const fileURL = URL.createObjectURL(
       new Blob([response.data], { type: "application/csv" })
     );
     const fileLink = document.createElement("a");
@@ -230,8 +200,7 @@ async function downloadEditeurs(): Promise<void> {
   }
 }
 
-async function supprimerEditeur(item: Editeur) {
-  snackbar.hide();
+async function deletePublisher(item: Publisher) {
 
   const confirmed = await confirmRef.value?.open(
     t("publisher.list.deleteConfirm", { name: item.nom })
@@ -242,9 +211,9 @@ async function supprimerEditeur(item: Editeur) {
   }
 
   try {
-    await editeurService.deleteEditeur(item.id, authStore.getToken);
+    await publisherService.deletePublisher(item.id, authStore.getToken);
     snackbar.success(t("publisher.list.deleteSuccess", { name: item.nom }));
-    fetchEditeurs();
+    fetchPublishers();
   } catch (err: any) {
     snackbar.error(formatApiError(err));
   }
@@ -263,3 +232,7 @@ async function supprimerEditeur(item: Editeur) {
   background-color: transparent !important;
 }
 </style>
+
+
+
+

@@ -2,62 +2,51 @@
   <div>
     <v-container class="pb-0">
       <h1>{{ $t("common.search.title") }}</h1>
-      <v-alert :model-value="Boolean(message)" density="compact" type="error" class="mt-2">
-        {{ message }}
+      <v-alert :model-value="Boolean(errorMessage)" density="compact" type="error" class="mt-2">
+        {{ errorMessage }}
       </v-alert>
     </v-container>
 
     <v-card flat class="mt-2">
-      <v-form ref="searchForm">
+      <v-form ref="searchFormRef">
         <v-row>
           <v-col cols="1" class="d-none d-md-flex"></v-col>
           <v-col cols="12" md="10">
             <v-card-text>
               <v-row class="d-flex justify-center align-center">
                 <v-col cols="2" class="pb-0">
-                  <v-select
-                    variant="outlined"
-                    :items="domainOptions"
-                    item-title="title"
-                    item-value="value"
-                    v-model="domaine"
-                    :placeholder="$t('common.search.domainPlaceholder')"
-                    hide-details="auto"
-                    persistent-placeholder
-                    required
-                    :rules="rulesForm.selectSearchRules"
-                  />
+                  <v-select variant="outlined" :items="domainOptions" item-title="title" item-value="value"
+                    v-model="domain" :placeholder="$t('common.search.domainPlaceholder')" hide-details="auto"
+                    persistent-placeholder required :rules="searchDomainRules" />
                 </v-col>
                 <v-col cols="9" class="pb-0">
-                  <v-text-field
-                    variant="outlined"
-                    :label="$t('common.search.keywordsLabel')"
-                    :placeholder="$t('common.search.keywordsPlaceholder')"
-                    hide-details="auto"
-                    v-model="criteres"
-                    required
-                    :rules="rulesForm.searchRules"
-                    @keyup.enter="search"
-                  />
+                  <v-text-field variant="outlined" :label="$t('common.search.keywordsLabel')"
+                    :placeholder="$t('common.search.keywordsPlaceholder')" hide-details="auto" v-model="criteria"
+                    required :rules="searchCriteriaRules" @keyup.enter="search" />
                 </v-col>
                 <v-col class="pb-0">
-                  <v-btn @click="search" :loading="buttonLoading">{{ $t("common.search.submit") }}</v-btn>
+                  <v-btn @click="search" :loading="loading">{{ $t("common.search.submit") }}</v-btn>
                 </v-col>
               </v-row>
-              <br />
             </v-card-text>
           </v-col>
         </v-row>
       </v-form>
       <v-row>
         <v-col cols="1" class="d-none d-md-flex"></v-col>
-        <v-col cols="12" md="8" v-if="afficheResultat">
-          <h3>{{ $t("common.search.resultsTitle", { criteria: criteres, domain: selectedDomainLabel }) }}</h3>
-          <br />
-          <div v-if="domaineValide === 'ips'">
+        <v-col cols="12" md="8" v-if="showResults">
+          <h3>
+            {{
+              $t("common.search.resultsTitle", {
+                criteria: criteria,
+                domain: domainOptions.find(option => option.value === selectedDomain)?.title || selectedDomain
+              })
+            }}
+          </h3>
+          <div v-if="selectedDomain === 'ips'">
             <v-list density="compact">
-              <div v-for="item in resultats" :key="item.id">
-                <v-list-item @click="clickIP(item)">
+              <div v-for="item in results" :key="item.id">
+                <v-list-item @click="handleIpClick(item)">
                   <v-list-item-title>{{ item.ip }}</v-list-item-title>
                   <v-list-item-subtitle>
                     {{ item.idAbes }} - {{ item.siren }} - {{ item.nomEtab }}
@@ -67,10 +56,10 @@
               </div>
             </v-list>
           </div>
-          <div v-if="domaineValide === 'institutions'">
+          <div v-if="selectedDomain === 'institutions'">
             <v-list density="compact">
-              <div v-for="item in resultats" :key="item.id">
-                <v-list-item @click="clickEtab(item)">
+              <div v-for="item in results" :key="item.id">
+                <v-list-item @click="handleInstitutionClick(item)">
                   <v-list-item-title>
                     {{ item.idAbes }} - {{ item.siren }} - {{ item.nomEtab }} - {{ item.villeContact }}
                   </v-list-item-title>
@@ -82,14 +71,15 @@
               </div>
             </v-list>
           </div>
-          <div v-if="domaineValide === 'publishers'">
+          <div v-if="selectedDomain === 'publishers'">
             <v-list density="compact">
-              <div v-for="item in resultats" :key="item.id">
-                <v-list-item @click="clickEditeur(item)">
+              <div v-for="item in results" :key="item.id">
+                <v-list-item @click="handlePublisherClick(item)">
                   <v-list-item-title>
                     {{ item.idEditeur }} - {{ item.nom }} - {{ item.adresse }}
                   </v-list-item-title>
-                  <v-list-item-subtitle v-for="contactCommerciaux in item.contactsCommerciaux" :key="contactCommerciaux.id">
+                  <v-list-item-subtitle v-for="contactCommerciaux in item.contactsCommerciaux"
+                    :key="contactCommerciaux.id">
                     {{ contactCommerciaux.nom }} {{ contactCommerciaux.prenom }} - {{ contactCommerciaux.mail }}
                   </v-list-item-subtitle>
                   <v-list-item-subtitle v-for="contactTechnique in item.contactsTechniques" :key="contactTechnique.id">
@@ -100,7 +90,6 @@
               </div>
             </v-list>
           </div>
-          <br />
         </v-col>
       </v-row>
     </v-card>
@@ -108,14 +97,16 @@
 </template>
 
 <script setup lang="ts">
-import { useEditeurService } from "@/composables/useEditeurService";
-import { useEtablissementService } from "@/composables/useEtablissementService";
-import { useIpService } from "@/composables/useIpService";
-import { rulesForm } from "@/core/RulesForm";
+import { usePublisherService } from "@/composables/service/usePublisherService";
+import { useInstitutionService } from "@/composables/service/useInstitutionService";
+import { useIpService } from "@/composables/service/useIpService";
+import { useValidationRules } from "@/composables/useValidationRules";
+import { useLoading } from "@/utils/useLoading";
 import { RouteName } from "@/router";
-import { useAuthStore } from "@/stores/authStore";
-import { useEditeurStore } from "@/stores/editeurStore";
-import { useEtablissementStore } from "@/stores/etablissementStore";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { usePublisherStore } from "@/composables/store/usePublisherStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -123,21 +114,22 @@ import type { VForm } from "vuetify/components";
 
 const router = useRouter();
 const authStore = useAuthStore();
-const etablissementStore = useEtablissementStore();
-const editeurStore = useEditeurStore();
-const etablissementService = useEtablissementService();
-const editeurService = useEditeurService();
-const iPService = useIpService();
+const institutionStore = useInstitutionStore();
+const publisherStore = usePublisherStore();
+const institutionService = useInstitutionService();
+const publisherService = usePublisherService();
+const ipService = useIpService();
 const { t } = useI18n();
+const { searchCriteriaRules, searchDomainRules } = useValidationRules();
 
-const criteres = ref("");
-const domaine = ref("");
-const domaineValide = ref("");
-const resultats = ref<any[]>([]);
-const message = ref("");
-const afficheResultat = ref(false);
-const buttonLoading = ref(false);
-const searchForm = ref<VForm | null>(null);
+const criteria = ref("");
+const domain = ref("");
+const selectedDomain = ref("");
+const results = ref<any[]>([]);
+const errorMessage = ref("");
+const showResults = ref(false);
+const searchFormRef = ref<VForm | null>(null);
+const { loading, startLoading, stopLoading } = useLoading();
 
 const domainOptions = computed(() => [
   { value: "institutions", title: t("common.search.domains.institutions") },
@@ -145,83 +137,76 @@ const domainOptions = computed(() => [
   { value: "publishers", title: t("common.search.domains.publishers") },
 ]);
 
-const selectedDomainLabel = computed(() => {
-  const labels = {
-    institutions: t("common.search.domains.institutions"),
-    ips: t("common.search.domains.ips"),
-    publishers: t("common.search.domains.publishers"),
-  } as Record<string, string>;
-
-  return labels[domaineValide.value] ?? domaineValide.value;
-});
-
 const search = async () => {
-  const validation = await searchForm.value?.validate();
+  const validation = await searchFormRef.value?.validate();
   if (validation && !validation.valid) {
     return;
   }
 
-  const listeCriteres: Array<string> = criteres.value.split(" ");
-  domaineValide.value = domaine.value;
+  const criteriaList = criteria.value.split(" ");
+  selectedDomain.value = domain.value;
 
   let service;
-  switch (domaineValide.value) {
+  switch (selectedDomain.value) {
     case "institutions":
-      service = etablissementService;
+      service = institutionService;
       break;
     case "ips":
-      service = iPService;
+      service = ipService;
       break;
     case "publishers":
-      service = editeurService;
+      service = publisherService;
       break;
     default:
-      message.value = t("common.search.domainRequired");
+      errorMessage.value = t("common.search.domainRequired");
       return;
   }
 
-  buttonLoading.value = true;
-  resultats.value = [];
+  startLoading();
+  results.value = [];
 
   try {
-    const res = await service.search(listeCriteres, authStore.getToken);
-    afficheResultat.value = true;
-    resultats.value = res.data;
+    const res = await service.search(criteriaList, authStore.getToken);
+    showResults.value = true;
+    results.value = res.data;
   } catch (err: any) {
-    message.value = err?.data?.message ?? t("common.search.searchError");
+    errorMessage.value = err?.data?.message ?? t("common.search.searchError");
     window.scrollTo(0, 0);
   } finally {
-    buttonLoading.value = false;
+    stopLoading();
   }
 };
 
-const clickEtab = async (item: any) => {
+const handleInstitutionClick = async (item: any) => {
   try {
-    await etablissementStore.setCurrentEtablissement(item);
+    await institutionStore.setCurrentInstitution(item);
     router.push({ name: RouteName.InstitutionView });
   } catch (err: any) {
-    message.value = err?.data?.message ?? t("common.search.navigationError");
+    errorMessage.value = err?.data?.message ?? t("common.search.navigationError");
     window.scrollTo(0, 0);
   }
 };
 
-const clickIP = async (item: any) => {
+const handleIpClick = async (item: any) => {
   try {
-    await etablissementStore.setCurrentEtablissement(item);
+    await institutionStore.setCurrentInstitution(item);
     router.push({ name: RouteName.IpList });
   } catch (err: any) {
-    message.value = err?.data?.message ?? t("common.search.navigationError");
+    errorMessage.value = err?.data?.message ?? t("common.search.navigationError");
     window.scrollTo(0, 0);
   }
 };
 
-const clickEditeur = async (item: any) => {
+const handlePublisherClick = async (item: any) => {
   try {
-    await editeurStore.setCurrentEditeur(item);
+    await publisherStore.setCurrentPublisher(item);
     router.push({ name: RouteName.PublisherEdit });
   } catch (err: any) {
-    message.value = err?.data?.message ?? t("common.search.navigationError");
+    errorMessage.value = err?.data?.message ?? t("common.search.navigationError");
     window.scrollTo(0, 0);
   }
 };
 </script>
+
+
+

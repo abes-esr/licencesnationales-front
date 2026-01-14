@@ -13,27 +13,16 @@
       <v-form ref="formRef" class="mt-4">
         <v-row>
           <v-col cols="12" sm="4" md="3" lg="2">
-            <v-menu v-model="menuDateDebut" :close-on-content-click="false" transition="scale-transition" offset-y>
+            <v-menu v-model="isStartDateMenuOpen" :close-on-content-click="false" transition="scale-transition" offset-y>
               <template #activator="{ props }">
-                <v-text-field
-                  v-bind="props"
-                  ref="dateDebutRef"
-                  v-model="formattedDateDebut"
-                  :label="$t('institution.stats.startDate')"
-                  prepend-icon="mdi-calendar"
-                  :rules="rulesFormConfig.dateRules"
-                  readonly
-                  variant="outlined"
-                />
+                <v-text-field v-bind="props" ref="startDateRef" v-model="formattedStartDate"
+                  :label="$t('institution.stats.startDate')" prepend-icon="mdi-calendar"
+                  :rules="dateRules" readonly variant="outlined" />
               </template>
-              <v-date-picker
-                v-model="dateDebut"
-                :show-current="false"
-                color="primary"
-                @update:model-value="menuDateDebut = false"
-              >
+              <v-date-picker v-model="startDate" :show-current="false" color="primary"
+                @update:model-value="isStartDateMenuOpen = false">
                 <template #actions>
-                  <v-btn variant="outlined" @click="menuDateDebut = false">
+                  <v-btn variant="outlined" @click="isStartDateMenuOpen = false">
                     {{ $t("institution.stats.cancel") }}
                   </v-btn>
                 </template>
@@ -42,27 +31,16 @@
           </v-col>
 
           <v-col cols="12" sm="4" md="3" lg="2">
-            <v-menu v-model="menuDateFin" :close-on-content-click="false" transition="scale-transition" offset-y>
+            <v-menu v-model="isEndDateMenuOpen" :close-on-content-click="false" transition="scale-transition" offset-y>
               <template #activator="{ props }">
-                <v-text-field
-                  v-bind="props"
-                  ref="dateFinRef"
-                  v-model="formattedDateFin"
-                  :label="$t('institution.stats.endDate')"
-                  prepend-icon="mdi-calendar"
-                  :rules="rulesFormConfig.dateRules"
-                  readonly
-                  variant="outlined"
-                />
+                <v-text-field v-bind="props" ref="endDateRef" v-model="formattedEndDate"
+                  :label="$t('institution.stats.endDate')" prepend-icon="mdi-calendar"
+                  :rules="dateRules" readonly variant="outlined" />
               </template>
-              <v-date-picker
-                v-model="dateFin"
-                :show-current="false"
-                color="primary"
-                @update:model-value="menuDateFin = false"
-              >
+              <v-date-picker v-model="endDate" :show-current="false" color="primary"
+                @update:model-value="isEndDateMenuOpen = false">
                 <template #actions>
-                  <v-btn variant="outlined" @click="menuDateFin = false">
+                  <v-btn variant="outlined" @click="isEndDateMenuOpen = false">
                     {{ $t("institution.stats.cancel") }}
                   </v-btn>
                 </template>
@@ -78,16 +56,16 @@
         </v-row>
       </v-form>
 
-      <v-card v-if="etabStats.length > 0" class="mt-4 pa-4">
+      <v-card v-if="institutionStats.length > 0" class="mt-4 pa-4">
         <v-row>
           <h3>
-            {{ $t("institution.stats.resultsTitle", { start: formattedDateDebut, end: formattedDateFin }) }}
+            {{ $t("institution.stats.resultsTitle", { start: formattedStartDate, end: formattedEndDate }) }}
           </h3>
         </v-row>
         <v-row class="mt-2">
           <v-list subheader class="mr-4">
             <v-subheader>{{ $t("institution.stats.institutions") }}</v-subheader>
-            <v-list-item v-for="item in etabStats" :key="item.index">
+            <v-list-item v-for="item in institutionStats" :key="item.index">
               <div v-for="(value, name) in item" :key="name">
                 {{ name }} : {{ value }}
               </div>
@@ -109,43 +87,44 @@
 </template>
 
 <script setup lang="ts">
-import { useEtablissementService } from "@/composables/useEtablissementService";
-import { useIpService } from "@/composables/useIpService";
+import { useInstitutionService } from "@/composables/service/useInstitutionService";
+import { useIpService } from "@/composables/service/useIpService";
 import { useSnackbar } from "@/composables/useSnackbar";
-import { rulesForms } from "@/core/RulesForm";
-import { useAuthStore } from "@/stores/authStore";
+import { useValidationRules } from "@/composables/useValidationRules";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import moment from "moment";
 import { computed, ref } from "vue";
 import { VDatePicker } from "vuetify/components";
 
 const authStore = useAuthStore();
 const snackbar = useSnackbar();
-const etablissementService = useEtablissementService();
-const iPService = useIpService();
+const institutionService = useInstitutionService();
+const ipService = useIpService();
 
-const rulesFormConfig = rulesForms;
+const { dateRules } = useValidationRules();
 const message = ref("");
-const etabStats = ref<Array<any>>([]);
+const institutionStats = ref<Array<any>>([]);
 const ipStats = ref<Array<any>>([]);
-const dateDebut = ref<string>("");
-const dateFin = ref<string>("");
-const menuDateDebut = ref(false);
-const menuDateFin = ref(false);
+const startDate = ref<string>("");
+const endDate = ref<string>("");
+const isStartDateMenuOpen = ref(false);
+const isEndDateMenuOpen = ref(false);
 const formRef = ref();
-const dateDebutRef = ref();
-const dateFinRef = ref();
+const startDateRef = ref();
+const endDateRef = ref();
 
-const formattedDateDebut = computed({
-  get: () => (dateDebut.value ? moment(dateDebut.value).format("DD-MM-YYYY") : ""),
+const formattedStartDate = computed({
+  get: () => (startDate.value ? moment(startDate.value).format("DD-MM-YYYY") : ""),
   set: value => {
-    dateDebut.value = value ? moment(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
+    startDate.value = value ? moment(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
   },
 });
 
-const formattedDateFin = computed({
-  get: () => (dateFin.value ? moment(dateFin.value).format("DD-MM-YYYY") : ""),
+const formattedEndDate = computed({
+  get: () => (endDate.value ? moment(endDate.value).format("DD-MM-YYYY") : ""),
   set: value => {
-    dateFin.value = value ? moment(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
+    endDate.value = value ? moment(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
   },
 });
 
@@ -158,16 +137,16 @@ async function getStats() {
   }
 
   try {
-    const etabsResponse = await etablissementService.getStats(
-      formattedDateDebut.value,
-      formattedDateFin.value,
+    const institutionsResponse = await institutionService.getStats(
+      formattedStartDate.value,
+      formattedEndDate.value,
       authStore.getToken
     );
-    etabStats.value = etabsResponse.data.stats;
+    institutionStats.value = institutionsResponse.data.stats;
 
-    const ipResponse = await iPService.getStats(
-      formattedDateDebut.value,
-      formattedDateFin.value,
+    const ipResponse = await ipService.getStats(
+      formattedStartDate.value,
+      formattedEndDate.value,
       authStore.getToken
     );
     ipStats.value = ipResponse.data.stats;
@@ -176,3 +155,6 @@ async function getStats() {
   }
 }
 </script>
+
+
+

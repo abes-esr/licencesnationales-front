@@ -1,10 +1,13 @@
-import { ContactType } from "@/core/CommonDefinition";
+export enum ContactType {
+  TECHNIQUE,
+  COMMERCIAL
+}
 
-export class ContactEditeur {
+export class PublisherContact {
   id: number = -999;
   nom: string = "";
   prenom: string = "";
   mail: string = "";
   type: ContactType = ContactType.COMMERCIAL;
 }
-export default ContactEditeur;
+export default PublisherContact;
