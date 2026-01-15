@@ -31,9 +31,8 @@ export class Institution {
   removeIp(item: Ip): void {
     const index = this.ips.findIndex((x) => x.id === item.id && x.ip === item.ip);
     if (index == -1) {
-      throw new Error("Ip " + item + " not found");
+      throw new Error("Ip " + item.id + " not found");
     }
-    // On supprime l'indice
     this.ips.splice(index, 1);
   }
 

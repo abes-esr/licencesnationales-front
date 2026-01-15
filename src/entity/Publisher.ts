@@ -25,9 +25,8 @@ export default class Publisher {
   removeContact(item: PublisherContact): void {
     const index = this.contacts.findIndex((x) => x.id === item.id && x.lastName === item.lastName);
     if (index == -1) {
-      throw new Error("Contact " + item + " not found");
+      throw new Error("Contact " + item.id + " not found");
     }
-    // On supprime l'indice
     this.contacts.splice(index, 1);
   }
 
