@@ -73,9 +73,8 @@
 </template>
 
 <script setup lang="ts">
-import { RouteName } from "@/router";
 import { useAuthStore } from "@/composables/store/useAuthStore";
-import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { RouteName } from "@/router";
 import {
   faBuildingColumns,
   faChartBar,
@@ -101,6 +100,8 @@ const { isAdmin, isLoggedIn } = storeToRefs(authStore);
   right: unset !important;
   transform: unset !important;
 }
+
+.menu-slot {
+  color: inherit !important
+}
 </style>
-
-

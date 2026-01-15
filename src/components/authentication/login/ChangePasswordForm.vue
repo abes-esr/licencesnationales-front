@@ -31,7 +31,7 @@ import { useAuthService } from "@/composables/service/useAuthService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useLoading } from "@/composables/useLoading";
 import { useSnackbar } from "@/composables/useSnackbar";
-import { RouteName } from "@/router";
+import { RouteAction, RouteName } from "@/router";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";

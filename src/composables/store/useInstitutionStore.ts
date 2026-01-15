@@ -10,9 +10,7 @@ export const useInstitutionStore = defineStore("institution", {
     currentInstitution: new Institution()
   }),
 
-  getters: {
-    currentInstitution: (state) => state.currentInstitution
-  },
+  getters: {},
 
   actions: {
     async setCurrentInstitution(value: Institution): Promise<boolean> {

@@ -9,29 +9,20 @@
               <span class="texte text-wrap text-break">{{ $t("common.footer.quickAccess") }}</span>
             </div>
 
-            <v-btn
-              href="https://stp.abes.fr/node/3?origine=LicencesNationales"
-              target="_blank"
-              class="footer-btn mx-2 text-center text-white"
-            >
+            <v-btn href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank"
+              class="footer-btn mx-2 text-center text-white">
               <span class="texte text-wrap text-break">{{ $t("common.footer.assistance") }}</span>
               <FontAwesomeIcon :icon="faComments" class="mx-2" />
             </v-btn>
 
-            <v-btn
-              href="https://www.licencesnationales.fr/"
-              target="_blank"
-              class="footer-btn mx-2 text-center text-white"
-            >
+            <v-btn href="https://www.licencesnationales.fr/" target="_blank"
+              class="footer-btn mx-2 text-center text-white">
               <span class="texte text-wrap text-break">{{ $t("common.footer.site") }}</span>
               <FontAwesomeIcon :icon="faCircleArrowRight" class="mx-2" />
             </v-btn>
 
-            <v-btn
-              href="https://documentation.abes.fr/aidelicencesnationales/index.html"
-              target="_blank"
-              class="footer-btn mx-2 text-center text-white"
-            >
+            <v-btn href="https://documentation.abes.fr/aidelicencesnationales/index.html" target="_blank"
+              class="footer-btn mx-2 text-center text-white">
               <span class="texte text-wrap text-break">{{ $t("common.footer.documentation") }}</span>
               <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" />
             </v-btn>
@@ -182,4 +173,3 @@ onMounted(async () => {
   width: 30%;
 }
 </style>
-

@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import ChangePasswordForm from "@/components/authentication/login/ChangePassword.vue";
+import ChangePasswordForm from "@/components/authentication/login/ChangePasswordForm.vue";
 
 const metaInfo = {
   meta: [

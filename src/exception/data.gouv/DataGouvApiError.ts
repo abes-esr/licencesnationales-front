@@ -1,8 +1,9 @@
-import { BaseError } from "@/exception/BaseError";
+export class DataGouvApiError extends Error {
+  public status: number;
 
-export class DataGouvApiError extends BaseError {
-  constructor(public status: number, public message: string) {
-    super();
+  constructor(status: number, message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.status = status;
   }
 
   public toString = (): string => {

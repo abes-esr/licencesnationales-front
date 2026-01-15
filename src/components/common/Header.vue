@@ -2,7 +2,8 @@
   <v-app-bar color="primary" :height="smAndDown ? 174 : 134">
     <v-container fluid class="pa-0">
       <v-row class="align-center" no-gutters>
-        <v-btn variant="text" class="h-100" :aria-label="$t('common.header.appLabel')" :to="{ name: RouteName.Home }">
+        <v-btn variant="plain" class="h-100 opacity-100" :aria-label="$t('common.header.appLabel')"
+          :to="{ name: RouteName.Home }">
           <v-img :alt="$t('common.header.logoAlt')" src="logo.svg" height="90" width="260" contain />
         </v-btn>
 
@@ -14,7 +15,7 @@
         <v-col cols="12" md="3">
           <div class="d-flex align-center flex-wrap justify-space-between justify-md-start">
             <v-switch class="theme-selector" density="compact" inset hide-details :model-value="isDark"
-              @update:model-value="uiStore.toggleTheme()">
+              @update:model-value="uiStore.toggleTheme">
               <template #label>
                 <p class="text-white text-subtitle-2">{{ $t('common.header.darkTheme') }}</p>
               </template>
@@ -103,6 +104,7 @@ const uiStore = useUiStore();
 const { smAndDown } = useDisplay();
 const { isLoggedIn, isAdmin, userInstitutionName: username } = storeToRefs(authStore);
 const { isDark } = storeToRefs(uiStore);
+
 </script>
 
 <style scoped>

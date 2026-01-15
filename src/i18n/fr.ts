@@ -77,7 +77,7 @@ export const fr = {
       assistance: "Assistance",
       site: "Site Licences nationales",
       documentation: "Documentation",
-      licencesNationales: "Licences Nationales",
+      licencesNationales: "Licences Nationales ",
       agencyName: "Agence bibliographique de l'enseignement supérieur",
       addressLine1: "227 av. Jean-Louis Viala CS 84308",
       addressLine2: "34193 Montpellier Cedex 5",

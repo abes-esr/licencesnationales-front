@@ -18,7 +18,7 @@
             </template>
           </v-tooltip>
         </v-card-title>
-        <span>{{ $t("dashboard.accountCreatedOn") }} {{ institution.createdAt.toLocaleDateString() }}</span>
+        <span>{{ $t("dashboard.accountCreatedOn") }} {{ institutionCreatedAt }}</span>
         <v-row class="d-flex justify-space-between flex-wrap pt-3">
           <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
             <div style="height: 100%; position:relative;" class="borderCol fondBlanc"
@@ -221,6 +221,17 @@ const institutionService = useInstitutionService();
 const { t } = useI18n();
 
 const institution = ref<Institution>(institutionStore.currentInstitution);
+const institutionCreatedAt = computed(() => {
+  const value = institution.value.createdAt;
+  if (value instanceof Date) {
+    return value.toLocaleDateString();
+  }
+  if (!value) {
+    return "";
+  }
+  const parsed = new Date(value as unknown as string);
+  return Number.isNaN(parsed.getTime()) ? "" : parsed.toLocaleDateString();
+});
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
 const isAdmin = computed(() => authStore.isAdmin);
 const isExportLoading = ref(false);

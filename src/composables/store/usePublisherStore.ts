@@ -10,9 +10,7 @@ export const usePublisherStore = defineStore("publisher", {
     currentPublisher: new Publisher()
   }),
 
-  getters: {
-    currentPublisher: (state) => state.currentPublisher
-  },
+  getters: {},
 
   actions: {
     async setCurrentPublisher(value: Publisher): Promise<boolean> {

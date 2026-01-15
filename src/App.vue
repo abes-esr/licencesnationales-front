@@ -41,9 +41,9 @@ onMounted(() => {
     )
   }
 });
+
 </script>
 
 <style lang="scss">
 @use "./theme/main.scss";
 </style>
-

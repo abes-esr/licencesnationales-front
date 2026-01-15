@@ -27,7 +27,6 @@ export const useAuthStore = defineStore("auth", {
     userSiren: (state) => state.user.siren,
     userInstitutionName: (state) => state.user.institutionName,
     token: (state) => state.user.token,
-    connectedInstitution: (state) => state.connectedInstitution,
     adminInstitutionSirenValue: (state) => state.adminInstitutionSiren
   },
 

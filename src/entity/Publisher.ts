@@ -1,5 +1,4 @@
 import PublisherContact from "@/entity/PublisherContact";
-import { ValueError } from "@/exception/ValueError";
 
 export default class Publisher {
   id: number = -999;
@@ -15,20 +14,18 @@ export default class Publisher {
   }
 
   findContactById(id: number): PublisherContact {
-    const index = this.contacts.findIndex(x => x.id === id);
+    const index = this.contacts.findIndex((x) => x.id === id);
     if (index == -1) {
-      throw new ValueError("Contact width id " + id + " not found");
+      throw new Error("Contact width id " + id + " not found");
     } else {
       return this.contacts[index];
     }
   }
 
   removeContact(item: PublisherContact): void {
-    const index = this.contacts.findIndex(
-      x => x.id === item.id && x.lastName === item.lastName
-    );
+    const index = this.contacts.findIndex((x) => x.id === item.id && x.lastName === item.lastName);
     if (index == -1) {
-      throw new ValueError("Contact " + item + " not found");
+      throw new Error("Contact " + item + " not found");
     }
     // On supprime l'indice
     this.contacts.splice(index, 1);
@@ -44,4 +41,3 @@ export default class Publisher {
     this.contacts = [];
   }
 }
-

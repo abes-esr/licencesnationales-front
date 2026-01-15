@@ -1,15 +1,14 @@
-import { BaseError } from "@/exception/BaseError";
+export class LicencesNationalesApiError extends Error {
+  public path: string | undefined;
+  debugMessage: string | undefined;
 
-export class LicencesNationalesApiError extends BaseError {
-  constructor(
-    public message: string,
-    public path?: string,
-    public deBugMessage?: string
-  ) {
-    super();
+  constructor(message: string, path?: string, debugMessage?: string) {
+    super(message);
+    this.path = path;
+    this.debugMessage = debugMessage;
   }
 
   public toString = (): string => {
-    return `${this.message} - Route: ${this.path} - Debug: ${this.deBugMessage}`;
+    return `${this.message} - Route: ${this.path} - Debug: ${this.debugMessage}`;
   };
 }
