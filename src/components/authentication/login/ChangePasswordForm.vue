@@ -7,8 +7,7 @@
             <h1 class="pb-4">{{ $t("auth.changePassword.title") }}</h1>
             <v-card-text class="fondGris">
               <div class="pt-4 px-4">
-                <PasswordForm ref="passwordForm" :action="RouteAction.MODIFICATION" v-model:oldPassword="oldPassword"
-                  v-model:newPassword="newPassword" :linkIsExpired="false" />
+                <PasswordForm :action="RouteAction.MODIFICATION" :linkIsExpired="false" />
               </div>
               <v-spacer class="hidden-sm-and-down"></v-spacer>
               <v-col cols="12" class="d-flex justify-end">
@@ -26,13 +25,13 @@
 </template>
 
 <script setup lang="ts">
-import PasswordForm from "@/components/authentication/PasswordForm.vue";
+import PasswordForm, { passwordFormKey } from "@/components/authentication/PasswordForm.vue";
 import { useAuthService } from "@/composables/service/useAuthService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useLoading } from "@/composables/useLoading";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { RouteAction, RouteName } from "@/router";
-import { ref } from "vue";
+import { provide, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import type { VForm } from "vuetify/components";
@@ -44,15 +43,19 @@ const authService = useAuthService();
 const { t } = useI18n();
 
 const form = ref<VForm | null>(null);
-const passwordForm = ref<InstanceType<typeof PasswordForm> | null>(null);
 const { loading, startLoading, stopLoading } = useLoading();
-const oldPassword = ref("");
-const newPassword = ref("");
+
+const passwordFormState = reactive({
+  oldPassword: "",
+  newPassword: "",
+  confirmPassword: ""
+});
+
+provide(passwordFormKey, passwordFormState);
 
 const validate = async () => {
   const formValidation = await form.value?.validate();
-  const passwordsValid = await passwordForm.value?.validate();
-  if (formValidation?.valid && passwordsValid) {
+  if (formValidation?.valid) {
     submit();
   }
 };
@@ -61,8 +64,8 @@ const submit = async () => {
   startLoading();
   try {
     await authService.changePassword(
-      oldPassword.value,
-      newPassword.value,
+      passwordFormState.oldPassword,
+      passwordFormState.newPassword,
       authStore.token
     );
 

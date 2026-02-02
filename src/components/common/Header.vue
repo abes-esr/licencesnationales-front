@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="primary" :height="smAndDown ? 174 : 134">
+  <v-app-bar class="app-header" color="primary" :height="smAndDown ? 174 : 134">
     <v-container fluid class="pa-0">
       <v-row class="align-center" no-gutters>
         <v-btn variant="plain" class="h-100 opacity-100" :aria-label="$t('common.header.appLabel')"
@@ -110,5 +110,13 @@ const { isDark } = storeToRefs(uiStore);
 <style scoped>
 .header-graphic {
   max-width: 420px;
+}
+
+.app-header {
+  background: linear-gradient(90deg, #32465b 20%, #5f97ce) !important;
+}
+
+.app-header :deep(.v-toolbar__content) {
+  background: linear-gradient(90deg, #32465b 20%, #5f97ce) !important;
 }
 </style>

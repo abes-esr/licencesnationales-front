@@ -28,29 +28,27 @@ const { t } = useI18n();
 const { loading: isLoading, startLoading, stopLoading } = useLoading();
 
 const deleteInstitution = async () => {
-  startLoading();
   const confirmed = await props.confirmRef?.open(
     t("institution.card.confirmDelete", { name: props.institution.name })
   );
   if (confirmed) {
-    institutionService
-      .deleteInstitution(props.institution.siren, authStore.token)
-      .then(() => {
-        snackbar.success(t("institution.card.deleteSuccess"), {
-          onHide: () => {
-            router.push({ name: RouteName.Institutions });
-          },
-          timeout: 4000,
-        });
-      })
-      .catch(err => {
-        snackbar.error(err);
-      })
-      .finally(() => {
-        stopLoading();
+    try {
+      startLoading();
+      await institutionService
+        .deleteInstitution(props.institution.siren, authStore.token)
+
+      snackbar.success(t("institution.card.deleteSuccess"), {
+        onHide: () => {
+          router.push({ name: RouteName.Institutions });
+        },
+        timeout: 4000,
       });
-  } else {
-    stopLoading();
-  }
-};
+    }
+    catch (err) {
+      snackbar.error(err)
+    } finally {
+      stopLoading();
+    }
+  };
+}
 </script>

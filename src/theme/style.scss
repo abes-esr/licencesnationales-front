@@ -33,7 +33,6 @@ $couleur-fond-declaration: var(--couleur-fond-declaration);
 $couleur-tab: var(--couleur-tab);
 
 @mixin styles() {
-
   h1 {
     color: $couleur-2;
     font-weight: 900;
@@ -124,7 +123,7 @@ $couleur-tab: var(--couleur-tab);
   }
 
   .bouton-simple {
-    color: $couleur-3 !important;
+    color: #356ca5 !important;
     background-color: transparent !important;
   }
 
@@ -244,7 +243,7 @@ $couleur-tab: var(--couleur-tab);
   }
 
   .theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
-    color: #FFFFFF !important;
+    color: #ffffff !important;
   }
 
   .v-text-field input[disabled="true"] :not(v-select__selections) {
@@ -292,15 +291,15 @@ $couleur-tab: var(--couleur-tab);
     background-color: $couleur-tab;
   }
 
-  .v-text-field--filled>.v-input__control>.v-input__slot {
+  .v-text-field--filled > .v-input__control > .v-input__slot {
     background-color: $couleur-6 !important;
   }
 
-  .v-input--is-disabled>.v-input__control>.v-input__slot {
+  .v-input--is-disabled > .v-input__control > .v-input__slot {
     background-color: $couleur-4 !important;
   }
 
-  .v-textarea--filled>.v-input__control>.v-input__slot {
+  .v-textarea--filled > .v-input__control > .v-input__slot {
     background-color: $couleur-6 !important;
   }
 
@@ -366,7 +365,11 @@ $couleur-tab: var(--couleur-tab);
     opacity: 0.5 !important;
   }
 
-  .theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
+  .theme--light.v-data-table
+    > .v-data-table__wrapper
+    > table
+    > tbody
+    > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
     background: #cfcfcf !important;
   }
 

@@ -80,10 +80,10 @@
                 <v-tooltip :text="$t('ip.list.downloadTooltip')" location="top" open-delay="100" theme="dark"
                   content-class="text-white">
                   <template #activator="{ props }">
-                    <v-btn variant="text" @click="downloadIPs" class="bouton-simple pl-0" v-bind="props"
+                    <v-btn variant="text" @click="downloadIPs" class="bouton-simple " v-bind="props"
                       :loading="isExportLoading">
                       <h2>{{ $t("ip.list.downloadTitle") }}</h2>
-                      <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
+                      <FontAwesomeIcon :icon="faDownload" class="mx-2" size="lg" />
                     </v-btn>
                   </template>
                 </v-tooltip>
@@ -114,14 +114,14 @@
                   <FontAwesomeIcon :icon="faCircleInfo" />
                 </span>
               </template>
-              <span v-if="item.statut.includes('Valid�')">{{ infobulleValid }}</span>
+              <span v-if="item.statut.includes('Validé')">{{ infobulleValid }}</span>
               <span v-if="item.statut.includes('Attestation')">{{ infobulleAttestation }}</span>
               <span v-if="item.statut.includes('attente')">{{ infobulleAttente }}</span>
             </v-tooltip>
           </template>
 
           <template #item.action="{ item }">
-            <v-btn v-if="isAdmin && currentInstitution.status == 'Valid�'" class="ma-0 pa-0 bouton-simple"
+            <v-btn v-if="isAdmin && currentInstitution.status == 'Validé'" class="ma-0 pa-0 bouton-simple"
               variant="flat" :title="$t('ip.list.review')" @click.stop="openDialog(item)">
               <FontAwesomeIcon :icon="faMagnifyingGlass" />
             </v-btn>
@@ -437,7 +437,7 @@ function getAll() {
 function fetchAccessList(): void {
   getAll()
     .then(response => {
-      accessList.value = response.data.map(formatAccessEntry);
+      accessList.value = response.map(formatAccessEntry);
     })
     .catch(err => {
       Logger.error(err);
@@ -453,19 +453,19 @@ function formatAccessEntry(accessItem: any) {
   if (accessItem.typeAcces === "range") accessType = t("ip.list.types.rangePrefix");
   return {
     id: accessItem.id,
-    dateCreation: moment(accessItem.dateCreation).format("L"),
+    dateCreation: moment(accessItem.createdAt).format("L"),
     dateModification: getDateModification(accessItem),
-    typeIp: accessType + accessItem.typeIp,
-    typeAcces: accessItem.typeAcces,
+    typeIp: accessType + (accessItem.typeIp ?? ""),
+    typeAcces: accessItem.typeAcces ?? "",
     ip: accessItem.ip,
-    statut: accessItem.statut,
-    commentaires: accessItem.commentaires,
+    statut: accessItem.status ?? "",
+    commentaires: accessItem.comments ?? [],
   };
 }
 
 function getDateModification(accessItem: any) {
-  if (accessItem.dateModification === null) return accessItem.dateModification;
-  return moment(accessItem.dateModification).format("L");
+  if (!accessItem.updatedAt) return null;
+  return moment(accessItem.updatedAt).format("L");
 }
 
 function openDialog(item: any): void {
@@ -660,9 +660,9 @@ function onTypeSelect(element: string): void {
 
 function downloadIPs(): void {
   isExportLoading.value = true;
-  const ids = accessList.value.map(element => element.id);
+  const siren = getSubjectInstitutionSiren();
   ipService
-    .downloadIps(ids, authStore.user.token)
+    .downloadIPs(siren, authStore.user.token)
     .then(response => {
       const fileURL = URL.createObjectURL(new Blob([response.data], { type: "application/csv" }));
       const fileLink = document.createElement("a");

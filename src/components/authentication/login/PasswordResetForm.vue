@@ -8,8 +8,8 @@
               <h1>{{ $t("auth.resetPassword.title") }}</h1>
             </v-card-title>
             <v-card-text>
-              <PasswordForm ref="passwordForm" :action="RouteAction.CREATION" v-model:newPassword="newPassword"
-                class="ma-3" :link-is-expired="status !== 'valid'" :is-disable-form="status !== 'valid'" />
+              <PasswordForm :action="RouteAction.CREATION" class="ma-3" :link-is-expired="status !== 'valid'"
+                :is-disable-form="status !== 'valid'" />
             </v-card-text>
             <v-card-actions>
               <v-spacer class="hidden-sm-and-down"></v-spacer>
@@ -38,15 +38,15 @@
 </template>
 
 <script setup lang="ts">
-import PasswordForm from "@/components/authentication/PasswordForm.vue";
+import PasswordForm, { passwordFormKey } from "@/components/authentication/PasswordForm.vue";
 import { useAuthService } from "@/composables/service/useAuthService";
 import { useLoading } from "@/composables/useLoading";
 import { useRecaptcha } from "@/composables/useRecaptcha";
 import { useSnackbar } from "@/composables/useSnackbar";
-import { RouteName } from "@/router";
+import { RouteAction, RouteName } from "@/router";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { onMounted, ref } from "vue";
+import { onMounted, provide, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import type { VForm } from "vuetify/components";
@@ -60,12 +60,18 @@ const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
 
 const resetToken = ref("");
 const recaptchaToken = ref("");
-const newPassword = ref("");
 const { loading, startLoading, stopLoading } = useLoading();
 const status = ref<"checking" | "valid" | "expired">("checking");
 
 const resetFormRef = ref<VForm | null>(null);
-const passwordForm = ref<InstanceType<typeof PasswordForm> | null>(null);
+
+const passwordFormState = reactive({
+  oldPassword: "",
+  newPassword: "",
+  confirmPassword: ""
+});
+
+provide(passwordFormKey, passwordFormState);
 
 onMounted(async () => {
   await setupToken();
@@ -97,15 +103,14 @@ const handleRecaptcha = async () => {
 
 const validate = async (): Promise<boolean> => {
   const formValid = await resetFormRef.value?.validate();
-  const passwordValid = await passwordForm.value?.validate();
-  return Boolean(formValid?.valid && passwordValid);
+  return Boolean(formValid?.valid);
 };
 
 const resetPassword = async () => {
   startLoading();
   try {
     const response = await authService.resetPassword({
-      nouveauMotDePasse: newPassword.value,
+      nouveauMotDePasse: passwordFormState.newPassword,
       recaptcha: recaptchaToken.value,
       token: resetToken.value
     });
@@ -121,9 +126,10 @@ const resetPassword = async () => {
 };
 
 const clear = () => {
-  passwordForm.value?.clear();
   resetFormRef.value?.resetValidation();
-  newPassword.value = "";
+  passwordFormState.oldPassword = "";
+  passwordFormState.newPassword = "";
+  passwordFormState.confirmPassword = "";
 };
 
 </script>

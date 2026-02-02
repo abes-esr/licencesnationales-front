@@ -1,7 +1,7 @@
 <template>
-  <v-footer id="footer" color="primary" class="pa-0 text-white">
+  <v-footer id="footer" class="pa-0 text-white footer-gradient">
     <v-card class="flex w-100 footer-card" flat>
-      <v-card-title class="teal footer-top align-center pa-0 d-md-flex pa-4 text-white">
+      <v-card-title class="footer-top align-center pa-0 d-md-flex pa-4 text-white">
         <v-col cols="12" md="4" lg="3" xl="3">
           <div class="left-container d-flex flex-column justify-space-between">
             <div class="raccourci">
@@ -57,7 +57,7 @@
         </v-col>
       </v-card-title>
 
-      <v-card-text class="py-2 text-white footer-bottom bg-secondary">
+      <v-card-text class="py-2 text-white footer-bottom">
         <strong>{{ $t("common.footer.licencesNationales") }} </strong>
 
         <v-tooltip location="top" theme="dark" content-class="text-white">
@@ -171,5 +171,14 @@ onMounted(async () => {
 
 .logos {
   width: 30%;
+}
+
+.footer-gradient {
+  background: linear-gradient(90deg, #32465b 20%, #5f97ce) !important;
+}
+
+.footer-top,
+.footer-bottom {
+  background-color: transparent !important;
 }
 </style>

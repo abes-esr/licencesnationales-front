@@ -45,12 +45,16 @@ export const usePublisherService = () => {
     return response;
   };
 
-  const search = (criteres: Array<string>, token: string) =>
-    api.post("/editeurs/search/", criteres, token);
+  const search = async (criteres: Array<string>, token: string): Promise<Array<Publisher>> => {
+    const result = await api.post("/editeurs/search/", criteres, token);
+    const response: Array<JsonPublisherResponse> = result.data ?? [];
+    return response.map((item) => PublisherMapper.toDomain(item));
+  };
 
-  const sendPublishers = (token: string) => api.get("/editeurs/exportMensuelEditeur/", token);
+  const sendPublishers = async (token: string) =>
+    api.get("/editeurs/exportMensuelEditeur/", token);
 
-  const getPublisherSendDates = (token: string) =>
+  const getPublisherSendDates = async (token: string) =>
     api.get("/editeurs/getDateEnvoiEditeur/", token);
 
   return {

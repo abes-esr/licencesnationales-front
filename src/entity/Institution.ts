@@ -7,13 +7,13 @@ export class Institution {
   siren: string = "";
   createdAt: Date = new Date();
   createdAtFormatted: string = "";
-  lastIpUpdateDate: string = "";
+  lastIpUpdateDate?: string;
   institutionType: string = "";
-  status: string = "";
-  abesId: string = "";
+  status?: string;
+  abesId?: string;
   contact: InstitutionContact = new InstitutionContact();
   ips: Array<Ip> = [];
-  ipStatus: string = "";
+  ipStatus?: string;
 
   addIp(item: Ip): void {
     this.ips.push(item);

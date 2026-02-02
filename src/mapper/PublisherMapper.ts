@@ -17,20 +17,20 @@ export interface JsonCreatePublisherRequest {
 }
 
 export interface JsonSimplePublisherResponse {
-  id: number;
-  nom: string;
-  dateCreation: string;
+  id?: number;
+  nom?: string;
+  dateCreation?: string;
 }
 
 export interface JsonPublisherResponse {
-  id: number;
-  nom: string;
-  identifiantBis: string;
-  dateCreation: string;
-  typesEtablissements: Array<string>;
-  adresse: string;
-  contactsCommerciaux: Array<JsonPublisherContactResponse>;
-  contactsTechniques: Array<JsonPublisherContactResponse>;
+  id?: number;
+  nom?: string;
+  identifiantBis?: string;
+  dateCreation?: string;
+  typesEtablissements?: Array<string>;
+  adresse?: string;
+  contactsCommerciaux?: Array<JsonPublisherContactResponse>;
+  contactsTechniques?: Array<JsonPublisherContactResponse>;
 }
 
 export interface JsonUpdatePublisherRequest {
@@ -45,31 +45,25 @@ export interface JsonUpdatePublisherRequest {
 
 export class PublisherMapper {
   static toDomainList(responses: Array<JsonSimplePublisherResponse>): Array<Publisher> {
-    return responses.map((element) => this.toSimpleDomain(element));
-  }
-
-  static toSimpleDomain(response: JsonSimplePublisherResponse): Publisher {
-    const publisher = new Publisher();
-    publisher.id = response.id;
-    publisher.name = response.nom;
-    publisher.createdAt = new Date(response.dateCreation);
-    return publisher;
+    return responses.map((element) => this.toDomain(element));
   }
 
   static toDomain(response: JsonPublisherResponse): Publisher {
     const publisher = new Publisher();
-    publisher.id = response.id;
-    publisher.name = response.nom;
-    publisher.createdAt = new Date(response.dateCreation);
-    publisher.relatedInstitutionTypes = response.typesEtablissements;
-    publisher.secondaryId = response.identifiantBis;
-    publisher.address = response.adresse;
+    if (response.id !== undefined) publisher.id = response.id;
+    if (response.nom !== undefined) publisher.name = response.nom;
+    if (response.dateCreation) publisher.createdAt = new Date(response.dateCreation);
+    if (response.typesEtablissements !== undefined) {
+      publisher.relatedInstitutionTypes = response.typesEtablissements;
+    }
+    if (response.identifiantBis !== undefined) publisher.secondaryId = response.identifiantBis;
+    if (response.adresse !== undefined) publisher.address = response.adresse;
 
-    response.contactsCommerciaux.forEach((element) => {
+    response.contactsCommerciaux?.forEach((element) => {
       publisher.addContact(PublisherContactMapper.toDomain(element, ContactType.COMMERCIAL));
     });
 
-    response.contactsTechniques.forEach((element) => {
+    response.contactsTechniques?.forEach((element) => {
       publisher.addContact(PublisherContactMapper.toDomain(element, ContactType.TECHNIQUE));
     });
 
@@ -80,9 +74,9 @@ export class PublisherMapper {
     const { commercial, technical } = this.splitContacts(publisher);
     return {
       nom: publisher.name,
-      identifiantBis: publisher.secondaryId,
+      identifiantBis: publisher.secondaryId ?? "",
       typesEtablissements: publisher.relatedInstitutionTypes,
-      adresse: publisher.address,
+      adresse: publisher.address ?? "",
       contactsCommerciaux: commercial.map(PublisherContactMapper.toCreatePayload),
       contactsTechniques: technical.map(PublisherContactMapper.toCreatePayload)
     };
@@ -93,9 +87,9 @@ export class PublisherMapper {
     return {
       id: publisher.id,
       nom: publisher.name,
-      identifiantBis: publisher.secondaryId,
+      identifiantBis: publisher.secondaryId ?? "",
       typesEtablissements: publisher.relatedInstitutionTypes,
-      adresse: publisher.address,
+      adresse: publisher.address ?? "",
       contactsCommerciaux: commercial.map(PublisherContactMapper.toUpdatePayload),
       contactsTechniques: technical.map(PublisherContactMapper.toUpdatePayload)
     };

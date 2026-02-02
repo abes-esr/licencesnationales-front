@@ -1,14 +1,13 @@
 import { useApiService } from "@/composables/service/useApiService";
-import { InstitutionMapper } from "@/mapper/InstitutionMapper";
-import { NotificationMapper } from "@/mapper/NotificationMapper";
-import {
-  JsonCreateInstitution,
-  JsonInstitutionResponse,
-  JsonSimpleInstitutionResponse,
-  JsonUpdateInstitution
-} from "@/mapper/InstitutionMapper";
 import Institution from "@/entity/Institution";
 import Notification from "@/entity/Notification";
+import {
+  InstitutionMapper,
+  JsonCreateInstitution,
+  JsonInstitutionResponse,
+  JsonUpdateInstitution
+} from "@/mapper/InstitutionMapper";
+import { NotificationMapper } from "@/mapper/NotificationMapper";
 
 interface JsonInstitutionTypeResponse {
   libelle: string;
@@ -48,7 +47,7 @@ export const useInstitutionService = () => {
 
   const getInstitutions = async (token: string): Promise<Array<Institution>> => {
     const result = await api.get("/etablissements/", token, {}, true);
-    const response: Array<JsonSimpleInstitutionResponse> = result.data;
+    const response: Array<JsonInstitutionResponse> = result.data ?? [];
     return InstitutionMapper.toDomainList(response);
   };
 
@@ -74,16 +73,16 @@ export const useInstitutionService = () => {
     return true;
   };
 
-  const validateInstitution = (siren: string, token: string) =>
+  const validateInstitution = async (siren: string, token: string) =>
     api.post("/etablissements/validation/" + siren, null, token);
 
-  const invalidateInstitution = (siren: string, token: string) =>
+  const invalidateInstitution = async (siren: string, token: string) =>
     api.post("/etablissements/devalidation/" + siren, null, token);
 
-  const mergeInstitutions = (token: string, data: any) =>
+  const mergeInstitutions = async (token: string, data: any) =>
     api.post("/etablissements/mergeInstitutions", data, token);
 
-  const splitInstitution = (token: string, data: any) =>
+  const splitInstitution = async (token: string, data: any) =>
     api.post("/etablissements/splitInstitution", data, token);
 
   const downloadInstitutions = async (sirens: Array<string>, token: string) => {
@@ -113,13 +112,16 @@ export const useInstitutionService = () => {
     return notifs;
   };
 
-  const search = (criteres: Array<string>, token: string) =>
-    api.post("/etablissements/search/", criteres, token);
+  const search = async (criteres: Array<string>, token: string) => {
+    const result = await api.post("/etablissements/search/", criteres, token);
+    const response: Array<JsonInstitutionResponse> = result.data ?? [];
+    return InstitutionMapper.toDomainList(response);
+  };
 
-  const getHistory = (siren: string, token: string) =>
+  const getHistory = async (siren: string, token: string) =>
     api.get("/etablissements/histo/" + siren, token);
 
-  const getStats = (dateDebut: string, dateFin: string, token: string) =>
+  const getStats = async (dateDebut: string, dateFin: string, token: string) =>
     api.get("/etablissements/stats?dateDebut=" + dateDebut + "&dateFin=" + dateFin, token);
 
   return {
@@ -141,5 +143,3 @@ export const useInstitutionService = () => {
     getStats
   };
 };
-
-

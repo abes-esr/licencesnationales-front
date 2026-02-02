@@ -3,10 +3,10 @@ import PublisherContact from "@/entity/PublisherContact";
 export default class Publisher {
   id: number = -999;
   name: string = "";
-  secondaryId: string = "";
+  secondaryId?: string = "";
   createdAt: Date = new Date();
   relatedInstitutionTypes: Array<string> = [];
-  address: string = "";
+  address?: string = "";
   contacts: Array<PublisherContact> = [];
 
   addContact(item: PublisherContact): void {

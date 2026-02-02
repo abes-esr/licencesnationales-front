@@ -4,8 +4,8 @@
       <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
         <v-row>
           <v-text-field outlined :label="$t('institution.contactForm.lastName')"
-            :placeholder="$t('institution.contactForm.lastName')" v-model="contact.lastName" :rules="lastNameRules" required
-            @keyup.enter="validate()"></v-text-field>
+            :placeholder="$t('institution.contactForm.lastName')" v-model="contact.lastName" :rules="lastNameRules"
+            required @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
           <v-text-field outlined :label="$t('institution.contactForm.firstName')"
@@ -52,19 +52,18 @@
               {{ $t("institution.contactForm.emailNotice") }}
             </v-alert>
             <v-text-field outlined :label="$t('institution.contactForm.email')"
-              :placeholder="$t('institution.contactForm.email')" v-model="contact.email" :rules="emailRules" required
-              @keyup="checkConfirmationMail()" @keyup.enter="validate()" autocomplete="new-mail"></v-text-field>
+              :placeholder="$t('institution.contactForm.email')" v-model="contact.email" :rules="baseRules" required
+              @keyup.enter="validate()" autocomplete="new-mail"></v-text-field>
             <v-text-field outlined :label="$t('institution.contactForm.confirmEmail')"
-              :placeholder="$t('institution.contactForm.confirmEmail')" v-model="emailConfirmation" :rules="emailRules"
-              required @keyup="checkConfirmationMail()" @keyup.enter="validate()"
+              :placeholder="$t('institution.contactForm.confirmEmail')" v-model="emailConfirmation" :rules="baseRules"
+              required @keyup.enter="validate()"
               autocomplete="new-mail"></v-text-field>
           </v-form>
         </v-row>
         <v-row>
-          <PasswordForm ref="passwordFormRef"
+          <PasswordForm
             v-if="action === RouteAction.CREATION || action === RouteAction.FUSION || action === RouteAction.SCISSION"
-            :action="RouteAction.CREATION" :linkIsExpired="false" :new-password="contact.password"
-            @update:newPassword="updatePassword" :isDisableForm="isDisableForm"></PasswordForm>
+            :action="RouteAction.CREATION" :linkIsExpired="false" :isDisableForm="isDisableForm"></PasswordForm>
         </v-row>
         <v-row>
           <div v-if="action === RouteAction.CREATION">
@@ -72,7 +71,9 @@
               :label="$t('institution.contactForm.privacyConsent')"></v-checkbox>
             <div>
               {{ $t("institution.contactForm.privacyNotice") }}
-              <a @click="gotoDonneesPersonnellesInNewPage()">{{ $t("institution.contactForm.privacyLink") }}</a>
+              <router-link :to="{ name: RouteName.Privacy }" target="_blank" rel="noopener noreferrer">
+                {{ $t("institution.contactForm.privacyLink") }}
+              </router-link>
             </div>
             <br />
             <div>
@@ -92,15 +93,14 @@
 </template>
 
 <script lang="ts" setup>
-import PasswordForm from "@/components/authentication/PasswordForm.vue";
+import PasswordForm, { passwordFormKey } from "@/components/authentication/PasswordForm.vue";
 import { useValidationRules } from "@/composables/useValidationRules";
 import InstitutionContact from "@/entity/InstitutionContact";
-import { RouteAction } from "@/router";
+import { RouteAction, RouteName } from "@/router";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, provide, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
 
 interface Props {
   contact: InstitutionContact;
@@ -109,7 +109,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const router = useRouter();
 const { t } = useI18n();
 const {
   addressRules,
@@ -123,14 +122,18 @@ const {
 } = useValidationRules();
 
 const emailConfirmation = ref("");
-const ancienMail = ref("");
+const initialEmail = ref("");
+const passwordFormState = reactive({
+  oldPassword: "",
+  newPassword: props.contact.password ?? "",
+  confirmPassword: ""
+});
 
 const formRef = ref();
 const mailRef = ref();
-const passwordFormRef = ref();
 
 onMounted(() => {
-  ancienMail.value = props.contact.email;
+  initialEmail.value = props.contact.email;
 });
 
 const rulesMailConfirmation = computed(() => {
@@ -140,51 +143,33 @@ const rulesMailConfirmation = computed(() => {
     t("institution.contactForm.confirmEmailError");
 });
 
-const emailRules = computed(() => {
+const baseRules = computed(() => {
   const baseRules = emailRules as Array<(v: string) => true | string>;
   return baseRules.concat(rulesMailConfirmation.value);
 });
 
 const shouldValidateMail = computed(() => {
-  return props.action === RouteAction.CREATION || ancienMail.value !== props.contact.email;
+  return props.action === RouteAction.CREATION || initialEmail.value !== props.contact.email;
 });
-
-function gotoDonneesPersonnellesInNewPage() {
-  const route = router.resolve({ path: "/privacy" });
-  window.open(route.href);
-}
-
-function checkConfirmationMail() {
-  if (emailConfirmation.value !== "") {
-    mailRef.value?.validate();
-  }
-}
 
 function validate(): boolean {
   const isFormValide = formRef.value?.validate() ?? true;
-
-  let isPasswordValid = true;
-  if (passwordFormRef.value) {
-    isPasswordValid = passwordFormRef.value.validate();
-  }
 
   let isMailValide = true;
   if (shouldValidateMail.value) {
     isMailValide = mailRef.value?.validate() ?? true;
   }
 
-  return isFormValide && isPasswordValid && isMailValide;
+  return isFormValide && isMailValide;
 }
 
 function clear() {
-  passwordFormRef.value?.clear();
   formRef.value?.resetValidation();
   mailRef.value?.resetValidation();
   props.contact.reset();
-}
-
-function updatePassword(value: string) {
-  props.contact.password = value;
+  passwordFormState.oldPassword = "";
+  passwordFormState.newPassword = props.contact.password ?? "";
+  passwordFormState.confirmPassword = "";
 }
 
 function pastePhone(evt: ClipboardEvent) {
@@ -193,6 +178,33 @@ function pastePhone(evt: ClipboardEvent) {
     .replaceAll(" ", "")
     .replaceAll(".", "") ?? "";
 }
+
+watch(
+  () => passwordFormState.newPassword,
+  value => {
+    props.contact.password = value;
+  }
+);
+
+watch(
+  () => props.contact.password,
+  value => {
+    if (passwordFormState.newPassword !== (value ?? "")) {
+      passwordFormState.newPassword = value ?? "";
+    }
+  }
+);
+
+watch(
+  [() => emailConfirmation.value, () => props.contact.email],
+  () => {
+    if (emailConfirmation.value !== "") {
+      mailRef.value?.validate();
+    }
+  }
+);
+
+provide(passwordFormKey, passwordFormState);
 
 defineExpose({
   validate,
@@ -205,4 +217,3 @@ defineExpose({
   margin: 0 !important;
 }
 </style>
-

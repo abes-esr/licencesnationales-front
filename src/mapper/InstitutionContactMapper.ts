@@ -1,16 +1,16 @@
 import InstitutionContact from "@/entity/InstitutionContact";
 
 export interface JsonInstitutionContactResponse {
-  id: number;
-  nom: string;
-  prenom: string;
-  adresse: string;
-  boitePostale: string;
-  codePostal: string;
-  ville: string;
-  cedex: string;
-  telephone: string;
-  mail: string;
+  id?: number;
+  nom?: string;
+  prenom?: string;
+  adresse?: string;
+  boitePostale?: string;
+  codePostal?: string;
+  ville?: string;
+  cedex?: string;
+  telephone?: string;
+  mail?: string;
 }
 
 export interface JsonCreateInstitutionContact {
@@ -40,18 +40,21 @@ export interface JsonUpdateInstitutionContact {
 }
 
 export class InstitutionContactMapper {
-  static toDomain(response: JsonInstitutionContactResponse): InstitutionContact {
+  static toDomain(response: JsonInstitutionContactResponse | undefined): InstitutionContact {
     const contact = new InstitutionContact();
-    contact.id = response.id;
-    contact.lastName = response.nom;
-    contact.firstName = response.prenom;
-    contact.address = response.adresse;
-    contact.poBox = response.boitePostale;
-    contact.postalCode = response.codePostal;
-    contact.city = response.ville;
-    contact.cedex = response.cedex;
-    contact.phone = response.telephone;
-    contact.email = response.mail;
+    if (!response) {
+      return contact;
+    }
+    if (response.id !== undefined) contact.id = response.id;
+    if (response.nom !== undefined) contact.lastName = response.nom;
+    if (response.prenom !== undefined) contact.firstName = response.prenom;
+    if (response.adresse !== undefined) contact.address = response.adresse;
+    if (response.boitePostale !== undefined) contact.poBox = response.boitePostale;
+    if (response.codePostal !== undefined) contact.postalCode = response.codePostal;
+    if (response.ville !== undefined) contact.city = response.ville;
+    if (response.cedex !== undefined) contact.cedex = response.cedex;
+    if (response.telephone !== undefined) contact.phone = response.telephone;
+    if (response.mail !== undefined) contact.email = response.mail;
     return contact;
   }
 

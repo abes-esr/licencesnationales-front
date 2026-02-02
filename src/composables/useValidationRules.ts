@@ -36,7 +36,7 @@ export const useValidationRules = () => {
     ],
     privacyAcceptanceRules: [(v: boolean) => v || t("validation.privacyAcceptanceRules.required")],
     searchDomainRules: [(v: string) => !!v || t("validation.searchDomainRules.required")],
-    searchCriteriaRules: [(v: string) => !!v || t("validation.searchCriteriaRules.required")],
+    searchQueryRules: [(v: string) => !!v || t("validation.searchQueryRules.required")],
     dateRules: [(v: string) => !!v || t("validation.dateRules.required")],
     ipv4SegmentRules: [
       (v: string) => !!v || t("validation.ipSegmentRules.required"),

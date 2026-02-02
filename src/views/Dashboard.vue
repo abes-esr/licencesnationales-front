@@ -6,19 +6,13 @@
     <ConfirmPopup ref="confirmRef"></ConfirmPopup>
     <v-card class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
       <v-card-text class="fondGris pa-0 px-6 pb-6">
-        <v-card-title class="px-0 pb-2">
-          {{ $t("dashboard.accountInfo") }}
-          <v-tooltip :text="$t('dashboard.exportAccountInfo')" location="top" open-delay="100" theme="dark"
-            content-class="text-white">
-            <template v-slot:activator="{ props }">
-              <v-btn icon="icon" class="bouton-simple" @click="downloadInstitution()" v-bind="props"
-                :loading="isExportLoading">
-                <FontAwesomeIcon :icon="faDownload" class="mx-2 fa-lg" />
-              </v-btn>
-            </template>
-          </v-tooltip>
+        <v-card-title class="px-0 pb-2 d-flex align-center flex-wrap">
+          <v-btn variant="text" class="bouton-simple" @click="downloadInstitution()" :loading="isExportLoading">
+            <h2 class="mb-0">{{ $t("dashboard.accountInfo") }}</h2>
+            <FontAwesomeIcon :icon="faDownload" size="lg" class="mx-2" />
+          </v-btn>
         </v-card-title>
-        <span>{{ $t("dashboard.accountCreatedOn") }} {{ institutionCreatedAt }}</span>
+        <span class="pl-4">{{ $t("dashboard.accountCreatedOn") }} {{ institutionCreatedAt }}</span>
         <v-row class="d-flex justify-space-between flex-wrap pt-3">
           <v-col cols="12" md="3" lg="3" xl="3" v-if="!isAdmin">
             <div style="height: 100%; position:relative;" class="borderCol fondBlanc"

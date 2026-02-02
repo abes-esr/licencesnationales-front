@@ -64,11 +64,11 @@ const { currentInstitution } = storeToRefs(institutionStore);
 const validatedStatus = "Validé";
 
 onMounted(() => {
-  fetchInstitutionTypes();
   if (!isAdmin.value) {
     snackbar.error(t("institution.card.unauthorized"));
     router.push({ name: RouteName.Home });
   }
+  fetchInstitutionTypes();
 });
 
 async function fetchInstitutionTypes() {

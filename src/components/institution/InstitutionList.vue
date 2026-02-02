@@ -28,10 +28,10 @@
               <v-tooltip :text="$t('institution.list.downloadTooltip')" location="top" open-delay="100" theme="dark"
                 content-class="text-white">
                 <template #activator="{ props }">
-                  <v-btn variant="text" @click="downloadInstitutions" class="pl-0 bouton-simple" v-bind="props"
+                  <v-btn variant="text" @click="downloadInstitutions" class=" bouton-simple" v-bind="props"
                     :loading="isExportLoading">
                     <h2>{{ $t("institution.list.downloadTitle") }}</h2>
-                    <FontAwesomeIcon :icon="faDownload" size="2x" class="mx-2" />
+                    <FontAwesomeIcon :icon="faDownload" size="lg" class="mx-2" />
                   </v-btn>
                 </template>
               </v-tooltip>
@@ -117,7 +117,6 @@ import { useSnackbar } from "@/composables/useSnackbar";
 import Institution from "@/entity/Institution";
 import { LicencesNationalesUnauthorizedApiError } from "@/exception/licencesnationales/LicencesNationalesUnauthorizedApiError";
 import { RouteName } from "@/router";
-import { Logger } from "@/utils/Logger";
 import {
   faDownload,
   faObjectGroup,
@@ -264,15 +263,7 @@ async function fetchInstitutionTypes() {
 
 function addInstitution(): void {
   institutionStore
-    .setCurrentInstitution(new Institution())
-    .then(() => {
-      router.push({ name: RouteName.InstitutionCreate }).catch(err => {
-        Logger.error(err as any);
-      });
-    })
-    .catch(err => {
-      snackbar.error(err);
-    });
+    .setCurrentInstitution(new Institution());
 }
 
 function goToInstitutionMerge(): void {

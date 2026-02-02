@@ -24,19 +24,17 @@ const institutionService = useInstitutionService();
 const snackbar = useSnackbar();
 const { loading: isSaving, startLoading, stopLoading } = useLoading();
 
-const save = () => {
-  startLoading();
-  institutionService
-    .updateInstitution(props.institution, authStore.token, authStore.isAdmin)
-    .then(() => {
-      institutionStore.updateCurrentInstitution(props.institution);
-    })
-    .catch((err: any) => {
-      snackbar.error(err);
-    })
-    .finally(() => {
-      props.editState.disabled = true;
-      stopLoading();
-    });
+const save = async () => {
+  try {
+    startLoading();
+    await institutionService
+      .updateInstitution(props.institution, authStore.token, authStore.isAdmin)
+    institutionStore.updateCurrentInstitution(props.institution);
+  } catch (err) {
+    snackbar.error(err);
+  } finally {
+    props.editState.disabled = true;
+    stopLoading();
+  }
 };
 </script>

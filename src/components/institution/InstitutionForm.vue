@@ -5,13 +5,15 @@
         {{ $t("institution.form.createTitle") }}
       </h1>
       <h1 v-if="action === RouteAction.MODIFICATION" class="pl-3">
-        {{ institution.name }}
+        {{ localInstitution.name }}
       </h1>
       <v-container class="pa-0">
         <div v-if="action === RouteAction.CREATION" class="d-flex flex-row align-center">
-          <h2 @click="goToLogin" class="pl-3">
+          <h2 class="pl-3">
             {{ $t("institution.form.hasAccount") }}
-            <a class="bouton-simple elevation-0 large">{{ $t("institution.form.authenticate") }}</a>
+            <router-link class="bouton-simple elevation-0 large" :to="{ name: RouteName.Login }">
+              {{ $t("institution.form.authenticate") }}
+            </router-link>
           </h2>
           <v-icon small>mdi-arrow-right-circle-outline</v-icon>
         </div>
@@ -19,9 +21,9 @@
         <v-col cols="12" md="6" lg="6" xl="6" v-if="returnLink">
           <v-alert variant="outlined">
             <div>
-              <a @click="goToHome()">
+              <router-link :to="{ name: RouteName.Login }">
                 <FontAwesomeIcon :icon="faReply" /> {{ $t("institution.form.backHome") }}
-              </a>
+              </router-link>
             </div>
           </v-alert>
         </v-col>
@@ -59,39 +61,39 @@
                   <v-row>
                     <v-text-field variant="outlined" :label="$t('institution.form.institutionName')"
                       :placeholder="$t('institution.form.institutionName')" name="organization"
-                      autocomplete="organization" v-model="institution.name" :rules="establishmentNameRules"
+                      autocomplete="organization" v-model="localInstitution.name" :rules="establishmentNameRules"
                       :disabled="action === RouteAction.MODIFICATION && !isAdmin" required @keyup.enter="validate" />
                   </v-row>
                   <v-row>
                     <v-col :cols="12" class="pa-0">
                       <v-text-field variant="outlined" :label="$t('institution.form.siren')"
                         :placeholder="$t('institution.form.siren')" maxlength="9" name="siren" autocomplete="on"
-                        v-model="institution.siren" :rules="sirenRules" required @input="checkSiren"
+                        v-model="localInstitution.siren" :rules="sirenRules" required @input="checkSiren"
                         @keyup.enter="validate" :disabled="action === RouteAction.MODIFICATION" />
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-chip class="ma-2" :class="sirenStatusColor" label
-                      v-if="action == RouteAction.CREATION || action == RouteAction.FUSION || action == RouteAction.SCISSION">
+                      v-if="action === RouteAction.CREATION || action === RouteAction.FUSION || action === RouteAction.SCISSION">
                       {{ $t("institution.form.sirenStatus", { status: sirenStatus }) }}
                     </v-chip>
                   </v-row>
-                  <v-row v-if="action == RouteAction.MODIFICATION">
+                  <v-row v-if="action === RouteAction.MODIFICATION">
                     <v-text-field variant="outlined" :label="$t('institution.form.idAbes')"
-                      :placeholder="$t('institution.form.idAbes')" v-model="institution.abesId" disabled />
+                      :placeholder="$t('institution.form.idAbes')" v-model="localInstitution.abesId" disabled />
                   </v-row>
                 </v-col>
                 <v-col cols="0" md="1" lg="1" xl="1" class="pa-0"></v-col>
                 <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
                   <v-row>
-                    <v-select variant="outlined" v-model="institution.institutionType" :items="institutionTypes"
+                    <v-select variant="outlined" v-model="localInstitution.institutionType" :items="institutionTypes"
                       :label="$t('institution.form.institutionType')"
                       :placeholder="$t('institution.form.institutionType')"
                       :disabled="action === RouteAction.MODIFICATION && !isAdmin" :rules="establishmentTypeRules"
                       required />
                   </v-row>
                   <v-row>
-                    <v-alert variant="outlined" v-if="action == RouteAction.CREATION" style="width: 100%">
+                    <v-alert variant="outlined" v-if="action === RouteAction.CREATION" style="width: 100%">
                       <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 icone-information" />
                       <a class="noUnderlineLink" href="https://annuaire-entreprises.data.gouv.fr/" target="_blank">
                         {{ $t("institution.form.findSiren") }}
@@ -105,7 +107,7 @@
           <div class="mx-9">
             <v-card-title>{{ $t("institution.form.contactSection") }}</v-card-title>
             <v-divider class="mb-4"></v-divider>
-            <InstitutionContact ref="formContact" :action="action" :contact="institution.contact"
+            <InstitutionContact ref="formContact" :action="action" :contact="localInstitution.contact"
               :isDisableForm="isFormDisabled" class="mx-9" />
           </div>
         </v-card>
@@ -135,15 +137,19 @@ import { useDataGouvService } from "@/composables/service/useDataGouvService";
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { useRecaptcha } from "@/composables/useRecaptcha";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
 import Institution from "@/entity/Institution";
+import InstitutionContactEntity from "@/entity/InstitutionContact";
+import Ip from "@/entity/Ip";
 import { DataGouvApiError } from "@/exception/data.gouv/DataGouvApiError";
 import { SirenNotFoundError } from "@/exception/data.gouv/SirenNotFoundError";
 import { RouteAction, RouteName } from "@/router";
 import { Logger } from "@/utils/Logger";
 import { faCircleInfo, faReply, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { storeToRefs } from "pinia";
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -153,15 +159,13 @@ interface Props {
   action: RouteAction;
   listeSirenFusion?: Array<string>;
   triggerScission?: boolean;
+  onSend?: (value: Institution) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   listeSirenFusion: () => [],
   triggerScission: false,
 });
-const emit = defineEmits<{
-  (e: "send", value: Institution): void;
-}>();
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -169,6 +173,7 @@ const snackbar = useSnackbar();
 const dataGouvService = useDataGouvService();
 const institutionService = useInstitutionService();
 const institutionStore = useInstitutionStore();
+const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
 const { t } = useI18n();
 const {
   establishmentNameRules,
@@ -183,66 +188,47 @@ const action = computed<RouteAction>(() =>
     : props.action
 );
 
-const institution = ref<Institution>(new Institution());
-
-institution.value = institutionStore.currentInstitution;
-watch(
-  () => institutionStore.currentInstitution,
-  () => {
-    institution.value = institutionStore.currentInstitution;
-  },
-  { immediate: true }
-);
-
-watch(
-  () => authStore.connectedInstitution,
-  () => {
-    institutionStore.setCurrentInstitution(authStore.connectedInstitution);
-  },
-  { immediate: true }
-);
-
 const isAdmin = computed(() => authStore.isAdmin);
 const recaptchaToken = ref("");
 const institutionTypes = ref<Array<string>>([]);
-const sirenStatus = ref(t("institution.form.sirenPending"));
-const sirenStatusColor = ref("grey");
+enum SirenStatusKey {
+  Pending = "pending",
+  Checking = "checking",
+  Ok = "ok",
+  Unknown = "unknown",
+  ServiceError = "serviceError",
+  InternalError = "internalError",
+}
+
+const sirenStatusKey = ref<SirenStatusKey>(SirenStatusKey.Pending);
+const sirenStatusMessage = ref(t("institution.form.sirenPending"));
+const sirenStatusColorByKey: Record<SirenStatusKey, string> = {
+  [SirenStatusKey.Pending]: "grey",
+  [SirenStatusKey.Checking]: "siren-default",
+  [SirenStatusKey.Ok]: "siren-ok",
+  [SirenStatusKey.Unknown]: "siren-erreur",
+  [SirenStatusKey.ServiceError]: "siren-erreur",
+  [SirenStatusKey.InternalError]: "red",
+};
+const sirenStatus = computed(() => sirenStatusMessage.value);
+const sirenStatusColor = computed(() => sirenStatusColorByKey[sirenStatusKey.value]);
 const isSaving = ref(false);
 const isFormDisabled = ref(false);
 const returnLink = ref(false);
-
 const accountForm = ref<VForm | null>(null);
 const formContact = ref<InstanceType<typeof InstitutionContact> | null>(null);
+const { currentInstitution } = storeToRefs(institutionStore);
+const localInstitution = ref<Institution>(new Institution());
+const initialInstitution = ref<Institution | null>(null);
 
-const metaInfo = () => {
-  const titre =
-    action.value === RouteAction.CREATION
-      ? t("institution.form.meta.createTitle")
-      : t("institution.form.meta.editTitle");
-  return {
-    meta: [
-      {
-        name: "description",
-        content: t("institution.form.meta.description"),
-      },
-    ],
-    title: `${titre} - Licences Nationales`,
-  };
-};
-
-const loadRecaptcha = async () => {
-  const maybeRecaptchaLoaded = (globalThis as any).$recaptchaLoaded;
-  if (maybeRecaptchaLoaded) {
-    await maybeRecaptchaLoaded();
-  }
-};
-
-const executeRecaptcha = async (action: string) => {
-  const maybeRecaptcha = (globalThis as any).$recaptcha;
-  if (maybeRecaptcha) {
-    return await maybeRecaptcha(action);
-  }
-  return "";
+const cloneInstitution = (value: Institution): Institution => {
+  const raw = typeof structuredClone === "function"
+    ? structuredClone(value)
+    : JSON.parse(JSON.stringify(value));
+  const cloned = Object.assign(new Institution(), raw);
+  cloned.contact = new InstitutionContactEntity(cloned.contact as Partial<InstitutionContactEntity>);
+  cloned.ips = (cloned.ips ?? []).map((ip) => Object.assign(new Ip(), ip));
+  return cloned;
 };
 
 const fetchInstitutionTypes = async () => {
@@ -255,148 +241,137 @@ const fetchInstitutionTypes = async () => {
   }
 };
 
-const goToLogin = () => {
-  router.push({ name: RouteName.Login })
-};
-
-const goToHome = () => {
-  router.push({ name: RouteName.Login });
-};
-
-const runRecaptcha = async () => {
-  await loadRecaptcha();
-  recaptchaToken.value = await executeRecaptcha("creationCompte");
-};
-
 const validate = async () => {
   isSaving.value = true;
+  try {
+    await loadRecaptcha();
+    recaptchaToken.value = await executeRecaptcha("creationCompte");
 
-  await runRecaptcha();
+    const formValid = await accountForm.value?.validate();
+    const isFormValide = formValid?.valid ?? false;
+    const isSubFormValide = formContact.value?.validate() ?? true;
 
-  const formValid = await accountForm.value?.validate();
-  const isFormValide = formValid?.valid ?? false;
-
-  const isSubFormValide = formContact.value?.validate() ?? true;
-
-  if (recaptchaToken.value != null) {
-    if (isFormValide && isSubFormValide) {
+    if (recaptchaToken.value != null && isFormValide && isSubFormValide) {
       await send();
+    } else if (sirenStatusKey.value === SirenStatusKey.Unknown) {
+      snackbar.error(t("institution.form.unknownSiren"));
     } else {
-      if (sirenStatus.value === "inconnu" || sirenStatus.value === "Inconnu") {
-        snackbar.error(t("institution.form.unknownSiren"));
-      } else {
-        snackbar.error(t("institution.form.invalidFields"));
-      }
+      snackbar.error(t("institution.form.invalidFields"));
     }
-  }
-  isSaving.value = false;
-};
-
-const send = async () => {
-  isSaving.value = true;
-
-  if (action.value == RouteAction.CREATION) {
-    institutionService
-      .createInstitution(institution.value, recaptchaToken.value)
-      .then(() => {
-        snackbar.success(t("institution.form.createSuccess"));
-        router.push({ name: RouteName.Home });
-      })
-      .catch(err => {
-        snackbar.error(err);
-      })
-      .finally(() => {
-        isSaving.value = false;
-      });
-  } else if (action.value == RouteAction.MODIFICATION) {
-    institutionService
-      .updateInstitution(institution.value, authStore.token, authStore.isAdmin)
-      .then(() => {
-        snackbar.success(t("institution.form.updateSuccess"));
-
-        if (institution.value.siren === authStore.connectedInstitution.siren) {
-          institutionStore.setConnectedInstitution(institution.value);
-        }
-      })
-      .catch(err => {
-        snackbar.error(err);
-      })
-      .finally(() => {
-        isSaving.value = false;
-      });
-  } else if (action.value === RouteAction.FUSION) {
-    institutionService
-      .mergeInstitutions(authStore.token, {
-        nouveauEtab: institution.value,
-        sirenFusionnes: props.listeSirenFusion,
-      })
-      .then(() => {
-        clear();
-        snackbar.success(t("institution.form.mergeSuccess"));
-        router.push({ name: RouteName.Institutions });
-      })
-      .catch(err => {
-        snackbar.error(err);
-      })
-      .finally(() => {
-        isSaving.value = false;
-      });
-  } else if (action.value === RouteAction.SCISSION) {
-    emit("send", institution.value);
+  } finally {
     isSaving.value = false;
   }
 };
 
-const checkSiren = async () => {
-  sirenStatus.value = t("institution.form.sirenPending");
-  if (institution.value.siren) {
-    sirenStatus.value = t("institution.form.sirenChecking");
-    sirenStatusColor.value = "siren-default";
-    if (institution.value.siren.length === 9) {
-      try {
-        const data = await dataGouvService.checkSiren(institution.value.siren);
-        sirenStatus.value = data;
-        sirenStatusColor.value = "siren-ok";
-      } catch (err: any) {
-        Logger.error(err);
-        if (err instanceof SirenNotFoundError) {
-          sirenStatus.value = t("institution.form.sirenUnknown");
-          sirenStatusColor.value = "siren-erreur";
-        } else if (err instanceof DataGouvApiError) {
-          sirenStatus.value = t("institution.form.sirenServiceError");
-          sirenStatusColor.value = "siren-erreur";
-        } else {
-          sirenStatus.value = t("institution.form.sirenInternalError", {
-            message: err?.message ?? "",
-          });
-          sirenStatusColor.value = "red";
+const send = async () => {
+  try {
+    switch (action.value) {
+      case RouteAction.CREATION:
+        await institutionService.createInstitution(localInstitution.value, recaptchaToken.value);
+        snackbar.success(t("institution.form.createSuccess"));
+        router.push({ name: RouteName.Home });
+        break;
+      case RouteAction.MODIFICATION:
+        await institutionService.updateInstitution(localInstitution.value, authStore.token, authStore.isAdmin);
+        snackbar.success(t("institution.form.updateSuccess"));
+        institutionStore.updateCurrentInstitution(cloneInstitution(localInstitution.value));
+        if (localInstitution.value.siren === authStore.connectedInstitution.siren) {
+          institutionStore.setConnectedInstitution(localInstitution.value);
         }
-      }
+        break;
+      case RouteAction.FUSION:
+        await institutionService.mergeInstitutions(authStore.token, {
+          nouveauEtab: localInstitution.value,
+          sirenFusionnes: props.listeSirenFusion,
+        });
+        clear();
+        snackbar.success(t("institution.form.mergeSuccess"));
+        router.push({ name: RouteName.Institutions });
+        break;
+      case RouteAction.SCISSION:
+        props.onSend?.(localInstitution.value);
+        break;
+      default:
+        break;
+    }
+  } catch (err) {
+    snackbar.error(err);
+  }
+};
+
+const checkSiren = async () => {
+  sirenStatusKey.value = SirenStatusKey.Pending;
+  sirenStatusMessage.value = t("institution.form.sirenPending");
+  if (!localInstitution.value.siren) {
+    return;
+  }
+
+  sirenStatusKey.value = SirenStatusKey.Checking;
+  sirenStatusMessage.value = t("institution.form.sirenChecking");
+
+  if (localInstitution.value.siren.length !== 9) {
+    return;
+  }
+
+  try {
+    const data = await dataGouvService.checkSiren(localInstitution.value.siren);
+    sirenStatusKey.value = SirenStatusKey.Ok;
+    sirenStatusMessage.value = data;
+  } catch (err: any) {
+    Logger.error(err);
+    if (err instanceof SirenNotFoundError) {
+      sirenStatusKey.value = SirenStatusKey.Unknown;
+      sirenStatusMessage.value = t("institution.form.sirenUnknown");
+    } else if (err instanceof DataGouvApiError) {
+      sirenStatusKey.value = SirenStatusKey.ServiceError;
+      sirenStatusMessage.value = t("institution.form.sirenServiceError");
+    } else {
+      sirenStatusKey.value = SirenStatusKey.InternalError;
+      sirenStatusMessage.value = t("institution.form.sirenInternalError", {
+        message: err?.message ?? "",
+      });
     }
   }
 };
 
-const clear = () => {
+const clear = async () => {
   accountForm.value?.resetValidation();
   formContact.value?.clear();
 
-  if (action.value === RouteAction.MODIFICATION) {
-    institutionStore.setCurrentInstitution(institution.value);
-    router.push({ name: RouteName.Home }).catch(err => {
-      Logger.error(err);
-    });
-  } else {
-    institution.value.reset();
-    window.scrollTo(0, 0);
+  switch (action.value) {
+    case RouteAction.MODIFICATION: {
+      const fresh = await institutionService.getInstitution(localInstitution.value.siren, authStore.token);
+      localInstitution.value = cloneInstitution(fresh);
+      initialInstitution.value = cloneInstitution(fresh);
+      break;
+    }
+    default:
+      localInstitution.value.reset();
+      window.scrollTo(0, 0);
+      break;
   }
 };
+
+const lastTriggerScission = ref(false);
+
+watch(
+  () => currentInstitution.value,
+  value => {
+    localInstitution.value = cloneInstitution(value);
+    if (action.value === RouteAction.MODIFICATION) {
+      initialInstitution.value = cloneInstitution(value);
+    }
+  },
+  { immediate: true }
+);
 
 watch(
   () => props.triggerScission,
   value => {
-    if (action.value === RouteAction.SCISSION && value) {
+    if (action.value === RouteAction.SCISSION && value && !lastTriggerScission.value) {
       validate();
     }
+    lastTriggerScission.value = Boolean(value);
   }
 );
 

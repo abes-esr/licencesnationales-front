@@ -42,10 +42,10 @@
                 <v-tooltip :text="$t('publisher.list.downloadTooltip')" location="top" open-delay="100" theme="dark"
                   content-class="text-white">
                   <template #activator="{ props }">
-                    <v-btn variant="text" @click="downloadPublishers" class="bouton-simple pl-0" v-bind="props"
+                    <v-btn variant="text" @click="downloadPublishers" class="bouton-simple " v-bind="props"
                       :loading="isExportLoading">
                       <h2>{{ $t("publisher.list.downloadTitle") }}</h2>
-                      <FontAwesomeIcon :icon="faDownload" class="mx-2" size="2x" />
+                      <FontAwesomeIcon :icon="faDownload" class="mx-2" size="lg" />
                     </v-btn>
                   </template>
                 </v-tooltip>

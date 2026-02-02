@@ -1,39 +1,49 @@
 import { useApiService } from "@/composables/service/useApiService";
+import { IpMapper, JsonIpResponse } from "@/mapper/IpMapper";
 
 export const useIpService = () => {
   const api = useApiService();
 
-  const getListIP = (token: string, siren: string) =>
-    api.get(`/ip/${siren}`, token);
+  const getListIP = async (token: string, siren: string) => {
+    const result = await api.get(`/ip/${siren}`, token);
+    const response: Array<JsonIpResponse> = result.data ?? [];
+    return IpMapper.toDomainList(response);
+  };
 
-  const getInstitutionIpList = (token: string, siren: string) =>
-    api.get(`/ip/ipsEtab/${siren}`, token);
+  const getInstitutionIpList = async (token: string, siren: string) => {
+    const result = await api.get(`/ip/ipsEtab/${siren}`, token);
+    const response: Array<JsonIpResponse> = result.data ?? [];
+    return IpMapper.toDomainList(response);
+  };
 
-  const getIPInfos = (token: string, data: any) =>
-    api.post("/ip/getIpEntity", data, token);
+  const getIPInfos = async (token: string, data: any) => {
+    const result = await api.post("/ip/getIpEntity", data, token);
+    const response: JsonIpResponse = result.data ?? {};
+    return IpMapper.toDomain(response);
+  };
 
-  const addIP = (token: string, siren: string, data: any) =>
+  const addIP = async (token: string, siren: string, data: any) =>
     api.put(`/ip/${siren}`, data, token);
 
-  const updateIP = (token: string, siren: string, data: any) =>
+  const updateIP = async (token: string, siren: string, data: any) =>
     api.post(`/ip/gerer/${siren}`, data, token);
 
-  const deleteIP = (token: string, id: string) =>
-    api.del(`/ip/${id}`, null, token);
+  const deleteIP = async (token: string, id: string) => api.del(`/ip/${id}`, null, token);
 
-  const getWhoIs = (token: string, ip: string) =>
-    api.get(`/ip/whois/${ip}`, token);
+  const getWhoIs = async (token: string, ip: string) => api.get(`/ip/whois/${ip}`, token);
 
-  const search = (criteres: Array<string>, token: string) =>
-    api.post("/ip/search/", criteres, token);
+  const search = async (criteres: Array<string>, token: string) => {
+    const result = await api.post("/ip/search/", criteres, token);
+    const response: Array<JsonIpResponse> = result.data ?? [];
+    return IpMapper.toDomainList(response);
+  };
 
-  const getHistory = (siren: string, token: string) =>
-    api.get(`/ip/histo/${siren}`, token);
+  const getHistory = async (siren: string, token: string) => api.get(`/ip/histo/${siren}`, token);
 
-  const getStats = (dateDebut: string, dateFin: string, token: string) =>
+  const getStats = async (dateDebut: string, dateFin: string, token: string) =>
     api.get(`/ip/stats?dateDebut=${dateDebut}&dateFin=${dateFin}`, token);
 
-  const downloadIPs = (siren: string, token: string) =>
+  const downloadIPs = async (siren: string, token: string) =>
     api.post(`/ip/export/${siren}`, null, token);
 
   return {
@@ -50,4 +60,3 @@ export const useIpService = () => {
     downloadIPs
   };
 };
-

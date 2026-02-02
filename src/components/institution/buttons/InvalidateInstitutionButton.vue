@@ -31,26 +31,23 @@ const { t } = useI18n();
 const { loading: isLoading, startLoading, stopLoading } = useLoading();
 
 const invalidate = async () => {
-  startLoading();
   const confirmed = await props.confirmRef?.open(
     t("institution.card.confirmInvalidate", { name: props.institution.name })
   );
   if (confirmed) {
-    props.institution.status = "Nouveau";
-    institutionService
-      .invalidateInstitution(props.institution.siren, authStore.token)
-      .then(response => {
-        institutionStore.updateCurrentInstitution(props.institution);
-        snackbar.success(response.data.message);
-      })
-      .catch((err: any) => {
-        snackbar.error(err);
-      })
-      .finally(() => {
-        stopLoading();
-      });
-  } else {
-    stopLoading();
+    try {
+      props.institution.status = "Nouveau";
+      startLoading();
+      const response = await institutionService
+        .invalidateInstitution(props.institution.siren, authStore.token)
+
+      institutionStore.updateCurrentInstitution(props.institution);
+      snackbar.success(response.data.message);
+    } catch (err) {
+      snackbar.error(err);
+    } finally {
+      stopLoading();
+    }
   }
 };
 </script>

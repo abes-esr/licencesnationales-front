@@ -107,7 +107,7 @@ export const fr = {
       keywordsLabel: "Mots clés",
       keywordsPlaceholder: "Mots clés",
       submit: "Rechercher",
-      resultsTitle: 'Résultats pour "{criteria}" dans {domain} :',
+      resultsTitle: 'Résultats pour "{query}" dans {domain} :',
       domainRequired: "Le domaine de recherche est obligatoire",
       searchError: "Erreur lors de la recherche",
       navigationError: "Erreur lors de la navigation",
@@ -705,7 +705,7 @@ export const fr = {
     searchDomainRules: {
       required: "Le domaine de recherche est obligatoire"
     },
-    searchCriteriaRules: {
+    searchQueryRules: {
       required: "Veuillez saisir un ou des critères de recherche"
     },
     dateRules: {

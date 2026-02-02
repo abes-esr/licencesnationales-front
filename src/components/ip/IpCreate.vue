@@ -24,7 +24,7 @@
             </v-col>
             <v-col cols="12" md="4" class="pa-3">
               <v-card-text class="fondGris">
-                <FontAwesomeIcon :icon="faCircleInfo" size="2x" style="color: #478dcb;" />
+                <FontAwesomeIcon :icon="faCircleInfo" size="lg" style="color: #478dcb;" />
                 <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#TutoDeDeclarationDesIP"
                   target="_blank" class="pl-3 pb-6 text-body-1 font-weight-bold">
                   {{ $t("ip.create.helpLink") }}

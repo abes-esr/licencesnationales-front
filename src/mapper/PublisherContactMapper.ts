@@ -1,10 +1,10 @@
 import PublisherContact, { ContactType } from "@/entity/PublisherContact";
 
 export interface JsonPublisherContactResponse {
-  id: number;
-  nom: string;
-  prenom: string;
-  mail: string;
+  id?: number;
+  nom?: string;
+  prenom?: string;
+  mail?: string;
 }
 
 export interface JsonCreatePublisherContactRequest {
@@ -21,13 +21,16 @@ export interface JsonUpdatePublisherContactRequest {
 }
 
 export class PublisherContactMapper {
-  static toDomain(response: JsonPublisherContactResponse, type: ContactType): PublisherContact {
+  static toDomain(response: JsonPublisherContactResponse | undefined, type: ContactType): PublisherContact {
     const contact = new PublisherContact();
-    contact.id = response.id;
-    contact.lastName = response.nom;
     contact.type = type;
-    contact.firstName = response.prenom;
-    contact.email = response.mail;
+    if (!response) {
+      return contact;
+    }
+    if (response.id !== undefined) contact.id = response.id;
+    if (response.nom !== undefined) contact.lastName = response.nom;
+    if (response.prenom !== undefined) contact.firstName = response.prenom;
+    if (response.mail !== undefined) contact.email = response.mail;
     return contact;
   }
 
