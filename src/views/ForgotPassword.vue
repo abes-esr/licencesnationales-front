@@ -5,10 +5,9 @@
         <ForgotPasswordForm />
         <v-row id="row_RevenirAccueil" class="mt-4">
           <v-col cols="12" class="text-center">
-            <a @click="goToLogin()">
-              <v-icon icon="mdi-reply"></v-icon>&nbsp;Revenir à la page
-              d'accueil
-            </a>
+            <router-link :to="{ name: RouteName.Login }">
+              <v-icon icon="mdi-reply"></v-icon>&nbsp;{{ $t("auth.forgotPassword.backHome") }}
+            </router-link>
           </v-col>
         </v-row>
       </v-col>
@@ -17,18 +16,14 @@
 </template>
 
 <script setup lang="ts">
-import { useSnackbar } from "@/composables/useSnackbar";
+import { usePageMeta } from "@/composables/usePageMeta";
 import { RouteName } from "@/router";
-import { useRouter } from "vue-router";
 import ForgotPasswordForm from "../components/authentication/login/ForgotPasswordForm.vue";
 
-const router = useRouter();
-const snackbar = useSnackbar();
-
-function goToLogin(): void {
-  ;
-  router.push({ name: RouteName.Login });
-}
+usePageMeta({
+  titleKey: "auth.forgotPassword.meta.title",
+  descriptionKey: "auth.forgotPassword.meta.description"
+});
 </script>
 
 <style scoped lang="scss">

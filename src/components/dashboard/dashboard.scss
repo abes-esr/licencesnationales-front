@@ -1,0 +1,93 @@
+.bloc-info div {
+  margin-top: 1rem;
+}
+
+.titre-block {
+  width: 100%;
+  min-height: 60px;
+}
+
+.notifUserMsg {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.notifUserDesc {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+ul {
+  list-style: none;
+}
+
+ul li::before {
+  content: "\2022";
+  color: #cf491f;
+  font-weight: bolder;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+.borderCol {
+  border: 1px solid #b8b8b9;
+  border-radius: 5px;
+  padding-top: 5px;
+}
+
+.card-full {
+  height: 100%;
+}
+
+.card-relative {
+  position: relative;
+}
+
+.card-actions-bottom {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.card-alert-bottom {
+  position: absolute;
+  bottom: 0;
+  font-size: 14px;
+}
+
+.lock-icon {
+  margin-top: 10px;
+  position: absolute;
+  right: 0;
+}
+
+.title-tight {
+  margin-bottom: -4px;
+}
+
+.notifs {
+  max-height: 500px;
+  overflow: auto;
+}
+
+.dates {
+  max-height: 500px;
+}
+
+.datesList {
+  max-height: 400px;
+  overflow: auto;
+}
+
+h3 {
+  font-size: 1rem !important;
+}
+
+.v-card-text {
+  font-size: 1rem !important;
+}
+
+p {
+  font-size: 1rem !important;
+}

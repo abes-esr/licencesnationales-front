@@ -47,14 +47,6 @@ $couleur-tab: var(--couleur-tab);
     background-color: $couleur-arriere-plan-6;
   }
 
-  #appBar {
-    background-color: $couleur-arriere-plan-8;
-    background: linear-gradient(90deg, $couleur-arriere-plan-9 20%, $couleur-arriere-plan-10 100%);
-  }
-
-  .mainBar {
-    background-color: $couleur-arriere-plan-5;
-  }
 
   .v-alert--outlined,
   .v-alert--variant-outlined {
@@ -98,17 +90,6 @@ $couleur-tab: var(--couleur-tab);
     border-radius: 5px;
   }
 
-  .erreur--text {
-    color: $couleur-arriere-plan-7;
-    background-color: $couleur-arriere-plan-1 !important;
-    border-left: 0.5rem solid $couleur-arriere-plan-4;
-  }
-
-  .validation--text {
-    color: $couleur-8;
-    background-color: $couleur-arriere-plan-3 !important;
-    border-left: 0.5rem solid $couleur-arriere-plan-3;
-  }
 
   .mdi-information {
     color: $couleur-2;
@@ -200,20 +181,6 @@ $couleur-tab: var(--couleur-tab);
     background-color: $couleur-1 !important;
   }
 
-  .btn-2 {
-    color: $couleur-6 !important;
-    background-color: $bouton-2 !important;
-  }
-
-  .btn-3 {
-    color: $couleur-6 !important;
-    background-color: $couleur-arriere-plan-5 !important;
-  }
-
-  .btn-4 {
-    color: $couleur-6 !important;
-    background-color: $bouton-1 !important;
-  }
 
   .btn-5 {
     color: $couleur-6 !important;

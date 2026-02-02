@@ -1,68 +1,29 @@
-// import "./utils/hooks";
-// import store from "./store";
-import { VueReCaptcha } from "vue-recaptcha-v3";
-import VueMeta from "vue-meta";
-import { Logger } from "@/utils/Logger";
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-import { library } from "@fortawesome/fontawesome-svg-core";
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-import { fas } from "@fortawesome/free-solid-svg-icons";
-import App from './App.vue'
-import router from '@/router'
-import vuetify from './plugins/vuetify'
-import { createApp } from "vue";
-import { createPinia } from "pinia";
-import piniaPersist from 'pinia-plugin-persistedstate'
+import { i18n } from "@/i18n";
+import router from "@/router";
 import moment from "moment";
 import "moment/locale/fr";
-import { i18n } from "@/i18n";
+import { createPinia } from "pinia";
+import piniaPersist from "pinia-plugin-persistedstate";
+import { createApp } from "vue";
+import { VueReCaptcha } from "vue-recaptcha-v3";
+import App from "./App.vue";
+import vuetify from "./plugins/vuetify";
 
-// Handle all Vue errors
-/*Vue.config.errorHandler = error =>
-  Logger.error(error.error.constructor.name);*/
+const app = createApp(App);
+const pinia = createPinia();
 
-declare module "*.vue";
-
-// Création de l'app
-const app = createApp(App)
-const pinia = createPinia()
-pinia.use(piniaPersist)
+pinia.use(piniaPersist);
 moment.locale("fr");
-// Création du store
-app.use(pinia)
 
-// Router & plugins
-app.use(router)
-app.use(vuetify)
-app.use(i18n)
+app.use(pinia);
+app.use(router);
+app.use(vuetify);
+app.use(i18n);
 
-// Vue.config.productionTip = false;
+const recaptchaKey = import.meta.env.VITE_APP_RECAPTCHA_KEY_SITE;
+app.use(VueReCaptcha, {
+  siteKey: recaptchaKey,
+  loaderOptions: { autoHideBadge: true }
+});
 
-// if (import.meta.env.VITE_APP_RECAPTCHA_KEY_SITE == "") {
-//   Logger.error("La clé ReCaptcha est vide");
-// }
-
-// Vue.use(VueReCaptcha, {
-//   siteKey: import.meta.env.VITE_APP_RECAPTCHA_KEY_SITE,
-//   loaderOptions: {
-//     autoHideBadge: true
-//   }
-// }).use(VueMeta);
-
-// library.add(fas); // Import de toutes les icones
-// Vue.component("FontAwesomeIcon", FontAwesomeIcon);
-
-// new Vue({
-//   router,
-//   store,
-//   vuetify,
-//   render: h => h(App)
-// }).$mount("#app");
-
-// Monter l'application
-app.mount('#app')
+app.mount("#app");

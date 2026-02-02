@@ -44,6 +44,15 @@
   </div>
 </template>
 
+<script setup lang="ts">
+import { usePageMeta } from "@/composables/usePageMeta";
+
+usePageMeta({
+  titleKey: "footer.terms.meta.title",
+  descriptionKey: "footer.terms.meta.description"
+});
+</script>
+
 <style scoped>
 h2 {
   padding-top: 40px;

@@ -1,6 +1,6 @@
 import { LicencesNationalesBadRequestApiError } from "@/exception/licencesnationales/LicencesNationalesBadRequestApiError";
 
-export const formatApiError = (err: unknown, prefix = "Impossible d'executer l'action"): string => {
+export const formatApiError = (err: unknown, prefix = "Impossible d'éxecuter l'action"): string => {
   if (!err) {
     return prefix;
   }

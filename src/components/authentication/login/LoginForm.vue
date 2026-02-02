@@ -69,6 +69,7 @@ const login = async () => {
       login: sirenValue.value,
       password: passwordValue.value
     });
+
   } catch (err: any) {
     snackbar.error(err);
   } finally {

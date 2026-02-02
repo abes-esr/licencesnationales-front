@@ -2,7 +2,7 @@
  * Cette classe un logger
  */
 export class Logger {
-  static mode: string = import.meta.env.NODE_ENV;
+  static readonly mode: string = import.meta.env.NODE_ENV;
 
   /**
    * Log message de debug

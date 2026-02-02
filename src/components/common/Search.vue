@@ -89,6 +89,7 @@ import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { usePublisherStore } from "@/composables/store/usePublisherStore";
 import { useLoading } from "@/composables/useLoading";
+import { usePageMeta } from "@/composables/usePageMeta";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
 import Institution from "@/entity/Institution";
@@ -112,6 +113,10 @@ const publisherService = usePublisherService();
 const ipService = useIpService();
 const { t } = useI18n();
 const { searchQueryRules, searchDomainRules } = useValidationRules();
+usePageMeta({
+  titleKey: "common.search.meta.title",
+  descriptionKey: "common.search.meta.description"
+});
 const query = ref("");
 const selectedDomain = ref<SearchDomain>("institutions");
 const results = ref<Array<Institution | Ip | Publisher>>([]);

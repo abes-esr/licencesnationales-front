@@ -91,6 +91,7 @@
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useIpService } from "@/composables/service/useIpService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
+import { usePageMeta } from "@/composables/usePageMeta";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
 import moment from "moment";
@@ -101,6 +102,11 @@ const authStore = useAuthStore();
 const snackbar = useSnackbar();
 const institutionService = useInstitutionService();
 const ipService = useIpService();
+
+usePageMeta({
+  titleKey: "institution.stats.meta.title",
+  descriptionKey: "institution.stats.meta.description"
+});
 
 const { dateRules } = useValidationRules();
 const message = ref("");

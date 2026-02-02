@@ -70,14 +70,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/institutions/create",
     name: RouteName.InstitutionCreate,
-    component: () => import("../components/institution/InstitutionForm.vue"),
-    props: { action: RouteAction.CREATION }
+    component: () => import("../views/InstitutionCreate.vue")
   },
   {
     path: "/profile",
     name: RouteName.Profile,
-    component: () => import("../components/institution/InstitutionForm.vue"),
-    props: { action: RouteAction.MODIFICATION },
+    component: () => import("../views/Profile.vue"),
     meta: { requiresAuth: true }
   },
   {

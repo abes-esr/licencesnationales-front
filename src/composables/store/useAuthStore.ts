@@ -33,12 +33,16 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     async login(data: { login: string; password: string }): Promise<boolean> {
       this.user = await authService.login(data.login, data.password);
+      await this.updateInstitution();
+      router.push({ name: RouteName.Home });
+      return true;
+    },
+
+    async updateInstitution() {
       this.connectedInstitution = await institutionService.getInstitution(
         this.user.siren,
         this.user.token
       );
-      router.push({ name: RouteName.Home });
-      return true;
     },
 
     logout() {

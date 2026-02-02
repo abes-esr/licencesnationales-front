@@ -10,15 +10,10 @@
 
 <script setup lang="ts">
 import ChangePasswordForm from "@/components/authentication/login/ChangePasswordForm.vue";
+import { usePageMeta } from "@/composables/usePageMeta";
 
-const metaInfo = {
-  meta: [
-    {
-      name: "description",
-      content:
-        "Page de modification du mot de passe de l'application des Licences Nationales"
-    }
-  ],
-  title: "Modifier mon mot de passe - Licences Nationales"
-};
+usePageMeta({
+  titleKey: "auth.changePassword.meta.title",
+  descriptionKey: "auth.changePassword.meta.description"
+});
 </script>

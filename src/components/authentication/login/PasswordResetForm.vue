@@ -41,6 +41,7 @@
 import PasswordForm, { passwordFormKey } from "@/components/authentication/PasswordForm.vue";
 import { useAuthService } from "@/composables/service/useAuthService";
 import { useLoading } from "@/composables/useLoading";
+import { usePageMeta } from "@/composables/usePageMeta";
 import { useRecaptcha } from "@/composables/useRecaptcha";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { RouteAction, RouteName } from "@/router";
@@ -57,6 +58,11 @@ const snackbar = useSnackbar();
 const { t } = useI18n();
 const authService = useAuthService();
 const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
+
+usePageMeta({
+  titleKey: "auth.resetPassword.meta.title",
+  descriptionKey: "auth.resetPassword.meta.description"
+});
 
 const resetToken = ref("");
 const recaptchaToken = ref("");

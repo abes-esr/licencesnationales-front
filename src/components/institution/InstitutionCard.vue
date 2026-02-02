@@ -37,6 +37,7 @@ import ValidateInstitutionButton from "@/components/institution/buttons/Validate
 import ContactDetailsForm from "@/components/institution/ContactDetailsForm.vue";
 import InstitutionDetailsForm from "@/components/institution/InstitutionDetailsForm.vue";
 import InstitutionSummary from "@/components/institution/InstitutionSummary.vue";
+import { usePageMeta } from "@/composables/usePageMeta";
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
@@ -54,6 +55,11 @@ const institutionStore = useInstitutionStore();
 const router = useRouter();
 const institutionService = useInstitutionService();
 const { t } = useI18n();
+
+usePageMeta({
+  titleKey: "institution.card.meta.title",
+  descriptionKey: "institution.card.meta.description"
+});
 
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
 const institution = ref<Institution>(institutionStore.currentInstitution);

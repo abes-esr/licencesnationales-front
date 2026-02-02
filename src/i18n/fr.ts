@@ -3,7 +3,11 @@ export const fr = {
     changePassword: {
       title: "Modifier mon mot de passe",
       submit: "Enregistrer",
-      success: "Le mot de passe a été mis à jour"
+      success: "Le mot de passe a été mis à jour",
+      meta: {
+        title: "Modifier mon mot de passe - Licences Nationales",
+        description: "Page de modification du mot de passe de l'application des Licences Nationales"
+      }
     },
     login: {
       title: "Connexion",
@@ -12,7 +16,14 @@ export const fr = {
       passwordLabel: "Mot de passe",
       passwordPlaceholder: "Mot de passe",
       submit: "Se connecter",
-      forgotPassword: "Mot de passe oublié ?"
+      forgotPassword: "Mot de passe oublié ?",
+      noAccountTitle: "Votre établissement n'a pas encore de compte ?",
+      verifyEligibility: "Vérifier l'éligibilité",
+      createAccount: "Créer un compte",
+      meta: {
+        title: "Connexion - Licences Nationales",
+        description: "Page de connexion de l'application des Licences Nationales"
+      }
     },
     forgotPassword: {
       title: "Mot de passe oublié",
@@ -27,7 +38,11 @@ export const fr = {
       submit: "Envoyer",
       emailNotFound:
         "Si l'adresse e-mail est reconnue, vous recevrez un lien de réinitialisation du mot de passe",
-      backHome: "Revenir à la page d'accueil"
+      backHome: "Revenir à la page d'accueil",
+      meta: {
+        title: "Mot de passe oublié - Licences Nationales",
+        description: "Page de demande de réinitialisation du mot de passe"
+      }
     },
     passwordForm: {
       rules:
@@ -52,7 +67,11 @@ export const fr = {
       cancel: "Annuler",
       save: "Enregistrer",
       backHome: "Revenir à la page d'accueil",
-      invalidFields: "Des champs ne remplissent pas les conditions"
+      invalidFields: "Des champs ne remplissent pas les conditions",
+      meta: {
+        title: "Réinitialiser le mot de passe - Licences Nationales",
+        description: "Page de réinitialisation du mot de passe"
+      }
     }
   },
   common: {
@@ -115,6 +134,10 @@ export const fr = {
         institutions: "Établissements",
         ips: "Adresses IP",
         publishers: "Éditeurs"
+      },
+      meta: {
+        title: "Recherche - Licences Nationales",
+        description: "Page de recherche globale"
       }
     }
   },
@@ -192,7 +215,12 @@ export const fr = {
       invalidFields: "Des champs ne remplissent pas les conditions",
       invalidFieldsWithReason: "Des champs ne remplissent pas les conditions : {reason}",
       createSuccess: "L'éditeur a bien été créé",
-      updateSuccess: "L'éditeur a bien été modifié"
+      updateSuccess: "L'éditeur a bien été modifié",
+      meta: {
+        createTitle: "Créer un éditeur - Licences Nationales",
+        editTitle: "Modifier un éditeur - Licences Nationales",
+        description: "Gestion des éditeurs"
+      }
     },
     list: {
       title: "Gestion des éditeurs",
@@ -207,7 +235,11 @@ export const fr = {
       notAllowed: "Vous n'êtes pas autorisé à exécuter l'action ListeEditeur",
       unauthorized: "Vous n'êtes pas autorisé à effectuer cette opération",
       deleteConfirm: String.raw`Vous êtes sur le point de supprimer le compte de l'éditeur {name}\n\nÊtes-vous sûr de vouloir continuer ?`,
-      deleteSuccess: "L'éditeur {name} a bien été supprimé"
+      deleteSuccess: "L'éditeur {name} a bien été supprimé",
+      meta: {
+        title: "Liste des éditeurs - Licences Nationales",
+        description: "Gestion de la liste des éditeurs"
+      }
     }
   },
   institution: {
@@ -248,7 +280,11 @@ export const fr = {
       confirmValidate:
         "Vous êtes sur le point de valider le compte de l'établissement {name}\\n\\nÊtes-vous sûr de vouloir effectuer cette action ?",
       confirmInvalidate:
-        "Vous êtes sur le point de dévalider le compte de l'établissement {name}\\n\\nÊtes-vous sûr de vouloir effectuer cette action ?"
+        "Vous êtes sur le point de dévalider le compte de l'établissement {name}\\n\\nÊtes-vous sûr de vouloir effectuer cette action ?",
+      meta: {
+        title: "Fiche établissement - Licences Nationales",
+        description: "Détail d'un établissement"
+      }
     },
     contactForm: {
       lastName: "Nom",
@@ -301,6 +337,10 @@ export const fr = {
         reviewIp: "Examiner adresse IP",
         attestation: "Attestation à envoyer",
         ipOk: "Adresse IP OK"
+      },
+      meta: {
+        title: "Liste des établissements - Licences Nationales",
+        description: "Gestion des comptes établissements"
       }
     },
     form: {
@@ -336,9 +376,9 @@ export const fr = {
       updateSuccess: "Votre compte a bien été modifié.",
       mergeSuccess: "La mergeInstitutions a bien été effectuée.",
       meta: {
-        createTitle: "Inscription",
-        editTitle: "Modification du compte",
-        description: "Création de compte sur l'application des Licences Nationales"
+        createTitle: "Inscription - Licences Nationales",
+        editTitle: "Modification du compte - Licences Nationales",
+        description: "Création ou modification de compte sur l'application des Licences Nationales"
       }
     },
     history: {
@@ -353,6 +393,10 @@ export const fr = {
         date: "Date",
         action: "Action",
         information: "Informations"
+      },
+      meta: {
+        title: "Historique - Licences Nationales",
+        description: "Historique des actions par établissement"
       }
     },
     stats: {
@@ -364,14 +408,22 @@ export const fr = {
       validate: "Valider",
       resultsTitle: "Statistiques entre le {start} et le {end}",
       institutions: "Établissements",
-      ips: "Adresses et plages IP"
+      ips: "Adresses et plages IP",
+      meta: {
+        title: "Statistiques - Licences Nationales",
+        description: "Statistiques de l'application"
+      }
     },
     merge: {
       title: "Fusion d'établissements",
       sirenTitle: "Siren des établissements à fusionner",
       sirenLabel: "SIREN",
       addSiren: "Ajouter un siren",
-      removeSiren: "Supprimer un siren"
+      removeSiren: "Supprimer un siren",
+      meta: {
+        title: "Fusion d'établissements - Licences Nationales",
+        description: "Fusion de comptes établissements"
+      }
     },
     split: {
       title: "Scission d'établissements",
@@ -381,7 +433,11 @@ export const fr = {
       addInstitution: "Ajouter un établissement",
       removeInstitution: "Supprimer un établissement",
       save: "Enregistrer",
-      success: "La splitInstitution a bien été effectuée."
+      success: "La splitInstitution a bien été effectuée.",
+      meta: {
+        title: "Scission d'établissements - Licences Nationales",
+        description: "Scission de comptes établissements"
+      }
     }
   },
   ip: {
@@ -472,6 +528,10 @@ export const fr = {
           "Adresse IP transmise aux éditeurs et à l'Inist après réception de l'attestation",
         valid: "Adresse IP transmise aux éditeurs et à l'Inist à chaque fin de mois"
       },
+      meta: {
+        title: "Liste des adresses IP - Licences Nationales",
+        description: "Gestion des adresses IP"
+      },
       dialog: {
         title: "Analyse de l'adresse IP",
         comment: "Commentaire",
@@ -561,6 +621,11 @@ export const fr = {
       recoursDelegue: "saisir le délégué du Défenseur des droits dans votre région.",
       recoursMail:
         "envoyer un courrier postal (sans affranchissement) : Le Défenseur des Droits - Libre réponse 71120 - 75342 PARIS Cedex 07"
+      ,
+      meta: {
+        title: "Accessibilité - Licences Nationales",
+        description: "Déclaration d'accessibilité"
+      }
     },
     legal: {
       title: "Mentions légales",
@@ -590,6 +655,11 @@ export const fr = {
         "La structuration du site mais aussi les textes, graphiques, images, photographies, sons, vidéos et applications informatiques qui le composent sont la propriété de l'éditeur et sont protégés comme tels par les lois en vigueur au titre de la propriété intellectuelle.",
       ipText2:
         "Toute représentation, reproduction, adaptation ou exploitation partielle ou totale des contenus, marques déposées et services proposés par le site, par quelque procédé que ce soit, sans l'autorisation préalable, expresse et écrite de l'éditeur, est strictement interdite et serait susceptible de constituer une contrefaçon au sens des articles L. 335-2 et suivants du Code de la propriété intellectuelle. Et ce, à l'exception des éléments expressément désignés comme libres de droits sur le site. L'accès au site ne vaut pas reconnaissance d'un droit et, de manière générale, ne confère aucun droit de propriété intellectuelle relatif à un élément du site, lesquels restent la propriété exclusive de l'éditeur."
+      ,
+      meta: {
+        title: "Mentions légales - Licences Nationales",
+        description: "Informations légales"
+      }
     },
     privacy: {
       title: "Données personnelles",
@@ -628,6 +698,11 @@ export const fr = {
         "Nous collectons également votre adresse IP, anonymisée, afin de déterminer la ville depuis laquelle vous vous connectez. L'application Licences Nationales ne peut donc en aucun cas remonter par ce biais à une personne physique.",
       dataRetention:
         "Les données personnelles recueillies (identifiant du cookie) sont conservées par l'ABES pour une durée de 13 mois. Elles ne sont ni cédées à des tiers, ni utilisées à d'autres fins."
+      ,
+      meta: {
+        title: "Données personnelles - Licences Nationales",
+        description: "Politique de confidentialité et cookies"
+      }
     },
     terms: {
       title: "Conditions générales d'utilisation",
@@ -653,6 +728,11 @@ export const fr = {
       section5Title: "5. Loi applicable et juridiction compétente",
       section5P1:
         "Les présentes Conditions Générales d'Utilisation sont régies par la loi française. En cas de différend et à défaut d'accord amiable, le litige sera porté devant les tribunaux français conformément aux règles de compétence en vigueur."
+      ,
+      meta: {
+        title: "Conditions d'utilisation - Licences Nationales",
+        description: "Conditions générales d'utilisation"
+      }
     }
   },
   validation: {

@@ -138,6 +138,7 @@ import { useInstitutionService } from "@/composables/service/useInstitutionServi
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useRecaptcha } from "@/composables/useRecaptcha";
+import { usePageMeta } from "@/composables/usePageMeta";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
 import Institution from "@/entity/Institution";
@@ -188,6 +189,19 @@ const action = computed<RouteAction>(() =>
     : props.action
 );
 
+if (action.value === RouteAction.CREATION || action.value === RouteAction.MODIFICATION) {
+  const metaTitleKey = computed(() =>
+    action.value === RouteAction.CREATION
+      ? "institution.form.meta.createTitle"
+      : "institution.form.meta.editTitle"
+  );
+
+  usePageMeta({
+    titleKey: metaTitleKey,
+    descriptionKey: "institution.form.meta.description"
+  });
+}
+
 const isAdmin = computed(() => authStore.isAdmin);
 const recaptchaToken = ref("");
 const institutionTypes = ref<Array<string>>([]);
@@ -222,10 +236,7 @@ const localInstitution = ref<Institution>(new Institution());
 const initialInstitution = ref<Institution | null>(null);
 
 const cloneInstitution = (value: Institution): Institution => {
-  const raw = typeof structuredClone === "function"
-    ? structuredClone(value)
-    : JSON.parse(JSON.stringify(value));
-  const cloned = Object.assign(new Institution(), raw);
+  const cloned = Object.assign(new Institution(), value);
   cloned.contact = new InstitutionContactEntity(cloned.contact as Partial<InstitutionContactEntity>);
   cloned.ips = (cloned.ips ?? []).map((ip) => Object.assign(new Ip(), ip));
   return cloned;
@@ -276,7 +287,7 @@ const send = async () => {
         snackbar.success(t("institution.form.updateSuccess"));
         institutionStore.updateCurrentInstitution(cloneInstitution(localInstitution.value));
         if (localInstitution.value.siren === authStore.connectedInstitution.siren) {
-          institutionStore.setConnectedInstitution(localInstitution.value);
+          authStore.updateInstitution();
         }
         break;
       case RouteAction.FUSION:

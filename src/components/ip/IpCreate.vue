@@ -92,6 +92,7 @@ import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import IpRangeSegments from "@/components/ip/IpRangeSegments.vue";
 import { useIpService } from "@/composables/service/useIpService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
+import { usePageMeta } from "@/composables/usePageMeta";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { RouteName } from "@/router";
 import { faCircleInfo, faReply, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -116,15 +117,10 @@ const confirm = ref<InstanceType<typeof ConfirmPopup> | null>(null);
 const ip = ref<InstanceType<typeof IpRangeSegments> | null>(null);
 const plage = ref<InstanceType<typeof IpRangeSegments> | null>(null);
 
-const metaInfo = {
-  meta: [
-    {
-      name: "description",
-      content: t("ip.create.meta.description"),
-    },
-  ],
-  title: t("ip.create.meta.title"),
-};
+usePageMeta({
+  titleKey: "ip.create.meta.title",
+  descriptionKey: "ip.create.meta.description"
+});
 
 const validate = (payloadFromModuleSegmentsIpPlage: any): void => {
   arrayAjouterIp.value.push(payloadFromModuleSegmentsIpPlage);

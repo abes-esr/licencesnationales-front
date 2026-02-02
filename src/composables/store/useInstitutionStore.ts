@@ -30,15 +30,6 @@ export const useInstitutionStore = defineStore("institution", {
 
     updateCurrentInstitution(value: Institution) {
       this.currentInstitution = value;
-    },
-
-    async setConnectedInstitution(value: Institution): Promise<boolean> {
-      const auth = useAuthStore();
-      this.currentInstitution = await institutionService.getInstitution(
-        value.siren,
-        auth.user.token
-      );
-      return true;
     }
   },
 
