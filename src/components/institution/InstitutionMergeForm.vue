@@ -38,7 +38,6 @@
 
 <script setup lang="ts">
 import InstitutionForm from "@/components/institution/InstitutionForm.vue";
-import { usePageMeta } from "@/composables/usePageMeta";
 import { useValidationRules } from "@/composables/useValidationRules";
 import { RouteAction } from "@/router";
 import { ref } from "vue";
@@ -47,11 +46,6 @@ const institutionSirens = ref<Array<string>>(["", ""]);
 const sirenCount = ref(2);
 const formRef = ref();
 const { sirenRules } = useValidationRules();
-
-usePageMeta({
-  titleKey: "institution.merge.meta.title",
-  descriptionKey: "institution.merge.meta.description"
-});
 
 function increaseSirenNumber() {
   sirenCount.value++;

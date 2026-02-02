@@ -63,7 +63,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/password/reset",
     name: RouteName.PasswordReset,
-    component: () => import("../components/authentication/login/PasswordResetForm.vue")
+    component: () => import("../views/PasswordReset.vue")
   },
 
   // Institution
@@ -81,91 +81,81 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/institutions/view",
     name: RouteName.InstitutionView,
-    component: () => import("../components/institution/InstitutionCard.vue"),
-    props: { actions: RouteAction.VISUALISER }
+    component: () => import("../views/InstitutionView.vue")
   },
   {
     path: "/institutions/edit",
     name: RouteName.InstitutionEdit,
-    component: () => import("../components/institution/InstitutionForm.vue"),
-    props: { action: RouteAction.MODIFICATION },
+    component: () => import("../views/InstitutionEdit.vue"),
     meta: { requiresAuth: true }
   },
   {
     path: "/institutions",
     name: RouteName.Institutions,
-    component: () => import("../components/institution/InstitutionList.vue"),
-    props: { actions: RouteAction.VISUALISER }
+    component: () => import("../views/Institutions.vue")
   },
 
   {
     path: "/institutions/merge",
     name: RouteName.InstitutionMerge,
-    component: () => import("../components/institution/InstitutionMergeForm.vue"),
-    meta: { requiresAuth: true, isAdmin: true },
-    props: { action: RouteAction.FUSION }
+    component: () => import("../views/InstitutionMerge.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/institutions/split",
     name: RouteName.InstitutionSplit,
-    component: () => import("../components/institution/InstitutionSplitForm.vue"),
-    meta: { requiresAuth: true, isAdmin: true },
-    props: { action: RouteAction.SCISSION }
+    component: () => import("../views/InstitutionSplit.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
   },
 
   {
     path: "/ip",
     name: RouteName.IpList,
-    component: () => import("../components/ip/IpList.vue"),
-    meta: { requiresAuth: true },
-    props: { actions: RouteAction.VISUALISER }
+    component: () => import("../views/IpList.vue"),
+    meta: { requiresAuth: true }
   },
   {
     path: "/ip/create",
     name: RouteName.IpCreate,
-    component: () => import("../components/ip/IpCreate.vue"),
-    meta: { requiresAuth: true },
-    props: { action: RouteAction.CREATION }
+    component: () => import("../views/IpCreate.vue"),
+    meta: { requiresAuth: true }
   },
 
   // Publishers
   {
     path: "/publishers",
     name: RouteName.Publishers,
-    component: () => import("../components/publisher/PublisherList.vue"),
-    meta: { requiresAuth: true, isAdmin: true },
-    props: { actions: "VISUALISER" }
+    component: () => import("../views/Publishers.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/publishers/create",
     name: RouteName.PublisherCreate,
-    component: () => import("../components/publisher/PublisherForm.vue"),
-    meta: { requiresAuth: true, isAdmin: true },
-    props: { action: "CREATION" }
+    component: () => import("../views/PublisherCreate.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/publishers/edit",
     name: RouteName.PublisherEdit,
-    component: () => import("../components/publisher/PublisherForm.vue"),
-    meta: { requiresAuth: true, isAdmin: true },
-    props: { action: "MODIFICATION" }
+    component: () => import("../views/PublisherEdit.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/search",
     name: RouteName.Search,
-    component: () => import("../components/common/Search.vue"),
+    component: () => import("../views/Search.vue"),
     meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/history",
     name: RouteName.History,
-    component: () => import("../components/institution/History.vue"),
+    component: () => import("../views/History.vue"),
     meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/stats",
     name: RouteName.Statistics,
-    component: () => import("../components/institution/Statistics.vue"),
+    component: () => import("../views/Statistics.vue"),
     meta: { requiresAuth: true, isAdmin: true }
   },
 
@@ -194,12 +184,7 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior(to, from, savedPosition) {
-    // if (savedPosition) {
-    //   return savedPosition;
-    // }
-    return { left: 0, top: 0 };
-  }
+  scrollBehavior: () => ({ left: 0, top: 0 })
 });
 
 const DEFAULT_TITLE = "Licences Nationales";
@@ -207,7 +192,7 @@ const authService = useAuthService();
 
 // ---- After Navigation ----
 router.afterEach((to) => {
-  document.title = (to.meta.title as string) || DEFAULT_TITLE;
+  document.title = (to.meta.title as string) ?? DEFAULT_TITLE;
 });
 
 // ---- Guards ----

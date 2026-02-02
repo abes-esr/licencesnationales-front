@@ -138,7 +138,6 @@ import { useInstitutionService } from "@/composables/service/useInstitutionServi
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useRecaptcha } from "@/composables/useRecaptcha";
-import { usePageMeta } from "@/composables/usePageMeta";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
 import Institution from "@/entity/Institution";
@@ -188,19 +187,6 @@ const action = computed<RouteAction>(() =>
     ? RouteAction[props.action as keyof typeof RouteAction]
     : props.action
 );
-
-if (action.value === RouteAction.CREATION || action.value === RouteAction.MODIFICATION) {
-  const metaTitleKey = computed(() =>
-    action.value === RouteAction.CREATION
-      ? "institution.form.meta.createTitle"
-      : "institution.form.meta.editTitle"
-  );
-
-  usePageMeta({
-    titleKey: metaTitleKey,
-    descriptionKey: "institution.form.meta.description"
-  });
-}
 
 const isAdmin = computed(() => authStore.isAdmin);
 const recaptchaToken = ref("");

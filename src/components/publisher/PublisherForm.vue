@@ -95,7 +95,6 @@ import { useInstitutionService } from "@/composables/service/useInstitutionServi
 import { usePublisherService } from "@/composables/service/usePublisherService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { usePublisherStore } from "@/composables/store/usePublisherStore";
-import { usePageMeta } from "@/composables/usePageMeta";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
 import Publisher from "@/entity/Publisher";
@@ -119,17 +118,6 @@ const publisherService = usePublisherService();
 const institutionService = useInstitutionService();
 const { t } = useI18n();
 const { addressRules, lastNameRules } = useValidationRules();
-
-const metaTitleKey = computed(() =>
-  props.action === RouteAction.CREATION
-    ? "publisher.form.meta.createTitle"
-    : "publisher.form.meta.editTitle"
-);
-
-usePageMeta({
-  titleKey: metaTitleKey,
-  descriptionKey: "publisher.form.meta.description"
-});
 
 const publisher = ref<Publisher>(publisherStore.currentPublisher);
 const institutionTypes = ref<Array<string>>([]);

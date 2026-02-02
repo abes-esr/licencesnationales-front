@@ -4,12 +4,18 @@
 
 <script setup lang="ts">
 import InstitutionForm from "@/components/institution/InstitutionForm.vue";
+import { usePageMeta } from "@/composables/usePageMeta";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import Institution from "@/entity/Institution";
 import { RouteAction } from "@/router";
 import { onMounted } from "vue";
 
 const institutionStore = useInstitutionStore();
+
+usePageMeta({
+  titleKey: "institution.form.meta.createTitle",
+  descriptionKey: "institution.form.meta.description"
+});
 
 onMounted(() => {
   institutionStore.setCurrentInstitution(new Institution());

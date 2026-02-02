@@ -247,7 +247,6 @@ import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { useIpService } from "@/composables/service/useIpService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
-import { usePageMeta } from "@/composables/usePageMeta";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
 import { RouteName } from "@/router";
@@ -282,11 +281,6 @@ const router = useRouter();
 const { mdAndDown } = useDisplay();
 const ipService = useIpService();
 const { t } = useI18n();
-
-usePageMeta({
-  titleKey: "ip.list.meta.title",
-  descriptionKey: "ip.list.meta.description"
-});
 
 const { adminCommentRules } = useValidationRules();
 const refreshKey = ref(0);

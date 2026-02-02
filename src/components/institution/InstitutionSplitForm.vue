@@ -55,7 +55,6 @@
 import InstitutionForm from "@/components/institution/InstitutionForm.vue";
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
-import { usePageMeta } from "@/composables/usePageMeta";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
 import { RouteName } from "@/router";
@@ -69,11 +68,6 @@ const institutionService = useInstitutionService();
 const router = useRouter();
 const { t } = useI18n();
 const { sirenRules } = useValidationRules();
-
-usePageMeta({
-  titleKey: "institution.split.meta.title",
-  descriptionKey: "institution.split.meta.description"
-});
 
 const institutionSiren = ref("");
 const institutionCount = ref(2);

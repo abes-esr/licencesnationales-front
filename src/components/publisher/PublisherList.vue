@@ -81,7 +81,6 @@ import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import { usePublisherService } from "@/composables/service/usePublisherService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { usePublisherStore } from "@/composables/store/usePublisherStore";
-import { usePageMeta } from "@/composables/usePageMeta";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Publisher from "@/entity/Publisher";
 import { LicencesNationalesUnauthorizedApiError } from "@/exception/licencesnationales/LicencesNationalesUnauthorizedApiError";
@@ -106,11 +105,6 @@ const publisherStore = usePublisherStore();
 const router = useRouter();
 const publisherService = usePublisherService();
 const { t } = useI18n();
-
-usePageMeta({
-  titleKey: "publisher.list.meta.title",
-  descriptionKey: "publisher.list.meta.description"
-});
 
 const disableForm = ref(false);
 const isExportLoading = ref(false);

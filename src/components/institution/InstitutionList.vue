@@ -113,7 +113,6 @@
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
-import { usePageMeta } from "@/composables/usePageMeta";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Institution from "@/entity/Institution";
 import { LicencesNationalesUnauthorizedApiError } from "@/exception/licencesnationales/LicencesNationalesUnauthorizedApiError";
@@ -138,11 +137,6 @@ const institutionStore = useInstitutionStore();
 const router = useRouter();
 const institutionService = useInstitutionService();
 const { t } = useI18n();
-
-usePageMeta({
-  titleKey: "institution.list.meta.title",
-  descriptionKey: "institution.list.meta.description"
-});
 
 const disableForm = ref(false);
 const statusFilter = ref("");
