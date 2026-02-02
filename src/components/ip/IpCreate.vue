@@ -182,7 +182,4 @@ h1 {
   padding-left: 20px !important;
 }
 
-#fillHeight {
-  height: 80%;
-}
 </style>

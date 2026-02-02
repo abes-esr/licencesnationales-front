@@ -55,5 +55,3 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
     </v-card-text>
   </v-card>
 </template>
-
-<style scoped></style>

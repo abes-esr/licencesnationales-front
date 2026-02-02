@@ -27,29 +27,7 @@ usePageMeta({
 </script>
 
 <style scoped lang="scss">
-h4 {
-  display: inline;
-}
-
-.full-width {
-  width: 100%;
-}
-
 #row_RevenirAccueil {
   margin: auto;
-}
-
-p {
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 0;
-}
-
-strong {
-  font-weight: 900;
-}
-
-h4 {
-  font-size: 18px;
 }
 </style>

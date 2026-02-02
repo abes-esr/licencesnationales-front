@@ -211,9 +211,3 @@ defineExpose({
   clear,
 });
 </script>
-
-<style scoped>
-.row {
-  margin: 0 !important;
-}
-</style>

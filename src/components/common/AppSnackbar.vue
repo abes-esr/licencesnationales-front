@@ -70,10 +70,6 @@ const snackbarType = computed(() => state.type);
 </script>
 
 <style scoped>
-.multi-line span {
-  min-height: 1rem;
-}
-
 .v-snackbar {
   word-break: normal !important;
 }

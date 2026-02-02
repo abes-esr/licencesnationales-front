@@ -90,10 +90,6 @@ defineExpose({ validate, clear });
   border: 0;
 }
 
-.v-card-title {
-  width: 100%;
-}
-
 .v-input--radio-group__input {
   justify-content: center;
 }

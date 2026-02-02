@@ -156,12 +156,6 @@ onMounted(async () => {
 });
 </script>
 <style scoped lang="scss">
-.container {
-  width: auto !important;
-  margin-left: 0;
-  margin-right: 0;
-}
-
 .large-container {
   max-width: 150% !important;
 }

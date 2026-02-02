@@ -403,8 +403,4 @@ onMounted(() => {
 .icone-attention {
   float: left;
 }
-
-.row {
-  margin: 0 !important;
-}
 </style>

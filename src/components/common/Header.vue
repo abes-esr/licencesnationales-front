@@ -108,10 +108,6 @@ const { isDark } = storeToRefs(uiStore);
 </script>
 
 <style scoped>
-.header-graphic {
-  max-width: 420px;
-}
-
 .app-header {
   background: linear-gradient(90deg, #32465b 20%, #5f97ce) !important;
 }
