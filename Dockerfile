@@ -5,6 +5,8 @@ WORKDIR /build
 COPY src ./src 
 COPY public ./public 
 COPY *.js *.json *.html ./
+# Copie des placeholders des variables d'environnement
+COPY docker/vuejs_env_placeholder ./.env
 # Installation des dépendances
 RUN npm ci
 # Compilation de l'application
