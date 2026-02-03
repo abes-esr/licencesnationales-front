@@ -28,7 +28,7 @@
           </v-alert>
         </v-col>
         <v-row v-if="action === RouteAction.CREATION">
-          <v-col cols="12" md="6" lg="6" xl="6">
+          <v-col cols="12">
             <v-alert variant="outlined" density="compact">
               <FontAwesomeIcon :icon="faTriangleExclamation" class="mx-2 icone-attention" />
               <h4 class="mb-1">{{ $t("institution.form.eligibilityTitle") }}</h4>
