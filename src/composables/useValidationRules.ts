@@ -32,7 +32,8 @@ export const useValidationRules = () => {
       (v: string) => /^(.*[a-z]+.*)$/.test(v) || t("validation.passwordRules.lowercase"),
       (v: string) => /^(.*[A-Z]+.*)$/.test(v) || t("validation.passwordRules.uppercase"),
       (v: string) => /^(.*\d+.*)$/.test(v) || t("validation.passwordRules.digit"),
-      (v: string) => /^(.*[@$!%*?&]+.*)$/.test(v) || t("validation.passwordRules.special")
+      (v: string) =>
+        /^(.*[@$!%*?&]+.*)$/.test(v) || t("validation.passwordRules.special") + "@ $ ! % * ? &"
     ],
     privacyAcceptanceRules: [(v: boolean) => v || t("validation.privacyAcceptanceRules.required")],
     searchDomainRules: [(v: string) => !!v || t("validation.searchDomainRules.required")],

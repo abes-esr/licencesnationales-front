@@ -772,7 +772,7 @@ export const fr = {
       lowercase: "Le mot de passe doit contenir au moins une minuscule",
       uppercase: "Le mot de passe doit contenir au moins une majuscule",
       digit: "Le mot de passe doit contenir au moins un chiffre",
-      special: "Le mot de passe doit contenir au moins un caractère spécial parmi @@ $ ! % * ? &"
+      special: "Le mot de passe doit contenir au moins un caractère spécial parmi "
     },
     privacyAcceptanceRules: {
       required:
