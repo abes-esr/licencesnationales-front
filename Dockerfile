@@ -2,7 +2,9 @@
 FROM node:25.2.1 AS build-image
 WORKDIR /build
 # Copie des fichiers de l'application
-COPY . .
+COPY src ./src 
+COPY public ./public 
+COPY *.js *.json *.html ./
 # Installation des dépendances
 RUN npm ci
 # Compilation de l'application

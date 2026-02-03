@@ -11,25 +11,30 @@ import { VueReCaptcha } from "vue-recaptcha-v3";
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
 
-const app = createApp(App);
-const pinia = createPinia();
-
-pinia.use(piniaPersist);
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
 
-await loadLocaleMessages("fr");
+async function bootstrap() {
+  await loadLocaleMessages("fr");
 
-app.use(pinia);
-app.use(router);
-app.use(vuetify);
-app.use(i18n);
+  const app = createApp(App);
+  const pinia = createPinia();
 
-const recaptchaKey = import.meta.env.VITE_APP_RECAPTCHA_KEY_SITE;
-app.use(VueReCaptcha, {
-  siteKey: recaptchaKey,
-  loaderOptions: { autoHideBadge: true }
-});
+  pinia.use(piniaPersist);
 
-app.mount("#app");
+  app.use(pinia);
+  app.use(router);
+  app.use(vuetify);
+  app.use(i18n);
+
+  const recaptchaKey = import.meta.env.VITE_APP_RECAPTCHA_KEY_SITE;
+  app.use(VueReCaptcha, {
+    siteKey: recaptchaKey,
+    loaderOptions: { autoHideBadge: true }
+  });
+
+  app.mount("#app");
+}
+
+bootstrap();
