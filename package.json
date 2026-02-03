@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.2",
+    "rollup-plugin-visualizer": "^6.0.5",
     "sass": "^1.97.0",
     "typescript": "^5.9.3",
     "vite-plugin-vuetify": "^2.1.3"

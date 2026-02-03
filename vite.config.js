@@ -3,12 +3,33 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vuetify from "vite-plugin-vuetify";
 import { fileURLToPath, URL } from "node:url";
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
   plugins: [
     vue(),
-    vuetify({ autoImport: true })
+    vuetify({ autoImport: true }),
+    visualizer({
+      filename: "dist/stats.html",
+      gzipSize: true,
+      brotliSize: true,
+      open: false
+    })
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/@fortawesome")) {
+            return "fontawesome";
+          }
+          if (id.includes("node_modules/vue-i18n")) {
+            return "i18n";
+          }
+        }
+      }
+    }
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

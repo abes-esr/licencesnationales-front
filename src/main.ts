@@ -1,7 +1,6 @@
-import { i18n } from "@/i18n";
+import { i18n, loadLocaleMessages } from "@/i18n";
 import router from "@/router";
 import dayjs from "dayjs";
-import "dayjs/locale/fr";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -19,7 +18,8 @@ pinia.use(piniaPersist);
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
-dayjs.locale("fr");
+
+await loadLocaleMessages("fr");
 
 app.use(pinia);
 app.use(router);
