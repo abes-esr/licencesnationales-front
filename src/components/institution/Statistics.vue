@@ -93,7 +93,7 @@ import { useIpService } from "@/composables/service/useIpService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
-import moment from "moment";
+import dayjs from "dayjs";
 import { computed, ref } from "vue";
 import { VDatePicker } from "vuetify/components";
 
@@ -115,16 +115,16 @@ const startDateRef = ref();
 const endDateRef = ref();
 
 const formattedStartDate = computed({
-  get: () => (startDate.value ? moment(startDate.value).format("DD-MM-YYYY") : ""),
+  get: () => (startDate.value ? dayjs(startDate.value).format("DD-MM-YYYY") : ""),
   set: value => {
-    startDate.value = value ? moment(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
+    startDate.value = value ? dayjs(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
   },
 });
 
 const formattedEndDate = computed({
-  get: () => (endDate.value ? moment(endDate.value).format("DD-MM-YYYY") : ""),
+  get: () => (endDate.value ? dayjs(endDate.value).format("DD-MM-YYYY") : ""),
   set: value => {
-    endDate.value = value ? moment(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
+    endDate.value = value ? dayjs(value, "DD-MM-YYYY").format("YYYY-MM-DD") : "";
   },
 });
 

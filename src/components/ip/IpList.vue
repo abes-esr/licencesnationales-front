@@ -263,7 +263,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { AxiosResponse } from "axios";
-import moment from "moment";
+import dayjs from "dayjs";
 import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -412,7 +412,6 @@ const filteredAccessByStatus = computed(() => {
 });
 
 onMounted(() => {
-  moment.locale("fr");
   fetchAccessList();
 });
 
@@ -453,7 +452,7 @@ function formatAccessEntry(accessItem: any) {
   if (accessItem.typeAcces === "range") accessType = t("ip.list.types.rangePrefix");
   return {
     id: accessItem.id,
-    dateCreation: moment(accessItem.createdAt).format("L"),
+    dateCreation: dayjs(accessItem.createdAt).format("L"),
     dateModification: getDateModification(accessItem),
     typeIp: accessType + (accessItem.typeIp ?? ""),
     typeAcces: accessItem.typeAcces ?? "",
@@ -465,7 +464,7 @@ function formatAccessEntry(accessItem: any) {
 
 function getDateModification(accessItem: any) {
   if (!accessItem.updatedAt) return null;
-  return moment(accessItem.updatedAt).format("L");
+  return dayjs(accessItem.updatedAt).format("L");
 }
 
 function openDialog(item: any): void {

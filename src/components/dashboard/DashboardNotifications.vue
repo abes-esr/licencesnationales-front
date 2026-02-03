@@ -17,7 +17,7 @@
               {{ $t("dashboard.notifications.institutionName") }}
               <a @click="onInstitutionClick(item.siren)">{{ item.institutionName }}</a><br />
               {{ $t("dashboard.notifications.event") }} {{ item.notificationType }}<br />
-              {{ $t("dashboard.notifications.date") }} {{ moment(item.eventDate).format('DD/MM/YYYY') }}
+              {{ $t("dashboard.notifications.date") }} {{ dayjs(item.eventDate).format('DD/MM/YYYY') }}
             </li>
           </ul>
           <ul v-else>
@@ -37,7 +37,7 @@
 import { Notification } from "@/entity/Notification";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import moment from "moment";
+import dayjs from "dayjs";
 import { useI18n } from "vue-i18n";
 
 interface NotificationUser {

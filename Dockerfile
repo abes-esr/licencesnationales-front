@@ -22,7 +22,7 @@ COPY ./*.json                       /build/
 COPY ./src/                         /build/src/
 COPY ./public/                      /build/public/
 RUN npm run build
-RUN npm prune --production
+RUN npm prune --omit=dev
 
 # Serveur web (nginx) pour exec l'appli vuejs
 FROM nginx:1.29.4 AS front-image

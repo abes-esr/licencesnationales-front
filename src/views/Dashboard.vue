@@ -6,7 +6,7 @@
     <ConfirmPopup ref="confirmRef"></ConfirmPopup>
     <v-card class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">
       <v-card-text class="fondGris pa-0 px-6 pb-6">
-        <DashboardAccountInfo :created-at="moment(connectedInstitution.createdAt).format('DD/MM/YYYY')"
+        <DashboardAccountInfo :created-at="dayjs(connectedInstitution.createdAt).format('DD/MM/YYYY')"
           :loading="loading" :on-download="downloadInstitution" />
         <v-row class="d-flex justify-space-between flex-wrap pt-3">
           <InstitutionDashboard v-if="!isAdmin" :institution="connectedInstitution"
@@ -36,7 +36,7 @@ import { useSnackbar } from "@/composables/useSnackbar";
 import Institution from "@/entity/Institution";
 import { Notification } from "@/entity/Notification";
 import { RouteName } from "@/router";
-import moment from "moment/moment";
+import dayjs from "dayjs";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -146,7 +146,7 @@ onMounted(async () => {
     }
 
     sendDates.value = (datesResult as { data: Array<string> }).data.map(date =>
-      `${t("dashboard.publishers.sentOn")} ${moment(date).format("DD/MM/YYYY HH:mm")} ${t("dashboard.publishers.sentAgo")} ${moment(date).fromNow()}`
+      `${t("dashboard.publishers.sentOn")} ${dayjs(date).format("DD/MM/YYYY HH:mm")} ${t("dashboard.publishers.sentAgo")} ${dayjs(date).fromNow()}`
     );
   } catch (err: any) {
     snackbar.error(err);

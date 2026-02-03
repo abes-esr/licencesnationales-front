@@ -124,7 +124,7 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import moment from "moment";
+import dayjs from "dayjs";
 import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -209,7 +209,7 @@ const filteredInstitutionsByStatus = computed((): Array<Institution> => {
   }
 
   institutions.value.forEach(element => {
-    element.createdAtFormatted = moment(element.createdAt).format("YYYY-MM-DD");
+    element.createdAtFormatted = dayjs(element.createdAt).format("YYYY-MM-DD");
     if (element.lastIpUpdateDate) {
       element.lastIpUpdateDate = element.lastIpUpdateDate.replaceAll("-", "/");
     }

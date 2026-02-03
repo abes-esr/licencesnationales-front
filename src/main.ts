@@ -1,7 +1,10 @@
 import { i18n } from "@/i18n";
 import router from "@/router";
-import moment from "moment";
-import "moment/locale/fr";
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { createPinia } from "pinia";
 import piniaPersist from "pinia-plugin-persistedstate";
 import { createApp } from "vue";
@@ -13,7 +16,10 @@ const app = createApp(App);
 const pinia = createPinia();
 
 pinia.use(piniaPersist);
-moment.locale("fr");
+dayjs.extend(customParseFormat);
+dayjs.extend(localizedFormat);
+dayjs.extend(relativeTime);
+dayjs.locale("fr");
 
 app.use(pinia);
 app.use(router);
