@@ -70,7 +70,7 @@ const login = async () => {
       password: passwordValue.value
     });
 
-  } catch (err: any) {
+  } catch (err) {
     snackbar.error(err);
   } finally {
     stopLoading();

@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer app flat hide-overlay permanent :model-value="isLoggedIn">
+  <v-navigation-drawer app flat hide-overlay permanent v-if="isLoggedIn">
     <v-list dense color="transparent">
       <v-row class="mb-15"> </v-row>
 

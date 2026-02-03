@@ -6,9 +6,9 @@
           <LoginForm />
           <div id="noAccount" class="mt-6 d-flex justify-space-around flex-column flex-md-row flex-wrap pb-8">
             <span class="d-block full-width">
-              <h1 class="pb-2">
+              <h2 class="pb-2">
                 {{ $t("auth.login.noAccountTitle") }}
-              </h1>
+              </h2>
             </span>
             <v-btn variant="tonal" href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
               target="_blank">{{ $t("auth.login.verifyEligibility") }}

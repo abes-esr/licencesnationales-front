@@ -620,8 +620,7 @@ export const fr = {
       recoursLink: "formulaire en ligne",
       recoursDelegue: "saisir le délégué du Défenseur des droits dans votre région.",
       recoursMail:
-        "envoyer un courrier postal (sans affranchissement) : Le Défenseur des Droits - Libre réponse 71120 - 75342 PARIS Cedex 07"
-      ,
+        "envoyer un courrier postal (sans affranchissement) : Le Défenseur des Droits - Libre réponse 71120 - 75342 PARIS Cedex 07",
       meta: {
         title: "Accessibilité - Licences Nationales",
         description: "Déclaration d'accessibilité"
@@ -654,8 +653,7 @@ export const fr = {
       ipText1:
         "La structuration du site mais aussi les textes, graphiques, images, photographies, sons, vidéos et applications informatiques qui le composent sont la propriété de l'éditeur et sont protégés comme tels par les lois en vigueur au titre de la propriété intellectuelle.",
       ipText2:
-        "Toute représentation, reproduction, adaptation ou exploitation partielle ou totale des contenus, marques déposées et services proposés par le site, par quelque procédé que ce soit, sans l'autorisation préalable, expresse et écrite de l'éditeur, est strictement interdite et serait susceptible de constituer une contrefaçon au sens des articles L. 335-2 et suivants du Code de la propriété intellectuelle. Et ce, à l'exception des éléments expressément désignés comme libres de droits sur le site. L'accès au site ne vaut pas reconnaissance d'un droit et, de manière générale, ne confère aucun droit de propriété intellectuelle relatif à un élément du site, lesquels restent la propriété exclusive de l'éditeur."
-      ,
+        "Toute représentation, reproduction, adaptation ou exploitation partielle ou totale des contenus, marques déposées et services proposés par le site, par quelque procédé que ce soit, sans l'autorisation préalable, expresse et écrite de l'éditeur, est strictement interdite et serait susceptible de constituer une contrefaçon au sens des articles L. 335-2 et suivants du Code de la propriété intellectuelle. Et ce, à l'exception des éléments expressément désignés comme libres de droits sur le site. L'accès au site ne vaut pas reconnaissance d'un droit et, de manière générale, ne confère aucun droit de propriété intellectuelle relatif à un élément du site, lesquels restent la propriété exclusive de l'éditeur.",
       meta: {
         title: "Mentions légales - Licences Nationales",
         description: "Informations légales"
@@ -697,8 +695,7 @@ export const fr = {
       ipNote:
         "Nous collectons également votre adresse IP, anonymisée, afin de déterminer la ville depuis laquelle vous vous connectez. L'application Licences Nationales ne peut donc en aucun cas remonter par ce biais à une personne physique.",
       dataRetention:
-        "Les données personnelles recueillies (identifiant du cookie) sont conservées par l'ABES pour une durée de 13 mois. Elles ne sont ni cédées à des tiers, ni utilisées à d'autres fins."
-      ,
+        "Les données personnelles recueillies (identifiant du cookie) sont conservées par l'ABES pour une durée de 13 mois. Elles ne sont ni cédées à des tiers, ni utilisées à d'autres fins.",
       meta: {
         title: "Données personnelles - Licences Nationales",
         description: "Politique de confidentialité et cookies"
@@ -727,8 +724,7 @@ export const fr = {
         "peut contenir des liens hypertextes pointant vers d'autres sites internet sur lesquels l'éditeur n'exerce pas de contrôle. Malgré les vérifications préalables et régulières réalisées par l'éditeur, celui-ci décline toute responsabilité quant aux contenus qu'il est possible de trouver sur ces sites. L'éditeur autorise la mise en place de liens hypertextes vers toute page ou document de son site. Sont cependant exclus de cette autorisation les sites diffusant des informations à caractère illicite, violent, polémique, pornographique, xénophobe ou pouvant porter atteinte à la sensibilité du plus grand nombre. Plus généralement, l'éditeur se réserve le droit de faire supprimer à tout moment un lien hypertexte pointant vers son site, si le site en question est estimé non conforme à sa politique éditoriale.",
       section5Title: "5. Loi applicable et juridiction compétente",
       section5P1:
-        "Les présentes Conditions Générales d'Utilisation sont régies par la loi française. En cas de différend et à défaut d'accord amiable, le litige sera porté devant les tribunaux français conformément aux règles de compétence en vigueur."
-      ,
+        "Les présentes Conditions Générales d'Utilisation sont régies par la loi française. En cas de différend et à défaut d'accord amiable, le litige sera porté devant les tribunaux français conformément aux règles de compétence en vigueur.",
       meta: {
         title: "Conditions d'utilisation - Licences Nationales",
         description: "Conditions générales d'utilisation"
