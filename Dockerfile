@@ -1,5 +1,5 @@
 # Phase de compilation de l'appli vuejs
-FROM node:25.2.1 build-image
+FROM node:25.2.1 AS build-image
 WORKDIR /build/
 # Mise en cache docker pour le téléchargement
 # des dépendances npm (répertoire node_modules/)
