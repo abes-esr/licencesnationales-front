@@ -1,281 +1,238 @@
-import Vue from "vue";
-import store from "../store/index";
-import VueRouter, { RouteConfig } from "vue-router";
-import Login from "../views/Login.vue";
-import { Action, Message, MessageType } from "@/core/CommonDefinition";
-import { authService } from "@/core/service/licencesnationales/AuthentificationService";
-import { Logger } from "@/utils/Logger";
+import { useAuthService } from "@/composables/service/useAuthService";
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useSnackbar } from "@/composables/useSnackbar";
 
-Vue.use(VueRouter);
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
-const routes: Array<RouteConfig> = [
+export enum RouteAction {
+  CREATION = "CREATION",
+  MODIFICATION = "MODIFICATION",
+  VISUALISER = "VISUALISER",
+  FUSION = "FUSION",
+  SCISSION = "SCISSION"
+}
+
+export enum RouteName {
+  Home = "Home",
+  Login = "Login",
+  Password = "Password",
+  ForgotPassword = "ForgotPassword",
+  PasswordReset = "PasswordReset",
+  InstitutionCreate = "InstitutionCreate",
+  Profile = "Profile",
+  InstitutionView = "InstitutionView",
+  InstitutionEdit = "InstitutionEdit",
+  Institutions = "Institutions",
+  InstitutionMerge = "InstitutionMerge",
+  InstitutionSplit = "InstitutionSplit",
+  IpList = "IpList",
+  IpCreate = "IpCreate",
+  Publishers = "Publishers",
+  PublisherCreate = "PublisherCreate",
+  PublisherEdit = "PublisherEdit",
+  Search = "Search",
+  History = "History",
+  Statistics = "Statistics",
+  Terms = "Terms",
+  Privacy = "Privacy",
+  Legal = "Legal",
+  Accessibility = "Accessibility"
+}
+
+const routes: RouteRecordRaw[] = [
   {
     path: "/",
-    name: "Home",
-    component: () => import("../views/TableauDeBord.vue"),
-    meta: {
-      requiresAuth: true
-    }
+    name: RouteName.Home,
+    component: () => import("../views/Dashboard.vue"),
+    meta: { requiresAuth: true }
   },
-  //Authentication
-  {
-    path: "/login",
-    name: "Login",
-    component: Login
-  },
+
+  // Authentication
+  { path: "/login", name: RouteName.Login, component: () => import("../views/Login.vue") },
   {
     path: "/password",
-    name: "Password",
+    name: RouteName.Password,
     component: () => import("../views/Password.vue"),
-    meta: {
-      requiresAuth: true
-    }
+    meta: { requiresAuth: true }
   },
   {
-    path: "/motdepasseoublie",
-    name: "ForgotPassword",
+    path: "/password/forgot",
+    name: RouteName.ForgotPassword,
     component: () => import("../views/ForgotPassword.vue")
   },
   {
-    path: "/reinitialisationPass",
-    name: "ReinitialisationPass",
-    component: () =>
-      import(
-        "../components/authentification/login/FormReinitialisationPass.vue"
-      )
+    path: "/password/reset",
+    name: RouteName.PasswordReset,
+    component: () => import("../views/PasswordReset.vue")
   },
-  //Etablissement
+
+  // Institution
   {
-    path: "/creationEtablissement",
-    name: "CreationEtablissement",
-    component: () =>
-      import("../components/etablissement/FormEtablissement.vue"),
-    props: { action: Action.CREATION }
+    path: "/institutions/create",
+    name: RouteName.InstitutionCreate,
+    component: () => import("../views/InstitutionCreate.vue")
   },
   {
-    path: "/profil",
-    name: "Profil",
-    component: () =>
-      import("../components/etablissement/FormEtablissement.vue"),
-    props: {
-      action: Action.MODIFICATION
-    },
-    meta: {
-      requiresAuth: true
-    }
+    path: "/profile",
+    name: RouteName.Profile,
+    component: () => import("../views/Profile.vue"),
+    meta: { requiresAuth: true }
   },
   {
-    path: "/afficherEtablissement",
-    name: "AfficherEtablissement",
-    component: () => import("../components/etablissement/CardEtablissement.vue")
+    path: "/institutions/view",
+    name: RouteName.InstitutionView,
+    component: () => import("../views/InstitutionView.vue")
   },
   {
-    path: "/ModifierEtablissement",
-    name: "ModifierEtablissement",
-    component: () =>
-      import("../components/etablissement/FormEtablissement.vue"),
-    props: {
-      action: Action.MODIFICATION
-    },
-    meta: {
-      requiresAuth: true
-    }
+    path: "/institutions/edit",
+    name: RouteName.InstitutionEdit,
+    component: () => import("../views/InstitutionEdit.vue"),
+    meta: { requiresAuth: true }
   },
   {
-    path: "/listeEtab",
-    name: "ListeEtab",
-    component: () => import("../components/etablissement/ListeEtab.vue")
+    path: "/institutions",
+    name: RouteName.Institutions,
+    component: () => import("../views/Institutions.vue")
+  },
+
+  {
+    path: "/institutions/merge",
+    name: RouteName.InstitutionMerge,
+    component: () => import("../views/InstitutionMerge.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
-    path: "/fusionEtablissement",
-    name: "fusionEtablissement",
-    component: () =>
-      import("../components/etablissement/FormFusionEtablissement.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    path: "/institutions/split",
+    name: RouteName.InstitutionSplit,
+    component: () => import("../views/InstitutionSplit.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
+  },
+
+  {
+    path: "/ip",
+    name: RouteName.IpList,
+    component: () => import("../views/IpList.vue"),
+    meta: { requiresAuth: true }
   },
   {
-    path: "/scissionEtablissement",
-    name: "scissionEtablissement",
-    component: () =>
-      import("../components/etablissement/FormScissionEtablissement.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    path: "/ip/create",
+    name: RouteName.IpCreate,
+    component: () => import("../views/IpCreate.vue"),
+    meta: { requiresAuth: true }
+  },
+
+  // Publishers
+  {
+    path: "/publishers",
+    name: RouteName.Publishers,
+    component: () => import("../views/Publishers.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
-    path: "/listeAcces",
-    name: "ListeIP",
-    component: () => import("../components/ip/ListeAcces.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  //TODO faire un composant générique pour la route /ajouterAccess
-  {
-    path: "/ajouterAcces",
-    name: "ajouterAcces",
-    component: () => import("../components/ip/AjouterAcces.vue"),
-    meta: {
-      requiresAuth: true
-    }
+    path: "/publishers/create",
+    name: RouteName.PublisherCreate,
+    component: () => import("../views/PublisherCreate.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
-    path: "/listeEditeurs",
-    name: "ListeEditeurs",
-    component: () => import("../components/editeur/ListeEditeurs.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    path: "/publishers/edit",
+    name: RouteName.PublisherEdit,
+    component: () => import("../views/PublisherEdit.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
-    path: "/nouvelEditeur",
-    name: "NouvelEditeur",
-    component: () => import("../components/editeur/FormEditeur.vue"),
-    props: { action: Action.CREATION },
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    path: "/search",
+    name: RouteName.Search,
+    component: () => import("../views/Search.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
-    path: "/modifierEditeur",
-    name: "ModifierEditeur",
-    component: () => import("../components/editeur/FormEditeur.vue"),
-    props: { action: Action.MODIFICATION },
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
-  },
-  {
-    path: "/recherche",
-    name: "Recherche",
-    component: () => import("../components/common/Recherche.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
-  },
-  {
-    path: "/historique",
-    name: "Historique",
-    component: () => import("../components/etablissement/Historique.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    path: "/history",
+    name: RouteName.History,
+    component: () => import("../views/History.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
   },
   {
     path: "/stats",
-    name: "Statistiques",
-    component: () => import("../components/etablissement/Statistiques.vue"),
-    meta: {
-      requiresAuth: true,
-      isAdmin: true
-    }
+    name: RouteName.Statistics,
+    component: () => import("../views/Statistics.vue"),
+    meta: { requiresAuth: true, isAdmin: true }
+  },
+
+  // Static pages
+  { path: "/terms", name: RouteName.Terms, component: () => import("../views/footer/Terms.vue") },
+  {
+    path: "/privacy",
+    name: RouteName.Privacy,
+    component: () => import("../views/footer/Privacy.vue")
   },
   {
-    path: "/CGU",
-    name: "CGU",
-    component: () => import("../views/footer-static/CGU.vue")
+    path: "/legal",
+    name: RouteName.Legal,
+    component: () => import("../views/footer/Legal.vue")
   },
   {
-    path: "/donneespersonnelles",
-    name: "DonneesPersonnelles",
-    component: () => import("../views/footer-static/DonneesPersonnelles.vue")
+    path: "/accessibility",
+    name: RouteName.Accessibility,
+    component: () => import("../views/footer/Accessibility.vue")
   },
-  {
-    path: "/mentions",
-    name: "MentionsLegales",
-    component: () => import("../views/footer-static/MentionsLegales.vue")
-  },
-  {
-    path: "/accessibilite",
-    name: "Accessibilite",
-    component: () => import("../views/footer-static/Accessibilite.vue")
-  },
-  {
-    path: "*",
-    /* component: NotFoundComponent, */
-    redirect: "/"
-  }
+
+  // Fallback
+  { path: "/:pathMatch(.*)*", redirect: "/" }
 ];
 
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+  scrollBehavior: () => ({ left: 0, top: 0 })
 });
 
 const DEFAULT_TITLE = "Licences Nationales";
-router.afterEach(to => {
-  Vue.nextTick(() => {
-    document.title = to.meta.title || DEFAULT_TITLE;
-  });
+const authService = useAuthService();
+
+// ---- After Navigation ----
+router.afterEach((to) => {
+  document.title = (to.meta.title as string) ?? DEFAULT_TITLE;
 });
 
-router.beforeEach((to, from, next) => {
-  if (
-    to.matched.some(record => record.meta.requiresAuth) &&
-    !store.getters.isLoggedIn()
-  ) {
-    next({
-      path: "/login"
-    });
-  } else if (
-    to.matched.some(record => record.name === "Login") &&
-    store.getters.isLoggedIn()
-  ) {
-    next({
-      path: "/home"
-    });
-  } else if (
-    to.matched.some(record => record.name === "ReinitialisationPass") &&
-    store.getters.isLoggedIn()
-  ) {
-    next({
-      path: "/home"
-    });
-  } else if (to.matched.some(record => record.meta.requiresAuth)) {
-    authService
-      .verifierValiditeToken(store.getters.getToken())
-      .then(response => {
-        if (!response) {
-          const message: Message = new Message();
-          message.type = MessageType.ERREUR;
-          message.texte = "Votre session a expiré";
-          message.isSticky = true;
-          store.dispatch("openDisplayedMessage", message).catch(err => {
-            Logger.error(err.toString());
-          });
-          store.dispatch("logout").catch(err => {
-            Logger.error(err.toString());
-          });
-        } else {
-          next();
-        }
-      })
-      .catch(err => {
-        // On déconnecte l'utilisateur au cas où...;
-        const message: Message = new Message();
-        message.type = MessageType.ERREUR;
-        message.texte = err.message + ". Vous avez été déconnecté";
-        message.isSticky = true;
-        store.dispatch("openDisplayedMessage", message).catch(err => {
-          Logger.error(err.toString());
-        });
-        store.dispatch("logout").catch(err => {
-          Logger.error(err.toString());
-        });
-      });
-  } else {
-    next();
+// ---- Guards ----
+router.beforeEach(async (to, from, next) => {
+  const auth = useAuthStore();
+  const snackbar = useSnackbar();
+
+  if (to.meta.requiresAuth && !auth.isLoggedIn) {
+    return next("/login");
   }
+
+  if (to.name === RouteName.Login && auth.isLoggedIn) {
+    return next("/");
+  }
+
+  if (to.name === RouteName.PasswordReset && auth.isLoggedIn) {
+    return next("/");
+  }
+
+  if (to.meta.requiresAuth) {
+    try {
+      const isValid = await authService.verifyToken(auth.token);
+
+      if (!isValid) {
+        snackbar.error("Votre session a expiré", { sticky: true });
+        auth.logout();
+
+        return;
+      }
+
+      return next();
+    } catch (err: any) {
+      snackbar.error(err);
+      auth.logout();
+
+      return;
+    }
+  }
+
+  return next();
 });
 
 export default router;

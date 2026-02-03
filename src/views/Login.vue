@@ -3,26 +3,19 @@
     <v-container class="d-flex justify-center">
       <v-row align="center" justify="center">
         <v-col xl="5" lg="7" md="9" xs="11">
-          <form-login @onChange="afficherMotDePasseOublie()" />
-
-          <div id="noAccount" class="
-                                                            mt-6
-                                                            d-flex
-                                                            justify-space-around
-                                                            flex-column flex-md-row flex-wrap
-                                                            pb-8
-                                                          ">
+          <LoginForm />
+          <div id="noAccount" class="mt-6 d-flex justify-space-around flex-column flex-md-row flex-wrap pb-8">
             <span class="d-block full-width">
               <h1 class="pb-2">
-                Votre établissement n'a pas encore de compte ?
+                {{ $t("auth.login.noAccountTitle") }}
               </h1>
             </span>
-            <v-btn class="btn-2" href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
-              target="_blank">Vérifier l'éligibilité
-              <font-awesome-icon :icon="['fas', 'question-circle']" class="mx-2" style="font-size: 1.1rem" />
+            <v-btn variant="tonal" href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+              target="_blank">{{ $t("auth.login.verifyEligibility") }}
+              <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
-            <v-btn class="btn-2" @click="creerCompte">Créer un compte
-              <font-awesome-icon :icon="['fas', 'plus-circle']" class="mx-2" style="font-size: 1.1rem" />
+            <v-btn variant="tonal" :to="{ name: RouteName.InstitutionCreate }">{{ $t("auth.login.createAccount") }}
+              <FontAwesomeIcon :icon="faCirclePlus" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
           </div>
         </v-col>
@@ -30,70 +23,22 @@
     </v-container>
   </div>
 </template>
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import FormLogin from "../components/authentification/login/FormLogin.vue";
-import { Logger } from "@/utils/Logger";
-import Etablissement from "@/core/Etablissement";
+<script setup lang="ts">
+import LoginForm from "@/components/authentication/login/LoginForm.vue";
+import { usePageMeta } from "@/composables/usePageMeta";
+import { RouteName } from "@/router";
+import { faCirclePlus, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-@Component({
-  components: { FormLogin }
-})
-export default class App extends Vue {
-  public metaInfo(): any {
-    return {
-      meta: [
-        {
-          name: "description",
-          content: "Page de connexion de l'application des Licences Nationales"
-        }
-      ],
-      title: "Connexion - Licences Nationales"
-    };
-  }
-
-  forgotPasswordVisible: boolean = false;
-  creerCompte(): void {
-    this.$store
-      .dispatch("setCurrentEtablissement", new Etablissement())
-      .then(() => {
-        this.$router.push({ name: "CreationEtablissement" });
-      })
-      .catch(err => {
-        Logger.error(err);
-      });
-  }
-
-  afficherMotDePasseOublie(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$router.push({ name: "ForgotPassword" });
-  }
-}
+usePageMeta({
+  titleKey: "auth.login.meta.title",
+  descriptionKey: "auth.login.meta.description"
+});
 </script>
-<style scoped lang="scss">
-h4 {
-  display: inline;
-}
 
+
+<style scoped lang="scss">
 .full-width {
   width: 100%;
-}
-
-#row_RevenirAccueil {
-  margin: auto;
-}
-
-p {
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 0;
-}
-
-strong {
-  font-weight: 900;
-}
-
-h4 {
-  font-size: 18px;
 }
 </style>

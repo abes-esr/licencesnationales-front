@@ -1,84 +1,96 @@
-.theme--light {
-  $couleur-1: #cf491f; // Orange foncé
-  $couleur-2: #478dcb; // Bleu clair
-  $couleur-3: #252c61; // Bleu foncé
-  $couleur-4: #b8b8b9; // Gris clair
-  $couleur-5: #949597; // Gris
-  $couleur-6: #ffffff; // Blanc
-  $couleur-7: #000000; // Noir
-  $couleur-8: #00b600; // Vert clair
-  $couleur-9: #e3040d; //Rouge
+@use "./style.scss" as theme;
 
-  $bouton-1: #00b600; // Vert clair
-  $bouton-2: #252c61; //Bleu foncé
-  $bouton-3: #e3040d; //Rouge
+.v-theme--light main {
+  --couleur-1: #cf491f;
+  --couleur-2: #478dcb;
+  --couleur-3: #252c61;
+  --couleur-4: #b8b8b9;
+  --couleur-5: #949597;
+  --couleur-6: #ffffff;
+  --couleur-7: #000000;
+  --couleur-8: #00b600;
+  --couleur-9: #e3040d;
 
-  $message-couleur-1: #e3040d; // Rouge
-  $message-couleur-2: #eca30f; //Orange clair
-  $message-couleur-3: #00b600; //Vert clair
+  --bouton-1: #00b600;
+  --bouton-2: #252c61;
+  --bouton-3: #e3040d;
 
-  $couleur-arriere-plan-1: #fac8c0; // Rouge
-  $couleur-arriere-plan-2: rgba($message-couleur-2, 0.15); //Orange clair
-  $couleur-arriere-plan-3: rgba($message-couleur-3, 0.15); //Vert clair
-  $couleur-arriere-plan-4: #f6988a;
-  $couleur-arriere-plan-5: #122638;
-  $couleur-arriere-plan-6: #ffffff; // Blanc
-  $couleur-arriere-plan-7: #000000; // Noir
-  $couleur-arriere-plan-8: #6262624a;
-  $couleur-arriere-plan-9: #32465b;
-  $couleur-arriere-plan-10: #5f97ce;
+  --message-couleur-1: #e3040d;
+  --message-couleur-2: #eca30f;
+  --message-couleur-3: #00b600;
 
-  $couleur-fond-card: #f0f0f4;
+  --couleur-arriere-plan-1: #fac8c0;
+  --couleur-arriere-plan-2: rgba(236, 163, 15, 0.15);
+  --couleur-arriere-plan-3: rgba(0, 182, 0, 0.15);
+  --couleur-arriere-plan-4: #f6988a;
+  --couleur-arriere-plan-5: #122638;
+  --couleur-arriere-plan-6: #ffffff;
+  --couleur-arriere-plan-7: #000000;
+  --couleur-arriere-plan-8: #6262624a;
+  --couleur-arriere-plan-9: #32465b;
+  --couleur-arriere-plan-10: #5f97ce;
 
-  $couleur-fond-declaration: #e3e4ea;
+  --couleur-fond-card: #f0f0f4;
+  --couleur-fond-declaration: #e3e4ea;
+  --couleur-tab: rgb(250, 250, 250);
 
-  $couleur-tab: rgb(250, 250, 250);
-
-  @import "style";
+  @include theme.styles();
 }
 
-.theme--dark {
-  $couleur-1: #cf491f; // Orange foncé
-  $couleur-2: #ffffff; // Bleu clair
-  $couleur-3: #ffffff; // Bleu foncé
-  $couleur-4: #b8b8b9; // Gris clair
-  $couleur-5: #949597; // Gris
-  $couleur-6: #000000; // Noir
-  $couleur-7: #000000;
-  $couleur-8: #00b600; // Vert clair
-  $couleur-9: #e3040d; //Rouge
+.v-theme--dark main {
+  --couleur-1: #cf491f;
+  --couleur-2: #ffffff;
+  --couleur-3: #ffffff;
+  --couleur-4: #b8b8b9;
+  --couleur-5: #949597;
+  --couleur-6: #000000;
+  --couleur-7: #000000;
+  --couleur-8: #00b600;
+  --couleur-9: #e3040d;
 
-  $bouton-1: #00b600; // Vert clair
-  $bouton-2: #478dcb; //Bleu foncé
-  $bouton-3: #e3040d; //Rouge
+  --bouton-1: #00b600;
+  --bouton-2: #478dcb;
+  --bouton-3: #e3040d;
 
-  $message-couleur-1: #e3040d; // Rouge
-  $message-couleur-2: #eca30f; //Orange clair
-  $message-couleur-3: #00b600; //Vert clair
+  --message-couleur-1: #e3040d;
+  --message-couleur-2: #eca30f;
+  --message-couleur-3: #00b600;
 
-  $couleur-arriere-plan-1: #fac8c0; // Rouge
-  $couleur-arriere-plan-2: rgba($message-couleur-2, 0.15); //Orange clair
-  $couleur-arriere-plan-3: rgba($message-couleur-3, 0.15); //Vert clair
-  $couleur-arriere-plan-4: #f6988a;
-  $couleur-arriere-plan-5: #b8b8b9;
-  $couleur-arriere-plan-6: #000000; // Noir
-  $couleur-arriere-plan-7: #ffffff; // Blanc
-  $couleur-arriere-plan-8: #000000;
-  $couleur-arriere-plan-9: #7d7979;
-  $couleur-arriere-plan-10: #7d7979;
+  --couleur-arriere-plan-1: #fac8c0;
+  --couleur-arriere-plan-2: rgba(236, 163, 15, 0.15);
+  --couleur-arriere-plan-3: rgba(0, 182, 0, 0.15);
+  --couleur-arriere-plan-4: #f6988a;
+  --couleur-arriere-plan-5: #b8b8b9;
+  --couleur-arriere-plan-6: #000000;
+  --couleur-arriere-plan-7: #ffffff;
+  --couleur-arriere-plan-8: #000000;
+  --couleur-arriere-plan-9: #7d7979;
+  --couleur-arriere-plan-10: #7d7979;
 
-  $couleur-fond-card: #1E1E1E;
+  --couleur-fond-card: #1e1e1e;
+  --couleur-fond-declaration: #1e1e1e;
+  --couleur-tab: rgb(0, 0, 0);
 
-  $couleur-fond-declaration: #1E1E1E;
-
-  $couleur-tab: rgb(0, 0, 0);
-
-  @import "style";
+  @include theme.styles();
+}
+h2 {
+  font-size: 1.5em !important;
+  font-weight: 900;
+  text-transform: unset !important;
 }
 
-#messageBox .v-btn {
-  background-color: transparent !important;
-  border-left: 0;
+h2,
+h3 {
+  color: #356ca5;
+}
+
+.v-btn {
+  * {
+    text-transform: none !important;
+  }
+  .v-btn--elevated {
+    text-transform: uppercase !important;
+  }
 }
 
 .icone-information,
@@ -90,6 +102,7 @@
 
 a {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .bouton-simple {
@@ -110,13 +123,8 @@ a {
 .fade-enter,
 .fade-leave-to
 
-/* .fade-leave-active below version 2.1.8 */
-  {
+/* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
-}
-
-#titleBar {
-  cursor: pointer;
 }
 
 header {
@@ -125,18 +133,10 @@ header {
   position: relative !important;
 }
 
-.mainBar {
-  height: 100%;
-  width: 100vw;
-  max-width: 100vw;
-}
-
-nav {
-  max-height: 100% !important;
-  position: relative !important;
-  flex: 0 0 80px;
-  flex-direction: row !important;
-  width: 20vw;
+.v-data-table .thead .v-data-table-header__th {
+  font-size: 12px !important;
+  padding: 0;
+  margin: 0;
 }
 
 main {
@@ -150,14 +150,9 @@ main {
   overflow-x: hidden;
 }
 
-#appBar .v-toolbar__content {
-  height: 100% !important;
-  width: 100vw;
-  padding: 0;
-}
-
-#appBar .v-toolbar__image {
-  z-index: -2 !important;
+.v-row {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 nav .v-list-item {
@@ -167,7 +162,7 @@ nav .v-list-item {
   min-height: auto !important;
 }
 
-nav .v-list-item__title {
+nav .v-list-item-title {
   font-size: 0.6rem !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -175,19 +170,18 @@ nav .v-list-item__title {
   text-align: center;
 }
 
-h1 {
-  font-weight: 900;
-}
-
-.v-card__title {
+.v-card-title {
   font-size: 1.5em !important;
   font-weight: 900 !important;
 }
 
-.multi-line {
-  white-space: pre-line;
+.v-btn--elevated {
+  background-color: #c64c21 !important;
+  color: white !important;
 }
 
-.no-text-transform {
-  text-transform: none !important;
+.v-tooltip .v-overlay__content {
+  max-width: 320px;
+  white-space: normal;
+  word-break: normal;
 }

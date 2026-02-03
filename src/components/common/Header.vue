@@ -1,127 +1,118 @@
 <template>
-  <v-app-bar color="primary" flat id="appBar" src="@/assets/img/header/graphe-couleur-appli-ln.png" max-height="150px">
-    <template v-slot:img="{ props }">
-      <v-img v-bind="props" class="hidden-sm-and-down"
-        style="float: right; height: 300%; min-width: 60%; max-width:75%; margin: -180px 0px 0px 0px;"></v-img>
-    </template>
-    <v-layout class="d-flex flex-column" fill-height>
-      <v-container class="justify-start pa-0" style="margin-left: 2%; height: 100%">
-        <v-toolbar-title id="titleBar" v-on:click="$router.push({ name: 'Home' }).catch(err => {})">
-          <v-img alt="Logo licences nationales" src="@/assets/img/logo.svg" target="_blank" max-width="300px"></v-img>
-        </v-toolbar-title>
-      </v-container>
-      <v-container class="d-flex justify-end mainBar ma-0 pa-0 pr-12" style="max-height: 40px;">
-        <v-container class="pl-8 pt-2 ml-0">
-          <v-switch dense v-model="$vuetify.theme.dark" inset label="Thème sombre" class="theme-selector"
-            v-on:click="saveTheme()"><template v-slot:label>
-              <span style="color: white; font-size: 15px">Thème sombre</span>
-            </template></v-switch>
-        </v-container>
-        <v-container id="barreIcones" class="d-flex justify-end mainBar ma-0 pa-0 pr-12" style="max-height: 40px;"
-          v-if="isLoggedIn">
-          <div class="menu-slot btn-3 d-flex align-center mr-3">
-            Bienvenue {{ loggedInUsername }}
+  <v-app-bar class="app-header" color="primary" :height="smAndDown ? 174 : 134">
+    <v-container fluid class="pa-0">
+      <v-row class="align-center" no-gutters>
+        <v-btn variant="plain" class="h-100 opacity-100" :aria-label="$t('common.header.appLabel')"
+          :to="{ name: RouteName.Home }">
+          <v-img :alt="$t('common.header.logoAlt')" src="logo.svg" height="90" width="260" contain />
+        </v-btn>
+
+        <v-img :alt="$t('common.header.illustrationAlt')" src="/header/graphe-couleur-appli-ln.png" height="90"
+          class="hidden-sm-and-down" cover />
+      </v-row>
+
+      <v-row class="align-center bg-secondary px-4" no-gutters>
+        <v-col cols="12" md="3">
+          <div class="d-flex align-center flex-wrap justify-space-between justify-md-start">
+            <v-switch class="theme-selector" density="compact" inset hide-details :model-value="isDark"
+              @update:model-value="uiStore.toggleTheme">
+              <template #label>
+                <p class="text-white text-subtitle-2">{{ $t('common.header.darkTheme') }}</p>
+              </template>
+            </v-switch>
+            <div v-if="isLoggedIn" class="text-white me-4 my-1 hidden-md-and-up">
+              {{ $t("common.header.welcome", { name: username }) }}
+            </div>
           </div>
-          <v-divider vertical dark style="border: none;"></v-divider>
-          <div v-if="isAdmin">
-            <v-tooltip top max-width="20vw" open-delay="100">
-              <template v-slot:activator="{ on }">
-                <v-btn @click="allerAModifierMotDePasse()" class="menu-slot btn-3" plain v-on="on">
-                  <font-awesome-icon :icon="['fas', 'lock']" size="2x" />
+        </v-col>
+
+        <v-col cols="12" md="9">
+          <div v-if="isLoggedIn" class="d-flex align-center flex-wrap justify-end">
+            <div class="text-white me-4 my-1 hidden-sm-and-down">
+              {{ $t("common.header.welcome", { name: username }) }}
+            </div>
+
+            <div v-if="isAdmin" class="d-flex align-center flex-wrap">
+              <v-tooltip :text="$t('common.header.changePassword')" location="top" theme="dark"
+                content-class="text-white">
+                <template #activator="{ props }">
+                  <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
+                    :to="{ name: RouteName.Password }">
+                    <FontAwesomeIcon :icon="faLock" size="lg" />
+                  </v-btn>
+                </template>
+              </v-tooltip>
+
+              <div>
+                <v-tooltip :text="$t('common.header.editInfo')" location="top" activator="parent" theme="dark"
+                  content-class="text-white"></v-tooltip>
+                <v-btn variant="text" color="white" class="my-1 me-2" :to="{ name: RouteName.Profile }">
+                  <FontAwesomeIcon :icon="faUser" size="lg" />
+                </v-btn>
+              </div>
+            </div>
+
+            <v-tooltip :text="$t('common.header.support')" location="top" theme="dark" content-class="text-white">
+              <template #activator="{ props }">
+                <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
+                  href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank">
+                  <FontAwesomeIcon :icon="faComments" size="lg" />
                 </v-btn>
               </template>
-              <span>Modifier mot de passe</span>
             </v-tooltip>
-            <v-tooltip top max-width="20vw" open-delay="100">
-              <template v-slot:activator="{ on }">
-                <v-btn @click="allerAModifierProfil()" class="menu-slot btn-3" plain v-on="on">
-                  <font-awesome-icon :icon="['fas', 'user']" size="2x" />
+
+            <v-tooltip :text="$t('common.header.documentation')" location="top" theme="dark" content-class="text-white">
+              <template #activator="{ props }">
+                <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
+                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#AccederAuxLN" target="_blank">
+                  <FontAwesomeIcon :icon="faCircleQuestion" size="lg" />
                 </v-btn>
               </template>
-              <span>Modifier les infos</span>
+            </v-tooltip>
+
+            <v-tooltip :text="$t('common.header.logout')" location="top" theme="dark" content-class="text-white">
+              <template #activator="{ props }">
+                <v-btn v-bind="props" variant="text" color="white" class="my-1" @click="authStore.logout()">
+                  <FontAwesomeIcon :icon="faRightFromBracket" size="lg" />
+                </v-btn>
+              </template>
             </v-tooltip>
           </div>
-          <v-tooltip top max-width="20vw" open-delay="100">
-            <template v-slot:activator="{ on }">
-              <v-btn href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank"
-                class="menu-slot btn-3" plain v-on="on">
-                <font-awesome-icon :icon="['fas', 'comments']" size="2x" />
-              </v-btn>
-            </template>
-            <span>Assistance</span>
-          </v-tooltip>
-          <v-divider vertical dark style="border: none;"></v-divider>
-          <v-tooltip top max-width="20vw" open-delay="100">
-            <template v-slot:activator="{ on }">
-              <v-btn href="https://documentation.abes.fr/aidelicencesnationales/index.html#AccederAuxLN" target="_blank"
-                class="menu-slot btn-3" plain v-on="on">
-                <font-awesome-icon :icon="['fas', 'question']" size="2x" />
-              </v-btn>
-            </template>
-            <span>Documentation</span>
-          </v-tooltip>
-          <v-divider vertical dark style="border: none;"></v-divider>
-          <v-tooltip top max-width="20vw" open-delay="100">
-            <template v-slot:activator="{ on }">
-              <v-btn @click="seDeconnecter()" class="menu-slot btn-3" plain v-on="on">
-                <font-awesome-icon :icon="['fas', 'sign-out-alt']" size="2x" />
-              </v-btn>
-            </template>
-            <span>Se déconnecter</span>
-          </v-tooltip>
-        </v-container>
-      </v-container>
-    </v-layout>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-app-bar>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { Logger } from "@/utils/Logger";
+<script setup lang="ts">
+import { useAuthStore } from "@/composables/store/useAuthStore";
+import { useUiStore } from "@/composables/store/useUiStore";
+import { RouteName } from "@/router";
+import {
+  faCircleQuestion,
+  faComments,
+  faLock,
+  faRightFromBracket,
+  faUser
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { storeToRefs } from "pinia";
+import { useDisplay } from "vuetify";
 
-@Component
-export default class Header extends Vue {
-  drawer: boolean = true;
+const authStore = useAuthStore();
+const uiStore = useUiStore();
+const { smAndDown } = useDisplay();
+const { isLoggedIn, isAdmin, userInstitutionName: username } = storeToRefs(authStore);
+const { isDark } = storeToRefs(uiStore);
 
-  get isLoggedIn(): boolean {
-    return this.$store.getters.isLoggedIn();
-  }
-
-  get isAdmin(): boolean {
-    return this.$store.getters.isAdmin();
-  }
-
-  get loggedInUsername(): string {
-    return this.$store.getters.userEtab();
-  }
-
-  allerAModifierMotDePasse(): void {
-    this.$router.push({ name: "Password" }).catch(err => {
-      Logger.error(err);
-    });
-  }
-
-  allerAModifierProfil(): void {
-    this.$router.push({ name: "Profil" }).catch(err => {
-      Logger.error(err);
-    });
-  }
-
-  saveTheme(): void {
-    this.$store.dispatch("changeTheme").catch(err => {
-      Logger.error(err);
-    });
-  }
-
-  seDeconnecter(): void {
-    this.$store.dispatch("logout").catch(err => {
-      Logger.error(err);
-    });
-  }
-}
 </script>
+
 <style scoped>
-#barreIcones .v-btn {
-  font-size: 0.75rem !important;
+.app-header {
+  background: linear-gradient(90deg, #32465b 20%, #5f97ce) !important;
+}
+
+.app-header :deep(.v-toolbar__content) {
+  background: linear-gradient(90deg, #32465b 20%, #5f97ce) !important;
 }
 </style>

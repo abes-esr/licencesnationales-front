@@ -20,22 +20,23 @@ class AxiosClient {
    * @param data Body de la requête HTTP
    * @param token Token Bearer à ajouter à l'entête
    */
-  post(url: string, data: any, token?: string): Promise<AxiosResponse> {
+  async post<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    data: any,
+    token?: string
+  ): Promise<R> {
     // Si un token est renseigné, on le rajoute à l'entête
-    let config;
     if (token) {
-      config = {
+      return await this.client.post<T, R, D>(url, data, {
         headers: {
           Authorization: "Bearer " + token
         },
         timeout: 1000 * 10
-      };
-    } else {
-      config = {
-        timeout: 1000 * 10
-      };
+      });
     }
-    return this.client.post(url, data, config);
+    return await this.client.post<T, R, D>(url, data, {
+      timeout: 1000 * 10
+    });
   }
 
   /**
@@ -46,21 +47,17 @@ class AxiosClient {
    */
   put(url: string, data: any, token?: string): Promise<AxiosResponse> {
     // Si un token est renseigné, on le rajoute à l'entête
-    let config;
     if (token) {
-      config = {
+      return this.client.put(url, data, {
         headers: {
           Authorization: "Bearer " + token
         },
         timeout: 1000 * 10
-      };
-    } else {
-      config = {
-        timeout: 1000 * 10
-      };
+      });
     }
-
-    return this.client.put(url, data, config);
+    return this.client.put(url, data, {
+      timeout: 1000 * 10
+    });
   }
 
   /**
@@ -68,34 +65,22 @@ class AxiosClient {
    * @param url URL de la requête HTTP
    * @param token Token Bearer à ajouter à l'entête
    */
-  get(
-    url: string,
-    token?: string,
-    param?: any,
-    longRequest?: boolean
-  ): Promise<AxiosResponse> {
+  get(url: string, token?: string, params?: any, longRequest?: boolean): Promise<AxiosResponse> {
     // Si un token est renseigné, on le rajoute à l'entête
-    let config;
-    let timeout = 3000 * 10;
-    if (longRequest) {
-      timeout = 100000 * 10;
-    }
+    const timeout = longRequest ? 100000 * 10 : 3000 * 10;
     if (token) {
-      config = {
+      return this.client.get(url, {
         headers: {
           Authorization: "Bearer " + token
         },
-        params: param,
-        timeout: timeout
-      };
-    } else {
-      config = {
-        params: param,
-        timeout: timeout
-      };
+        params,
+        timeout
+      });
     }
-
-    return this.client.get(url, config);
+    return this.client.get(url, {
+      params,
+      timeout
+    });
   }
 
   /**
@@ -106,22 +91,19 @@ class AxiosClient {
    */
   delete(url: string, data: any, token?: string): Promise<AxiosResponse> {
     // Si un getToken est renseigné, on le rajoute à l'entête
-    let config;
     if (token) {
-      config = {
+      return this.client.delete(url, {
         headers: {
           Authorization: "Bearer " + token
         },
         timeout: 1000 * 10,
         data: data
-      };
-    } else {
-      config = {
-        timeout: 1000 * 10,
-        data: data
-      };
+      });
     }
-    return this.client.delete(url, config);
+    return this.client.delete(url, {
+      timeout: 1000 * 10,
+      data: data
+    });
   }
 }
 

@@ -1,70 +1,33 @@
 <template>
-  <v-container fill-height class="d-flex justify-center">
+  <v-container class="fill-height d-flex justify-center">
     <v-row align="center" justify="center">
-      <v-col xl="5" lg="7" md="9" xs="11">
-        <forgot-password />
-        <v-row id="row_RevenirAccueil">
-          <v-col cols="8"></v-col>
-          <a @click="allerAConnexion()">
-            <font-awesome-icon :icon="['fas', 'reply']" />&nbsp;Revenir à la
-            page d'accueil
-          </a>
+      <v-col xl="5" lg="7" md="9" cols="11">
+        <ForgotPasswordForm />
+        <v-row id="row_RevenirAccueil" class="mt-4">
+          <v-col cols="12" class="text-center">
+            <router-link :to="{ name: RouteName.Login }">
+              <v-icon icon="mdi-reply"></v-icon>&nbsp;{{ $t("auth.forgotPassword.backHome") }}
+            </router-link>
+          </v-col>
         </v-row>
       </v-col>
     </v-row>
   </v-container>
 </template>
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import ForgotPassword from "../components/authentification/login/ForgotPassword.vue";
 
-@Component({
-  components: { ForgotPassword }
-})
-export default class App extends Vue {
-  public metaInfo(): any {
-    return {
-      meta: [
-        {
-          name: "description",
-          content:
-            "Page de réinitialisation du mot de passe de l'application des Licences Nationales"
-        }
-      ],
-      title: "Mot de passe oublié - Licences Nationales"
-    };
-  }
+<script setup lang="ts">
+import { usePageMeta } from "@/composables/usePageMeta";
+import { RouteName } from "@/router";
+import ForgotPasswordForm from "../components/authentication/login/ForgotPasswordForm.vue";
 
-  allerAConnexion(): void {
-    this.$store.dispatch("closeDisplayedMessage");
-    this.$router.push({ name: "Login" });
-  }
-}
+usePageMeta({
+  titleKey: "auth.forgotPassword.meta.title",
+  descriptionKey: "auth.forgotPassword.meta.description"
+});
 </script>
+
 <style scoped lang="scss">
-h4 {
-  display: inline;
-}
-
-.full-width {
-  width: 100%;
-}
-
 #row_RevenirAccueil {
   margin: auto;
-}
-
-p {
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 0;
-}
-
-strong {
-  font-weight: 900;
-}
-
-h4 {
-  font-size: 18px;
 }
 </style>
