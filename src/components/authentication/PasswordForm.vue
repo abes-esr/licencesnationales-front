@@ -2,7 +2,7 @@
   <div class="d-flex flex-column">
     <v-alert variant="outlined" class="pa-2 mb-4" v-if="!linkIsExpired">
       <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 mt-2 icone-information" />
-      {{ $t("auth.passwordForm.rules") }}
+      {{ $t("auth.passwordForm.rules") }} @ $ ! % * ? &
     </v-alert>
     <v-alert variant="outlined" class="pa-2 mb-4" v-if="linkIsExpired">
       <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 mt-2 icone-information" />

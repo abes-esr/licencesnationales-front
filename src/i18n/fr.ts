@@ -46,7 +46,7 @@ export const fr = {
     },
     passwordForm: {
       rules:
-        "Le mot de passe doit contenir au moins 8 caractères, dont au moins un chiffre, une lettre majuscule, une lettre minuscule et un des caractères spéciaux suivants : @ $ ! % * ? &",
+        "Le mot de passe doit contenir au moins 8 caractères, dont au moins un chiffre, une lettre majuscule, une lettre minuscule et un des caractères spéciaux suivants : ",
       expiredMessage:
         "Ce lien n'est plus valide (expiration après 24 heures). Pour réinitialiser votre mot de passe :",
       expiredLink: "cliquez ici.",
@@ -772,7 +772,7 @@ export const fr = {
       lowercase: "Le mot de passe doit contenir au moins une minuscule",
       uppercase: "Le mot de passe doit contenir au moins une majuscule",
       digit: "Le mot de passe doit contenir au moins un chiffre",
-      special: "Le mot de passe doit contenir au moins un caractère spécial parmi @ $ ! % * ? &"
+      special: "Le mot de passe doit contenir au moins un caractère spécial parmi "
     },
     privacyAcceptanceRules: {
       required:
