@@ -10,11 +10,13 @@
                 {{ $t("auth.login.noAccountTitle") }}
               </h2>
             </span>
-            <v-btn variant="tonal" href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
-              target="_blank">{{ $t("auth.login.verifyEligibility") }}
+            <v-btn class="my-2" variant="tonal"
+              href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires" target="_blank">{{
+                $t("auth.login.verifyEligibility") }}
               <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
-            <v-btn variant="tonal" :to="{ name: RouteName.InstitutionCreate }">{{ $t("auth.login.createAccount") }}
+            <v-btn class="my-2" variant="tonal" :to="{ name: RouteName.InstitutionCreate }">{{
+              $t("auth.login.createAccount") }}
               <FontAwesomeIcon :icon="faCirclePlus" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
           </div>
