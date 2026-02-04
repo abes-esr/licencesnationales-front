@@ -69,7 +69,6 @@ function remove() {
 }
 
 function validate(): boolean {
-  console.log("🚀 ~ validate ~ value.validate:", formRef);
   if (formRef.value?.validate) {
     return formRef.value.validate();
   }
@@ -94,4 +93,3 @@ defineExpose({ validate, clear });
   justify-content: center;
 }
 </style>
-

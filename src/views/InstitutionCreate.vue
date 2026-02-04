@@ -4,8 +4,8 @@
 
 <script setup lang="ts">
 import InstitutionForm from "@/components/institution/InstitutionForm.vue";
-import { usePageMeta } from "@/composables/usePageMeta";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
+import { usePageMeta } from "@/composables/usePageMeta";
 import Institution from "@/entity/Institution";
 import { RouteAction } from "@/router";
 import { onMounted } from "vue";
@@ -18,6 +18,8 @@ usePageMeta({
 });
 
 onMounted(() => {
-  institutionStore.setCurrentInstitution(new Institution());
+  const institution = new Institution();
+  institution.id = -999;
+  institutionStore.setCurrentInstitution(institution);
 });
 </script>

@@ -8,7 +8,7 @@
         {{ localInstitution.name }}
       </h1>
       <v-container class="pa-0">
-        <div v-if="action === RouteAction.CREATION" class="d-flex flex-row align-center">
+        <div v-if="action === RouteAction.CREATION && !isLoggedIn" class="d-flex flex-row align-center">
           <h2 class="pl-3">
             {{ $t("institution.form.hasAccount") }}
             <router-link class="bouton-simple elevation-0 large" :to="{ name: RouteName.Login }">
@@ -188,7 +188,7 @@ const action = computed<RouteAction>(() =>
     : props.action
 );
 
-const isAdmin = computed(() => authStore.isAdmin);
+const { isAdmin, isLoggedIn } = storeToRefs(authStore)
 const recaptchaToken = ref("");
 const institutionTypes = ref<Array<string>>([]);
 enum SirenStatusKey {

@@ -26,12 +26,12 @@ import ConfirmPopup from "@/components/common/ConfirmPopup.vue";
 import AdminDashboard from "@/components/dashboard/AdminDashboard.vue";
 import DashboardAccountInfo from "@/components/dashboard/DashboardAccountInfo.vue";
 import InstitutionDashboard from "@/components/dashboard/InstitutionDashboard.vue";
-import { usePageMeta } from "@/composables/usePageMeta";
 import { useInstitutionService } from "@/composables/service/useInstitutionService";
 import { usePublisherService } from "@/composables/service/usePublisherService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useLoading } from "@/composables/useLoading";
+import { usePageMeta } from "@/composables/usePageMeta";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Institution from "@/entity/Institution";
 import { Notification } from "@/entity/Notification";
@@ -104,7 +104,7 @@ const downloadInstitution = async (): Promise<void> => {
 const goToInstitutionPage = async (siren: string) => {
   const institution = new Institution();
   institution.siren = siren;
-  institution.id = 0;
+  institution.id = -999;
   await institutionStore.setCurrentInstitution(institution);
   router.push({ name: RouteName.InstitutionView });
 };

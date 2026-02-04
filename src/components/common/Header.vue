@@ -4,7 +4,7 @@
       <v-row class="align-center" no-gutters>
         <v-btn variant="plain" class="h-100 opacity-100" :aria-label="$t('common.header.appLabel')"
           :to="{ name: RouteName.Home }">
-          <v-img :alt="$t('common.header.logoAlt')" src="logo.svg" height="90" width="260" contain />
+          <v-img :alt="$t('common.header.logoAlt')" src="/logo.svg" height="90" width="260" contain />
         </v-btn>
 
         <v-img :alt="$t('common.header.illustrationAlt')" src="/header/graphe-couleur-appli-ln.png" height="90"

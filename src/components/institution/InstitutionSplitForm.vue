@@ -57,7 +57,7 @@ import { useInstitutionService } from "@/composables/service/useInstitutionServi
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
-import { RouteName } from "@/router";
+import { RouteAction, RouteName } from "@/router";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
