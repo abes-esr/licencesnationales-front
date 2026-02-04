@@ -3,15 +3,15 @@
     <h1>{{ $t("institution.list.title") }}</h1>
     <div class="pr-0">
       <v-row class="d-flex flex-row-reverse ma-0">
-        <v-btn @click="goToInstitutionSplit" class="btn-1 ml-2">
+        <v-btn class="btn-1 ml-2" :to="{ name: RouteName.InstitutionSplit }">
           {{ $t("institution.list.split") }}
           <FontAwesomeIcon :icon="faObjectUngroup" class="mx-2" />
         </v-btn>
-        <v-btn @click="goToInstitutionMerge" class="btn-1 mx-2">
+        <v-btn class="btn-1 mx-2" :to="{ name: RouteName.InstitutionMerge }">
           {{ $t("institution.list.merge") }}
           <FontAwesomeIcon :icon="faObjectGroup" class="mx-2" />
         </v-btn>
-        <v-btn @click="addInstitution" class="btn-1 mx-2">
+        <v-btn class="btn-1 mx-2" :to="{ name: RouteName.InstitutionCreate }">
           {{ $t("institution.list.create") }}
           <FontAwesomeIcon :icon="faPlus" class="mx-2" />
         </v-btn>
@@ -261,19 +261,6 @@ async function fetchInstitutionTypes() {
     });
 }
 
-function addInstitution(): void {
-  institutionStore
-    .setCurrentInstitution(new Institution());
-}
-
-function goToInstitutionMerge(): void {
-  router.push({ name: RouteName.InstitutionMerge });
-}
-
-function goToInstitutionSplit(): void {
-  router.push({ name: RouteName.InstitutionSplit });
-}
-
 function fetchInstitutions(): void {
   institutionService
     .getInstitutions(authStore.token)
@@ -294,17 +281,6 @@ function fetchInstitutions(): void {
     })
     .finally(() => {
       dataLoading.value = false;
-    });
-}
-
-function goToIps(item: Institution): void {
-  institutionStore
-    .setCurrentInstitution(item)
-    .then(() => {
-      router.push({ name: RouteName.IpList });
-    })
-    .catch(err => {
-      snackbar.error(err);
     });
 }
 
@@ -336,15 +312,22 @@ function downloadInstitutions(): void {
     });
 }
 
-function goToInstitution(item: Institution): void {
-  institutionStore
-    .setCurrentInstitution(item)
-    .then(() => {
-      router.push({ name: RouteName.InstitutionView });
-    })
-    .catch(err => {
-      snackbar.error(err);
-    });
+async function goToIps(item: Institution) {
+  try {
+    await institutionStore.setCurrentInstitution(item)
+    router.push({ name: RouteName.IpList });
+  } catch {
+    snackbar.error(t("common.search.navigationError"));
+  }
+}
+
+async function goToInstitution(item: Institution) {
+  try {
+    await institutionStore.setCurrentInstitution(item);
+    router.push({ name: RouteName.InstitutionView });
+  } catch {
+    snackbar.error(t("common.search.navigationError"));
+  }
 }
 </script>
 <style>

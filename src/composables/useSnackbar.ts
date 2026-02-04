@@ -37,9 +37,7 @@ export const snackbarState = state;
 
 export const useSnackbar = () => {
   const show = async (text: string, options: SnackbarOptions = {}) => {
-    console.log("Showing snackbar:", text, options);
     const { timeout = 10000, onHide, onShow } = options;
-    Logger.info(`Snackbar show: ${text}`);
     state.isDisplayed = true;
     state.sticky = options.sticky ?? false;
     state.multiline = options.multiline ?? true;
@@ -74,9 +72,7 @@ export const useSnackbar = () => {
   };
 
   const error = (err: any, options: SnackbarShowOptions = {}) => {
-    console.log(err);
     const text = formatApiError(err);
-    console.log(text);
     Logger.error(text);
     return show(text, {
       type: MessageType.ERREUR,
