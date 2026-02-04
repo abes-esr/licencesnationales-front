@@ -18,12 +18,14 @@
                     </v-col>
                   </v-row>
                   <v-card-actions>
-                    <v-btn variant="elevated" @click="increaseSirenNumber">
-                      {{ $t("institution.merge.addSiren") }}
-                    </v-btn>
-                    <v-btn variant="elevated" @click="decreaseSirenNumber">
-                      {{ $t("institution.merge.removeSiren") }}
-                    </v-btn>
+                    <v-row class="pa-0 ga-4">
+                      <v-btn variant="elevated" @click="increaseSirenNumber">
+                        {{ $t("institution.merge.addSiren") }}
+                      </v-btn>
+                      <v-btn variant="elevated" @click="decreaseSirenNumber">
+                        {{ $t("institution.merge.removeSiren") }}
+                      </v-btn>
+                    </v-row>
                   </v-card-actions>
                 </v-card-text>
               </v-card>
