@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <h1>
-      {{ $t("dashboard.title") }} <span v-if="!isAdmin">{{ connectedInstitution.name }}</span>
+      {{ t("dashboard.title") }} <span v-if="!isAdmin">{{ connectedInstitution.name }}</span>
     </h1>
     <ConfirmPopup ref="confirmRef"></ConfirmPopup>
     <v-card class="pt-0 elevation-0" :class="[display.lgAndDown.value ? 'large-container' : '']">

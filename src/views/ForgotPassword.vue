@@ -6,7 +6,7 @@
         <v-row id="row_RevenirAccueil" class="mt-4">
           <v-col cols="12" class="text-center">
             <router-link :to="{ name: RouteName.Login }">
-              <v-icon icon="mdi-reply"></v-icon>&nbsp;{{ $t("auth.forgotPassword.backHome") }}
+              <v-icon icon="mdi-reply"></v-icon>&nbsp;{{ t("auth.forgotPassword.backHome") }}
             </router-link>
           </v-col>
         </v-row>
@@ -18,12 +18,15 @@
 <script setup lang="ts">
 import { usePageMeta } from "@/composables/usePageMeta";
 import { RouteName } from "@/router";
+import { useI18n } from "vue-i18n";
 import ForgotPasswordForm from "../components/authentication/login/ForgotPasswordForm.vue";
 
 usePageMeta({
   titleKey: "auth.forgotPassword.meta.title",
   descriptionKey: "auth.forgotPassword.meta.description"
 });
+const { t } = useI18n();
+
 </script>
 
 <style scoped lang="scss">

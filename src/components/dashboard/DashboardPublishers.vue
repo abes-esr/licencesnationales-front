@@ -3,7 +3,7 @@
     <div class="borderCol fondBlanc card-full card-relative">
       <v-card-title class="d-block titre-block title-tight">
         <FontAwesomeIcon :icon="faPaperPlane" class="fa-lg mx-2" />
-        {{ $t("dashboard.publishers.title") }}
+        {{ t("dashboard.publishers.title") }}
       </v-card-title>
       <v-card-text class="no-border dates">
         <div class="d-flex flex-column justify-start mx-3 my-3 bloc-info">
@@ -17,7 +17,7 @@
           </ul>
         </div>
         <div class="w-100 d-flex justify-end">
-          <v-btn @click="onSend" class="ma-4">{{ $t("dashboard.publishers.send") }}</v-btn>
+          <v-btn @click="onSend" class="ma-4">{{ t("dashboard.publishers.send") }}</v-btn>
         </div>
       </v-card-text>
     </div>
@@ -35,7 +35,7 @@ defineProps<{
   onSend: () => void | Promise<void>;
 }>();
 
-useI18n();
+const { t } = useI18n();
 </script>
 
 <style scoped lang="scss" src="./dashboard.scss"></style>

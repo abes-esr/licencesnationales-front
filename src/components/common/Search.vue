@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container class="pb-0">
-      <h1>{{ $t("common.search.title") }}</h1>
+      <h1>{{ t("common.search.title") }}</h1>
     </v-container>
 
     <v-card flat class="mt-2">
@@ -13,17 +13,17 @@
               <v-row class="d-flex justify-center align-center">
                 <v-col cols="3" class="pb-0">
                   <v-select variant="outlined" :items="domainOptions" item-title="title" item-value="value"
-                    v-model="selectedDomain" :placeholder="$t('common.search.domainPlaceholder')" hide-details="auto"
+                    v-model="selectedDomain" :placeholder="t('common.search.domainPlaceholder')" hide-details="auto"
                     persistent-placeholder required :rules="searchDomainRules" />
                 </v-col>
                 <v-col cols="7" class="pb-0">
-                  <v-text-field variant="outlined" :label="$t('common.search.keywordsLabel')"
-                    :placeholder="$t('common.search.keywordsPlaceholder')" hide-details="auto" v-model="query" required
+                  <v-text-field variant="outlined" :label="t('common.search.keywordsLabel')"
+                    :placeholder="t('common.search.keywordsPlaceholder')" hide-details="auto" v-model="query" required
                     :rules="searchQueryRules" />
                 </v-col>
                 <v-col cols="2" class="pb-0">
                   <v-btn type="submit" size="x-large" :loading="loading" :disabled="loading || !selectedDomain">
-                    {{ $t("common.search.submit") }}
+                    {{ t("common.search.submit") }}
                   </v-btn>
                 </v-col>
               </v-row>
@@ -35,7 +35,7 @@
         <v-col cols="1" class="d-none d-md-flex"></v-col>
         <v-col cols="12" md="8" v-if="searched">
           <h3>
-            {{ $t("common.search.resultsTitle", { query, domain: selectedOption.title }) }}
+            {{ t("common.search.resultsTitle", { query, domain: selectedOption.title }) }}
           </h3>
           <div>
             <v-list density="compact">

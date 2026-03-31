@@ -3,61 +3,60 @@
     <v-row>
       <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
         <v-row>
-          <v-text-field outlined :label="$t('institution.contactForm.lastName')"
-            :placeholder="$t('institution.contactForm.lastName')" v-model="contact.lastName" :rules="lastNameRules"
+          <v-text-field outlined :label="t('institution.contactForm.lastName')"
+            :placeholder="t('institution.contactForm.lastName')" v-model="contact.lastName" :rules="lastNameRules"
             required @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
-          <v-text-field outlined :label="$t('institution.contactForm.firstName')"
-            :placeholder="$t('institution.contactForm.firstName')" v-model="contact.firstName" :rules="firstNameRules"
+          <v-text-field outlined :label="t('institution.contactForm.firstName')"
+            :placeholder="t('institution.contactForm.firstName')" v-model="contact.firstName" :rules="firstNameRules"
             required @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
-          <v-text-field outlined :label="$t('institution.contactForm.address')"
-            :placeholder="$t('institution.contactForm.address')" maxlength="80" v-model="contact.address"
+          <v-text-field outlined :label="t('institution.contactForm.address')"
+            :placeholder="t('institution.contactForm.address')" maxlength="80" v-model="contact.address"
             :rules="addressRules" required @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
-          <v-text-field outlined :label="$t('institution.contactForm.poBox')"
-            :placeholder="$t('institution.contactForm.poBox')" v-model="contact.poBox" required
+          <v-text-field outlined :label="t('institution.contactForm.poBox')"
+            :placeholder="t('institution.contactForm.poBox')" v-model="contact.poBox" required
             @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
-          <v-text-field outlined :label="$t('institution.contactForm.postalCode')"
-            :placeholder="$t('institution.contactForm.postalCode')" maxlength="5" v-model="contact.postalCode"
+          <v-text-field outlined :label="t('institution.contactForm.postalCode')"
+            :placeholder="t('institution.contactForm.postalCode')" maxlength="5" v-model="contact.postalCode"
             :rules="postalCodeRules" required @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
-          <v-text-field outlined :label="$t('institution.contactForm.city')"
-            :placeholder="$t('institution.contactForm.city')" v-model="contact.city" :rules="cityRules" required
+          <v-text-field outlined :label="t('institution.contactForm.city')"
+            :placeholder="t('institution.contactForm.city')" v-model="contact.city" :rules="cityRules" required
             @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
-          <v-text-field outlined :label="$t('institution.contactForm.cedex')"
-            :placeholder="$t('institution.contactForm.cedex')" v-model="contact.cedex" required
+          <v-text-field outlined :label="t('institution.contactForm.cedex')"
+            :placeholder="t('institution.contactForm.cedex')" v-model="contact.cedex" required
             @keyup.enter="validate()"></v-text-field>
         </v-row>
       </v-col>
       <v-col cols="0" md="1" lg="1" xl="1" class="pa-0"></v-col>
       <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
         <v-row>
-          <v-text-field outlined :label="$t('institution.contactForm.phone')"
-            :placeholder="$t('institution.contactForm.phone')" maxlength="10" v-model.trim="contact.phone"
+          <v-text-field outlined :label="t('institution.contactForm.phone')"
+            :placeholder="t('institution.contactForm.phone')" maxlength="10" v-model.trim="contact.phone"
             :rules="phoneRules" required @paste.prevent="pastePhone" @keyup.enter="validate()"></v-text-field>
         </v-row>
         <v-row>
           <v-form ref="mailRef" :disabled="isDisableForm" style="width: 100%">
             <v-alert variant="outlined" class="pa-2 mb-4" v-if="action === RouteAction.CREATION">
               <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 mt-2 icone-information" />
-              {{ $t("institution.contactForm.emailNotice") }}
+              {{ t("institution.contactForm.emailNotice") }}
             </v-alert>
-            <v-text-field outlined :label="$t('institution.contactForm.email')"
-              :placeholder="$t('institution.contactForm.email')" v-model="contact.email" :rules="baseRules" required
+            <v-text-field outlined :label="t('institution.contactForm.email')"
+              :placeholder="t('institution.contactForm.email')" v-model="contact.email" :rules="baseRules" required
               @keyup.enter="validate()" autocomplete="new-mail"></v-text-field>
-            <v-text-field outlined :label="$t('institution.contactForm.confirmEmail')"
-              :placeholder="$t('institution.contactForm.confirmEmail')" v-model="emailConfirmation" :rules="baseRules"
-              required @keyup.enter="validate()"
-              autocomplete="new-mail"></v-text-field>
+            <v-text-field outlined :label="t('institution.contactForm.confirmEmail')"
+              :placeholder="t('institution.contactForm.confirmEmail')" v-model="emailConfirmation" :rules="baseRules"
+              required @keyup.enter="validate()" autocomplete="new-mail"></v-text-field>
           </v-form>
         </v-row>
         <v-row>
@@ -68,22 +67,22 @@
         <v-row>
           <div v-if="action === RouteAction.CREATION">
             <v-checkbox required :rules="privacyAcceptanceRules"
-              :label="$t('institution.contactForm.privacyConsent')"></v-checkbox>
+              :label="t('institution.contactForm.privacyConsent')"></v-checkbox>
             <div>
-              {{ $t("institution.contactForm.privacyNotice") }}
+              {{ t("institution.contactForm.privacyNotice") }}
               <router-link :to="{ name: RouteName.Privacy }" target="_blank" rel="noopener noreferrer">
-                {{ $t("institution.contactForm.privacyLink") }}
+                {{ t("institution.contactForm.privacyLink") }}
               </router-link>
             </div>
             <br />
             <div>
-              {{ $t("institution.contactForm.recaptchaIntro") }}
+              {{ t("institution.contactForm.recaptchaIntro") }}
               <a href="https://policies.google.com/privacy" target="_blank">{{
-                $t("institution.contactForm.recaptchaPrivacy") }}</a>
-              {{ $t("institution.contactForm.recaptchaAnd") }}
+                t("institution.contactForm.recaptchaPrivacy") }}</a>
+              {{ t("institution.contactForm.recaptchaAnd") }}
               <a href="https://policies.google.com/terms" target="_blank">{{
-                $t("institution.contactForm.recaptchaTerms") }}</a>
-              {{ $t("institution.contactForm.recaptchaApply") }}
+                t("institution.contactForm.recaptchaTerms") }}</a>
+              {{ t("institution.contactForm.recaptchaApply") }}
             </div>
           </div>
         </v-row>

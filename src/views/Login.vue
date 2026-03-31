@@ -7,16 +7,16 @@
           <div id="noAccount" class="mt-6 d-flex justify-space-around flex-column flex-md-row flex-wrap pb-8">
             <span class="d-block full-width">
               <h2 class="pb-2">
-                {{ $t("auth.login.noAccountTitle") }}
+                {{ t("auth.login.noAccountTitle") }}
               </h2>
             </span>
             <v-btn class="my-2" variant="tonal"
               href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires" target="_blank">{{
-                $t("auth.login.verifyEligibility") }}
+                t("auth.login.verifyEligibility") }}
               <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
             <v-btn class="my-2" variant="tonal" :to="{ name: RouteName.InstitutionCreate }">{{
-              $t("auth.login.createAccount") }}
+              t("auth.login.createAccount") }}
               <FontAwesomeIcon :icon="faCirclePlus" class="mx-2" style="font-size: 1.1rem" />
             </v-btn>
           </div>
@@ -31,11 +31,14 @@ import { usePageMeta } from "@/composables/usePageMeta";
 import { RouteName } from "@/router";
 import { faCirclePlus, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useI18n } from "vue-i18n";
 
 usePageMeta({
   titleKey: "auth.login.meta.title",
   descriptionKey: "auth.login.meta.description"
 });
+const { t } = useI18n();
+
 </script>
 
 

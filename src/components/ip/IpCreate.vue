@@ -6,20 +6,20 @@
         <v-col lg="11" md="12" xs="12">
           <v-row>
             <v-card-title>
-              <h1>{{ $t("ip.create.title") }}</h1>
+              <h1>{{ t("ip.create.title") }}</h1>
             </v-card-title>
           </v-row>
           <v-row>
             <v-col>
               <a @click="allerListeAcces">
-                <FontAwesomeIcon :icon="faReply" />&nbsp;{{ $t("ip.create.backToList") }}
+                <FontAwesomeIcon :icon="faReply" />&nbsp;{{ t("ip.create.backToList") }}
               </a>
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12" md="8" class="pa-0">
               <v-card-title class="pb-0">
-                {{ $t("ip.create.chooseType") }}
+                {{ t("ip.create.chooseType") }}
               </v-card-title>
             </v-col>
             <v-col cols="12" md="4" class="pa-3">
@@ -27,7 +27,7 @@
                 <FontAwesomeIcon :icon="faCircleInfo" size="lg" style="color: #478dcb;" />
                 <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#TutoDeDeclarationDesIP"
                   target="_blank" class="pl-3 pb-6 text-body-1 font-weight-bold">
-                  {{ $t("ip.create.helpLink") }}
+                  {{ t("ip.create.helpLink") }}
                 </a>
               </v-card-text>
             </v-col>
@@ -55,13 +55,13 @@
             </v-col>
             <v-col cols="4">
               <v-card-text class="overflow-auto fondGris">
-                <h2 class="pb-4">{{ $t("ip.create.addedListTitle") }}</h2>
+                <h2 class="pb-4">{{ t("ip.create.addedListTitle") }}</h2>
                 <v-table density="compact">
                   <thead>
                     <tr>
-                      <th style="width: 20%">{{ $t("ip.create.table.type") }}</th>
-                      <th>{{ $t("ip.create.table.address") }}</th>
-                      <th></th>
+                      <th scope="col" style="width: 20%">{{ t("ip.create.table.type") }}</th>
+                      <th scope="col">{{ t("ip.create.table.address") }}</th>
+                      <th scope="col"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -69,7 +69,7 @@
                       <td>{{ item.typeIp }}</td>
                       <td>{{ item.ip }}</td>
                       <td>
-                        <v-btn class="ma-0 pa-0 bouton-simple" variant="text" icon :title="$t('ip.create.delete')"
+                        <v-btn class="ma-0 pa-0 bouton-simple" variant="text" icon :title="t('ip.create.delete')"
                           @click="supprimerIP(item.id, index)">
                           <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
                         </v-btn>
@@ -175,5 +175,4 @@ h1 {
 #radioIP {
   padding-left: 20px !important;
 }
-
 </style>

@@ -4,7 +4,7 @@
       <v-row align="center" justify="center">
         <v-card flat class="pa-4">
           <v-form ref="form">
-            <h1 class="pb-4">{{ $t("auth.changePassword.title") }}</h1>
+            <h1 class="pb-4">{{ t("auth.changePassword.title") }}</h1>
             <v-card-text class="fondGris">
               <div class="pt-4 px-4">
                 <PasswordForm :action="RouteAction.MODIFICATION" :linkIsExpired="false" />
@@ -12,7 +12,7 @@
               <v-spacer class="hidden-sm-and-down"></v-spacer>
               <v-col cols="12" class="d-flex justify-end">
                 <v-btn :loading="loading" size="x-large" @click="validate">
-                  {{ $t("auth.changePassword.submit") }}
+                  {{ t("auth.changePassword.submit") }}
                   <v-icon class="pl-2">mdi-arrow-right-circle-outline</v-icon>
                 </v-btn>
               </v-col>

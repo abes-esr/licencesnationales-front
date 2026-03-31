@@ -3,8 +3,8 @@
     <v-card elevation="0">
       <v-form ref="formModuleSegmentsIpPlage">
         <v-app-bar elevation="0" density="compact" class="barIp w-100 pa-2 top-0">
-          <span v-if="typeAcces === 'ip'">{{ $t("ip.segments.single") }}</span>
-          <span v-else>{{ $t("ip.segments.range") }}</span>
+          <span v-if="typeAcces === 'ip'">{{ t("ip.segments.single") }}</span>
+          <span v-else>{{ t("ip.segments.range") }}</span>
           <span v-if="typeIp === 'IPV4'">v4</span>
           <span v-else>v6</span>
         </v-app-bar>
@@ -12,7 +12,7 @@
           <v-row class="ma-0">
             <v-col class="py-0">
               <p class="caption mb-0">
-                {{ $t("ip.segments.pasteHint") }}
+                {{ t("ip.segments.pasteHint") }}
               </p>
               <v-row v-if="typeAcces === 'ip'">
                 <v-col class="pb-0">
@@ -37,21 +37,23 @@
               <v-row v-else>
                 <v-col>
                   <div v-if="typeIp === 'IPV4'">
-                    <label>{{ $t("ip.segments.startIp") }}</label>
+                    <label for="startIp">{{ t("ip.segments.startIp") }}</label>
                     <v-row>
                       <v-col class="pa-1 pb-0" v-for="(value, index) in ipv4SegmentsPlageDebut" :key="index">
-                        <v-text-field :data-length="value.length" :data-index="index" :rules="ipv4SegmentRules"
-                          ref="ipv4SegmentsPlageDebutRefs" v-model="value.value" :suffix="getSuffix(index)"
+                        <v-text-field id="startIp" :data-length="value.length" :data-index="index"
+                          :rules="ipv4SegmentRules" ref="ipv4SegmentsPlageDebutRefs" v-model="value.value"
+                          :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv4SegmentsPlageDebut, 'ipv4SegmentsPlageDebutRefs')"
                           @paste="onPastePlageDebut" @paste.prevent @focus="$emit('focus')" maxlength="3"
                           variant="outlined" density="compact" required />
                       </v-col>
                     </v-row>
-                    <label>{{ $t("ip.segments.endIp") }}</label>
+                    <label for="endIp">{{ t("ip.segments.endIp") }}</label>
                     <v-row>
                       <v-col class="pa-1" v-for="(value, index) in ipv4SegmentsPlageFin" :key="index">
-                        <v-text-field :data-length="value.length" :data-index="index" :rules="ipv4SegmentRules"
-                          ref="ipv4SegmentsPlageFinRefs" v-model="value.value" :suffix="getSuffix(index)"
+                        <v-text-field id="endIp" :data-length="value.length" :data-index="index"
+                          :rules="ipv4SegmentRules" ref="ipv4SegmentsPlageFinRefs" v-model="value.value"
+                          :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv4SegmentsPlageFin, 'ipv4SegmentsPlageFinRefs')"
                           @paste="onPastePlageFin" @paste.prevent @focus="$emit('focus')" :disabled="index <= 1"
                           maxlength="3" variant="outlined" density="compact" required />
@@ -60,21 +62,23 @@
                   </div>
 
                   <div v-else>
-                    <label>{{ $t("ip.segments.startIp") }}</label>
+                    <label :for="'startIp' + 0">{{ t("ip.segments.startIp") }}</label>
                     <v-row>
                       <v-col v-for="(value, index) in ipv6SegmentsPlageDebut" :key="index" class="pa-1 pb-0">
-                        <v-text-field :data-length="value.length" :data-index="index" :rules="ipv6SegmentRules"
-                          ref="ipv6SegmentsPlageDebutRefs" v-model="value.value" :suffix="getSuffix(index)"
+                        <v-text-field :id="'startIp' + index" :data-length="value.length" :data-index="index"
+                          :rules="ipv6SegmentRules" ref="ipv6SegmentsPlageDebutRefs" v-model="value.value"
+                          :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv6SegmentsPlageDebut, 'ipv6SegmentsPlageDebutRefs')"
                           @paste="onPastePlageDebut" @paste.prevent @focus="$emit('focus')" variant="outlined"
                           density="compact" required />
                       </v-col>
                     </v-row>
-                    <label>{{ $t("ip.segments.endIp") }}</label>
+                    <label :for="'endIp' + 0">{{ t("ip.segments.endIp") }}</label>
                     <v-row>
                       <v-col class="pa-1" v-for="(value, index) in ipv6SegmentsPlageFin" :key="index">
-                        <v-text-field :data-length="value.length" :data-index="index" :rules="ipv6SegmentRules"
-                          ref="ipv6SegmentsPlageFinRefs" v-model="value.value" :suffix="getSuffix(index)"
+                        <v-text-field :id="'endIp' + index" :data-length="value.length" :data-index="index"
+                          :rules="ipv6SegmentRules" ref="ipv6SegmentsPlageFinRefs" v-model="value.value"
+                          :suffix="getSuffix(index)"
                           @input="nextSegment(index, ipv6SegmentsPlageFin, 'ipv6SegmentsPlageFinRefs')"
                           @paste="onPastePlageFin" @paste.prevent @focus="$emit('focus')" variant="outlined"
                           density="compact" required />
@@ -88,7 +92,7 @@
               <v-row id="fillHeight"> </v-row>
               <v-row>
                 <a @click="clear(false)">
-                  {{ $t("ip.segments.clearFields") }}
+                  {{ t("ip.segments.clearFields") }}
                   <FontAwesomeIcon :icon="faBackspace" />
                 </a>
               </v-row>
@@ -97,8 +101,8 @@
 
           <v-row class="mx-0 mt-0">
             <v-col cols="10" lg="10" md="8" sm="8">
-              <v-textarea counter="255" variant="outlined" auto-grow rows="2" :label="$t('ip.segments.commentsLabel')"
-                :hint="$t('ip.segments.commentsHint')" :rules="commentRules" v-model="commentaires"
+              <v-textarea counter="255" variant="outlined" auto-grow rows="2" :label="t('ip.segments.commentsLabel')"
+                :hint="t('ip.segments.commentsHint')" :rules="commentRules" v-model="commentaires"
                 @focus="$emit('focus')" clearable persistent-hint />
             </v-col>
             <v-col cols="2">
@@ -107,7 +111,7 @@
                 <v-card-actions>
                   <v-btn @click="ajouterIp" :loading="buttonLoading" id="btnSave" size="large" color="button"
                     variant="elevated">
-                    <span id="btnText">{{ $t("ip.segments.save") }} </span>
+                    <span id="btnText">{{ t("ip.segments.save") }} </span>
                     <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
                   </v-btn>
                 </v-card-actions>
@@ -239,11 +243,10 @@ const nextSegment = (index: number, array: SegmentPlage[], refArray: keyof typeo
     if (array[index].value.length >= 3 && index < indexMax) {
       refMap[refArray]?.value?.[index + 1]?.focus?.();
     }
-  } else {
-    if (array[index].value.length >= 4 && index < indexMax) {
-      refMap[refArray]?.value?.[index + 1]?.focus?.();
-    }
+  } else if (array[index].value.length >= 4 && index < indexMax) {
+    refMap[refArray]?.value?.[index + 1]?.focus?.();
   }
+
 };
 
 const setIp = () => {
@@ -260,27 +263,26 @@ const setIp = () => {
       }
       value = value.substring(0, value.lastIndexOf(":"));
     }
+  } else if (typeIp.value === "IPV4") {
+    ipv4SegmentsPlageDebut.value.forEach((content, index) => {
+      if (index === 2 || index === 3) {
+        value += content.value + "-" + ipv4SegmentsPlageFin.value[index].value + ".";
+      } else {
+        value += content.value + ".";
+      }
+    });
+    value = value.substring(0, value.lastIndexOf("."));
   } else {
-    if (typeIp.value === "IPV4") {
-      ipv4SegmentsPlageDebut.value.forEach((content, index) => {
-        if (index === 2 || index === 3) {
-          value += content.value + "-" + ipv4SegmentsPlageFin.value[index].value + ".";
-        } else {
-          value += content.value + ".";
-        }
-      });
-      value = value.substring(0, value.lastIndexOf("."));
-    } else {
-      ipv6SegmentsPlageDebut.value.forEach((content, index) => {
-        if (content.value === ipv6SegmentsPlageFin.value[index].value) {
-          value += content.value + ":";
-        } else {
-          value += content.value + "-" + ipv6SegmentsPlageFin.value[index].value + ":";
-        }
-      });
-      value = value.substring(0, value.lastIndexOf(":"));
-    }
+    ipv6SegmentsPlageDebut.value.forEach((content, index) => {
+      if (content.value === ipv6SegmentsPlageFin.value[index].value) {
+        value += content.value + ":";
+      } else {
+        value += content.value + "-" + ipv6SegmentsPlageFin.value[index].value + ":";
+      }
+    });
+    value = value.substring(0, value.lastIndexOf(":"));
   }
+
   ip.value = value;
 };
 

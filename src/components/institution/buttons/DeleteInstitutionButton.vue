@@ -1,6 +1,6 @@
 <template>
   <v-btn color="button" class="bouton-supprimer mt-3" :loading="isLoading" @click="deleteInstitution">
-    {{ $t("institution.card.deleteAccount") }}
+    {{ t("institution.card.deleteAccount") }}
   </v-btn>
 </template>
 

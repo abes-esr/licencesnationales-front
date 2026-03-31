@@ -2,12 +2,12 @@
   <v-app-bar class="app-header" color="primary" :height="smAndDown ? 174 : 134">
     <v-container fluid class="pa-0">
       <v-row class="align-center" no-gutters>
-        <v-btn variant="plain" class="h-100 opacity-100" :aria-label="$t('common.header.appLabel')"
+        <v-btn variant="plain" class="h-100 opacity-100" :aria-label="t('common.header.appLabel')"
           :to="{ name: RouteName.Home }">
-          <v-img :alt="$t('common.header.logoAlt')" src="/logo.svg" height="90" width="260" contain />
+          <v-img :alt="t('common.header.logoAlt')" src="/logo.svg" height="90" width="260" contain />
         </v-btn>
 
-        <v-img :alt="$t('common.header.illustrationAlt')" src="/header/graphe-couleur-appli-ln.png" height="90"
+        <v-img :alt="t('common.header.illustrationAlt')" src="/header/graphe-couleur-appli-ln.png" height="90"
           class="hidden-sm-and-down" cover />
       </v-row>
 
@@ -17,11 +17,11 @@
             <v-switch class="theme-selector" density="compact" inset hide-details :model-value="isDark"
               @update:model-value="uiStore.toggleTheme">
               <template #label>
-                <p class="text-white text-subtitle-2">{{ $t('common.header.darkTheme') }}</p>
+                <p class="text-white text-subtitle-2">{{ t('common.header.darkTheme') }}</p>
               </template>
             </v-switch>
             <div v-if="isLoggedIn" class="text-white me-4 my-1 hidden-md-and-up">
-              {{ $t("common.header.welcome", { name: username }) }}
+              {{ t("common.header.welcome", { name: username }) }}
             </div>
           </div>
         </v-col>
@@ -29,11 +29,11 @@
         <v-col cols="12" md="9">
           <div v-if="isLoggedIn" class="d-flex align-center flex-wrap justify-end">
             <div class="text-white me-4 my-1 hidden-sm-and-down">
-              {{ $t("common.header.welcome", { name: username }) }}
+              {{ t("common.header.welcome", { name: username }) }}
             </div>
 
             <div v-if="isAdmin" class="d-flex align-center flex-wrap">
-              <v-tooltip :text="$t('common.header.changePassword')" location="top" theme="dark"
+              <v-tooltip :text="t('common.header.changePassword')" location="top" theme="dark"
                 content-class="text-white">
                 <template #activator="{ props }">
                   <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
@@ -44,7 +44,7 @@
               </v-tooltip>
 
               <div>
-                <v-tooltip :text="$t('common.header.editInfo')" location="top" activator="parent" theme="dark"
+                <v-tooltip :text="t('common.header.editInfo')" location="top" activator="parent" theme="dark"
                   content-class="text-white"></v-tooltip>
                 <v-btn variant="text" color="white" class="my-1 me-2" :to="{ name: RouteName.Profile }">
                   <FontAwesomeIcon :icon="faUser" size="lg" />
@@ -52,7 +52,7 @@
               </div>
             </div>
 
-            <v-tooltip :text="$t('common.header.support')" location="top" theme="dark" content-class="text-white">
+            <v-tooltip :text="t('common.header.support')" location="top" theme="dark" content-class="text-white">
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
                   href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank">
@@ -61,7 +61,7 @@
               </template>
             </v-tooltip>
 
-            <v-tooltip :text="$t('common.header.documentation')" location="top" theme="dark" content-class="text-white">
+            <v-tooltip :text="t('common.header.documentation')" location="top" theme="dark" content-class="text-white">
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
                   href="https://documentation.abes.fr/aidelicencesnationales/index.html#AccederAuxLN" target="_blank">
@@ -70,7 +70,7 @@
               </template>
             </v-tooltip>
 
-            <v-tooltip :text="$t('common.header.logout')" location="top" theme="dark" content-class="text-white">
+            <v-tooltip :text="t('common.header.logout')" location="top" theme="dark" content-class="text-white">
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1" @click="authStore.logout()">
                   <FontAwesomeIcon :icon="faRightFromBracket" size="lg" />
@@ -97,6 +97,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { storeToRefs } from "pinia";
+import { useI18n } from "vue-i18n";
 import { useDisplay } from "vuetify";
 
 const authStore = useAuthStore();
@@ -104,6 +105,7 @@ const uiStore = useUiStore();
 const { smAndDown } = useDisplay();
 const { isLoggedIn, isAdmin, userInstitutionName: username } = storeToRefs(authStore);
 const { isDark } = storeToRefs(uiStore);
+const { t } = useI18n();
 
 </script>
 

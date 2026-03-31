@@ -1,7 +1,7 @@
 <template>
   <v-btn v-if="!editState.disabled" class="mt-3" variant="tonal" color="success" style="margin-right: 1em"
     :loading="isSaving" @click="save">
-    {{ $t("institution.card.validateChanges") }}
+    {{ t("institution.card.validateChanges") }}
   </v-btn>
 </template>
 
@@ -12,6 +12,7 @@ import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useLoading } from "@/composables/useLoading";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Institution from "@/entity/Institution";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   institution: Institution;
@@ -23,6 +24,7 @@ const institutionStore = useInstitutionStore();
 const institutionService = useInstitutionService();
 const snackbar = useSnackbar();
 const { loading: isSaving, startLoading, stopLoading } = useLoading();
+const { t } = useI18n();
 
 const save = async () => {
   try {

@@ -3,15 +3,15 @@
     <ConfirmPopup ref="confirmRef" />
 
     <v-container class="pb-0">
-      <h1>{{ $t("ip.list.title", { name: currentInstitutionName }) }}</h1>
+      <h1>{{ t("ip.list.title", { name: currentInstitutionName }) }}</h1>
       <div class="d-flex flex-wrap align-center justify-space-between">
         <div class="my-2">
           <a v-if="isAdmin" @click="goBackToInstitution">
-            <FontAwesomeIcon :icon="faReply" />&nbsp;{{ $t("ip.list.backToInstitution") }}
+            <FontAwesomeIcon :icon="faReply" />&nbsp;{{ t("ip.list.backToInstitution") }}
           </a>
         </div>
         <v-btn id="addIpButton" class="my-2" @click="router.push({ name: RouteName.IpCreate })">
-          <span class="btnText">{{ $t("ip.list.addIp") }}</span>
+          <span class="btnText">{{ t("ip.list.addIp") }}</span>
           <FontAwesomeIcon :icon="faCirclePlus" style="font-size:1.1rem" />
         </v-btn>
       </div>
@@ -25,12 +25,12 @@
         </v-alert>
 
         <VDataTable id="mytable" :key="refreshKey" :headers="headers" :items="filteredAccessByStatus"
-          :items-per-page="10" :items-per-page-options="[10, 25, 50, 75, { value: -1, title: $t('ip.list.all') }]"
-          :item-class="RowClasses" :search="searchQuery" :loading="dataLoading" :no-data-text="$t('ip.list.noData')"
+          :items-per-page="10" :items-per-page-options="[10, 25, 50, 75, { value: -1, title: t('ip.list.all') }]"
+          :item-class="RowClasses" :search="searchQuery" :loading="dataLoading" :no-data-text="t('ip.list.noData')"
           class="row-height-50" density="comfortable">
           <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
             <tr>
-              <th v-for="column in columns" :key="column.key" class="text-left"
+              <th v-for="column in columns" :key="column.key" scope="col" class="text-left"
                 @click="column.sortable ? toggleSort(column) : ''">
                 <div style="display: flex; align-items: center; white-space: nowrap;">
                   <span>{{ column.title }}</span>
@@ -77,12 +77,12 @@
           <template #top>
             <v-row>
               <v-col cols="12" sm="6" class="px-0">
-                <v-tooltip :text="$t('ip.list.downloadTooltip')" location="top" open-delay="100" theme="dark"
+                <v-tooltip :text="t('ip.list.downloadTooltip')" location="top" open-delay="100" theme="dark"
                   content-class="text-white">
                   <template #activator="{ props }">
                     <v-btn variant="text" @click="downloadIPs" class="bouton-simple " v-bind="props"
                       :loading="isExportLoading">
-                      <h2>{{ $t("ip.list.downloadTitle") }}</h2>
+                      <h2>{{ t("ip.list.downloadTitle") }}</h2>
                       <FontAwesomeIcon :icon="faDownload" class="mx-2" size="lg" />
                     </v-btn>
                   </template>
@@ -90,7 +90,7 @@
               </v-col>
               <v-col cols="0" sm="3"></v-col>
               <v-col cols="12" sm="3" class="px-0">
-                <v-text-field v-model="searchQuery" :label="$t('ip.list.searchLabel')" prepend-inner-icon="mdi-magnify"
+                <v-text-field v-model="searchQuery" :label="t('ip.list.searchLabel')" prepend-inner-icon="mdi-magnify"
                   variant="outlined" clearable />
               </v-col>
             </v-row>
@@ -122,11 +122,11 @@
 
           <template #item.action="{ item }">
             <v-btn v-if="isAdmin && currentInstitution.status == 'Validé'" class="ma-0 pa-0 bouton-simple"
-              variant="flat" :title="$t('ip.list.review')" @click.stop="openDialog(item)">
+              variant="flat" :title="t('ip.list.review')" @click.stop="openDialog(item)">
               <FontAwesomeIcon :icon="faMagnifyingGlass" />
             </v-btn>
             <v-btn v-if="!isAdmin" class="ma-0 pa-0 bouton-simple" icon :loading="buttonLoading"
-              :title="$t('ip.list.delete')" @click="supprimerIP(item.id, item.ip)">
+              :title="t('ip.list.delete')" @click="supprimerIP(item.id, item.ip)">
               <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
             </v-btn>
           </template>
@@ -136,10 +136,10 @@
           <v-col>
             <div style="float: right;" class="actions" v-if="isAdmin">
               <v-btn @click="clearActions" class="btn-6" variant="outlined">
-                <span class="btnText">{{ $t("ip.list.cancel") }}</span>
+                <span class="btnText">{{ t("ip.list.cancel") }}</span>
               </v-btn>
               <v-btn @click="dispatchAllAction" :loading="buttonLoading" variant="elevated">
-                <span class="btnText">{{ $t("ip.list.saveActions") }}</span>
+                <span class="btnText">{{ t("ip.list.saveActions") }}</span>
                 <FontAwesomeIcon :icon="faCircleArrowRight" />
               </v-btn>
             </div>
@@ -160,28 +160,28 @@
     <v-dialog v-model="dialog" max-width="800px">
       <v-card>
         <v-card-title>
-          {{ $t("ip.list.dialog.title") }}
+          {{ t("ip.list.dialog.title") }}
         </v-card-title>
         <v-card-text>
-          <h3>{{ $t("ip.list.dialog.comment") }}</h3>
+          <h3>{{ t("ip.list.dialog.comment") }}</h3>
           <span>{{ currentIP.commentaires }}</span>
-          <span v-if="currentIP.commentaires === null">{{ $t("ip.list.dialog.noComment") }}</span>
+          <span v-if="currentIP.commentaires === null">{{ t("ip.list.dialog.noComment") }}</span>
           <br />
-          <h3>{{ $t("ip.list.dialog.whois") }}</h3>
+          <h3>{{ t("ip.list.dialog.whois") }}</h3>
           <v-expansion-panels focusable accordion>
             <v-expansion-panel>
               <v-expansion-panel-title>
                 <span v-if="checkIfWhoIsRenater(whoIs)">
-                  {{ $t("ip.list.dialog.whoisStartIn") }}
-                  <span v-if="whoIs2 !== ''">{{ $t("ip.list.dialog.rangeStart") }}</span>
-                  {{ $t("ip.list.dialog.renater") }}
+                  {{ t("ip.list.dialog.whoisStartIn") }}
+                  <span v-if="whoIs2 !== ''">{{ t("ip.list.dialog.rangeStart") }}</span>
+                  {{ t("ip.list.dialog.renater") }}
                   <span style="padding: 5px;" />
                   <FontAwesomeIcon :icon="faCheck" />
                 </span>
                 <span v-else>
-                  {{ $t("ip.list.dialog.whoisStartNot") }}
-                  <span v-if="whoIs2 !== ''">{{ $t("ip.list.dialog.rangeStart") }}</span>
-                  {{ $t("ip.list.dialog.renaterNot") }}
+                  {{ t("ip.list.dialog.whoisStartNot") }}
+                  <span v-if="whoIs2 !== ''">{{ t("ip.list.dialog.rangeStart") }}</span>
+                  {{ t("ip.list.dialog.renaterNot") }}
                   <span style="padding: 5px;" />
                   <FontAwesomeIcon :icon="faXmark" />
                 </span>
@@ -193,12 +193,12 @@
             <v-expansion-panel v-if="whoIs2 !== ''">
               <v-expansion-panel-title>
                 <span v-if="checkIfWhoIsRenater(whoIs2)">
-                  {{ $t("ip.list.dialog.whoisEndIn") }}
+                  {{ t("ip.list.dialog.whoisEndIn") }}
                   <span style="padding: 5px;" />
                   <FontAwesomeIcon :icon="faCheck" />
                 </span>
                 <span v-else>
-                  {{ $t("ip.list.dialog.whoisEndNot") }}
+                  {{ t("ip.list.dialog.whoisEndNot") }}
                   <span style="padding: 5px;" />
                   <FontAwesomeIcon :icon="faXmark" />
                 </span>
@@ -209,9 +209,9 @@
             </v-expansion-panel>
           </v-expansion-panels>
           <br />
-          <h3>{{ $t("ip.list.dialog.adminComment") }}</h3>
+          <h3>{{ t("ip.list.dialog.adminComment") }}</h3>
           <v-textarea variant="outlined" auto-grow counter="4000" :rules="adminCommentRules" rows="2"
-            :label="$t('ip.list.dialog.deleteReason')" v-model="comments" clearable />
+            :label="t('ip.list.dialog.deleteReason')" v-model="comments" clearable />
         </v-card-text>
         <v-card-actions>
           <v-row>
@@ -222,16 +222,16 @@
                 currentIPid = '';
                 comments = '';
                 " class="btn-6" variant="outlined">
-                  {{ $t("ip.list.cancel") }}
+                  {{ t("ip.list.cancel") }}
                 </v-btn>
                 <v-btn @click="addActionToBuffer('SUPPRIMER')" color="error" variant="flat">
-                  {{ $t("ip.list.delete") }}
+                  {{ t("ip.list.delete") }}
                 </v-btn>
                 <v-btn @click="addActionToBuffer('REJETER')" color="primary" variant="tonal">
-                  {{ $t("ip.list.reject") }}
+                  {{ t("ip.list.reject") }}
                 </v-btn>
                 <v-btn @click="addActionToBuffer('VALIDER')" color="success" variant="flat">
-                  {{ $t("ip.list.validate") }}
+                  {{ t("ip.list.validate") }}
                 </v-btn>
               </div>
             </v-col>
@@ -311,6 +311,13 @@ const isExportLoading = ref(false);
 const buttonLoading = ref(false);
 const notification = ref("");
 const comments = ref("");
+type Headers = {
+  title: string;
+  align?: "start" | "end" | "center";
+  key: string;
+  sortable: boolean;
+  width: string;
+}[]
 const headers = computed(() => {
   if (isAdmin.value) {
     return [
@@ -343,7 +350,7 @@ const headers = computed(() => {
         width: "17%",
       },
       { title: t("ip.list.headers.review"), key: "action", sortable: false, width: "9%" },
-    ];
+    ] satisfies Headers;
   }
   return [
     {
@@ -374,7 +381,7 @@ const headers = computed(() => {
       width: "17%",
     },
     { title: t("ip.list.headers.delete"), key: "action", sortable: false, width: "10%" },
-  ];
+  ] satisfies Headers;
 });
 const dataLoading = ref(true);
 const currentIPid = ref("");

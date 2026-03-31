@@ -5,7 +5,7 @@
         <v-card class="elevation-0">
           <v-form ref="resetFormRef" class="elevation-0" :disabled="status !== 'valid'">
             <v-card-title class="pa-3">
-              <h1>{{ $t("auth.resetPassword.title") }}</h1>
+              <h1>{{ t("auth.resetPassword.title") }}</h1>
             </v-card-title>
             <v-card-text>
               <PasswordForm :action="RouteAction.CREATION" class="ma-3" :link-is-expired="status !== 'valid'"
@@ -16,18 +16,18 @@
               <v-col cols="12" md="8" lg="8" xl="8" class="d-flex justify-space-around">
                 <v-btn v-if="status !== 'expired'" size="x-large" @click="clear" class="bouton-annuler"
                   :disabled="status !== 'valid'" variant="outlined">
-                  {{ $t("auth.resetPassword.cancel") }}
+                  {{ t("auth.resetPassword.cancel") }}
                 </v-btn>
                 <v-btn v-if="status !== 'expired'" :loading="loading" :disabled="status !== 'valid'" size="x-large"
                   @click="handleRecaptcha" variant="elevated">
-                  {{ $t("auth.resetPassword.save") }}
+                  {{ t("auth.resetPassword.save") }}
                   <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
                 </v-btn>
               </v-col>
             </v-card-actions>
             <v-card-actions>
               <router-link :to="{ name: RouteName.Login }">
-                <FontAwesomeIcon :icon="faReply" />&nbsp;{{ $t("auth.resetPassword.backHome") }}
+                <FontAwesomeIcon :icon="faReply" />&nbsp;{{ t("auth.resetPassword.backHome") }}
               </router-link>
             </v-card-actions>
           </v-form>
@@ -56,7 +56,7 @@ const router = useRouter();
 const snackbar = useSnackbar();
 const { t } = useI18n();
 const authService = useAuthService();
-const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
+const { getRecaptchaToken } = useRecaptcha();
 
 const resetToken = ref("");
 const recaptchaToken = ref("");
@@ -91,8 +91,7 @@ const setupToken = async () => {
 };
 
 const handleRecaptcha = async () => {
-  await loadRecaptcha();
-  recaptchaToken.value = await executeRecaptcha("reinitialisationPass");
+  recaptchaToken.value = await getRecaptchaToken("reinitialisationPass");
   const isValid = await validate();
   if (isValid) {
     await resetPassword();
