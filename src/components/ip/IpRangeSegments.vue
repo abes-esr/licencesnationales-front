@@ -129,6 +129,7 @@ import { useIpService } from "@/composables/service/useIpService";
 import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useValidationRules } from "@/composables/useValidationRules";
+import { LicencesNationalesApiError } from "@/exception/licencesnationales/LicencesNationalesApiError";
 import { Logger } from "@/utils/Logger";
 import { faBackspace } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -316,9 +317,9 @@ const ajouterIp = async () => {
         clear(false);
         emit("alertSuccess", response.data.message);
       })
-      .catch(err => {
-        Logger.error(err?.toString?.() ?? err);
-        emit("alertError", err?.response?.data?.message ?? t("ip.segments.saveError"));
+      .catch((err: LicencesNationalesApiError) => {
+        Logger.error(err.toString());
+        emit("alertError", err.message ?? t("ip.segments.saveError"));
       })
       .finally(() => {
         buttonLoading.value = false;
