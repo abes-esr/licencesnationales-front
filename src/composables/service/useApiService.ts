@@ -56,10 +56,7 @@ export const useApiService = () => {
     try {
       return await fn();
     } catch (err: any) {
-      console.log("ici", err.response);
       const built = buildException(err);
-      console.log("la", built.toString());
-
       snackbar.error(built);
       throw built;
     }
