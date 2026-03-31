@@ -1,18 +1,18 @@
 <template>
   <v-container variant="flat" :disabled="disableForm">
-    <h1>{{ $t("institution.list.title") }}</h1>
+    <h1>{{ t("institution.list.title") }}</h1>
     <div class="pr-0">
       <v-row class="d-flex flex-row-reverse ma-0">
         <v-btn class="btn-1 ml-2" :to="{ name: RouteName.InstitutionSplit }">
-          {{ $t("institution.list.split") }}
+          {{ t("institution.list.split") }}
           <FontAwesomeIcon :icon="faObjectUngroup" class="mx-2" />
         </v-btn>
         <v-btn class="btn-1 mx-2" :to="{ name: RouteName.InstitutionMerge }">
-          {{ $t("institution.list.merge") }}
+          {{ t("institution.list.merge") }}
           <FontAwesomeIcon :icon="faObjectGroup" class="mx-2" />
         </v-btn>
         <v-btn class="btn-1 mx-2" :to="{ name: RouteName.InstitutionCreate }">
-          {{ $t("institution.list.create") }}
+          {{ t("institution.list.create") }}
           <FontAwesomeIcon :icon="faPlus" class="mx-2" />
         </v-btn>
       </v-row>
@@ -20,17 +20,17 @@
     <v-card class="mt-3 fondGris">
       <VDataTable density="compact" :headers="headers" :header-props="{ class: 'bg-primary' }"
         :items="filteredInstitutionsByStatus" :items-per-page="25"
-        :items-per-page-options="[25, 50, 100, { value: -1, title: $t('institution.list.all') }]"
+        :items-per-page-options="[25, 50, 100, { value: -1, title: t('institution.list.all') }]"
         class="elevation-0 pa-0" :search="searchQuery" :loading="dataLoading" id="mytable">
         <template #top>
           <v-row class="ma-3">
             <v-col cols="12" sm="6" class="px-0">
-              <v-tooltip :text="$t('institution.list.downloadTooltip')" location="top" open-delay="100" theme="dark"
+              <v-tooltip :text="t('institution.list.downloadTooltip')" location="top" open-delay="100" theme="dark"
                 content-class="text-white">
                 <template #activator="{ props }">
                   <v-btn variant="text" @click="downloadInstitutions" class=" bouton-simple" v-bind="props"
                     :loading="isExportLoading">
-                    <h2>{{ $t("institution.list.downloadTitle") }}</h2>
+                    <h2>{{ t("institution.list.downloadTitle") }}</h2>
                     <FontAwesomeIcon :icon="faDownload" size="lg" class="mx-2" />
                   </v-btn>
                 </template>
@@ -39,7 +39,7 @@
             <v-col cols="0" sm="3" class="px-0"></v-col>
             <v-col cols="12" sm="3" class="px-0">
               <div class="d-flex align-content-end justify-end">
-                <v-text-field v-model="searchQuery" :label="$t('institution.list.searchLabel')"
+                <v-text-field v-model="searchQuery" :label="t('institution.list.searchLabel')"
                   prepend-inner-icon="mdi-magnify" variant="outlined" density="compact" clearable />
               </div>
             </v-col>
@@ -48,7 +48,7 @@
 
         <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
           <tr>
-            <th v-for="column in columns" :key="column.key" class="text-left"
+            <th v-for="column in columns" :key="column.key" scope="col" class="text-left"
               @click="column.sortable ? toggleSort(column) : ''">
               <div style="display: flex; align-items: center; white-space: nowrap;">
                 <span>{{ column.title }}</span>

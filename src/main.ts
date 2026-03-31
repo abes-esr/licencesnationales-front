@@ -5,7 +5,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { createPinia } from "pinia";
-import piniaPersist from "pinia-plugin-persistedstate";
+import piniaPersistedState from "pinia-plugin-persistedstate";
 import { createApp } from "vue";
 import { VueReCaptcha } from "vue-recaptcha-v3";
 import App from "./App.vue";
@@ -21,7 +21,7 @@ async function bootstrap() {
   const app = createApp(App);
   const pinia = createPinia();
 
-  pinia.use(piniaPersist);
+  pinia.use(piniaPersistedState);
 
   app.use(pinia);
   app.use(router);

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
+
 </script>
 
 <template>
@@ -14,20 +17,16 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
           <v-list-item>
             <v-list-item-title class="pb-2">
               <span class="dot"></span>
-              <a
-                href="https://documentation.abes.fr/aidelicencesnationales/index.html#StatutsEtProcessusDeValidationDesIP:CgILNaqqg4eJrTC78srR8c"
-                target="_blank"
-              >
-                {{ $t("ip.info.openingDelays") }}
+              <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#StatutsEtProcessusDeValidationDesIP:CgILNaqqg4eJrTC78srR8c"
+                target="_blank">
+                {{ t("ip.info.openingDelays") }}
               </a>
             </v-list-item-title>
             <v-list-item-title>
               <span class="dot"></span>
-              <a
-                href="https://documentation.abes.fr/aidelicencesnationales/index.html#StatutsEtProcessusDeValidationDesIP"
-                target="_blank"
-              >
-                {{ $t("ip.info.statuses") }}
+              <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#StatutsEtProcessusDeValidationDesIP"
+                target="_blank">
+                {{ t("ip.info.statuses") }}
               </a>
             </v-list-item-title>
           </v-list-item>
@@ -36,17 +35,15 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
           <v-list-item>
             <v-list-item-title class="pb-2">
               <span class="dot"></span>
-              <a
-                href="https://documentation.abes.fr/aidelicencesnationales/index.html#StatutsEtProcessusDeValidationDesIP:DdxqgVeI57cdWkxUf4O9Vc"
-                target="_blank"
-              >
-                {{ $t("ip.info.attestationWhy") }}
+              <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#StatutsEtProcessusDeValidationDesIP:DdxqgVeI57cdWkxUf4O9Vc"
+                target="_blank">
+                {{ t("ip.info.attestationWhy") }}
               </a>
             </v-list-item-title>
             <v-list-item-title>
               <span class="dot"></span>
               <a href="https://www.licencesnationales.fr/modele_attestation_ip_licences_nationales/" target="_blank">
-                {{ $t("ip.info.attestationTemplate") }}
+                {{ t("ip.info.attestationTemplate") }}
               </a>
             </v-list-item-title>
           </v-list-item>

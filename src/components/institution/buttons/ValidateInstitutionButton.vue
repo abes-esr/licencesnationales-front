@@ -1,7 +1,7 @@
 <template>
   <v-btn v-if="isEditModeDisabled && status !== validatedStatus" class="mt-3" variant="tonal" style="margin-right: 1em"
     :loading="isLoading" @click="validate">
-    {{ $t("institution.card.validateAccount") }}
+    {{ t("institution.card.validateAccount") }}
   </v-btn>
 </template>
 

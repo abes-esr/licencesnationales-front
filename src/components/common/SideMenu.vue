@@ -8,7 +8,7 @@
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faGaugeHigh" size="2x" />
           </v-list-item-action>
-          <v-list-item-title>{{ $t("common.sideMenu.dashboard") }}</v-list-item-title>
+          <v-list-item-title>{{ t("common.sideMenu.dashboard") }}</v-list-item-title>
         </v-list-item>
       </v-row>
 
@@ -18,7 +18,7 @@
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faBuildingColumns" size="2x" />
           </v-list-item-action>
-          <v-list-item-title>{{ $t("common.sideMenu.institutions") }}</v-list-item-title>
+          <v-list-item-title>{{ t("common.sideMenu.institutions") }}</v-list-item-title>
         </v-list-item>
       </v-row>
 
@@ -28,7 +28,7 @@
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faList" size="2x" />
           </v-list-item-action>
-          <v-list-item-title>{{ $t("common.sideMenu.publishers") }}</v-list-item-title>
+          <v-list-item-title>{{ t("common.sideMenu.publishers") }}</v-list-item-title>
         </v-list-item>
       </v-row>
 
@@ -38,7 +38,7 @@
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faChartBar" size="2x" />
           </v-list-item-action>
-          <v-list-item-title>{{ $t("common.sideMenu.statistics") }}</v-list-item-title>
+          <v-list-item-title>{{ t("common.sideMenu.statistics") }}</v-list-item-title>
         </v-list-item>
       </v-row>
 
@@ -47,7 +47,7 @@
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faClockRotateLeft" size="2x" />
           </v-list-item-action>
-          <v-list-item-title>{{ $t("common.sideMenu.history") }}</v-list-item-title>
+          <v-list-item-title>{{ t("common.sideMenu.history") }}</v-list-item-title>
         </v-list-item>
       </v-row>
 
@@ -56,7 +56,7 @@
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <FontAwesomeIcon :icon="faMagnifyingGlass" size="2x" />
           </v-list-item-action>
-          <v-list-item-title>{{ $t("common.sideMenu.search") }}</v-list-item-title>
+          <v-list-item-title>{{ t("common.sideMenu.search") }}</v-list-item-title>
         </v-list-item>
       </v-row>
 
@@ -65,7 +65,7 @@
           <v-list-item-action class="ma-0 pa-1 justify-center">
             <v-icon xLarge class="mr-2">mdi-ip-network</v-icon>
           </v-list-item-action>
-          <v-list-item-title>{{ $t("common.sideMenu.ip") }}</v-list-item-title>
+          <v-list-item-title>{{ t("common.sideMenu.ip") }}</v-list-item-title>
         </v-list-item>
       </v-row>
     </v-list>
@@ -85,7 +85,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { storeToRefs } from "pinia";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const authStore = useAuthStore();
 const { isAdmin, isLoggedIn } = storeToRefs(authStore);
 </script>

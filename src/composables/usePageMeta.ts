@@ -1,9 +1,9 @@
-import { unref, watchEffect } from "vue";
+import { watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 
 type PageMetaOptions = {
-  titleKey: string | { value: string };
-  descriptionKey?: string | { value: string };
+  titleKey: string;
+  descriptionKey?: string;
 };
 
 const ensureMetaDescription = (): HTMLMetaElement => {
@@ -20,10 +20,10 @@ export const usePageMeta = ({ titleKey, descriptionKey }: PageMetaOptions) => {
   const { t } = useI18n();
 
   watchEffect(() => {
-    document.title = t(unref(titleKey));
+    document.title = t(titleKey);
     if (descriptionKey) {
       const meta = ensureMetaDescription();
-      meta.content = t(unref(descriptionKey));
+      meta.content = t(descriptionKey);
     }
   });
 };

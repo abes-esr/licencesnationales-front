@@ -8,10 +8,10 @@
       <v-card-actions class="pt-0 ma-3">
         <v-spacer></v-spacer>
         <v-btn variant="outlined" class="bouton-annuler" @click="cancel">
-          {{ $t("common.confirm.cancel") }}
+          {{ t("common.confirm.cancel") }}
         </v-btn>
         <v-btn variant="flat" class="bouton-valider" :color="popupOptions.color" @click="agree">
-          {{ $t("common.confirm.confirm") }}
+          {{ t("common.confirm.confirm") }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -22,6 +22,7 @@
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { reactive, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 interface ConfirmPopupOptions {
   color: string;
@@ -36,6 +37,7 @@ const popupOptions = reactive<ConfirmPopupOptions>({
   color: "success",
   width: "40vw"
 });
+const { t } = useI18n();
 
 const resolveRef = ref<Resolver | null>(null);
 
