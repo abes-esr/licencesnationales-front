@@ -249,6 +249,7 @@ import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
+import { LicencesNationalesApiError } from "@/exception/licencesnationales/LicencesNationalesApiError";
 import { RouteName } from "@/router";
 import { Logger } from "@/utils/Logger";
 import {
@@ -445,9 +446,9 @@ function fetchAccessList(): void {
     .then(response => {
       accessList.value = response.map(formatAccessEntry);
     })
-    .catch(err => {
-      Logger.error(err);
-      error.value = err.response?.data?.message ?? err.message;
+    .catch((err: LicencesNationalesApiError) => {
+      Logger.error(err.toString());
+      error.value = err.message;
     })
     .finally(() => {
       dataLoading.value = false;
@@ -561,9 +562,9 @@ function dispatchAllAction(): void {
     .then(() => {
       notification.value = t("ip.list.actionsDone");
     })
-    .catch(err => {
-      Logger.debug(err);
-      error.value = err.response?.data?.message ?? err.message;
+    .catch((err: LicencesNationalesApiError) => {
+      Logger.debug(err.toString());
+      error.value = err.message;
     })
     .finally(() => {
       fetchAccessList();
