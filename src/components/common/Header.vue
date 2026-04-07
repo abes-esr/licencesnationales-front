@@ -55,7 +55,7 @@
             <v-tooltip :text="t('common.header.support')" location="top" theme="dark" content-class="text-white">
               <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" color="white" class="my-1 me-2"
-                  href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank">
+                  href="https://assistance.stp.abes.fr/servicedesk/customer/portals" target="_blank">
                   <FontAwesomeIcon :icon="faComments" size="lg" />
                 </v-btn>
               </template>

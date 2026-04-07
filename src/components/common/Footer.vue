@@ -9,7 +9,7 @@
               <span class="texte text-wrap text-break">{{ t("common.footer.quickAccess") }}</span>
             </div>
 
-            <v-btn href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank"
+            <v-btn href="https://assistance.stp.abes.fr/servicedesk/customer/portals" target="_blank"
               class="footer-btn mx-2 text-center text-white">
               <span class="texte text-wrap text-break">{{ t("common.footer.assistance") }}</span>
               <FontAwesomeIcon :icon="faComments" class="mx-2" />

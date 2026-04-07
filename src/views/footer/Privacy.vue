@@ -11,7 +11,7 @@
             <p>{{ t("footer.privacy.p4") }}</p>
             <p>
               {{ t("footer.privacy.p5") }}
-              <a href="https://stp.abes.fr" target="_blank">{{ t("footer.privacy.contactLink") }}</a>.
+              <a href="https://assistance.stp.abes.fr/servicedesk/customer/portals" target="_blank">{{ t("footer.privacy.contactLink") }}</a>.
             </p>
 
             <h2>{{ t("footer.privacy.cookiesTitle") }}</h2>
