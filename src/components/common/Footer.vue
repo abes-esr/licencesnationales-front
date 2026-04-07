@@ -12,7 +12,7 @@
               <span class="texte">Accès direct</span>
             </div>
             <v-btn
-              href="https://stp.abes.fr/node/3?origine=LicencesNationales"
+              href="https://assistance.stp.abes.fr/servicedesk/customer/portals"
               target="_blank"
               class="footer-btn mx-2 text-center no-text-transform"
             >
