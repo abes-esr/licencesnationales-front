@@ -29,7 +29,7 @@
             <p>{{ t("footer.legal.contactText2") }}</p>
             <p>
               {{ t("footer.legal.contactText3") }}
-              <a href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank">
+              <a href="https://assistance.stp.abes.fr/servicedesk/customer/portals" target="_blank">
                 {{ t("footer.legal.contactLink") }}
               </a>
             </p>

@@ -82,7 +82,7 @@
             <p>{{ t("footer.accessibility.assistanceP3") }}</p>
             <ul>
               <li>
-                <a href="https://stp.abes.fr/node/3?origine=abescom/" target="_blank">
+                <a href="https://assistance.stp.abes.fr/servicedesk/customer/portals" target="_blank">
                   {{ t("footer.accessibility.assistanceLink") }}
                 </a>
                 {{ t("footer.accessibility.assistanceDomain") }}

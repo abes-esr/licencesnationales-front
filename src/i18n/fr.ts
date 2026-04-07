@@ -666,7 +666,7 @@ export const fr = {
       p3: "Les informations recueillies dans le formulaire d'inscription sont enregistrées dans un fichier informatisé par l'Agence Bibliographique de l'Enseignement Supérieur (Abes) pour la gestion des accès aux ressources acquises en licence nationale, via les plateformes des éditeurs et/ou via les plateformes d'archivage de l'Inist-CNRS (ISTEX, PANIST). Elles sont conservées pendant la durée d'exercice de l'activité de l'agent concerné, et sont destinées aux personnes en charge des accès des établissements bénéficiaires aux ressources citées (éditeurs, équipes de l'Abes, de l'Inist-CNRS et du consortium Couperin.org).",
       p4: 'Conformément au Règlement général sur la protection des données et à la loi "informatique et libertés", vous pouvez exercer votre droit d\'accès aux données vous concernant et les rectifier.',
       p5: "Pour toute question,",
-      contactLink: "contacter le guichet d'assistance ABESstp",
+      contactLink: "contacter le guichet d'assistance",
       cookiesTitle: "À propos des cookies",
       cookiesIntro:
         "Différents cookies sont utilisés sur le site, afin d'améliorer son interactivité et la qualité de ses services. Types de cookies déposés sur ce site :",
