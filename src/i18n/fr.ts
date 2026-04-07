@@ -154,7 +154,7 @@ export const fr = {
       name: "Nom :",
       type: "Type :",
       contactSupport:
-        "Pour toute demande de modification des infos de l'établissement, nous contacter via le guichet d'assistance"
+        "Pour toute demande de modification des infos de l'établissement, nous contacter via le "
     },
     contact: {
       title: "Contact",

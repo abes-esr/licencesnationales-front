@@ -34,7 +34,7 @@
         <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 icone-information" />
         <p class="mb-0 pl-12">
           {{ t("dashboard.institution.contactSupport") }}
-          <a href="https://assistance.stp.abes.fr/servicedesk/customer/portals" target="_blank">ABESstp</a>
+          <a href="https://assistance.stp.abes.fr/servicedesk/customer/portals" target="_blank">guichet d'assistance</a>
         </p>
       </v-alert>
     </div>
