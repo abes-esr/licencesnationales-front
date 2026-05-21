@@ -1,12 +1,12 @@
-name: 'Create release'
+name: "Create release"
 
 on:
   workflow_dispatch:
     inputs:
       versionType:
-        description: 'Quel type de mise à jour ?'
+        description: "Quel type de mise à jour ?"
         required: true
-        default: 'patch'
+        default: "patch"
         type: choice
         options:
           - major
@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 'Checkout source code'
-        uses: 'actions/checkout@v3'
+      - name: "Checkout source code"
+        uses: "actions/checkout@v6"
         with:
-          fetch-depth: '0'
+          fetch-depth: "0"
           token: ${{ secrets.TOKEN_GITHUB_FOR_GITHUB_ACTION }}
 
       - name: "Calculate versions"
@@ -64,25 +64,25 @@ jobs:
           echo "Current branch: $CURRENT_GIT_BRANCH"
           [[ "$CURRENT_GIT_BRANCH" == "main" || "$CURRENT_GIT_BRANCH" == "master" ]] && exit 0 || exit 1
 
-      - name: 'Verify version is correctly formatted (X.X.X)'
+      - name: "Verify version is correctly formatted (X.X.X)"
         env:
-          NEW_TAG:  ${{ steps.calculate-version.outputs.releaseVersion }}
+          NEW_TAG: ${{ steps.calculate-version.outputs.releaseVersion }}
         run: |
           echo $NEW_TAG | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$'
 
-      - name: 'Verify version is not already used as a git tag'
+      - name: "Verify version is not already used as a git tag"
         env:
-          NEW_TAG:  ${{ steps.calculate-version.outputs.releaseVersion }}
+          NEW_TAG: ${{ steps.calculate-version.outputs.releaseVersion }}
         run: |
           [[ "$(git tag --list | grep $NEW_TAG)" == "" ]] && exit 0 || exit 1
 
-      - name: 'Verify snapshot version is formatted (X.X.X-SNAPSHOT)'
+      - name: "Verify snapshot version is formatted (X.X.X-SNAPSHOT)"
         env:
           NEW_SNAPSHOT_TAG: ${{ steps.calculate-version.outputs.snapshotVersion }}
         run: |
           echo $NEW_SNAPSHOT_TAG | grep -E '^[0-9]+\.[0-9]+\.[0-9]+-SNAPSHOT$'
 
-      - name: 'Generate the new version (update files + git tag)'
+      - name: "Generate the new version (update files + git tag)"
         env:
           NEW_TAG: ${{ steps.calculate-version.outputs.releaseVersion }}
           NEW_SNAPSHOT_TAG: ${{ steps.calculate-version.outputs.snapshotVersion }}
@@ -115,8 +115,8 @@ jobs:
           git commit -m "Version $NEW_SNAPSHOT_TAG [skip ci]"
           git push
 
-      - name: 'Create the GitHub release'
-        uses: softprops/action-gh-release@v1
+      - name: "Create the GitHub release"
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.calculate-version.outputs.releaseVersion }}
           generate_release_notes: true
