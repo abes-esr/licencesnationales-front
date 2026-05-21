@@ -19,7 +19,11 @@ jobs:
 
     steps:
       - name: "Checkout source code"
+<<<<<<< Updated upstream
         uses: "actions/checkout@v6"
+=======
+        uses: "actions/checkout@v3"
+>>>>>>> Stashed changes
         with:
           fetch-depth: "0"
           token: ${{ secrets.TOKEN_GITHUB_FOR_GITHUB_ACTION }}
@@ -116,7 +120,11 @@ jobs:
           git push
 
       - name: "Create the GitHub release"
+<<<<<<< Updated upstream
         uses: softprops/action-gh-release@v3
+=======
+        uses: softprops/action-gh-release@v1
+>>>>>>> Stashed changes
         with:
           tag_name: ${{ steps.calculate-version.outputs.releaseVersion }}
           generate_release_notes: true
