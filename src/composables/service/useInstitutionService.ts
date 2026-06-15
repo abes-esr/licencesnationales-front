@@ -79,11 +79,25 @@ export const useInstitutionService = () => {
   const invalidateInstitution = async (siren: string, token: string) =>
     api.post("/etablissements/devalidation/" + siren, null, token);
 
+  /**
+   * Effectue la fusion (merge) d'établissements auprès du backend.
+   * 
+   * @param token Le jeton d'authentification admin
+   * @param data Le payload contenant le nouvel établissement et la liste des SIREN fusionnés
+   * @returns La réponse de la requête POST de l'API
+   */
   const mergeInstitutions = async (token: string, data: any) =>
-    api.post("/etablissements/mergeInstitutions", data, token);
+    api.post("/etablissements/fusion", data, token);
 
+  /**
+   * Effectue la scission (split) d'un établissement auprès du backend.
+   * 
+   * @param token Le jeton d'authentification admin
+   * @param data Le payload contenant le SIREN scindé et la liste des nouveaux établissements créés
+   * @returns La réponse de la requête POST de l'API
+   */
   const splitInstitution = async (token: string, data: any) =>
-    api.post("/etablissements/splitInstitution", data, token);
+    api.post("/etablissements/scission", data, token);
 
   const downloadInstitutions = async (sirens: Array<string>, token: string) => {
     const response = await api.post("/etablissements/export", sirens, token);

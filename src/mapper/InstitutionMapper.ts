@@ -43,6 +43,13 @@ export interface JsonUpdateInstitution {
   role: string;
 }
 
+export interface JsonCreateInstitutionWithoutCaptcha {
+  nom: string;
+  siren: string;
+  typeEtablissement: string;
+  contact: JsonCreateInstitutionContact;
+}
+
 export class InstitutionMapper {
   static toDomain(response: JsonInstitutionResponse): Institution {
     const institution = new Institution();
@@ -87,6 +94,22 @@ export class InstitutionMapper {
       typeEtablissement: institution.institutionType ?? "",
       contact: InstitutionContactMapper.toUpdatePayload(institution.contact),
       role: isAdmin ? "admin" : "etab"
+    };
+  }
+
+  /**
+   * Mappe une institution du domaine vers le payload attendu par le backend pour la création
+   * sans captcha (utilisé pour la fusion et la scission).
+   * 
+   * @param institution L'institution à mapper
+   * @returns Un objet de type JsonCreateInstitutionWithoutCaptcha
+   */
+  static toCreateWithoutCaptchaPayload(institution: Institution): JsonCreateInstitutionWithoutCaptcha {
+    return {
+      nom: institution.name,
+      siren: institution.siren,
+      typeEtablissement: institution.institutionType?.toString() ?? "",
+      contact: InstitutionContactMapper.toCreatePayload(institution.contact)
     };
   }
 
