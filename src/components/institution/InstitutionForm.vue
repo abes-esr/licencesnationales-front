@@ -140,6 +140,7 @@ import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useRecaptcha } from "@/composables/useRecaptcha";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
+import { InstitutionMapper } from "@/mapper/InstitutionMapper";
 import Institution from "@/entity/Institution";
 import InstitutionContactEntity from "@/entity/InstitutionContact";
 import Ip from "@/entity/Ip";
@@ -159,7 +160,7 @@ interface Props {
   action: RouteAction;
   listeSirenFusion?: Array<string>;
   triggerScission?: boolean;
-  onSend?: (value: Institution) => void;
+  onSend?: (value: any) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -278,7 +279,7 @@ const send = async () => {
         break;
       case RouteAction.FUSION:
         await institutionService.mergeInstitutions(authStore.token, {
-          nouveauEtab: localInstitution.value,
+          nouveauEtab: InstitutionMapper.toCreateWithoutCaptchaPayload(localInstitution.value),
           sirenFusionnes: props.listeSirenFusion,
         });
         clear();
@@ -286,7 +287,7 @@ const send = async () => {
         router.push({ name: RouteName.Institutions });
         break;
       case RouteAction.SCISSION:
-        props.onSend?.(localInstitution.value);
+        props.onSend?.(InstitutionMapper.toCreateWithoutCaptchaPayload(localInstitution.value));
         break;
       default:
         break;
