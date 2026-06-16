@@ -17,6 +17,8 @@ export default defineConfig({
     })
   ],
   build: {
+    // Configuration de découpage de code (code-splitting) pour Rollup (Vite 7).
+    // Permet d'isoler les grosses dépendances (@fortawesome, vue-i18n) dans des fichiers JS séparés.
     rollupOptions: {
       output: {
         manualChunks(id) {
