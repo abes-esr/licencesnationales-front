@@ -1,45 +1,40 @@
-import "./utils/hooks";
-import Vue from "vue";
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
-import vuetify from "./plugins/vuetify";
+import { i18n, loadLocaleMessages } from "@/i18n";
+import router from "@/router";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { createPinia } from "pinia";
+import piniaPersistedState from "pinia-plugin-persistedstate";
+import { createApp } from "vue";
 import { VueReCaptcha } from "vue-recaptcha-v3";
-import VueMeta from "vue-meta";
-import { Logger } from "@/utils/Logger";
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-import { library } from "@fortawesome/fontawesome-svg-core";
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-import { fas } from "@fortawesome/free-solid-svg-icons";
+import App from "./App.vue";
+import vuetify from "./plugins/vuetify";
 
-// Handle all Vue errors
-/*Vue.config.errorHandler = error =>
-  Logger.error(error.message, error.constructor.name);*/
+dayjs.extend(customParseFormat);
+dayjs.extend(localizedFormat);
+dayjs.extend(relativeTime);
 
-Vue.config.productionTip = false;
+async function bootstrap() {
+  await loadLocaleMessages("fr");
 
-if (process.env.VUE_APP_RECAPTCHA_KEY_SITE == "") {
-  Logger.error("La clé ReCaptcha est vide");
+  const app = createApp(App);
+  const pinia = createPinia();
+
+  pinia.use(piniaPersistedState);
+
+  app.use(pinia);
+  app.use(router);
+  app.use(vuetify);
+  app.use(i18n);
+
+  const recaptchaKey = import.meta.env.VITE_APP_RECAPTCHA_KEY_SITE;
+  app.use(VueReCaptcha, {
+    siteKey: recaptchaKey,
+    loaderOptions: { autoHideBadge: true }
+  });
+
+  app.mount("#app");
 }
 
-Vue.use(VueReCaptcha, {
-  siteKey: process.env.VUE_APP_RECAPTCHA_KEY_SITE,
-  loaderOptions: {
-    autoHideBadge: true
-  }
-}).use(VueMeta);
-
-library.add(fas); // Import de toutes les icones
-Vue.component("font-awesome-icon", FontAwesomeIcon);
-
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount("#app");
+bootstrap();
