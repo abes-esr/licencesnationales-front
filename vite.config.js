@@ -16,28 +16,18 @@ export default defineConfig({
       open: false
     })
   ],
-  optimizeDeps: {
-    // Exclure vue-i18n de la pré-optimisation en dev pour éviter l'erreur de référence
-    // sur init_runtime_dom_esm_bundler provoquée par l'optimiseur de dépendances de Vite 8.
-    exclude: ["vue-i18n"]
-  },
   build: {
-    // Configuration spécifique à Vite 8 (qui utilise le bundler Rolldown) pour le découpage de code.
-    // Remplace l'ancien "rollupOptions.manualChunks" déprécié qui causait des erreurs de référence
-    // sur les chunks externes (ex: "init_runtime_dom_esm_bundler is not defined").
-    rolldownOptions: {
+    // Configuration de découpage de code (code-splitting) pour Rollup (Vite 7).
+    // Permet d'isoler les grosses dépendances (@fortawesome, vue-i18n) dans des fichiers JS séparés.
+    rollupOptions: {
       output: {
-        codeSplitting: {
-          groups: [
-            {
-              name: "fontawesome",
-              test: /node_modules[\\/]@fortawesome/
-            },
-            {
-              name: "i18n",
-              test: /node_modules[\\/]vue-i18n/
-            }
-          ]
+        manualChunks(id) {
+          if (id.includes("node_modules/@fortawesome")) {
+            return "fontawesome";
+          }
+          if (id.includes("node_modules/vue-i18n")) {
+            return "i18n";
+          }
         }
       }
     }
