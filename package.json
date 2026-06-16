@@ -11,7 +11,7 @@
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/vue-fontawesome": "^3.1.2",
-    "axios": "^1.8.3",
+    "axios": "^1.16.0",
     "core-js": "^3.6.5",
     "dayjs": "^1.11.19",
     "pinia": "^3.0.4",
@@ -25,7 +25,7 @@
     "vuetify": "^3.10.11"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.2",
+    "@vitejs/plugin-vue": "^6.0.7",
     "rollup-plugin-visualizer": "^6.0.5",
     "sass": "^1.97.0",
     "typescript": "^5.9.3",

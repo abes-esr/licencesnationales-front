@@ -14,31 +14,31 @@ const buildException = (err: any): LicencesNationalesApiError => {
       if (err.response.status == 400) {
         return new LicencesNationalesBadRequestApiError(
           err.response.data.message,
-          err.response.data.path,
+          err.response.data.path ?? err.response.request.responseURL,
           err.response.data.debugMessage
         );
       } else if (err.response.status == 401 || err.response.status == 403) {
         return new LicencesNationalesUnauthorizedApiError(
           err.response.data.error,
-          err.response.data.path,
+          err.response.data.path ?? err.response.request.responseURL,
           err.response.data.debugMessage
         );
       } else if (err.response.status == 404) {
         return new LicencesNationalesNotFoundApiError(
           err.response.data.error,
-          err.response.data.path,
+          err.response.data.path ?? err.response.request.responseURL,
           err.response.data.debugMessage
         );
       } else if (err.response.status == 405) {
         return new LicencesNationalesNotFoundApiError(
           err.response.data.message,
-          err.response.data.path,
+          err.response.data.path ?? err.response.request.responseURL,
           err.response.data.debugMessage
         );
       } else if (err.response.status == 500) {
         return new LicencesNationalesInternalErrorApiError(
           err.response.data.error,
-          err.response.data.path,
+          err.response.data.path ?? err.response.request.responseURL,
           err.response.data.debugMessage
         );
       }

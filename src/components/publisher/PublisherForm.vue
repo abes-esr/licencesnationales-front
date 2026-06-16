@@ -1,29 +1,29 @@
 <template>
   <v-container class="elevation-0">
     <v-form ref="publisherFormRef" validate-on="lazy" class="elevation-0" :disabled="isFormDisabled">
-      <h1 v-if="action === RouteAction.CREATION">{{ $t("publisher.form.createTitle") }}</h1>
-      <h1 v-else-if="action === RouteAction.MODIFICATION">{{ $t("publisher.form.editTitle") }}</h1>
+      <h1 v-if="action === RouteAction.CREATION">{{ t("publisher.form.createTitle") }}</h1>
+      <h1 v-else-if="action === RouteAction.MODIFICATION">{{ t("publisher.form.editTitle") }}</h1>
       <v-card class="elevation-0">
         <div class="mx-9">
           <v-row>
-            <v-card-title>{{ $t("publisher.form.sectionTitle") }}</v-card-title>
+            <v-card-title>{{ t("publisher.form.sectionTitle") }}</v-card-title>
           </v-row>
           <v-divider class="mb-4"></v-divider>
           <div class="mx-9">
             <v-row>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-text-field variant="outlined" :label="$t('publisher.form.nameLabel')"
-                  :placeholder="$t('publisher.form.namePlaceholder')" v-model="publisher.name" :rules="lastNameRules"
+                <v-text-field variant="outlined" :label="t('publisher.form.nameLabel')"
+                  :placeholder="t('publisher.form.namePlaceholder')" v-model="publisher.name" :rules="lastNameRules"
                   required @keyup.enter="validate" />
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-text-field variant="outlined" :label="$t('publisher.form.identifierLabel')"
-                  :placeholder="$t('publisher.form.identifierPlaceholder')" v-model="publisher.secondaryId" />
+                <v-text-field variant="outlined" :label="t('publisher.form.identifierLabel')"
+                  :placeholder="t('publisher.form.identifierPlaceholder')" v-model="publisher.secondaryId" />
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
                 <v-select v-model="publisher.relatedInstitutionTypes" :items="institutionTypes"
-                  :label="$t('publisher.form.relatedInstitutionsLabel')"
-                  :placeholder="$t('publisher.form.relatedInstitutionsPlaceholder')" persistent-placeholder multiple
+                  :label="t('publisher.form.relatedInstitutionsLabel')"
+                  :placeholder="t('publisher.form.relatedInstitutionsPlaceholder')" persistent-placeholder multiple
                   variant="outlined">
                   <template #prepend-item>
                     <v-list-item @click="toggleAllInstitutionTypes">
@@ -32,15 +32,15 @@
                           {{ institutionTypeIcon }}
                         </v-icon>
                       </template>
-                      <v-list-item-title>{{ $t("publisher.form.selectAll") }}</v-list-item-title>
+                      <v-list-item-title>{{ t("publisher.form.selectAll") }}</v-list-item-title>
                     </v-list-item>
                     <v-divider class="mt-2"></v-divider>
                   </template>
                 </v-select>
               </v-col>
               <v-col cols="12" md="6" lg="6" xl="6">
-                <v-text-field variant="outlined" :label="$t('publisher.form.addressLabel')"
-                  :placeholder="$t('publisher.form.addressPlaceholder')" v-model="publisher.address"
+                <v-text-field variant="outlined" :label="t('publisher.form.addressLabel')"
+                  :placeholder="t('publisher.form.addressPlaceholder')" v-model="publisher.address"
                   :rules="addressRules" required @keyup.enter="validate" />
               </v-col>
             </v-row>
@@ -49,7 +49,7 @@
       </v-card>
       <v-card class="mt-6 mb-6 elevation-0">
         <div class="mx-9">
-          <v-card-title>{{ $t("publisher.form.contactSectionTitle") }}</v-card-title>
+          <v-card-title>{{ t("publisher.form.contactSectionTitle") }}</v-card-title>
           <v-divider class="mb-4"></v-divider>
           <v-row>
             <v-col cols="12" md="6" lg="4" xl="3" v-for="(contact, index) in publisher.contacts" :key="index">
@@ -60,14 +60,14 @@
         </div>
         <v-card variant="flat">
           <v-card-title>
-            {{ $t("publisher.form.contactsCount", { count: publisher.contacts.length }) }}
+            {{ t("publisher.form.contactsCount", { count: publisher.contacts.length }) }}
           </v-card-title>
           <v-card-text> </v-card-text>
 
           <v-card-actions class="v-card-actions">
             <v-btn class="ma-2" variant="tonal" @click="addContact">
               <FontAwesomeIcon :icon="faPlus" class="mx-2" />
-              {{ $t("publisher.form.addContact") }}
+              {{ t("publisher.form.addContact") }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -76,11 +76,11 @@
         <v-spacer class="hidden-sm-and-down"></v-spacer>
         <v-col cols="12" md="3" lg="3" xl="3" class="d-flex justify-space-around mr-16 flex-wrap">
           <v-btn size="large" @click="clear" variant="outlined" :disabled="isFormDisabled">
-            {{ $t("publisher.form.cancel") }}
+            {{ t("publisher.form.cancel") }}
           </v-btn>
           <v-btn color="button" :loading="buttonLoading" :disabled="isFormDisabled" size="large" @click="validate"
             variant="elevated">
-            {{ $t("publisher.form.save") }}
+            {{ t("publisher.form.save") }}
             <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
           </v-btn>
         </v-col>

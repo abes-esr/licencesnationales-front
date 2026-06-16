@@ -6,24 +6,24 @@
           <div class="left-container d-flex flex-column justify-space-between">
             <div class="raccourci">
               <FontAwesomeIcon :icon="faArrowUpRightFromSquare" class="mx-2" />
-              <span class="texte text-wrap text-break">{{ $t("common.footer.quickAccess") }}</span>
+              <span class="texte text-wrap text-break">{{ t("common.footer.quickAccess") }}</span>
             </div>
 
-            <v-btn href="https://stp.abes.fr/node/3?origine=LicencesNationales" target="_blank"
+            <v-btn href="https://assistance.stp.abes.fr/servicedesk/customer/portals" target="_blank"
               class="footer-btn mx-2 text-center text-white">
-              <span class="texte text-wrap text-break">{{ $t("common.footer.assistance") }}</span>
+              <span class="texte text-wrap text-break">{{ t("common.footer.assistance") }}</span>
               <FontAwesomeIcon :icon="faComments" class="mx-2" />
             </v-btn>
 
             <v-btn href="https://www.licencesnationales.fr/" target="_blank"
               class="footer-btn mx-2 text-center text-white">
-              <span class="texte text-wrap text-break">{{ $t("common.footer.site") }}</span>
+              <span class="texte text-wrap text-break">{{ t("common.footer.site") }}</span>
               <FontAwesomeIcon :icon="faCircleArrowRight" class="mx-2" />
             </v-btn>
 
             <v-btn href="https://documentation.abes.fr/aidelicencesnationales/index.html" target="_blank"
               class="footer-btn mx-2 text-center text-white">
-              <span class="texte text-wrap text-break">{{ $t("common.footer.documentation") }}</span>
+              <span class="texte text-wrap text-break">{{ t("common.footer.documentation") }}</span>
               <FontAwesomeIcon :icon="faCircleQuestion" class="mx-2" />
             </v-btn>
           </div>
@@ -38,27 +38,27 @@
 
         <v-col cols="12" md="6" lg="4" xl="4" class="d-flex justify-space-around align-center">
           <div class="d-flex flex-column justify-space-between text-right mr-3 right-container text-white">
-            <h4 class="mb-2 text-wrap text-break">{{ $t("common.footer.agencyName") }}</h4>
+            <h4 class="mb-2 text-wrap text-break">{{ t("common.footer.agencyName") }}</h4>
             <div>
-              {{ $t("common.footer.addressLine1") }}<br />
-              {{ $t("common.footer.addressLine2") }}
+              {{ t("common.footer.addressLine1") }}<br />
+              {{ t("common.footer.addressLine2") }}
             </div>
-            <div>{{ $t("common.footer.phone") }}</div>
+            <div>{{ t("common.footer.phone") }}</div>
           </div>
 
           <div class="d-flex flex-column justify-space-around logos">
             <a href="https://abes.fr/" target="_blank" class="ma-2">
-              <v-img src="/logo-abes-blanc.svg" max-width="60" :alt="$t('common.footer.abesLogoAlt')" />
+              <v-img src="/logo-abes-blanc.svg" max-width="60" :alt="t('common.footer.abesLogoAlt')" />
             </a>
             <a href="https://www.enseignementsup-recherche.gouv.fr/" target="_blank" class="ma-2">
-              <v-img src="/logo-mesri-2020.svg" max-width="60" :alt="$t('common.footer.mesriLogoAlt')" />
+              <v-img src="/logo-mesri-2020.svg" max-width="60" :alt="t('common.footer.mesriLogoAlt')" />
             </a>
           </div>
         </v-col>
       </v-card-title>
 
       <v-card-text class="py-2 text-white footer-bottom">
-        <strong>{{ $t("common.footer.licencesNationales") }} </strong>
+        <strong>{{ t("common.footer.licencesNationales") }} </strong>
 
         <v-tooltip location="top" theme="dark" content-class="text-white">
           <template #activator="{ props }">
@@ -66,26 +66,26 @@
           </template>
 
           <span>
-            {{ $t("common.footer.front") }}: {{ appVersion }}<br />
-            {{ $t("common.footer.back") }}: {{ backVersion }}
+            {{ t("common.footer.front") }}: {{ appVersion }}<br />
+            {{ t("common.footer.back") }}: {{ backVersion }}
           </span>
         </v-tooltip>
 
         <div id="mentions">
           <router-link class="text-white" :to="{ name: RouteName.Privacy }">
-            {{ $t("common.footer.personalData") }}
+            {{ t("common.footer.personalData") }}
           </router-link>
           |
           <router-link class="text-white" :to="{ name: RouteName.Terms }">
-            {{ $t("common.footer.terms") }}
+            {{ t("common.footer.terms") }}
           </router-link>
           |
           <router-link class="text-white" :to="{ name: RouteName.Legal }">
-            {{ $t("common.footer.legal") }}
+            {{ t("common.footer.legal") }}
           </router-link>
           |
           <router-link class="text-white" :to="{ name: RouteName.Accessibility }">
-            {{ $t("common.footer.accessibility") }}
+            {{ t("common.footer.accessibility") }}
           </router-link>
         </div>
       </v-card-text>

@@ -2,7 +2,7 @@
   <v-container elevation="0" class="pa-0">
     <v-form ref="accountForm" class="elevation-0" :disabled="isFormDisabled" autocomplete="on">
       <h1 v-if="action === RouteAction.CREATION" class="pl-3">
-        {{ $t("institution.form.createTitle") }}
+        {{ t("institution.form.createTitle") }}
       </h1>
       <h1 v-if="action === RouteAction.MODIFICATION" class="pl-3">
         {{ localInstitution.name }}
@@ -10,9 +10,9 @@
       <v-container class="pa-0">
         <div v-if="action === RouteAction.CREATION && !isLoggedIn" class="d-flex flex-row align-center">
           <h2 class="pl-3">
-            {{ $t("institution.form.hasAccount") }}
+            {{ t("institution.form.hasAccount") }}
             <router-link class="bouton-simple elevation-0 large" :to="{ name: RouteName.Login }">
-              {{ $t("institution.form.authenticate") }}
+              {{ t("institution.form.authenticate") }}
             </router-link>
           </h2>
           <v-icon small>mdi-arrow-right-circle-outline</v-icon>
@@ -22,7 +22,7 @@
           <v-alert variant="outlined">
             <div>
               <router-link :to="{ name: RouteName.Login }">
-                <FontAwesomeIcon :icon="faReply" /> {{ $t("institution.form.backHome") }}
+                <FontAwesomeIcon :icon="faReply" /> {{ t("institution.form.backHome") }}
               </router-link>
             </div>
           </v-alert>
@@ -31,16 +31,16 @@
           <v-col cols="12">
             <v-alert variant="outlined" density="compact">
               <FontAwesomeIcon :icon="faTriangleExclamation" class="mx-2 icone-attention" />
-              <h4 class="mb-1">{{ $t("institution.form.eligibilityTitle") }}</h4>
+              <h4 class="mb-1">{{ t("institution.form.eligibilityTitle") }}</h4>
               <p>
-                <strong>{{ $t("institution.form.attention") }}</strong>{{
-                  $t("institution.form.eligibilityText")
+                <strong>{{ t("institution.form.attention") }}</strong>{{
+                  t("institution.form.eligibilityText")
                 }}
                 <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires" target="_blank">
-                  {{ $t("institution.form.eligibilityLink") }}
+                  {{ t("institution.form.eligibilityLink") }}
                 </a>
               </p>
-              <v-checkbox required :rules="privacyAcceptanceRules" :label="$t('institution.form.eligibilityConfirm')" />
+              <v-checkbox required :rules="privacyAcceptanceRules" :label="t('institution.form.eligibilityConfirm')" />
             </v-alert>
           </v-col>
         </v-row>
@@ -52,22 +52,22 @@
             action === RouteAction.SCISSION
           ">
             <v-row>
-              <v-card-title>{{ $t("institution.form.institutionSection") }}</v-card-title>
+              <v-card-title>{{ t("institution.form.institutionSection") }}</v-card-title>
             </v-row>
             <v-divider class="mb-4"></v-divider>
             <div class="mx-9">
               <v-row>
                 <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
                   <v-row>
-                    <v-text-field variant="outlined" :label="$t('institution.form.institutionName')"
-                      :placeholder="$t('institution.form.institutionName')" name="organization"
+                    <v-text-field variant="outlined" :label="t('institution.form.institutionName')"
+                      :placeholder="t('institution.form.institutionName')" name="organization"
                       autocomplete="organization" v-model="localInstitution.name" :rules="establishmentNameRules"
                       :disabled="action === RouteAction.MODIFICATION && !isAdmin" required @keyup.enter="validate" />
                   </v-row>
                   <v-row>
                     <v-col :cols="12" class="pa-0">
-                      <v-text-field variant="outlined" :label="$t('institution.form.siren')"
-                        :placeholder="$t('institution.form.siren')" maxlength="9" name="siren" autocomplete="on"
+                      <v-text-field variant="outlined" :label="t('institution.form.siren')"
+                        :placeholder="t('institution.form.siren')" maxlength="9" name="siren" autocomplete="on"
                         v-model="localInstitution.siren" :rules="sirenRules" required @input="checkSiren"
                         @keyup.enter="validate" :disabled="action === RouteAction.MODIFICATION" />
                     </v-col>
@@ -75,20 +75,20 @@
                   <v-row>
                     <v-chip class="ma-2" :class="sirenStatusColor" label
                       v-if="action === RouteAction.CREATION || action === RouteAction.FUSION || action === RouteAction.SCISSION">
-                      {{ $t("institution.form.sirenStatus", { status: sirenStatus }) }}
+                      {{ t("institution.form.sirenStatus", { status: sirenStatus }) }}
                     </v-chip>
                   </v-row>
                   <v-row v-if="action === RouteAction.MODIFICATION">
-                    <v-text-field variant="outlined" :label="$t('institution.form.idAbes')"
-                      :placeholder="$t('institution.form.idAbes')" v-model="localInstitution.abesId" disabled />
+                    <v-text-field variant="outlined" :label="t('institution.form.idAbes')"
+                      :placeholder="t('institution.form.idAbes')" v-model="localInstitution.abesId" disabled />
                   </v-row>
                 </v-col>
                 <v-col cols="0" md="1" lg="1" xl="1" class="pa-0"></v-col>
                 <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
                   <v-row>
                     <v-select variant="outlined" v-model="localInstitution.institutionType" :items="institutionTypes"
-                      :label="$t('institution.form.institutionType')"
-                      :placeholder="$t('institution.form.institutionType')"
+                      :label="t('institution.form.institutionType')"
+                      :placeholder="t('institution.form.institutionType')"
                       :disabled="action === RouteAction.MODIFICATION && !isAdmin" :rules="establishmentTypeRules"
                       required />
                   </v-row>
@@ -96,7 +96,7 @@
                     <v-alert variant="outlined" v-if="action === RouteAction.CREATION" style="width: 100%">
                       <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 icone-information" />
                       <a class="noUnderlineLink" href="https://annuaire-entreprises.data.gouv.fr/" target="_blank">
-                        {{ $t("institution.form.findSiren") }}
+                        {{ t("institution.form.findSiren") }}
                       </a>
                     </v-alert>
                   </v-row>
@@ -105,7 +105,7 @@
             </div>
           </div>
           <div class="mx-9">
-            <v-card-title>{{ $t("institution.form.contactSection") }}</v-card-title>
+            <v-card-title>{{ t("institution.form.contactSection") }}</v-card-title>
             <v-divider class="mb-4"></v-divider>
             <InstitutionContact ref="formContact" :action="action" :contact="localInstitution.contact"
               :isDisableForm="isFormDisabled" class="mx-9" />
@@ -116,11 +116,11 @@
           <v-col cols="12" md="6" lg="4" xl="4" class="d-flex justify-space-around flex-wrap" style="float: right;">
             <v-row>
               <v-btn @click="clear" :disabled="isFormDisabled" variant="outlined">
-                {{ $t("institution.form.cancel") }}
+                {{ t("institution.form.cancel") }}
               </v-btn>
 
               <v-btn class="ml-4" :loading="isSaving" :disabled="isFormDisabled" @click="validate" variant="elevated">
-                {{ $t("institution.form.save") }}
+                {{ t("institution.form.save") }}
                 <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
               </v-btn>
             </v-row>
@@ -174,7 +174,7 @@ const snackbar = useSnackbar();
 const dataGouvService = useDataGouvService();
 const institutionService = useInstitutionService();
 const institutionStore = useInstitutionStore();
-const { loadRecaptcha, executeRecaptcha } = useRecaptcha();
+const { getRecaptchaToken } = useRecaptcha();
 const { t } = useI18n();
 const {
   establishmentNameRules,
@@ -242,8 +242,7 @@ const fetchInstitutionTypes = async () => {
 const validate = async () => {
   isSaving.value = true;
   try {
-    await loadRecaptcha();
-    recaptchaToken.value = await executeRecaptcha("creationCompte");
+    recaptchaToken.value = await getRecaptchaToken("creationCompte");
 
     const formValid = await accountForm.value?.validate();
     const isFormValide = formValid?.valid ?? false;
@@ -336,17 +335,13 @@ const clear = async () => {
   accountForm.value?.resetValidation();
   formContact.value?.clear();
 
-  switch (action.value) {
-    case RouteAction.MODIFICATION: {
-      const fresh = await institutionService.getInstitution(localInstitution.value.siren, authStore.token);
-      localInstitution.value = cloneInstitution(fresh);
-      initialInstitution.value = cloneInstitution(fresh);
-      break;
-    }
-    default:
-      localInstitution.value.reset();
-      window.scrollTo(0, 0);
-      break;
+  if (action.value === RouteAction.MODIFICATION) {
+    const fresh = await institutionService.getInstitution(localInstitution.value.siren, authStore.token);
+    localInstitution.value = cloneInstitution(fresh);
+    initialInstitution.value = cloneInstitution(fresh);
+  } else {
+    localInstitution.value.reset();
+    window.scrollTo(0, 0);
   }
 };
 

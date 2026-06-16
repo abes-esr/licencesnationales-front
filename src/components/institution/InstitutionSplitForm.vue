@@ -6,24 +6,24 @@
           <v-row>
             <v-col cols="2" xs="0" />
             <v-col cols="8" xs="12">
-              <v-card-title>{{ $t("institution.split.title") }}</v-card-title>
+              <v-card-title>{{ t("institution.split.title") }}</v-card-title>
               <v-card>
                 <v-card-text>
-                  <v-card-title>{{ $t("institution.split.sirenTitle") }}</v-card-title>
+                  <v-card-title>{{ t("institution.split.sirenTitle") }}</v-card-title>
                   <v-col cols="12">
-                    <v-text-field variant="outlined" :label="$t('institution.split.sirenLabel')"
-                      :placeholder="$t('institution.split.sirenLabel')" v-model="institutionSiren" :rules="sirenRules"
+                    <v-text-field variant="outlined" :label="t('institution.split.sirenLabel')"
+                      :placeholder="t('institution.split.sirenLabel')" v-model="institutionSiren" :rules="sirenRules"
                       class="pt-6 w-100" required @keyup.enter="validateForm" maxLength="9" />
-                    <h3>{{ $t("institution.split.count", { count: institutionCount }) }}</h3>
+                    <h3>{{ t("institution.split.count", { count: institutionCount }) }}</h3>
                   </v-col>
 
                   <v-card-actions>
                     <v-row class="pa-0 ga-4">
                       <v-btn variant="elevated" @click="increaseInstitutionCount">
-                        {{ $t("institution.split.addInstitution") }}
+                        {{ t("institution.split.addInstitution") }}
                       </v-btn>
                       <v-btn variant="elevated" @click="decreaseInstitutionCount">
-                        {{ $t("institution.split.removeInstitution") }}
+                        {{ t("institution.split.removeInstitution") }}
                       </v-btn>
                     </v-row>
                   </v-card-actions>
@@ -37,7 +37,7 @@
                   <v-col cols="12" md="3" lg="3" xl="3" class="d-flex justify-space-around mr-16 flex-wrap">
                     <v-btn @click="triggerChildrenForm" :loading="buttonLoading" size="large" color="button"
                       variant="elevated">
-                      {{ $t("institution.split.save") }}
+                      {{ t("institution.split.save") }}
                     </v-btn>
                   </v-col>
                 </v-row>
