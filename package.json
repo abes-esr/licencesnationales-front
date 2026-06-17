@@ -1,6 +1,6 @@
 {
   "name": "licencesnationales-front",
-  "version": "9.9.70",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "vite",
