@@ -7,7 +7,7 @@
       <InstitutionSummary :institution="institution" />
       <EditInstitutionButton :edit-state="editState" />
       <SaveInstitutionButton :edit-state="editState" :institution="institution" />
-      <ResetInstitutionButton :edit-state="editState" :institution="institution" />
+      <ResetInstitutionButton :edit-state="editState" @reset="resetInstitution" />
       <ValidateInstitutionButton :institution="institution" :is-edit-mode-disabled="editState.disabled"
         :status="currentInstitution.status" :validated-status="validatedStatus" :confirm-ref="confirmRef" />
       <InvalidateInstitutionButton :institution="institution" :is-edit-mode-disabled="editState.disabled"
@@ -42,9 +42,11 @@ import { useAuthStore } from "@/composables/store/useAuthStore";
 import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useSnackbar } from "@/composables/useSnackbar";
 import Institution from "@/entity/Institution";
+import InstitutionContactEntity from "@/entity/InstitutionContact";
+import Ip from "@/entity/Ip";
 import { RouteName } from "@/router";
 import { storeToRefs } from "pinia";
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 
@@ -56,12 +58,45 @@ const institutionService = useInstitutionService();
 const { t } = useI18n();
 
 const confirmRef = ref<InstanceType<typeof ConfirmPopup> | null>(null);
-const institution = ref<Institution>(institutionStore.currentInstitution);
+
+/**
+ * Clone une entité Institution avec ses relations pour éviter la mutation directe du store Pinia.
+ * 
+ * @param value L'institution à cloner
+ * @returns Une nouvelle instance d'Institution avec les données copiées
+ */
+const cloneInstitution = (value: Institution): Institution => {
+  const cloned = Object.assign(new Institution(), value);
+  cloned.contact = new InstitutionContactEntity(
+    cloned.contact as Partial<InstitutionContactEntity>
+  );
+  cloned.ips = (cloned.ips ?? []).map((ip) => Object.assign(new Ip(), ip));
+  return cloned;
+};
+
+// Utilisation d'un clone local pour l'édition de formulaire
+const institution = ref<Institution>(cloneInstitution(institutionStore.currentInstitution));
 const institutionTypes = ref<Array<string>>([]);
 const editState = reactive({ disabled: true });
 const { isAdmin } = storeToRefs(authStore);
 const { currentInstitution } = storeToRefs(institutionStore);
 const validatedStatus = "Validé";
+
+// Surveille les changements de l'institution dans le store pour mettre à jour notre clone local
+watch(
+  () => institutionStore.currentInstitution,
+  (newVal) => {
+    institution.value = cloneInstitution(newVal);
+  },
+  { deep: true }
+);
+
+/**
+ * Réinitialise les modifications locales en reclonant l'état actuel du store Pinia.
+ */
+const resetInstitution = () => {
+  institution.value = cloneInstitution(institutionStore.currentInstitution);
+};
 
 onMounted(() => {
   if (!isAdmin.value) {
@@ -71,6 +106,9 @@ onMounted(() => {
   fetchInstitutionTypes();
 });
 
+/**
+ * Récupère la liste des types d'institutions disponibles auprès du service.
+ */
 async function fetchInstitutionTypes() {
   try {
     institutionTypes.value = await institutionService.listInstitutionTypes();
@@ -78,10 +116,5 @@ async function fetchInstitutionTypes() {
     snackbar.error(err);
   }
 }
-
-
-
-
-
-
 </script>
+
