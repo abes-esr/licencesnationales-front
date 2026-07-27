@@ -138,8 +138,18 @@ jobs:
             --base develop \
             --head $TEMP_BRANCH
 
-          # Fusion automatique de la Pull Request (avec option --admin pour contourner les validations si nécessaire)
-          gh pr merge --merge --admin --delete-branch || gh pr merge --merge --delete-branch
+          # 6. Fusion ou activation de l'auto-merge de la Pull Request
+          echo "Tentative de fusion de la PR..."
+          if gh pr merge --merge --admin --delete-branch || gh pr merge --merge --delete-branch; then
+            echo "La PR a été fusionnée avec succès."
+          else
+            echo "Impossible de fusionner immédiatement (ex: validations requises). Tentative d'activation de l'auto-merge..."
+            if gh pr merge --auto --merge --delete-branch; then
+              echo "L'auto-merge a été activé. La PR sera fusionnée automatiquement dès que les validations requises seront passées."
+            else
+              echo "::warning:: L'auto-merge n'a pas pu être activé. La PR devra être validée et fusionnée manuellement."
+            fi
+          fi
 
       - name: "Create the GitHub release"
         uses: softprops/action-gh-release@v3
