@@ -8,7 +8,10 @@
         {{ localInstitution.name }}
       </h1>
       <v-container class="pa-0">
-        <div v-if="action === RouteAction.CREATION && !isLoggedIn" class="d-flex flex-row align-center">
+        <div
+          v-if="action === RouteAction.CREATION && !isLoggedIn"
+          class="d-flex flex-row align-center"
+        >
           <h2 class="pl-3">
             {{ t("institution.form.hasAccount") }}
             <router-link class="bouton-simple elevation-0 large" :to="{ name: RouteName.Login }">
@@ -33,24 +36,33 @@
               <FontAwesomeIcon :icon="faTriangleExclamation" class="mx-2 icone-attention" />
               <h4 class="mb-1">{{ t("institution.form.eligibilityTitle") }}</h4>
               <p>
-                <strong>{{ t("institution.form.attention") }}</strong>{{
-                  t("institution.form.eligibilityText")
-                }}
-                <a href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires" target="_blank">
+                <strong>{{ t("institution.form.attention") }}</strong
+                >{{ t("institution.form.eligibilityText") }}
+                <a
+                  href="https://documentation.abes.fr/aidelicencesnationales/index.html#Beneficiaires"
+                  target="_blank"
+                >
                   {{ t("institution.form.eligibilityLink") }}
                 </a>
               </p>
-              <v-checkbox required :rules="privacyAcceptanceRules" :label="t('institution.form.eligibilityConfirm')" />
+              <v-checkbox
+                required
+                :rules="privacyAcceptanceRules"
+                :label="t('institution.form.eligibilityConfirm')"
+              />
             </v-alert>
           </v-col>
         </v-row>
         <v-card>
-          <div class="mx-9" v-if="
-            (action === RouteAction.MODIFICATION && isAdmin) ||
-            action === RouteAction.CREATION ||
-            action === RouteAction.FUSION ||
-            action === RouteAction.SCISSION
-          ">
+          <div
+            class="mx-9"
+            v-if="
+              (action === RouteAction.MODIFICATION && isAdmin) ||
+              action === RouteAction.CREATION ||
+              action === RouteAction.FUSION ||
+              action === RouteAction.SCISSION
+            "
+          >
             <v-row>
               <v-card-title>{{ t("institution.form.institutionSection") }}</v-card-title>
             </v-row>
@@ -59,43 +71,90 @@
               <v-row>
                 <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
                   <v-row>
-                    <v-text-field variant="outlined" :label="t('institution.form.institutionName')"
-                      :placeholder="t('institution.form.institutionName')" name="organization"
-                      autocomplete="organization" v-model="localInstitution.name" :rules="establishmentNameRules"
-                      :disabled="action === RouteAction.MODIFICATION && !isAdmin" required @keyup.enter="validate" />
+                    <v-text-field
+                      variant="outlined"
+                      :label="t('institution.form.institutionName')"
+                      :placeholder="t('institution.form.institutionName')"
+                      name="organization"
+                      autocomplete="organization"
+                      v-model="localInstitution.name"
+                      :rules="establishmentNameRules"
+                      :disabled="action === RouteAction.MODIFICATION && !isAdmin"
+                      required
+                      @keyup.enter="validate"
+                    />
                   </v-row>
                   <v-row>
                     <v-col :cols="12" class="pa-0">
-                      <v-text-field variant="outlined" :label="t('institution.form.siren')"
-                        :placeholder="t('institution.form.siren')" maxlength="9" name="siren" autocomplete="on"
-                        v-model="localInstitution.siren" :rules="sirenRules" required @input="checkSiren"
-                        @keyup.enter="validate" :disabled="action === RouteAction.MODIFICATION" />
+                      <v-text-field
+                        variant="outlined"
+                        :label="t('institution.form.siren')"
+                        :placeholder="t('institution.form.siren')"
+                        maxlength="9"
+                        name="siren"
+                        autocomplete="on"
+                        v-model="localInstitution.siren"
+                        :rules="sirenRules"
+                        required
+                        @input="checkSiren"
+                        @keyup.enter="validate"
+                        :disabled="action === RouteAction.MODIFICATION"
+                      />
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-chip class="ma-2" :class="sirenStatusColor" label
-                      v-if="action === RouteAction.CREATION || action === RouteAction.FUSION || action === RouteAction.SCISSION">
+                    <v-chip
+                      class="ma-2"
+                      :class="sirenStatusColor"
+                      label
+                      v-if="
+                        action === RouteAction.CREATION ||
+                        action === RouteAction.FUSION ||
+                        action === RouteAction.SCISSION
+                      "
+                    >
                       {{ t("institution.form.sirenStatus", { status: sirenStatus }) }}
                     </v-chip>
                   </v-row>
                   <v-row v-if="action === RouteAction.MODIFICATION">
-                    <v-text-field variant="outlined" :label="t('institution.form.idAbes')"
-                      :placeholder="t('institution.form.idAbes')" v-model="localInstitution.abesId" disabled />
+                    <v-text-field
+                      variant="outlined"
+                      :label="t('institution.form.idAbes')"
+                      :placeholder="t('institution.form.idAbes')"
+                      v-model="localInstitution.abesId"
+                      disabled
+                    />
                   </v-row>
                 </v-col>
                 <v-col cols="0" md="1" lg="1" xl="1" class="pa-0"></v-col>
                 <v-col cols="12" md="5" lg="5" xl="5" class="pa-1 pt-4">
                   <v-row>
-                    <v-select variant="outlined" v-model="localInstitution.institutionType" :items="institutionTypes"
+                    <v-select
+                      variant="outlined"
+                      v-model="localInstitution.institutionType"
+                      :items="institutionTypes"
                       :label="t('institution.form.institutionType')"
                       :placeholder="t('institution.form.institutionType')"
-                      :disabled="action === RouteAction.MODIFICATION && !isAdmin" :rules="establishmentTypeRules"
-                      required />
+                      :disabled="action === RouteAction.MODIFICATION && !isAdmin"
+                      :rules="establishmentTypeRules"
+                      required
+                    />
                   </v-row>
                   <v-row>
-                    <v-alert variant="outlined" v-if="action === RouteAction.CREATION" style="width: 100%">
-                      <FontAwesomeIcon :icon="faCircleInfo" class="fa-2x mr-5 mb-1 icone-information" />
-                      <a class="noUnderlineLink" href="https://annuaire-entreprises.data.gouv.fr/" target="_blank">
+                    <v-alert
+                      variant="outlined"
+                      v-if="action === RouteAction.CREATION"
+                      style="width: 100%"
+                    >
+                      <FontAwesomeIcon
+                        :icon="faCircleInfo"
+                        class="fa-2x mr-5 mb-1 icone-information"
+                      />
+                      <a
+                        class="noUnderlineLink"
+                        href="https://annuaire-entreprises.data.gouv.fr/"
+                        target="_blank"
+                      >
                         {{ t("institution.form.findSiren") }}
                       </a>
                     </v-alert>
@@ -107,19 +166,37 @@
           <div class="mx-9">
             <v-card-title>{{ t("institution.form.contactSection") }}</v-card-title>
             <v-divider class="mb-4"></v-divider>
-            <InstitutionContact ref="formContact" :action="action" :contact="localInstitution.contact"
-              :isDisableForm="isFormDisabled" class="mx-9" />
+            <InstitutionContact
+              ref="formContact"
+              :action="action"
+              :contact="localInstitution.contact"
+              :isDisableForm="isFormDisabled"
+              class="mx-9"
+            />
           </div>
         </v-card>
         <v-card-actions v-if="action !== RouteAction.SCISSION">
           <v-spacer class="d-none d-sm-flex"></v-spacer>
-          <v-col cols="12" md="6" lg="4" xl="4" class="d-flex justify-space-around flex-wrap" style="float: right;">
+          <v-col
+            cols="12"
+            md="6"
+            lg="4"
+            xl="4"
+            class="d-flex justify-space-around flex-wrap"
+            style="float: right"
+          >
             <v-row>
               <v-btn @click="clear" :disabled="isFormDisabled" variant="outlined">
                 {{ t("institution.form.cancel") }}
               </v-btn>
 
-              <v-btn class="ml-4" :loading="isSaving" :disabled="isFormDisabled" @click="validate" variant="elevated">
+              <v-btn
+                class="ml-4"
+                :loading="isSaving"
+                :disabled="isFormDisabled"
+                @click="validate"
+                variant="elevated"
+              >
                 {{ t("institution.form.save") }}
                 <v-icon class="pl-1">mdi-arrow-right-circle-outline</v-icon>
               </v-btn>
@@ -140,12 +217,12 @@ import { useInstitutionStore } from "@/composables/store/useInstitutionStore";
 import { useRecaptcha } from "@/composables/useRecaptcha";
 import { useSnackbar } from "@/composables/useSnackbar";
 import { useValidationRules } from "@/composables/useValidationRules";
-import { InstitutionMapper } from "@/mapper/InstitutionMapper";
 import Institution from "@/entity/Institution";
 import InstitutionContactEntity from "@/entity/InstitutionContact";
 import Ip from "@/entity/Ip";
 import { DataGouvApiError } from "@/exception/data.gouv/DataGouvApiError";
 import { SirenNotFoundError } from "@/exception/data.gouv/SirenNotFoundError";
+import { InstitutionMapper } from "@/mapper/InstitutionMapper";
 import { RouteAction, RouteName } from "@/router";
 import { Logger } from "@/utils/Logger";
 import { faCircleInfo, faReply, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
@@ -165,7 +242,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   listeSirenFusion: () => [],
-  triggerScission: false,
+  triggerScission: false
 });
 
 const router = useRouter();
@@ -176,12 +253,8 @@ const institutionService = useInstitutionService();
 const institutionStore = useInstitutionStore();
 const { getRecaptchaToken } = useRecaptcha();
 const { t } = useI18n();
-const {
-  establishmentNameRules,
-  establishmentTypeRules,
-  privacyAcceptanceRules,
-  sirenRules
-} = useValidationRules();
+const { establishmentNameRules, establishmentTypeRules, privacyAcceptanceRules, sirenRules } =
+  useValidationRules();
 
 const action = computed<RouteAction>(() =>
   typeof props.action === "string"
@@ -189,7 +262,7 @@ const action = computed<RouteAction>(() =>
     : props.action
 );
 
-const { isAdmin, isLoggedIn } = storeToRefs(authStore)
+const { isAdmin, isLoggedIn } = storeToRefs(authStore);
 const recaptchaToken = ref("");
 const institutionTypes = ref<Array<string>>([]);
 enum SirenStatusKey {
@@ -198,7 +271,7 @@ enum SirenStatusKey {
   Ok = "ok",
   Unknown = "unknown",
   ServiceError = "serviceError",
-  InternalError = "internalError",
+  InternalError = "internalError"
 }
 
 const sirenStatusKey = ref<SirenStatusKey>(SirenStatusKey.Pending);
@@ -209,7 +282,7 @@ const sirenStatusColorByKey: Record<SirenStatusKey, string> = {
   [SirenStatusKey.Ok]: "siren-ok",
   [SirenStatusKey.Unknown]: "siren-erreur",
   [SirenStatusKey.ServiceError]: "siren-erreur",
-  [SirenStatusKey.InternalError]: "red",
+  [SirenStatusKey.InternalError]: "red"
 };
 const sirenStatus = computed(() => sirenStatusMessage.value);
 const sirenStatusColor = computed(() => sirenStatusColorByKey[sirenStatusKey.value]);
@@ -224,7 +297,9 @@ const initialInstitution = ref<Institution | null>(null);
 
 const cloneInstitution = (value: Institution): Institution => {
   const cloned = Object.assign(new Institution(), value);
-  cloned.contact = new InstitutionContactEntity(cloned.contact as Partial<InstitutionContactEntity>);
+  cloned.contact = new InstitutionContactEntity(
+    cloned.contact as Partial<InstitutionContactEntity>
+  );
   cloned.ips = (cloned.ips ?? []).map((ip) => Object.assign(new Ip(), ip));
   return cloned;
 };
@@ -269,7 +344,12 @@ const send = async () => {
         router.push({ name: RouteName.Home });
         break;
       case RouteAction.MODIFICATION:
-        await institutionService.updateInstitution(localInstitution.value, authStore.token, authStore.isAdmin);
+        await institutionService.updateInstitution(
+          currentInstitution.value.siren,
+          localInstitution.value,
+          authStore.token,
+          authStore.isAdmin
+        );
         snackbar.success(t("institution.form.updateSuccess"));
         institutionStore.updateCurrentInstitution(cloneInstitution(localInstitution.value));
         if (localInstitution.value.siren === authStore.connectedInstitution.siren) {
@@ -279,7 +359,7 @@ const send = async () => {
       case RouteAction.FUSION:
         await institutionService.mergeInstitutions(authStore.token, {
           nouveauEtab: InstitutionMapper.toCreateWithoutCaptchaPayload(localInstitution.value),
-          sirenFusionnes: props.listeSirenFusion,
+          sirenFusionnes: props.listeSirenFusion
         });
         clear();
         snackbar.success(t("institution.form.mergeSuccess"));
@@ -325,7 +405,7 @@ const checkSiren = async () => {
     } else {
       sirenStatusKey.value = SirenStatusKey.InternalError;
       sirenStatusMessage.value = t("institution.form.sirenInternalError", {
-        message: err?.message ?? "",
+        message: err?.message ?? ""
       });
     }
   }
@@ -336,7 +416,10 @@ const clear = async () => {
   formContact.value?.clear();
 
   if (action.value === RouteAction.MODIFICATION) {
-    const fresh = await institutionService.getInstitution(localInstitution.value.siren, authStore.token);
+    const fresh = await institutionService.getInstitution(
+      localInstitution.value.siren,
+      authStore.token
+    );
     localInstitution.value = cloneInstitution(fresh);
     initialInstitution.value = cloneInstitution(fresh);
   } else {
@@ -349,7 +432,7 @@ const lastTriggerScission = ref(false);
 
 watch(
   () => currentInstitution.value,
-  value => {
+  (value) => {
     localInstitution.value = cloneInstitution(value);
     if (action.value === RouteAction.MODIFICATION) {
       initialInstitution.value = cloneInstitution(value);
@@ -360,7 +443,7 @@ watch(
 
 watch(
   () => props.triggerScission,
-  value => {
+  (value) => {
     if (action.value === RouteAction.SCISSION && value && !lastTriggerScission.value) {
       validate();
     }
