@@ -96,6 +96,9 @@ jobs:
           CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
           echo "Current branch is $CURRENT_BRANCH"
 
+          # S'assurer que la branche locale est parfaitement à jour avec le dépôt distant
+          git pull origin $CURRENT_BRANCH --rebase
+
           # 1. Mise à jour de la version de release
           npm version $NEW_TAG         
           sed -i "s#Version: [0-9]\+\.[0-9]\+\.[0-9]\+\(-SNAPSHOT\)\?#Version: $NEW_TAG#g" README.md
@@ -112,6 +115,7 @@ jobs:
 
           # 3. Fusion de la version de release vers la branche de développement
           git switch develop
+          git pull origin develop --rebase
           git merge $CURRENT_BRANCH -m "chore(release): 🔀 Merge $CURRENT_BRANCH to develop [skip ci]"
 
           # 4. Mise à jour vers la nouvelle version SNAPSHOT sur develop
