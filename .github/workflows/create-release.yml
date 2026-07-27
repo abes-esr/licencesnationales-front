@@ -92,28 +92,35 @@ jobs:
           npm config set tag-version-prefix ''
           npm config set git-tag-version false
 
-          # set release version
+          # Récupérer dynamiquement le nom de la branche courante (main ou master)
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          echo "Current branch is $CURRENT_BRANCH"
+
+          # 1. Mise à jour de la version de release
           npm version $NEW_TAG         
           sed -i "s#Version: [0-9]\+\.[0-9]\+\.[0-9]\+\(-SNAPSHOT\)\?#Version: $NEW_TAG#g" README.md
 
+          # 2. Validation et publication de la version de release.
+          # Note : On évite 'git commit --amend' suivi d'un simple 'git push' car cela
+          # réécrit l'historique local après avoir poussé le tag originel, provoquant des
+          # rejets de push non-fast-forward. On commite directement avec '[skip ci]'.
           git add .
-          git commit -m "Version $NEW_TAG"
+          git commit -m "chore(release): 🔖 Version $NEW_TAG [skip ci]"
           git tag $NEW_TAG
+          git push origin $CURRENT_BRANCH
           git push origin $NEW_TAG
-          git commit --amend -m "Version $NEW_TAG [skip ci]"
-          git push
 
-          # merge to develop
+          # 3. Fusion de la version de release vers la branche de développement
           git switch develop
-          git merge main -m "Merge main to develop [skip ci]"
+          git merge $CURRENT_BRANCH -m "chore(release): 🔀 Merge $CURRENT_BRANCH to develop [skip ci]"
 
-          # set snapshot version
+          # 4. Mise à jour vers la nouvelle version SNAPSHOT sur develop
           npm version $NEW_SNAPSHOT_TAG
           sed -i "s#Version: [0-9]\+\.[0-9]\+\.[0-9]\+\(-SNAPSHOT\)\?#Version: $NEW_SNAPSHOT_TAG#g" README.md
 
           git add .
-          git commit -m "Version $NEW_SNAPSHOT_TAG [skip ci]"
-          git push
+          git commit -m "chore(release): 🔖 Version $NEW_SNAPSHOT_TAG [skip ci]"
+          git push origin develop
 
       - name: "Create the GitHub release"
         uses: softprops/action-gh-release@v3
