@@ -58,13 +58,14 @@ export const useInstitutionService = () => {
   };
 
   const updateInstitution = async (
+    siren: string,
     institution: Institution,
     token: string,
     isAdmin: boolean
   ): Promise<boolean> => {
     const json: JsonUpdateInstitution = InstitutionMapper.toUpdatePayload(institution, isAdmin);
 
-    await api.post("/etablissements/" + institution.siren, json, token);
+    await api.post("/etablissements/" + siren, json, token);
     return true;
   };
 
@@ -81,7 +82,7 @@ export const useInstitutionService = () => {
 
   /**
    * Effectue la fusion (merge) d'établissements auprès du backend.
-   * 
+   *
    * @param token Le jeton d'authentification admin
    * @param data Le payload contenant le nouvel établissement et la liste des SIREN fusionnés
    * @returns La réponse de la requête POST de l'API
@@ -91,7 +92,7 @@ export const useInstitutionService = () => {
 
   /**
    * Effectue la scission (split) d'un établissement auprès du backend.
-   * 
+   *
    * @param token Le jeton d'authentification admin
    * @param data Le payload contenant le SIREN scindé et la liste des nouveaux établissements créés
    * @returns La réponse de la requête POST de l'API
