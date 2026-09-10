@@ -1,33 +1,31 @@
 <template>
-  <div>
+  <v-container variant="flat">
     <ConfirmPopup ref="confirmRef" />
 
-    <v-container class="pb-0">
-      <h1>{{ t("ip.list.title", { name: currentInstitutionName }) }}</h1>
-      <div class="d-flex flex-wrap align-center justify-space-between">
-        <div class="my-2">
-          <a v-if="isAdmin" @click="goBackToInstitution">
-            <FontAwesomeIcon :icon="faReply" />&nbsp;{{ t("ip.list.backToInstitution") }}
-          </a>
-        </div>
-        <v-btn id="addIpButton" class="my-2" @click="router.push({ name: RouteName.IpCreate })">
-          <span class="btnText">{{ t("ip.list.addIp") }}</span>
-          <FontAwesomeIcon :icon="faCirclePlus" style="font-size:1.1rem" />
-        </v-btn>
+    <h1>{{ t("ip.list.title", { name: currentInstitutionName }) }}</h1>
+    <div class="d-flex flex-wrap align-center justify-space-between">
+      <div class="my-2">
+        <a v-if="isAdmin" @click="goBackToInstitution">
+          <FontAwesomeIcon :icon="faReply" />&nbsp;{{ t("ip.list.backToInstitution") }}
+        </a>
       </div>
-    </v-container>
+      <v-btn class="btn-1 mx-2 mr-0 my-2" :to="{ name: RouteName.IpCreate }">
+        {{ t("ip.list.addIp") }}
+        <FontAwesomeIcon :icon="faCirclePlus" class="mx-2" />
+      </v-btn>
+    </div>
 
-    <v-card variant="flat" class="mt-2">
-      <v-card-text class="fondGris">
-        <v-alert dense v-if="error" type="error" v-html="error" />
-        <v-alert dense v-if="notification" type="success">
-          {{ notification }}
-        </v-alert>
+    <v-card class="mt-3">
+      <v-alert dense v-if="error" type="error" v-html="error" class="ma-3" />
+      <v-alert dense v-if="notification" type="success" class="ma-3">
+        {{ notification }}
+      </v-alert>
 
-        <VDataTable id="mytable" :key="refreshKey" :headers="headers" :items="filteredAccessByStatus"
-          :items-per-page="10" :items-per-page-options="[10, 25, 50, 75, { value: -1, title: t('ip.list.all') }]"
-          :item-class="RowClasses" :search="searchQuery" :loading="dataLoading" :no-data-text="t('ip.list.noData')"
-          class="row-height-50" density="comfortable">
+      <VDataTable id="mytable" :key="refreshKey" :headers="headers" :header-props="{ class: 'bg-primary' }"
+        :items="filteredAccessByStatus" :items-per-page="25"
+        :items-per-page-options="[25, 50, 100, { value: -1, title: t('ip.list.all') }]"
+        :item-class="RowClasses" :search="searchQuery" :loading="dataLoading" :no-data-text="t('ip.list.noData')"
+        class="elevation-0 pa-0" density="compact">
           <template v-slot:headers="{ columns, toggleSort, isSorted, getSortIcon }">
             <tr>
               <th v-for="column in columns" :key="column.key" scope="col" class="text-left"
@@ -42,32 +40,79 @@
                     {{ getSortIcon(column) }}
                   </v-icon>
 
-                  <v-menu v-if="column.key === 'statut' || column.key === 'typeIp'" offset-y
-                    :close-on-content-click="false">
+                  <v-menu v-if="column.key === 'statut' || column.key === 'typeIp'"
+                    :close-on-content-click="true" location="bottom end" transition="fade-transition">
                     <template #activator="{ props }">
-                      <v-btn :aria-label="column.key" icon size="x-small" v-bind="props" variant="text"
-                        class="pa-0 ma-0">
-                        <v-icon
-                          :color="column.key === 'statut' ? (statusFilter ? 'primary' : '') : (typeFilter ? 'primary' : '')"
-                          size="small">
+                      <v-btn :aria-label="column.key" icon variant="text" size="small" density="compact" class="ml-1"
+                        v-bind="props" @click.stop>
+                        <v-icon size="small"
+                          :color="column.key === 'statut' ? (statusFilter ? 'warning' : 'white') : (typeFilter ? 'warning' : 'white')">
                           mdi-filter
                         </v-icon>
                       </v-btn>
                     </template>
-                    <div v-if="column.key === 'statut'" style="background-color: white" class="pl-4 pr-8">
-                      <ul>
-                        <li v-for="item in statusOptions" :key="item.value" @click="onStatusSelect(item.value)">
-                          <a>{{ item.title }}</a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div v-if="column.key === 'typeIp'" style="background-color: white;" class="pl-4 pr-8">
-                      <ul>
-                        <li v-for="item in typeOptions" :key="item.value" @click="onTypeSelect(item.value)">
-                          <a>{{ item.title }}</a>
-                        </li>
-                      </ul>
-                    </div>
+                    <v-card v-if="column.key === 'statut'" class="filter-menu-card" elevation="6" rounded="lg"
+                      min-width="280" max-width="380">
+                      <div class="d-flex align-center justify-space-between px-4 py-2 border-b bg-grey-lighten-4">
+                        <span class="text-caption font-weight-bold text-uppercase text-grey-darken-2">
+                          {{ column.title }}
+                        </span>
+                        <v-btn v-if="statusFilter" variant="text" density="compact" size="x-small" color="primary"
+                          class="text-caption px-2 font-weight-bold" @click.stop="onStatusSelect('Tous')">
+                          {{ t("ip.list.all") }}
+                        </v-btn>
+                      </div>
+                      <v-list density="compact" nav class="pa-2 filter-list" style="max-height: 320px; overflow-y: auto;">
+                        <template v-for="item in statusOptions" :key="item.value">
+                          <v-list-item :value="item.value"
+                            :active="(item.value === 'Tous' && !statusFilter) || statusFilter === item.value" color="primary"
+                            rounded="md" class="my-1 filter-list-item" @click="onStatusSelect(item.value)">
+                            <template #prepend>
+                              <v-icon size="small"
+                                :color="(item.value === 'Tous' && !statusFilter) || statusFilter === item.value ? 'primary' : 'transparent'"
+                                class="mr-2">
+                                mdi-check
+                              </v-icon>
+                            </template>
+                            <v-list-item-title class="text-body-2 font-weight-medium filter-item-text">
+                              {{ item.title }}
+                            </v-list-item-title>
+                          </v-list-item>
+                          <v-divider v-if="item.value === 'Tous'" class="my-1"></v-divider>
+                        </template>
+                      </v-list>
+                    </v-card>
+                    <v-card v-if="column.key === 'typeIp'" class="filter-menu-card" elevation="6" rounded="lg"
+                      min-width="240" max-width="320">
+                      <div class="d-flex align-center justify-space-between px-4 py-2 border-b bg-grey-lighten-4">
+                        <span class="text-caption font-weight-bold text-uppercase text-grey-darken-2">
+                          {{ column.title }}
+                        </span>
+                        <v-btn v-if="typeFilter" variant="text" density="compact" size="x-small" color="primary"
+                          class="text-caption px-2 font-weight-bold" @click.stop="onTypeSelect('Tous')">
+                          {{ t("ip.list.all") }}
+                        </v-btn>
+                      </div>
+                      <v-list density="compact" nav class="pa-2 filter-list" style="max-height: 320px; overflow-y: auto;">
+                        <template v-for="item in typeOptions" :key="item.value">
+                          <v-list-item :value="item.value"
+                            :active="(item.value === 'Tous' && !typeFilter) || typeFilter === item.value" color="primary"
+                            rounded="md" class="my-1 filter-list-item" @click="onTypeSelect(item.value)">
+                            <template #prepend>
+                              <v-icon size="small"
+                                :color="(item.value === 'Tous' && !typeFilter) || typeFilter === item.value ? 'primary' : 'transparent'"
+                                class="mr-2">
+                                mdi-check
+                              </v-icon>
+                            </template>
+                            <v-list-item-title class="text-body-2 font-weight-medium filter-item-text">
+                              {{ item.title }}
+                            </v-list-item-title>
+                          </v-list-item>
+                          <v-divider v-if="item.value === 'Tous'" class="my-1"></v-divider>
+                        </template>
+                      </v-list>
+                    </v-card>
                   </v-menu>
                 </div>
               </th>
@@ -75,12 +120,12 @@
           </template>
 
           <template #top>
-            <v-row>
+            <v-row class="ma-3">
               <v-col cols="12" sm="6" class="px-0">
                 <v-tooltip :text="t('ip.list.downloadTooltip')" location="top" open-delay="100" theme="dark"
                   content-class="text-white">
                   <template #activator="{ props }">
-                    <v-btn variant="text" @click="downloadIPs" class="bouton-simple " v-bind="props"
+                    <v-btn variant="text" @click="downloadIPs" class="bouton-simple" v-bind="props"
                       :loading="isExportLoading">
                       <h2>{{ t("ip.list.downloadTitle") }}</h2>
                       <FontAwesomeIcon :icon="faDownload" class="mx-2" size="lg" />
@@ -88,10 +133,12 @@
                   </template>
                 </v-tooltip>
               </v-col>
-              <v-col cols="0" sm="3"></v-col>
+              <v-col cols="0" sm="3" class="px-0"></v-col>
               <v-col cols="12" sm="3" class="px-0">
-                <v-text-field v-model="searchQuery" :label="t('ip.list.searchLabel')" prepend-inner-icon="mdi-magnify"
-                  variant="outlined" clearable />
+                <div class="d-flex align-content-end justify-end">
+                  <v-text-field v-model="searchQuery" :label="t('ip.list.searchLabel')" prepend-inner-icon="mdi-magnify"
+                    variant="outlined" density="compact" clearable />
+                </div>
               </v-col>
             </v-row>
           </template>
@@ -120,35 +167,42 @@
             </v-tooltip>
           </template>
 
+          <template #item.dateCreation="{ item }">
+            <span>{{ item.dateCreationFormatted }}</span>
+          </template>
+
+          <template #item.dateModification="{ item }">
+            <span>{{ item.dateModificationFormatted }}</span>
+          </template>
+
           <template #item.action="{ item }">
-            <v-btn v-if="isAdmin && currentInstitution.status == 'Validé'" class="ma-0 pa-0 bouton-simple"
-              variant="flat" :title="t('ip.list.review')" @click.stop="openDialog(item)">
-              <FontAwesomeIcon :icon="faMagnifyingGlass" />
+            <v-btn v-if="isAdmin && currentInstitution.status == 'Validé'" class="ma-0 pa-0"
+              variant="plain" :title="t('ip.list.review')" @click.stop="openDialog(item)">
+              <FontAwesomeIcon color="#1f3f5f" :icon="faMagnifyingGlass" />
             </v-btn>
-            <v-btn v-if="!isAdmin" class="ma-0 pa-0 bouton-simple" icon :loading="buttonLoading"
+            <v-btn v-if="!isAdmin" class="ma-0 pa-0 bouton-simple" variant="plain" :loading="buttonLoading"
               :title="t('ip.list.delete')" @click="supprimerIP(item.id, item.ip)">
-              <FontAwesomeIcon :icon="faXmark" class="fa-orange" />
+              <FontAwesomeIcon :icon="faXmark" color="red" />
             </v-btn>
           </template>
         </VDataTable>
 
-        <v-row>
-          <v-col>
-            <div style="float: right;" class="actions" v-if="isAdmin">
-              <v-btn @click="clearActions" class="btn-6" variant="outlined">
-                <span class="btnText">{{ t("ip.list.cancel") }}</span>
-              </v-btn>
-              <v-btn @click="dispatchAllAction" :loading="buttonLoading" variant="elevated">
-                <span class="btnText">{{ t("ip.list.saveActions") }}</span>
-                <FontAwesomeIcon :icon="faCircleArrowRight" />
-              </v-btn>
-            </div>
-          </v-col>
-        </v-row>
-      </v-card-text>
+      <v-row v-if="isAdmin" class="ma-3">
+        <v-col>
+          <div class="d-flex justify-end ga-2">
+            <v-btn @click="clearActions" class="bouton-annuler" variant="outlined">
+              {{ t("ip.list.cancel") }}
+            </v-btn>
+            <v-btn @click="dispatchAllAction" :loading="buttonLoading" class="btn-1" variant="elevated">
+              {{ t("ip.list.saveActions") }}
+              <FontAwesomeIcon :icon="faCircleArrowRight" class="ml-2" />
+            </v-btn>
+          </div>
+        </v-col>
+      </v-row>
     </v-card>
 
-    <v-col cols="12" style="padding: 24px;" v-if="!isAdmin">
+    <v-col cols="12" class="px-0 mt-4" v-if="!isAdmin">
       <v-row>
         <v-col cols="1" xs="0" />
         <v-col cols="10" xs="12">
@@ -216,12 +270,12 @@
         <v-card-actions>
           <v-row>
             <v-col>
-              <div style="float: right" class="actions ga-4 d-flex">
+              <div class="d-flex justify-end ga-4">
                 <v-btn @click="
                   dialog = false;
-                currentIPid = '';
-                comments = '';
-                " class="btn-6" variant="outlined">
+                  currentIPid = '';
+                  comments = '';
+                " class="bouton-annuler" variant="outlined">
                   {{ t("ip.list.cancel") }}
                 </v-btn>
                 <v-btn @click="addActionToBuffer('SUPPRIMER')" color="error" variant="flat">
@@ -239,7 +293,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -268,7 +322,7 @@ import dayjs from "dayjs";
 import { computed, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import { useDisplay } from "vuetify";
+import { DataTableHeader, useDisplay } from "vuetify";
 import { VDataTable } from "vuetify/components";
 
 const props = defineProps<{
@@ -288,17 +342,17 @@ const refreshKey = ref(0);
 const statusFilter = ref("");
 const typeFilter = ref("");
 const statusOptions = computed(() => [
-  { value: "En attente d'attestation", title: t("ip.list.status.attestationPending") },
-  { value: "IP Valid�e par l'Abes", title: t("ip.list.status.validatedByAbes") },
-  { value: "En attente d'examen par l'Abes", title: t("ip.list.status.reviewPending") },
   { value: "Tous", title: t("ip.list.all") },
+  { value: "En attente d'attestation", title: t("ip.list.status.attestationPending") },
+  { value: "IP Validée par l'Abes", title: t("ip.list.status.validatedByAbes") },
+  { value: "En attente d'examen par l'Abes", title: t("ip.list.status.reviewPending") },
 ]);
 const typeOptions = computed(() => [
+  { value: "Tous", title: t("ip.list.all") },
   { value: "IPV4", title: t("ip.list.types.ipv4") },
   { value: "IPV6", title: t("ip.list.types.ipv6") },
   { value: "Plage IPV4", title: t("ip.list.types.rangeIpv4") },
   { value: "Plage IPV6", title: t("ip.list.types.rangeIpv6") },
-  { value: "Tous", title: t("ip.list.all") },
 ]);
 const searchQuery = ref("");
 const accessList = ref<Array<any>>([]);
@@ -312,14 +366,23 @@ const isExportLoading = ref(false);
 const buttonLoading = ref(false);
 const notification = ref("");
 const comments = ref("");
-type Headers = {
-  title: string;
-  align?: "start" | "end" | "center";
-  key: string;
-  sortable: boolean;
-  width: string;
-}[]
-const headers = computed(() => {
+/**
+ * Compare deux dates pour le tri chronologique dans le composant VDataTable.
+ *
+ * @param a - Première date à comparer
+ * @param b - Deuxième date à comparer
+ * @returns Nombre négatif si a < b, positif si a > b, ou 0 si égaux
+ */
+function sortDates(a: any, b: any): number {
+  if (!a && !b) return 0;
+  if (!a) return -1;
+  if (!b) return 1;
+  const timeA = new Date(a).getTime();
+  const timeB = new Date(b).getTime();
+  return timeA - timeB;
+}
+
+const headers = computed<DataTableHeader[]>(() => {
   if (isAdmin.value) {
     return [
       {
@@ -327,6 +390,7 @@ const headers = computed(() => {
         align: "start",
         key: "dateCreation",
         sortable: true,
+        sort: sortDates,
         width: "9%",
       },
       {
@@ -342,6 +406,7 @@ const headers = computed(() => {
         title: t("ip.list.headers.lastAction"),
         key: "dateModification",
         sortable: true,
+        sort: sortDates,
         width: "10%",
       },
       {
@@ -351,7 +416,7 @@ const headers = computed(() => {
         width: "17%",
       },
       { title: t("ip.list.headers.review"), key: "action", sortable: false, width: "9%" },
-    ] satisfies Headers;
+    ];
   }
   return [
     {
@@ -359,6 +424,7 @@ const headers = computed(() => {
       align: "start",
       key: "dateCreation",
       sortable: true,
+      sort: sortDates,
       width: "9%",
     },
     {
@@ -373,6 +439,7 @@ const headers = computed(() => {
       title: t("ip.list.headers.lastAction"),
       key: "dateModification",
       sortable: true,
+      sort: sortDates,
       width: "15%",
     },
     {
@@ -382,7 +449,7 @@ const headers = computed(() => {
       width: "17%",
     },
     { title: t("ip.list.headers.delete"), key: "action", sortable: false, width: "10%" },
-  ] satisfies Headers;
+  ];
 });
 const dataLoading = ref(true);
 const currentIPid = ref("");
@@ -455,13 +522,22 @@ function fetchAccessList(): void {
     });
 }
 
+/**
+ * Formate un élément IP reçu de l'API pour l'affichage et le tri dans la VDataTable.
+ * Conserve la Date brute pour le tri chronologique et produit la version localisée pour l'affichage.
+ *
+ * @param accessItem - Objet IP brut retourné par le service
+ * @returns Objet formaté pour chaque ligne du tableau
+ */
 function formatAccessEntry(accessItem: any) {
   let accessType = "";
   if (accessItem.typeAcces === "range") accessType = t("ip.list.types.rangePrefix");
   return {
     id: accessItem.id,
-    dateCreation: dayjs(accessItem.createdAt).format("L"),
-    dateModification: getDateModification(accessItem),
+    dateCreation: accessItem.createdAt ? new Date(accessItem.createdAt) : null,
+    dateCreationFormatted: accessItem.createdAt ? dayjs(accessItem.createdAt).format("L") : "",
+    dateModification: accessItem.updatedAt ? new Date(accessItem.updatedAt) : null,
+    dateModificationFormatted: getDateModification(accessItem),
     typeIp: accessType + (accessItem.typeIp ?? ""),
     typeAcces: accessItem.typeAcces ?? "",
     ip: accessItem.ip,
@@ -470,8 +546,14 @@ function formatAccessEntry(accessItem: any) {
   };
 }
 
-function getDateModification(accessItem: any) {
-  if (!accessItem.updatedAt) return null;
+/**
+ * Retourne la date de modification formatée si elle existe.
+ *
+ * @param accessItem - Objet IP brut
+ * @returns Date formatée au format localisé ou chaîne vide
+ */
+function getDateModification(accessItem: any): string {
+  if (!accessItem.updatedAt) return "";
   return dayjs(accessItem.updatedAt).format("L");
 }
 
@@ -657,12 +739,30 @@ function getSubjectInstitutionSiren() {
   return authStore.user.siren;
 }
 
+/**
+ * Sélectionne ou désélectionne un statut d'adresse IP pour filtrer la liste.
+ *
+ * @param element - Statut sélectionné ("Tous" pour réinitialiser)
+ */
 function onStatusSelect(element: string): void {
-  statusFilter.value = element === "Tous" ? "" : element;
+  if (element === "Tous" || statusFilter.value === element) {
+    statusFilter.value = "";
+  } else {
+    statusFilter.value = element;
+  }
 }
 
+/**
+ * Sélectionne ou désélectionne un type d'adresse IP pour filtrer la liste.
+ *
+ * @param element - Type d'adresse IP sélectionné ("Tous" pour réinitialiser)
+ */
 function onTypeSelect(element: string): void {
-  typeFilter.value = element === "Tous" ? "" : element;
+  if (element === "Tous" || typeFilter.value === element) {
+    typeFilter.value = "";
+  } else {
+    typeFilter.value = element;
+  }
 }
 
 function downloadIPs(): void {
@@ -694,3 +794,26 @@ function goBackToInstitution(): void {
 </script>
 
 <style src="./style.css"></style>
+
+<style>
+.v-data-table {
+  background-color: transparent !important;
+}
+
+.theme--light .v-data-footer__icons-before .v-btn,
+.theme--light .v-data-footer__icons-after .v-btn,
+.theme--dark .v-data-footer__icons-after .v-btn,
+.theme--dark .v-data-footer__icons-before .v-btn {
+  background-color: transparent !important;
+}
+
+.filter-menu-card {
+  white-space: normal;
+}
+
+.filter-item-text {
+  white-space: normal !important;
+  line-height: 1.35 !important;
+  word-break: break-word;
+}
+</style>

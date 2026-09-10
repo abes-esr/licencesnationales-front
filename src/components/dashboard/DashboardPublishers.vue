@@ -1,6 +1,6 @@
 <template>
   <v-col cols="12" md="12" lg="12" xl="6">
-    <div class="borderCol fondBlanc card-full card-relative">
+    <v-card class="dashboard-card card-full card-relative">
       <v-card-title class="d-block titre-block title-tight">
         <FontAwesomeIcon :icon="faPaperPlane" class="fa-lg mx-2" />
         {{ t("dashboard.publishers.title") }}
@@ -20,7 +20,7 @@
           <v-btn @click="onSend" class="ma-4">{{ t("dashboard.publishers.send") }}</v-btn>
         </div>
       </v-card-text>
-    </div>
+    </v-card>
   </v-col>
 </template>
 
