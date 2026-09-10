@@ -1,6 +1,6 @@
 <template>
   <v-col cols="12" md="12" lg="12" xl="6">
-    <div class="borderCol fondBlanc card-full">
+    <v-card class="dashboard-card card-full">
       <v-card-title class="d-block titre-block title-tight">
         <FontAwesomeIcon :icon="faBell" class="fa-lg mx-2 icone-standard" />
         <span v-if="isAdmin">{{ t("dashboard.notifications.adminTitle") }}</span>
@@ -29,7 +29,7 @@
           </ul>
         </div>
       </v-card-text>
-    </div>
+    </v-card>
   </v-col>
 </template>
 

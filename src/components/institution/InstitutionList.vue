@@ -17,7 +17,7 @@
         </v-btn>
       </v-row>
     </div>
-    <v-card class="mt-3 fondGris">
+    <v-card class="mt-3">
       <VDataTable density="compact" :headers="headers" :header-props="{ class: 'bg-primary' }"
         :items="filteredInstitutionsByStatus" :items-per-page="25"
         :items-per-page-options="[25, 50, 100, { value: -1, title: t('institution.list.all') }]"
@@ -61,29 +61,78 @@
                 </v-icon>
 
                 <v-menu v-if="column.key === 'institutionType' || column.key === 'ipStatus'"
-                  :close-on-content-click="false">
+                  :close-on-content-click="true" location="bottom end" transition="fade-transition">
                   <template #activator="{ props }">
-                    <v-btn :aria-label="column.key" icon variant="text" class="ml-1" v-bind="props">
-                      <v-icon small
-                        :color="column.key === 'institutionType' ? (selectedType ? 'primary' : '') : (statusFilter ? 'primary' : '')">
+                    <v-btn :aria-label="column.key" icon variant="text" size="small" density="compact" class="ml-1"
+                      v-bind="props" @click.stop>
+                      <v-icon size="small"
+                        :color="column.key === 'institutionType' ? (selectedType ? 'warning' : 'white') : (statusFilter ? 'warning' : 'white')">
                         mdi-filter
                       </v-icon>
                     </v-btn>
                   </template>
-                  <div v-if="column.key === 'institutionType'" style="background-color: white;" class="pl-4 pr-8">
-                    <ul>
-                      <li v-for="item in institutionTypes" :key="item" @click="onInstitutionTypeSelect(item)">
-                        <a>{{ item }}</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div v-if="column.key === 'ipStatus'" style="background-color: white;" class="pl-4 pr-8">
-                    <ul>
-                      <li v-for="item in statusOptions" :key="item.value" @click="onStatusSelect(item.value)">
-                        <a>{{ item.title }}</a>
-                      </li>
-                    </ul>
-                  </div>
+                  <v-card v-if="column.key === 'institutionType'" class="filter-menu-card" elevation="6" rounded="lg"
+                    min-width="300" max-width="420">
+                    <div class="d-flex align-center justify-space-between px-4 py-2 border-b bg-grey-lighten-4">
+                      <span class="text-caption font-weight-bold text-uppercase text-grey-darken-2">
+                        {{ column.title }}
+                      </span>
+                      <v-btn v-if="selectedType" variant="text" density="compact" size="x-small" color="primary"
+                        class="text-caption px-2 font-weight-bold" @click.stop="onInstitutionTypeSelect('Tous')">
+                        {{ t("institution.list.status.all") }}
+                      </v-btn>
+                    </div>
+                    <v-list density="compact" nav class="pa-2 filter-list" style="max-height: 320px; overflow-y: auto;">
+                      <template v-for="item in institutionTypes" :key="item">
+                        <v-list-item :value="item"
+                          :active="(item === 'Tous' && !selectedType) || selectedType === item" color="primary"
+                          rounded="md" class="my-1 filter-list-item" @click="onInstitutionTypeSelect(item)">
+                          <template #prepend>
+                            <v-icon size="small"
+                              :color="(item === 'Tous' && !selectedType) || selectedType === item ? 'primary' : 'transparent'"
+                              class="mr-2">
+                              mdi-check
+                            </v-icon>
+                          </template>
+                          <v-list-item-title class="text-body-2 font-weight-medium filter-item-text">
+                            {{ item }}
+                          </v-list-item-title>
+                        </v-list-item>
+                        <v-divider v-if="item === 'Tous'" class="my-1"></v-divider>
+                      </template>
+                    </v-list>
+                  </v-card>
+                  <v-card v-if="column.key === 'ipStatus'" class="filter-menu-card" elevation="6" rounded="lg"
+                    min-width="240" max-width="340">
+                    <div class="d-flex align-center justify-space-between px-4 py-2 border-b bg-grey-lighten-4">
+                      <span class="text-caption font-weight-bold text-uppercase text-grey-darken-2">
+                        {{ column.title }}
+                      </span>
+                      <v-btn v-if="statusFilter" variant="text" density="compact" size="x-small" color="primary"
+                        class="text-caption px-2 font-weight-bold" @click.stop="onStatusSelect('Tous')">
+                        {{ t("institution.list.status.all") }}
+                      </v-btn>
+                    </div>
+                    <v-list density="compact" nav class="pa-2 filter-list" style="max-height: 320px; overflow-y: auto;">
+                      <template v-for="item in statusOptions" :key="item.value">
+                        <v-list-item :value="item.value"
+                          :active="(item.value === 'Tous' && !statusFilter) || statusFilter === item.value" color="primary"
+                          rounded="md" class="my-1 filter-list-item" @click="onStatusSelect(item.value)">
+                          <template #prepend>
+                            <v-icon size="small"
+                              :color="(item.value === 'Tous' && !statusFilter) || statusFilter === item.value ? 'primary' : 'transparent'"
+                              class="mr-2">
+                              mdi-check
+                            </v-icon>
+                          </template>
+                          <v-list-item-title class="text-body-2 font-weight-medium filter-item-text">
+                            {{ item.title }}
+                          </v-list-item-title>
+                        </v-list-item>
+                        <v-divider v-if="item.value === 'Tous'" class="my-1"></v-divider>
+                      </template>
+                    </v-list>
+                  </v-card>
                 </v-menu>
               </div>
             </th>
@@ -152,7 +201,7 @@ const searchQuery = ref("");
 const institutions = ref<Array<Institution>>([]);
 const filteredInstitutions = ref<Array<Institution>>([]);
 const selectedType = ref("");
-const institutionTypes = ref<Array<string>>([]);
+const institutionTypes = ref<Array<string>>(["Tous"]);
 const isExportLoading = ref(false);
 const headers = computed<DataTableHeader[]>(() => [
   {
@@ -227,34 +276,44 @@ function overrideStatuts(): void {
   });
 }
 
+/**
+ * Sélectionne ou désélectionne un type d'établissement pour filtrer la liste.
+ *
+ * @param element - Type d'établissement sélectionné ("Tous" pour réinitialiser)
+ */
 function onInstitutionTypeSelect(element: string): void {
-  selectedType.value = element === "Tous" ? "" : element;
+  if (element === "Tous" || selectedType.value === element) {
+    selectedType.value = "";
+  } else {
+    selectedType.value = element;
+  }
 }
 
+/**
+ * Sélectionne ou désélectionne un statut d'adresse IP pour filtrer la liste.
+ *
+ * @param element - Statut d'adresse IP sélectionné ("Tous" pour réinitialiser)
+ */
 function onStatusSelect(element: string): void {
-  statusFilter.value = element === "Tous" ? "" : element;
+  if (element === "Tous" || statusFilter.value === element) {
+    statusFilter.value = "";
+  } else {
+    statusFilter.value = element;
+  }
 }
 
+/**
+ * Récupère la liste des types d'établissement depuis le service,
+ * en garantissant que l'option "Tous" se trouve toujours en première position.
+ */
 async function fetchInstitutionTypes() {
   await institutionService
     .listInstitutionTypes()
     .then(result => {
-      institutionTypes.value = [...result, "Tous"].sort((n1, n2) => {
-        if (n1 > n2) {
-          return 1;
-        }
-        if (n1 < n2) {
-          return -1;
-        }
-        return 0;
-      }
+      const sortedTypes = [...result.filter((t: string) => t !== "Tous")].sort((n1, n2) =>
+        n1.localeCompare(n2)
       );
-      institutionTypes.value.unshift(
-        institutionTypes.value.splice(
-          institutionTypes.value.indexOf("Tous"),
-          1
-        )[0]
-      );
+      institutionTypes.value = ["Tous", ...sortedTypes];
     })
     .catch(err => {
       snackbar.error(err);
@@ -340,5 +399,15 @@ async function goToInstitution(item: Institution) {
 .theme--dark .v-data-footer__icons-after .v-btn,
 .theme--dark .v-data-footer__icons-before .v-btn {
   background-color: transparent !important;
+}
+
+.filter-menu-card {
+  white-space: normal;
+}
+
+.filter-item-text {
+  white-space: normal !important;
+  line-height: 1.35 !important;
+  word-break: break-word;
 }
 </style>
