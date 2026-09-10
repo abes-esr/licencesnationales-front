@@ -1,6 +1,6 @@
 <template>
   <v-col cols="12" md="12" lg="6" xl="3">
-    <div class="borderCol fondBlanc card-full card-relative" :class="[isCompact ? 'compact-form' : '']">
+    <v-card class="dashboard-card card-full card-relative" :class="[isCompact ? 'compact-form' : '']">
       <div class="d-flex">
         <h2 class="my-3 pl-4 mb-0">{{ t("dashboard.institution.title") }}</h2>
         <v-tooltip :text="t('dashboard.institution.readonly')" location="top" open-delay="100" theme="dark"
@@ -37,7 +37,7 @@
           <a href="https://assistance.stp.abes.fr/servicedesk/customer/portals" target="_blank">guichet d'assistance</a>
         </p>
       </v-alert>
-    </div>
+    </v-card>
   </v-col>
 </template>
 

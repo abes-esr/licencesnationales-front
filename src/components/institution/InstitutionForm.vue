@@ -53,7 +53,7 @@
             </v-alert>
           </v-col>
         </v-row>
-        <v-card>
+        <v-card class="pt-6">
           <div
             class="mx-9"
             v-if="
@@ -63,8 +63,8 @@
               action === RouteAction.SCISSION
             "
           >
-            <v-row>
-              <v-card-title>{{ t("institution.form.institutionSection") }}</v-card-title>
+            <v-row class="ma-0">
+              <v-card-title class="px-0">{{ t("institution.form.institutionSection") }}</v-card-title>
             </v-row>
             <v-divider class="mb-4"></v-divider>
             <div class="mx-9">

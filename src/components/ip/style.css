@@ -4,9 +4,6 @@
 .list {
   max-width: 750px;
 }
-#mytable table thead {
-  background: aquamarine;
-}
 .truncate {
   width: 17%;
 }
