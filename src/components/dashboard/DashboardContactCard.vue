@@ -1,6 +1,6 @@
 <template>
   <v-col cols="12" md="12" lg="6" xl="3">
-    <div class="borderCol fondBlanc card-full card-relative">
+    <v-card class="dashboard-card card-full card-relative">
       <div class="d-flex justify-space-between align-center">
         <h2 class="my-3 pl-4 mb-0">{{ t("dashboard.contact.title") }}</h2>
       </div>
@@ -56,7 +56,7 @@
           </v-col>
         </v-row>
       </v-card-text>
-    </div>
+    </v-card>
   </v-col>
 </template>
 
