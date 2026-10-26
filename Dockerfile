@@ -1,5 +1,5 @@
 # Phase de compilation de l'appli vuejs
-FROM node:lts AS build-image
+FROM node:24 AS build-image
 WORKDIR /build
 # Copie des fichiers de l'application
 COPY src ./src 
