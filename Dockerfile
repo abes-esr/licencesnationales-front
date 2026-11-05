@@ -1,5 +1,5 @@
 # Phase de compilation de l'appli vuejs
-FROM node:25.2.1 AS build-image
+FROM node:24 AS build-image
 WORKDIR /build
 # Copie des fichiers de l'application
 COPY src ./src 
@@ -15,7 +15,7 @@ RUN npm run build
 RUN npm prune --omit=dev
 
 # Serveur web (nginx) pour exec l'appli vuejs
-FROM nginx:1.29.4 AS front-image
+FROM nginx:1 AS front-image
 COPY --from=build-image /build/dist/ /usr/share/nginx/html.orig/
 # Copie de la configuration personnalisée
 COPY ./docker/nginx-default.conf /etc/nginx/conf.d/default.conf
